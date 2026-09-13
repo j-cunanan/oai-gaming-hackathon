@@ -1,0 +1,1452 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  Activity,
+  ArrowDownToLine,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  CheckCheck,
+  ChevronRight,
+  Circle,
+  Clock3,
+  Code2,
+  Crosshair,
+  FileCode2,
+  FileText,
+  FlaskConical,
+  FolderOpen,
+  GitBranch,
+  GitPullRequest,
+  Layers3,
+  LoaderCircle,
+  Maximize2,
+  Monitor,
+  Pause,
+  Play,
+  Plus,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Terminal,
+  X,
+} from "lucide-react";
+import "./styles.css";
+
+type CheckResult = {
+  name: string;
+  status: string;
+  detail: string;
+  artifact: string | null;
+};
+type Hypothesis = {
+  id: string;
+  statement: string;
+  prediction: string;
+  status: string;
+  observation: string;
+};
+type Candidate = {
+  path: string;
+  symbol: string | null;
+  score: number;
+  evidence: string[];
+  reasoning: string;
+};
+type Action = { action: string; semantic: string; [key: string]: unknown };
+type Case = {
+  id: string;
+  state: string;
+  summary: string;
+  created_at: string;
+  updated_at: string;
+  report: {
+    title: string;
+    body: string;
+    game: string;
+    target_commit: string;
+    platform: string;
+    build_version: string | null;
+  };
+  spec: {
+    severity: string;
+    bug_class: string;
+    known_preconditions: string[];
+    uncertain_conditions: string[];
+  } | null;
+  hypotheses: Hypothesis[];
+  latest_screenshot: string | null;
+  patch_artifact: string | null;
+  reproduction: {
+    successful_runs: number;
+    total_runs: number;
+    original_actions: number;
+    steps: Action[];
+    deterministic: boolean;
+  } | null;
+  findings: {
+    root_cause: string;
+    subsystem: string;
+    candidates: Candidate[];
+    limitations: string[];
+  } | null;
+  checks: CheckResult[];
+  usage: { model_calls: number; input_tokens: number; output_tokens: number };
+  first_reproduced_seconds: number | null;
+  elapsed_seconds: number;
+  benchmark_id: string | null;
+};
+type Event = {
+  seq: number;
+  created_at: string;
+  kind: string;
+  data: Record<string, unknown>;
+};
+type Artifact = {
+  id: string;
+  name: string;
+  size: number;
+  media_type: string;
+  sha256: string;
+};
+type Health = {
+  model: string;
+  ai_configured: boolean;
+  active_jobs: string[];
+  max_model_calls: number;
+  repetitions: number;
+};
+type Benchmark = {
+  attempted: number;
+  confirmed: number;
+  validated_patches: number;
+  note: string;
+};
+
+const terminal = [
+  "COMPLETE",
+  "AWAITING_HUMAN",
+  "NOT_REPRODUCED",
+  "INSUFFICIENT_EVIDENCE",
+  "ENVIRONMENT_UNSUPPORTED",
+  "FAILED",
+  "CANCELLED",
+];
+const phases = [
+  { label: "Triage", states: ["RECEIVED", "TRIAGED"], icon: Search },
+  {
+    label: "Reproduce",
+    states: ["ENVIRONMENT_PREPARING", "READY", "INVESTIGATING", "REPRODUCED"],
+    icon: Crosshair,
+  },
+  { label: "Reduce", states: ["MINIMIZING", "REPRO_CONFIRMED"], icon: Layers3 },
+  { label: "Localize", states: ["LOCALIZING", "TEST_GENERATING"], icon: Code2 },
+  {
+    label: "Validate",
+    states: ["PATCH_PROPOSING", "VALIDATING"],
+    icon: ShieldCheck,
+  },
+  {
+    label: "Review",
+    states: ["AWAITING_HUMAN", "COMPLETE"],
+    icon: GitPullRequest,
+  },
+];
+function human(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/^./, (x) => x.toUpperCase());
+}
+function duration(seconds: number | null) {
+  if (seconds === null) return "—";
+  return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+}
+function bytes(n: number) {
+  return n > 1024 * 1024
+    ? `${(n / 1024 / 1024).toFixed(1)} MB`
+    : `${Math.max(1, Math.round(n / 1024))} KB`;
+}
+function artifactUrl(c: Case, id: string) {
+  return `/api/cases/${c.id}/artifacts/${encodeURIComponent(id)}`;
+}
+async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`/api${path}`, init);
+  if (!response.ok) {
+    const body = await response
+      .json()
+      .catch(() => ({ detail: response.statusText }));
+    throw new Error(
+      typeof body.detail === "string"
+        ? body.detail
+        : "Check the report fields and exact commit SHA.",
+    );
+  }
+  return response.json();
+}
+function Badge({ state }: { state: string }) {
+  const tone = ["COMPLETE", "REPRO_CONFIRMED"].includes(state)
+    ? "green"
+    : ["FAILED", "ENVIRONMENT_UNSUPPORTED"].includes(state)
+      ? "red"
+      : terminal.includes(state)
+        ? "amber"
+        : "purple";
+  return (
+    <span className={`badge ${tone}`}>
+      <span className="status-dot" />
+      {human(state)}
+    </span>
+  );
+}
+function App() {
+  const [cases, setCases] = useState<Case[]>([]);
+  const [selected, setSelected] = useState("");
+  const [current, setCurrent] = useState<Case | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [artifacts, setArtifacts] = useState<Artifact[]>([]);
+  const [benchmark, setBenchmark] = useState<Benchmark | null>(null);
+  const [page, setPage] = useState("investigations");
+  const [tab, setTab] = useState("activity");
+  const [showNew, setShowNew] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [patch, setPatch] = useState("");
+  const [filter, setFilter] = useState("");
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const refreshList = useCallback(async () => {
+    try {
+      const [list, status, metrics] = await Promise.all([
+        api<Case[]>("/cases"),
+        api<Health>("/health"),
+        api<Benchmark>("/benchmarks"),
+      ]);
+      setCases(list);
+      setHealth(status);
+      setBenchmark(metrics);
+      setConnected(true);
+      setSelected((id) => id || list[0]?.id || "");
+    } catch (e) {
+      setConnected(false);
+      setError((e as Error).message);
+    }
+  }, []);
+  const refreshCase = useCallback(async () => {
+    if (!selected) return;
+    try {
+      const [c, log, files] = await Promise.all([
+        api<Case>(`/cases/${selected}`),
+        api<Event[]>(`/cases/${selected}/events?tail=150`),
+        api<Artifact[]>(`/cases/${selected}/artifacts`),
+      ]);
+      setCurrent(c);
+      setEvents(log);
+      setArtifacts(files);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }, [selected]);
+  useEffect(() => {
+    void refreshList();
+    const timer = setInterval(refreshList, 5000);
+    return () => clearInterval(timer);
+  }, [refreshList]);
+  useEffect(() => {
+    setCurrent(null);
+    setEvents([]);
+    setArtifacts([]);
+    setPatch("");
+    void refreshCase();
+    if (!selected) return;
+    const source = new EventSource(`/api/cases/${selected}/stream`);
+    source.addEventListener("update", () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+      refreshTimer.current = setTimeout(() => {
+        void refreshCase();
+        void refreshList();
+      }, 180);
+    });
+    source.onerror = () => {
+      /* EventSource reconnects with Last-Event-ID. Polling remains a fallback. */
+    };
+    const fallback = setInterval(refreshCase, 6000);
+    return () => {
+      source.close();
+      clearInterval(fallback);
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    };
+  }, [selected, refreshCase, refreshList]);
+  useEffect(() => {
+    if (current?.patch_artifact)
+      fetch(artifactUrl(current, current.patch_artifact))
+        .then((r) => r.text())
+        .then(setPatch)
+        .catch(() => setPatch("Could not load the patch."));
+  }, [current?.patch_artifact]);
+
+  async function act(action: string) {
+    if (!current) return;
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/cases/${current.id}/${action}`, { method: "POST" });
+      await refreshCase();
+      await refreshList();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  const running = Boolean(current && health?.active_jobs.includes(current.id));
+  const confirmed = cases.filter((c) => c.reproduction?.deterministic).length;
+  const activePhase = current
+    ? phases.findIndex((p) => p.states.includes(current.state))
+    : -1;
+  const visibleEvents = events
+    .filter((e) => !["model_call", "observation"].includes(e.kind))
+    .slice(-35)
+    .reverse();
+  const initialTime = current ? new Date(current.created_at).getTime() : 0;
+  function eventText(e: Event) {
+    if (e.kind === "action") {
+      const a = e.data.action as Action;
+      return a.semantic || human(a.action);
+    }
+    if (e.kind === "hypothesis") return String(e.data.statement);
+    if (e.kind === "replay") {
+      const v = e.data.verdict as { observed: boolean; explanation: string };
+      return `${human(String(e.data.phase))}: ${v.observed ? "symptom observed" : "symptom not confirmed"}`;
+    }
+    if (e.kind === "verification") return String(e.data.explanation);
+    if (e.kind === "minimization")
+      return `Replay reduced from ${e.data.original} to ${e.data.reduced} actions`;
+    if (e.kind === "localization") return String(e.data.root_cause);
+    if (e.kind === "patch") return String(e.data.explanation);
+    if (e.kind === "validation_replay")
+      return e.data.fixed
+        ? "Expected state reached; symptom absent"
+        : "Fix not established in this replay";
+    return String(e.data.summary || human(e.kind));
+  }
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <a className="brand" href="#" onClick={() => setPage("investigations")}>
+          <span className="brand-mark">
+            <Crosshair size={23} strokeWidth={2.6} />
+          </span>
+          REPRO<span className="beta">LAB</span>
+        </a>
+        <div className="workspace-label">
+          <span className="workspace-avatar">G</span>
+          <div>
+            Game engineering<small>Local workspace</small>
+          </div>
+          <ChevronRight size={14} />
+        </div>
+        <span className="nav-caption">WORKSPACE</span>
+        <nav>
+          <button
+            className={
+              page === "investigations" ? "nav-item selected" : "nav-item"
+            }
+            onClick={() => setPage("investigations")}
+          >
+            <Crosshair size={17} />
+            Investigations<span className="nav-count">{cases.length}</span>
+          </button>
+          <button
+            className={page === "benchmarks" ? "nav-item selected" : "nav-item"}
+            onClick={() => setPage("benchmarks")}
+          >
+            <FlaskConical size={17} />
+            Benchmark
+          </button>
+        </nav>
+        <div className="recent-label">
+          <span className="nav-caption">RECENT CASES</span>
+          <button
+            title="New case"
+            className="icon-button"
+            onClick={() => setShowNew(true)}
+          >
+            <Plus size={14} />
+          </button>
+        </div>
+        <div className="case-nav">
+          {cases.slice(0, 8).map((c) => (
+            <button
+              key={c.id}
+              className={
+                selected === c.id && page === "investigations"
+                  ? "case-nav-item chosen"
+                  : "case-nav-item"
+              }
+              onClick={() => {
+                setSelected(c.id);
+                setPage("investigations");
+                setTab("activity");
+              }}
+            >
+              <span
+                className={`tiny-dot ${c.reproduction?.deterministic ? "green" : "purple"}`}
+              />
+              <span>{c.report.title}</span>
+            </button>
+          ))}
+          {cases.length === 0 && (
+            <p className="muted empty-nav">Your first case starts here.</p>
+          )}
+        </div>
+        <div className="sidebar-bottom">
+          <div className="boundary">
+            <ShieldCheck size={17} />
+            <div>
+              Evidence first<small>Every claim needs a replay.</small>
+            </div>
+          </div>
+          <div className="user-avatar">U</div>
+          <span>
+            Team workspace<small>Hackathon build</small>
+          </span>
+        </div>
+      </aside>
+      <div className="main-shell">
+        <header className="topbar">
+          <div className="breadcrumb">
+            Workspace
+            <ChevronRight size={13} />
+            <strong>
+              {page === "benchmarks" ? "Benchmark" : "Investigations"}
+            </strong>
+          </div>
+          <div className="topbar-right">
+            <span className="connection">
+              <span className={`tiny-dot ${connected ? "green" : "red"}`} />
+              {connected ? "Backend connected" : "Backend offline"}
+            </span>
+            <a
+              className="docs-link"
+              href="/docs"
+              target="_blank"
+              rel="noreferrer"
+            >
+              API docs
+              <ArrowUpRight size={13} />
+            </a>
+          </div>
+        </header>
+        <main>
+          {error && (
+            <div role="alert" className="error-banner">
+              <span>{error}</span>
+              <button
+                className="icon-button"
+                onClick={() => setError("")}
+                aria-label="Dismiss error"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+          <div className="page-heading">
+            <div>
+              <div className="eyebrow">
+                <span /> AUTONOMOUS BUG OPERATIONS
+              </div>
+              <h1>
+                {page === "benchmarks"
+                  ? "Proof, measured."
+                  : "From report to reproduction."}
+              </h1>
+              <p>
+                {page === "benchmarks"
+                  ? "Historical game bugs. Isolated revisions. Inspectable outcomes."
+                  : "Investigate the game. Capture the evidence. Find the cause."}
+              </p>
+            </div>
+            <button className="button primary" onClick={() => setShowNew(true)}>
+              <Plus size={16} />
+              New investigation
+            </button>
+          </div>
+          <div className="metrics-row">
+            <Metric
+              label="Total investigations"
+              value={String(cases.length).padStart(2, "0")}
+              caption="Every attempt retained"
+              icon={<FolderOpen size={18} />}
+            />
+            <Metric
+              label="Verified reproductions"
+              value={String(confirmed).padStart(2, "0")}
+              caption="Confirmed by fresh replays"
+              icon={<CheckCheck size={18} />}
+            />
+            <Metric
+              label="Worker activity"
+              value={health?.active_jobs.length ? "Running" : "Idle"}
+              caption={
+                health
+                  ? `${health.model} · ${health.max_model_calls} call limit`
+                  : "Connecting to backend"
+              }
+              icon={<Activity size={18} />}
+            />
+          </div>
+          {page === "benchmarks" ? (
+            <section className="panel benchmark-panel">
+              <div className="panel-title">
+                <FlaskConical size={18} />
+                <h2>Historical benchmark</h2>
+                <span className="tag">MEASURED RUNS</span>
+              </div>
+              <div className="benchmark-stats">
+                <div>
+                  <strong>{benchmark?.attempted ?? 0}</strong>
+                  <span>Cases attempted</span>
+                </div>
+                <div>
+                  <strong>{benchmark?.confirmed ?? 0}</strong>
+                  <span>Confirmed replays</span>
+                </div>
+                <div>
+                  <strong>{benchmark?.validated_patches ?? 0}</strong>
+                  <span>Validated candidates</span>
+                </div>
+              </div>
+              <p className="benchmark-note">
+                {benchmark?.note || "No measurements yet."}
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Case</th>
+                    <th>Report</th>
+                    <th>Outcome</th>
+                    <th>Reproduction</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cases
+                    .filter((c) => c.benchmark_id)
+                    .map((c) => (
+                      <tr
+                        key={c.id}
+                        onClick={() => {
+                          setSelected(c.id);
+                          setPage("investigations");
+                        }}
+                      >
+                        <td>{c.benchmark_id}</td>
+                        <td>{c.report.title}</td>
+                        <td>
+                          <Badge state={c.state} />
+                        </td>
+                        <td>
+                          {c.reproduction
+                            ? `${c.reproduction.successful_runs}/${c.reproduction.total_runs}`
+                            : "Not measured"}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              <div className="integrity-note">
+                <ShieldCheck size={18} />
+                <p>
+                  Future fixes stay outside investigation workspaces. Unit tests
+                  and example data never count as benchmark successes.
+                </p>
+              </div>
+            </section>
+          ) : cases.length === 0 ? (
+            <section className="panel welcome">
+              <div className="welcome-art">
+                <Crosshair size={55} strokeWidth={1} />
+              </div>
+              <span className="eyebrow">
+                THE INVESTIGATION STARTS WITH A REPORT
+              </span>
+              <h2>“It crashed somehow.”</h2>
+              <p>
+                Give REPRO a player report and a historical game revision.
+                <br />
+                Follow the experiments, then inspect what the evidence supports.
+              </p>
+              <button
+                className="button primary"
+                onClick={() => setShowNew(true)}
+              >
+                Create your first case
+                <ArrowRight size={16} />
+              </button>
+              <div className="welcome-features">
+                <span>
+                  <Monitor size={15} />
+                  Real game control
+                </span>
+                <span>
+                  <RotateCcw size={15} />
+                  Repeatable evidence
+                </span>
+                <span>
+                  <GitPullRequest size={15} />
+                  Reviewable changes
+                </span>
+              </div>
+            </section>
+          ) : (
+            <>
+              <div className="case-switcher">
+                <div className="section-label">
+                  INVESTIGATION WORKSPACE{" "}
+                  <span>
+                    {cases.length} {cases.length === 1 ? "case" : "cases"}
+                  </span>
+                </div>
+                <div className="select-wrap">
+                  <select
+                    aria-label="Select case"
+                    value={selected}
+                    onChange={(e) => {
+                      setSelected(e.target.value);
+                      setTab("activity");
+                    }}
+                  >
+                    {cases.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.report.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {!current ? (
+                <div className="loading">
+                  <LoaderCircle className="spin" />
+                  Loading investigation…
+                </div>
+              ) : (
+                <div className="case-workspace">
+                  <div className="case-header">
+                    <div>
+                      <div className="case-meta">
+                        <span className="case-id">
+                          {current.benchmark_id ||
+                            current.id.slice(0, 8).toUpperCase()}
+                        </span>
+                        <span> / </span>
+                        <span className="game-name">{current.report.game}</span>
+                        <span className="meta-dot">·</span>
+                        <GitBranch size={12} />
+                        <code>{current.report.target_commit.slice(0, 8)}</code>
+                      </div>
+                      <h2>{current.report.title}</h2>
+                    </div>
+                    <div className="case-header-actions">
+                      <Badge state={current.state} />
+                      {running ? (
+                        <button
+                          className="button secondary small"
+                          disabled={busy}
+                          onClick={() => act("cancel")}
+                        >
+                          <Pause size={14} />
+                          Stop
+                        </button>
+                      ) : (
+                        !current.reproduction && (
+                          <button
+                            className="button primary small"
+                            disabled={busy || !health?.ai_configured}
+                            onClick={() => act("investigate")}
+                          >
+                            <Play size={14} />
+                            Investigate
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                  <div className="pipeline">
+                    {phases.map((phase, i) => {
+                      const Icon = phase.icon;
+                      const done = activePhase > i;
+                      const active = activePhase === i;
+                      return (
+                        <React.Fragment key={phase.label}>
+                          <div
+                            className={`phase ${done ? "done" : ""} ${active ? "active" : ""}`}
+                          >
+                            <span className="phase-icon">
+                              {done ? <Check size={13} /> : <Icon size={14} />}
+                            </span>
+                            <span>{phase.label}</span>
+                            {active && running && (
+                              <span className="phase-pulse" />
+                            )}
+                          </div>
+                          {i < phases.length - 1 && (
+                            <span
+                              className={`phase-line ${done ? "done" : ""}`}
+                            />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                  <div className="investigation-grid">
+                    <div className="screen-column">
+                      <section className="game-screen-panel">
+                        <div className="screen-toolbar">
+                          <div>
+                            <Monitor size={15} />
+                            <span>Game viewport</span>
+                            <span
+                              className={`live-tag ${running ? "live" : ""}`}
+                            >
+                              <span />
+                              {running ? "LIVE" : "LAST CAPTURE"}
+                            </span>
+                          </div>
+                          <span>1280 × 720</span>
+                          {current.latest_screenshot && (
+                            <a
+                              title="Open full screenshot"
+                              href={artifactUrl(
+                                current,
+                                current.latest_screenshot,
+                              )}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <Maximize2 size={15} />
+                            </a>
+                          )}
+                        </div>
+                        <div className="game-viewport">
+                          {current.latest_screenshot ? (
+                            <img
+                              src={artifactUrl(
+                                current,
+                                current.latest_screenshot,
+                              )}
+                              alt="Latest recorded game screenshot"
+                            />
+                          ) : (
+                            <div className="viewport-empty">
+                              <div className="scan-corners">
+                                <Crosshair size={35} strokeWidth={1} />
+                              </div>
+                              <strong>Waiting for the first frame</strong>
+                              <span>
+                                The game screen appears when the worker
+                                launches.
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="screen-footer">
+                          <span>
+                            <ShieldCheck size={13} />
+                            Isolated Linux desktop
+                          </span>
+                          <span>Fresh profile on every replay</span>
+                        </div>
+                      </section>
+                      <div className="repro-stats">
+                        <div>
+                          <span>Reproduction rate</span>
+                          <strong>
+                            {current.reproduction ? (
+                              <>
+                                {current.reproduction.successful_runs}
+                                <small>
+                                  {" "}
+                                  / {current.reproduction.total_runs}
+                                </small>
+                              </>
+                            ) : (
+                              "—"
+                            )}
+                          </strong>
+                          <em>
+                            {current.reproduction?.deterministic
+                              ? "Stable across recorded runs"
+                              : "Awaiting confirmation"}
+                          </em>
+                        </div>
+                        <div>
+                          <span>Time to first proof</span>
+                          <strong>
+                            {duration(current.first_reproduced_seconds)}
+                          </strong>
+                          <em>Measured from investigation start</em>
+                        </div>
+                        <div>
+                          <span>Replay actions</span>
+                          <strong>
+                            {current.reproduction ? (
+                              <>
+                                {current.reproduction.original_actions}
+                                <ArrowRight size={17} />
+                                {current.reproduction.steps.length}
+                              </>
+                            ) : (
+                              "—"
+                            )}
+                          </strong>
+                          <em>Bounded action reduction</em>
+                        </div>
+                      </div>
+                      <section className="panel report-panel">
+                        <div className="panel-title">
+                          <FileText size={16} />
+                          <h3>Player report</h3>
+                          {current.spec && (
+                            <span className="tag">
+                              {current.spec.severity.toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <p>{current.report.body}</p>
+                        <div className="report-tags">
+                          <span>{current.report.platform}</span>
+                          <span>
+                            {current.report.build_version ||
+                              "Version unspecified"}
+                          </span>
+                        </div>
+                        {current.spec &&
+                          current.spec.uncertain_conditions.length > 0 && (
+                            <details>
+                              <summary>
+                                Open questions{" "}
+                                <span>
+                                  {current.spec.uncertain_conditions.length}
+                                </span>
+                              </summary>
+                              <ul>
+                                {current.spec.uncertain_conditions.map(
+                                  (q, i) => (
+                                    <li key={i}>{q}</li>
+                                  ),
+                                )}
+                              </ul>
+                            </details>
+                          )}
+                      </section>
+                      {current.reproduction && (
+                        <section className="panel replay-panel">
+                          <div className="panel-title">
+                            <RotateCcw size={16} />
+                            <h3>Confirmed replay</h3>
+                            <button
+                              className="button secondary small"
+                              disabled={busy || running}
+                              onClick={() => act("replay")}
+                            >
+                              <Play size={12} />
+                              Replay bug
+                            </button>
+                          </div>
+                          <ol>
+                            {current.reproduction.steps.map((a, i) => (
+                              <li key={i}>
+                                <span>{String(i + 1).padStart(2, "0")}</span>
+                                <div>
+                                  {a.semantic || human(a.action)}
+                                  <small>{a.action}</small>
+                                </div>
+                              </li>
+                            ))}
+                          </ol>
+                          <p className="muted">
+                            Replay restores the retained pre-patch build.
+                          </p>
+                        </section>
+                      )}
+                    </div>
+                    <div className="inspector-column">
+                      <section className="panel inspector">
+                        <div className="inspector-tabs">
+                          {[
+                            {
+                              id: "activity",
+                              label: "Activity",
+                              icon: Activity,
+                            },
+                            {
+                              id: "evidence",
+                              label: "Evidence",
+                              icon: Layers3,
+                            },
+                            { id: "source", label: "Source", icon: Code2 },
+                            {
+                              id: "patch",
+                              label: "Patch",
+                              icon: GitPullRequest,
+                            },
+                          ].map((t) => (
+                            <button
+                              key={t.id}
+                              className={tab === t.id ? "active" : ""}
+                              onClick={() => setTab(t.id)}
+                            >
+                              <t.icon size={14} />
+                              {t.label}
+                              {t.id === "evidence" && artifacts.length > 0 && (
+                                <small>{artifacts.length}</small>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        {tab === "activity" && (
+                          <>
+                            <div className="activity-status">
+                              <span className="activity-orb">
+                                <Sparkles size={17} />
+                              </span>
+                              <div>
+                                <strong>
+                                  {running
+                                    ? "Investigation in progress"
+                                    : human(current.state)}
+                                </strong>
+                                <p>{current.summary}</p>
+                              </div>
+                              {running && (
+                                <LoaderCircle className="spin" size={16} />
+                              )}
+                            </div>
+                            <div className="timeline-title">
+                              <span>EXPERIMENT TIMELINE</span>
+                              <span>{events.length} recent events</span>
+                            </div>
+                            <div className="timeline">
+                              {visibleEvents.map((e) => (
+                                <div
+                                  className={`event event-${e.kind}`}
+                                  key={e.seq}
+                                >
+                                  <span className="event-node">
+                                    {e.kind === "action" ? (
+                                      <Crosshair size={12} />
+                                    ) : e.kind === "replay" ? (
+                                      <RotateCcw size={12} />
+                                    ) : e.kind === "hypothesis" ? (
+                                      <FlaskConical size={12} />
+                                    ) : (
+                                      <Circle size={8} />
+                                    )}
+                                  </span>
+                                  <div>
+                                    <div className="event-meta">
+                                      <span>
+                                        {human(
+                                          e.kind === "action"
+                                            ? String(e.data.phase)
+                                            : e.kind,
+                                        )}
+                                      </span>
+                                      <time>
+                                        {duration(
+                                          (new Date(e.created_at).getTime() -
+                                            initialTime) /
+                                            1000,
+                                        )}
+                                      </time>
+                                    </div>
+                                    <p>{eventText(e)}</p>
+                                  </div>
+                                </div>
+                              ))}
+                              {visibleEvents.length === 0 && (
+                                <div className="inspector-empty">
+                                  <Activity size={25} />
+                                  <p>
+                                    Experiments will appear here as they run.
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            <div className="timeline-footer">
+                              <Terminal size={13} />
+                              <span>
+                                {current.usage.model_calls} model calls
+                              </span>
+                              <span>
+                                {(
+                                  current.usage.input_tokens +
+                                  current.usage.output_tokens
+                                ).toLocaleString()}{" "}
+                                tokens
+                              </span>
+                            </div>
+                          </>
+                        )}
+                        {tab === "evidence" && (
+                          <div className="evidence-tab">
+                            <div className="filter-input">
+                              <Search size={14} />
+                              <input
+                                aria-label="Filter artifacts"
+                                placeholder="Find an artifact…"
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                              />
+                            </div>
+                            {artifacts
+                              .filter((a) =>
+                                a.name
+                                  .toLowerCase()
+                                  .includes(filter.toLowerCase()),
+                              )
+                              .map((a) => (
+                                <a
+                                  className="artifact-row"
+                                  key={a.id}
+                                  href={artifactUrl(current, a.id)}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <span className="file-icon">
+                                    {a.media_type.startsWith("image") ? (
+                                      <Monitor size={16} />
+                                    ) : (
+                                      <FileText size={16} />
+                                    )}
+                                  </span>
+                                  <span>
+                                    <strong>{a.name}</strong>
+                                    <small>
+                                      {bytes(a.size)} · SHA-256{" "}
+                                      {a.sha256.slice(0, 10)}
+                                    </small>
+                                  </span>
+                                  <ArrowUpRight size={14} />
+                                </a>
+                              ))}
+                            {artifacts.length === 0 && (
+                              <EmptyPanel
+                                icon={<Layers3 />}
+                                text="Screenshots, logs and replay files appear after an experiment."
+                              />
+                            )}
+                          </div>
+                        )}
+                        {tab === "source" && (
+                          <div className="source-tab">
+                            {current.findings ? (
+                              <>
+                                <span className="eyebrow">
+                                  {current.findings.subsystem}
+                                </span>
+                                <h3>Evidence-backed localization</h3>
+                                <p>{current.findings.root_cause}</p>
+                                {current.findings.candidates.map((c, i) => (
+                                  <div
+                                    className="source-candidate"
+                                    key={c.path}
+                                  >
+                                    <div>
+                                      <span className="rank">{i + 1}</span>
+                                      <code>{c.path}</code>
+                                      <span className="source-score">
+                                        {c.score.toFixed(2)}
+                                      </span>
+                                    </div>
+                                    <strong>{c.symbol}</strong>
+                                    <p>{c.reasoning}</p>
+                                    <details>
+                                      <summary>Supporting evidence</summary>
+                                      <ul>
+                                        {c.evidence.map((e, i) => (
+                                          <li key={i}>{e}</li>
+                                        ))}
+                                      </ul>
+                                    </details>
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              <EmptyPanel
+                                icon={<Code2 />}
+                                text="Source investigation follows a confirmed reproduction."
+                              />
+                            )}
+                          </div>
+                        )}
+                        {tab === "patch" && (
+                          <div className="patch-tab">
+                            {patch ? (
+                              <>
+                                <div className="patch-caption">
+                                  <FileCode2 size={15} />
+                                  Candidate diff
+                                  <a
+                                    href={artifactUrl(
+                                      current,
+                                      current.patch_artifact!,
+                                    )}
+                                    download
+                                  >
+                                    <ArrowDownToLine size={15} />
+                                  </a>
+                                </div>
+                                <pre className="diff">
+                                  {patch.split("\n").map((line, i) => (
+                                    <div
+                                      key={i}
+                                      className={
+                                        line.startsWith("+")
+                                          ? "addition"
+                                          : line.startsWith("-")
+                                            ? "deletion"
+                                            : line.startsWith("@@")
+                                              ? "hunk"
+                                              : ""
+                                      }
+                                    >
+                                      {line || " "}
+                                    </div>
+                                  ))}
+                                </pre>
+                                <p className="patch-note">
+                                  Applied in the disposable game workspace.
+                                  Review and validation are required before
+                                  handoff.
+                                </p>
+                              </>
+                            ) : (
+                              <EmptyPanel
+                                icon={<GitPullRequest />}
+                                text="A candidate diff appears after reproduction, localization and a failing replay regression."
+                              />
+                            )}
+                          </div>
+                        )}
+                      </section>
+                      <section className="panel hypothesis-panel">
+                        <div className="panel-title">
+                          <FlaskConical size={16} />
+                          <h3>Hypotheses</h3>
+                          <span className="muted">
+                            {current.hypotheses.length}
+                          </span>
+                        </div>
+                        {current.hypotheses.length ? (
+                          current.hypotheses.map((h) => (
+                            <div className="hypothesis" key={h.id}>
+                              <span className={`hypothesis-status ${h.status}`}>
+                                <FlaskConical size={13} />
+                              </span>
+                              <div>
+                                <span className="hypothesis-id">
+                                  {h.id} <span>{human(h.status)}</span>
+                                </span>
+                                <p>{h.statement}</p>
+                                {h.observation && (
+                                  <small>{h.observation}</small>
+                                )}
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="small-empty">
+                            Testable explanations will be recorded here.
+                          </div>
+                        )}
+                      </section>
+                      {current.checks.length > 0 && (
+                        <section className="panel validation-panel">
+                          <div className="panel-title">
+                            <ShieldCheck size={16} />
+                            <h3>Validation gates</h3>
+                            <button
+                              className="icon-button"
+                              title="Rerun validation"
+                              disabled={running || busy}
+                              onClick={() => act("validate")}
+                            >
+                              <RotateCcw size={14} />
+                            </button>
+                          </div>
+                          {current.checks.map((c) => (
+                            <div className="validation-row" key={c.name}>
+                              <span className={`check-icon ${c.status}`}>
+                                {c.status === "pass" ? (
+                                  <Check size={13} />
+                                ) : c.status === "fail" ? (
+                                  <X size={13} />
+                                ) : (
+                                  <Clock3 size={13} />
+                                )}
+                              </span>
+                              <div>
+                                <strong>{c.name}</strong>
+                                <p>{c.detail}</p>
+                              </div>
+                              <span className={`check-label ${c.status}`}>
+                                {c.status.replace("_", " ")}
+                              </span>
+                            </div>
+                          ))}
+                        </section>
+                      )}
+                    </div>
+                  </div>
+                  <footer className="case-footer">
+                    <span>
+                      <ShieldCheck size={15} />
+                      Conclusions stay tied to recorded evidence.
+                    </span>
+                    <div>
+                      <a
+                        className="button secondary small"
+                        href={`/api/cases/${current.id}/report`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <ArrowDownToLine size={14} />
+                        Export report
+                      </a>
+                      {current.state === "AWAITING_HUMAN" && (
+                        <>
+                          <button
+                            className="button secondary small"
+                            disabled={busy || running}
+                            onClick={() => act("reject")}
+                          >
+                            Reject candidate
+                          </button>
+                          <button
+                            className="button primary small"
+                            disabled={
+                              busy ||
+                              running ||
+                              current.checks.some((c) => c.status !== "pass")
+                            }
+                            onClick={() => act("approve")}
+                          >
+                            <Check size={14} />
+                            Approve for handoff
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </footer>
+                </div>
+              )}
+            </>
+          )}
+          <div className="page-footer">
+            <span>REPRO / BUILT FOR GAME ENGINEERS</span>
+            <span>Observe. Experiment. Verify.</span>
+          </div>
+        </main>
+      </div>
+      {showNew && (
+        <NewCase
+          onClose={() => setShowNew(false)}
+          onCreated={(c) => {
+            setSelected(c.id);
+            setPage("investigations");
+            setShowNew(false);
+            void refreshList();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+function Metric({
+  label,
+  value,
+  caption,
+  icon,
+}: {
+  label: string;
+  value: string;
+  caption: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="metric">
+      <div>
+        <span>{label}</span>
+        {icon}
+      </div>
+      <strong>{value}</strong>
+      <p>{caption}</p>
+    </div>
+  );
+}
+function EmptyPanel({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="inspector-empty">
+      {icon}
+      <p>{text}</p>
+    </div>
+  );
+}
+function NewCase({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: (c: Case) => void;
+}) {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [commit, setCommit] = useState("");
+  const [game, setGame] = useState("mindustry");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const escape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", escape);
+    return () => window.removeEventListener("keydown", escape);
+  }, [onClose]);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      const c = await api<Case>("/cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          body,
+          game,
+          target_commit: commit,
+          platform: "Linux",
+        }),
+      });
+      onCreated(c);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  }
+  return (
+    <div className="modal-overlay">
+      <section
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="new-title"
+      >
+        <div className="modal-heading">
+          <span className="modal-icon">
+            <Crosshair size={22} />
+          </span>
+          <button
+            className="icon-button"
+            aria-label="Close new investigation"
+            onClick={onClose}
+          >
+            <X size={19} />
+          </button>
+        </div>
+        <div className="eyebrow">START WITH THE PLAYER'S EVIDENCE</div>
+        <h2 id="new-title">New investigation</h2>
+        <p>Pin a game revision and describe what went wrong.</p>
+        <form onSubmit={submit}>
+          <label>
+            Report title
+            <input
+              autoFocus
+              required
+              minLength={3}
+              maxLength={250}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. The game crashes when I open my save"
+            />
+          </label>
+          <label>
+            Player report
+            <textarea
+              required
+              minLength={10}
+              maxLength={30000}
+              rows={5}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Paste the report, observed behavior and any reproduction hints. Keep uncertainties intact."
+            />
+          </label>
+          <div className="form-row">
+            <label>
+              Game
+              <select value={game} onChange={(e) => setGame(e.target.value)}>
+                <option value="mindustry">Mindustry</option>
+                <option value="luanti">Luanti (experimental)</option>
+              </select>
+            </label>
+            <label>
+              Exact target commit
+              <input
+                required
+                pattern="[0-9a-f]{40}"
+                title="Full 40-character Git commit SHA"
+                value={commit}
+                onChange={(e) => setCommit(e.target.value.trim())}
+                placeholder="40-character SHA"
+              />
+            </label>
+          </div>
+          <div className="form-note">
+            <GitBranch size={14} />
+            <span>
+              {game === "mindustry"
+                ? "Anuken / Mindustry"
+                : "luanti-org / luanti"}{" "}
+              · isolated historical checkout
+            </span>
+          </div>
+          {error && (
+            <div role="alert" className="error-banner">
+              {error}
+            </div>
+          )}
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="button secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button className="button primary" disabled={saving}>
+              {saving ? (
+                <LoaderCircle className="spin" size={15} />
+              ) : (
+                <Plus size={15} />
+              )}
+              Create case
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

@@ -191,8 +191,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return case
 
     @app.get("/api/cases/{case_id}/events")
-    async def events(case_id: str, after: int = 0):
+    async def events(case_id: str, after: int = 0, tail: int = 0):
         get_case(case_id)
+        if tail:
+            return store.latest_events(case_id, tail)
         return store.events(case_id, max(0, after))
 
     @app.get("/api/cases/{case_id}/stream")

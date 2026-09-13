@@ -66,6 +66,7 @@ def test_store_events_and_artifact_access(tmp_path):
     events = store.events(a.id)
     assert [e["kind"] for e in events] == ["received", "state"]
     assert store.events(a.id, events[0]["seq"])[0]["seq"] == events[1]["seq"]
+    assert store.latest_events(a.id, 1)[0]["seq"] == events[1]["seq"]
     artifact = store.artifact(a.id, "../../evidence.txt", "original")
     path, _ = store.artifact_path(a.id, artifact)
     assert path.is_relative_to(store.workspace(a.id))

@@ -79,6 +79,14 @@ class Store:
         case.state, case.summary = state, summary
         self.save(case, "state")
 
+    def latest_events(self, case_id: str, count=100) -> list[dict]:
+        with self.connect() as db:
+            rows = db.execute(
+                "SELECT * FROM events WHERE case_id=? ORDER BY seq DESC LIMIT ?",
+                (case_id, min(max(count, 1), 500)),
+            ).fetchall()
+        return [{**dict(r), "data": json.loads(r["data"])} for r in reversed(rows)]
+
     def workspace(self, case_id: str) -> Path:
         if not re.fullmatch(r"[a-zA-Z0-9_-]{1,80}", case_id):
             raise ValueError("Invalid case id")
