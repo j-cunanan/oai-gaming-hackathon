@@ -14,13 +14,15 @@ Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/), Docker with about 6
 uv sync --frozen
 cp .env.example .env
 # Add OPENAI_API_KEY to .env. Keep this file local.
-docker build -t repro-worker:local infra/docker
+docker build --platform linux/amd64 -t repro-worker:local infra/docker
 uv run repro serve
 ```
 
 The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial.
 
 On macOS, Docker may not have file-sharing access to a Documents folder. Set `REPRO_SANDBOX_DIR=/tmp/repro-workspaces` in `.env` in that situation. Case records and evidence stay under `REPRO_DATA_DIR`; only disposable build workspaces use the alternate directory. Temporary builds may need preparation again after a reboot.
+
+Mindustry's pinned SDL desktop dependency does not ship a Linux ARM64 native library. Use the AMD64 image even on Apple Silicon (Docker emulates it); do not count an architecture-related launch failure as a reproduced game bug.
 
 ```bash
 uv run repro ingest report.txt --commit FULL_40_CHARACTER_SHA --title 'Player report'

@@ -54,7 +54,8 @@ class DockerSandbox:
                 shutil.copy2(
                     self.repo / "desktop/build/libs/Mindustry.jar", baseline / "Mindustry.jar"
                 )
-            code, output = await self.exec(list(self.adapter.tests), timeout=600, check=False)
+            preparation_tests = [arg for arg in self.adapter.tests if arg != "--offline"]
+            code, output = await self.exec(preparation_tests, timeout=600, check=False)
             self.store.artifact(self.case.id, "baseline-tests.log", output)
             (self.root / "prepared.json").write_text(
                 json.dumps(
@@ -75,6 +76,8 @@ class DockerSandbox:
                 "docker",
                 "run",
                 "-d",
+                "--platform",
+                self.settings.worker_platform,
                 "--name",
                 self.name,
                 "--network",
