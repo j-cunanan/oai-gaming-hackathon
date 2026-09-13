@@ -170,3 +170,21 @@ class Case(BaseModel):
     elapsed_seconds: float = 0
     owner_evidence: list[str] = Field(default_factory=list)
     benchmark_id: str | None = None
+
+
+REQUIRED_VALIDATION_GATES = {
+    "Regression before patch",
+    "Candidate build",
+    "Existing tests",
+    "Original replay after patch",
+    "Smoke test",
+}
+
+
+def patch_validated(case: Case) -> bool:
+    checks = {check.name: check.status for check in case.checks}
+    return bool(
+        case.patch_artifact
+        and REQUIRED_VALIDATION_GATES.issubset(checks)
+        and all(status == "pass" for status in checks.values())
+    )

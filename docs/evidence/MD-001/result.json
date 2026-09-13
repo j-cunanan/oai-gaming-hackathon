@@ -1,0 +1,338 @@
+{
+  "case_id": "md-weather-terra-001",
+  "benchmark_id": "MD-001",
+  "state": "AWAITING_HUMAN",
+  "summary": "Replay refinement finished. Inspect the recorded reduction and validation checks.",
+  "positive_case": true,
+  "reproduced": true,
+  "successful_replays": 5,
+  "total_replays": 5,
+  "original_actions": 23,
+  "reduced_actions": 8,
+  "top1": true,
+  "top3": true,
+  "top5": true,
+  "reciprocal_rank": 1.0,
+  "ground_truth_files": [
+    "core/src/mindustry/ui/dialogs/CustomRulesDialog.java"
+  ],
+  "predicted_files": [
+    "core/src/mindustry/ui/dialogs/CustomRulesDialog.java"
+  ],
+  "candidate_validated": false,
+  "checks": [
+    {
+      "name": "Regression before patch",
+      "status": "pass",
+      "detail": "Reduced trigger observed in 5/5 clean baseline runs.",
+      "artifact": null
+    },
+    {
+      "name": "Candidate build",
+      "status": "pass",
+      "detail": "Build exit code 0",
+      "artifact": "md-weather-terra-001-d50a73e2452a8f3ed619-candidate-build.log"
+    },
+    {
+      "name": "Existing tests",
+      "status": "fail",
+      "detail": "Test exit code 1. The log contains UnknownHostException; this worker has networking disabled. Inspect the test log.",
+      "artifact": "md-weather-terra-001-23455606d28ce54e4855-candidate-tests.log"
+    },
+    {
+      "name": "Original replay after patch",
+      "status": "pass",
+      "detail": "5/5 reached expected state without the symptom; bug seen 0 times.",
+      "artifact": null
+    },
+    {
+      "name": "Smoke test",
+      "status": "pass",
+      "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+      "artifact": "md-weather-terra-001-d71e8897810c4143b5f3-smoke.png"
+    }
+  ],
+  "usage": {
+    "model_calls": 84,
+    "input_tokens": 1057809,
+    "output_tokens": 11504
+  },
+  "first_reproduced_seconds": 174.22045891702874,
+  "elapsed_seconds": 2640.1223147929995,
+  "limitations": [
+    "Selected visual case, not representative accuracy.",
+    "Independent verifier uses the same model family as the investigator.",
+    "Startup-only smoke coverage.",
+    "Report platform and evaluation platform may differ.",
+    "No negative-case calibration in this single-case result."
+  ],
+  "models_used": [
+    "gpt-5.6-terra"
+  ],
+  "final_validation_replays": [
+    {
+      "seq": 614,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:25:21.213302+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": true,
+        "expected": {
+          "expected_state_reached": true,
+          "symptom_absent": true,
+          "confidence": 0.98,
+          "explanation": "The Custom Rules map-rules menu is visible with the Weather entry selected. Only one weather edit control is shown (the single Edit button), so the reported duplicate weather-edit button is absent."
+        },
+        "screenshot": "md-weather-terra-001-787445f312f91d37d870-post-patch.png"
+      }
+    },
+    {
+      "seq": 626,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:26:11.204085+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": true,
+        "expected": {
+          "expected_state_reached": true,
+          "symptom_absent": true,
+          "confidence": 0.98,
+          "explanation": "The Custom Rules/map rules screen is visible with a search for \u201cweather.\u201d Under Environment, exactly one \u201cWeather\u201d entry is shown, so the duplicate edit-weather button symptom is absent."
+        },
+        "screenshot": "md-weather-terra-001-fbb36f8d9f23b125f43a-post-patch.png"
+      }
+    },
+    {
+      "seq": 638,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:27:02.400796+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": true,
+        "expected": {
+          "expected_state_reached": true,
+          "symptom_absent": true,
+          "confidence": 0.94,
+          "explanation": "The Custom Rules/map rules screen is open with the weather search result visible. Only one Weather entry and one Edit button are shown; no duplicate weather-edit button is visible."
+        },
+        "screenshot": "md-weather-terra-001-787445f312f91d37d870-post-patch.png"
+      }
+    },
+    {
+      "seq": 650,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:27:49.676526+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": true,
+        "expected": {
+          "expected_state_reached": true,
+          "symptom_absent": true,
+          "confidence": 0.98,
+          "explanation": "The Custom Rules map-rules menu is visibly open, with the Weather rule shown. There is one visible Weather entry/button, not two duplicate edit-weather buttons."
+        },
+        "screenshot": "md-weather-terra-001-787445f312f91d37d870-post-patch.png"
+      }
+    },
+    {
+      "seq": 662,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:28:38.470674+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": true,
+        "expected": {
+          "expected_state_reached": true,
+          "symptom_absent": true,
+          "confidence": 0.91,
+          "explanation": "The Custom Rules (map rules) screen is open with a search for \u201cweather.\u201d Under Environment, exactly one Weather entry/button is visible; no duplicate weather-edit button is shown."
+        },
+        "screenshot": "md-weather-terra-001-fbb36f8d9f23b125f43a-post-patch.png"
+      }
+    }
+  ],
+  "state_history": [
+    {
+      "seq": 44,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T16:40:24.411671+00:00",
+      "kind": "state",
+      "data": {
+        "state": "READY",
+        "summary": "Reused the identical audited pre-fix build and prepared dependencies; new clean profile and model run."
+      }
+    },
+    {
+      "seq": 46,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T16:41:21.322650+00:00",
+      "kind": "state",
+      "data": {
+        "state": "TRIAGED",
+        "summary": "Reported duplicate Weather edit button in the map rules menu after scrolling down."
+      }
+    },
+    {
+      "seq": 47,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T16:41:31.895562+00:00",
+      "kind": "state",
+      "data": {
+        "state": "INVESTIGATING",
+        "summary": "Testing the player report in the historical game build."
+      }
+    },
+    {
+      "seq": 104,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T16:44:08.747083+00:00",
+      "kind": "state",
+      "data": {
+        "state": "REPRODUCED",
+        "summary": "Symptom observed and independently checked. Repeating from a clean profile."
+      }
+    },
+    {
+      "seq": 230,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T16:51:50.677059+00:00",
+      "kind": "state",
+      "data": {
+        "state": "MINIMIZING",
+        "summary": "Removing actions only when a fresh replay still demonstrates the symptom."
+      }
+    },
+    {
+      "seq": 380,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:01:26.027366+00:00",
+      "kind": "state",
+      "data": {
+        "state": "REPRO_CONFIRMED",
+        "summary": "Verified in 5/5 replays; 23 \u2192 23 actions."
+      }
+    },
+    {
+      "seq": 381,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:01:26.027585+00:00",
+      "kind": "state",
+      "data": {
+        "state": "LOCALIZING",
+        "summary": "Tracing observed behavior into the pre-fix source."
+      }
+    },
+    {
+      "seq": 390,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:01:50.506186+00:00",
+      "kind": "state",
+      "data": {
+        "state": "TEST_GENERATING",
+        "summary": "Saving the confirmed replay as an executable regression test."
+      }
+    },
+    {
+      "seq": 391,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:01:50.506382+00:00",
+      "kind": "state",
+      "data": {
+        "state": "PATCH_PROPOSING",
+        "summary": "Designing a small candidate diff in the disposable repository."
+      }
+    },
+    {
+      "seq": 395,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:02:12.406045+00:00",
+      "kind": "state",
+      "data": {
+        "state": "VALIDATING",
+        "summary": "Rebuilding offline, running existing tests, then replaying the original trigger."
+      }
+    },
+    {
+      "seq": 430,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:06:21.218041+00:00",
+      "kind": "state",
+      "data": {
+        "state": "CANCELLED",
+        "summary": "Investigation cancelled; all recorded evidence is retained."
+      }
+    },
+    {
+      "seq": 431,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:06:21.368807+00:00",
+      "kind": "state",
+      "data": {
+        "state": "CANCELLED",
+        "summary": "Job cancelled. Recorded evidence is retained."
+      }
+    },
+    {
+      "seq": 432,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:09:25.544232+00:00",
+      "kind": "state",
+      "data": {
+        "state": "MINIMIZING",
+        "summary": "Proposing action deletions and accepting them only after fresh baseline replays."
+      }
+    },
+    {
+      "seq": 465,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:11:55.860631+00:00",
+      "kind": "state",
+      "data": {
+        "state": "CANCELLED",
+        "summary": "Replay refinement cancelled; evidence retained."
+      }
+    },
+    {
+      "seq": 466,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:11:55.993841+00:00",
+      "kind": "state",
+      "data": {
+        "state": "CANCELLED",
+        "summary": "Job cancelled. Recorded evidence is retained."
+      }
+    },
+    {
+      "seq": 467,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:12:26.293297+00:00",
+      "kind": "state",
+      "data": {
+        "state": "MINIMIZING",
+        "summary": "Proposing action deletions and accepting them only after fresh baseline replays."
+      }
+    },
+    {
+      "seq": 602,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:23:01.729354+00:00",
+      "kind": "state",
+      "data": {
+        "state": "VALIDATING",
+        "summary": "Rebuilding offline, running existing tests, then replaying the original trigger."
+      }
+    },
+    {
+      "seq": 663,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:28:48.957158+00:00",
+      "kind": "state",
+      "data": {
+        "state": "AWAITING_HUMAN",
+        "summary": "Replay refinement finished. Inspect the recorded reduction and validation checks."
+      }
+    }
+  ],
+  "development_session": true,
+  "note": "Includes cancelled development passes and replay refinement; not a single uninterrupted end-to-end run."
+}

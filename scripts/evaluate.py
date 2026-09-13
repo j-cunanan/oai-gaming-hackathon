@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 from repro.config import Settings
+from repro.models import patch_validated
 from repro.storage.store import Store
 
 
@@ -32,9 +33,7 @@ def evaluate(case, manifest):
         "reciprocal_rank": 1 / min(ranks) if ranks else 0,
         "ground_truth_files": sorted(ground_truth),
         "predicted_files": predictions,
-        "candidate_validated": bool(
-            case.patch_artifact and case.checks and all(c.status == "pass" for c in case.checks)
-        ),
+        "candidate_validated": patch_validated(case),
         "checks": [c.model_dump() for c in case.checks],
         "usage": case.usage.model_dump(),
         "first_reproduced_seconds": case.first_reproduced_seconds,
@@ -62,7 +61,14 @@ def main():
         raise SystemExit("Refusing to score a different target revision")
     result = evaluate(case, manifest)
     result["artifacts"] = store.artifacts(case.id)
-    result["state_history"] = [e for e in store.events(case.id) if e["kind"] == "state"]
+    events, cursor = [], 0
+    while page := store.events(case.id, cursor):
+        events.extend(page)
+        cursor = page[-1]["seq"]
+    result["state_history"] = [e for e in events if e["kind"] == "state"]
+    result["models_used"] = sorted(
+        {e["data"]["model"] for e in events if e["kind"] == "model_call"}
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(f"Exported evaluator result to {args.output}")

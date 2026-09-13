@@ -25,7 +25,12 @@ class Recorder:
             self.store.artifact(self.case.id, f"{label}.log", log_delta) if log_delta else None
         )
         self.store.save(self.case)
-        return {**observation, "screenshot_artifact": artifact, "log_artifact": log_artifact}
+        return {
+            **observation,
+            "screenshot_artifact": artifact,
+            "log_artifact": log_artifact,
+            "log_delta": log_delta,
+        }
 
     async def observe(self):
         result = self.capture(await self.sandbox.observe())

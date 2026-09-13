@@ -22,11 +22,18 @@ def serve(host: str = "127.0.0.1", port: int = 8000):
     """Start the API and the built dashboard (one worker process)."""
     import uvicorn
 
-    uvicorn.run("repro.api:create_app", factory=True, host=host, port=port)
+    uvicorn.run(
+        "repro.api:create_app", factory=True, host=host, port=port, timeout_graceful_shutdown=5
+    )
 
 
 @app.command()
-def ingest(report: Path, commit: str, game: str = "mindustry", title: str = "Player bug report"):
+def ingest(
+    report: Path,
+    commit: str = typer.Option(..., help="Exact 40-character game revision SHA"),
+    game: str = "mindustry",
+    title: str = "Player bug report",
+):
     """Store a pasted report from a local text file."""
     _, store = context()
     case = Case(
@@ -40,7 +47,10 @@ def ingest(report: Path, commit: str, game: str = "mindustry", title: str = "Pla
 def prepare(case_id: str):
     """Fetch the exact revision and build it in the preparation sandbox."""
     cfg, store = context()
-    asyncio.run(Manager(cfg, store).prepare(store.get(case_id)))
+    case = store.get(case_id)
+    if case.patch_artifact:
+        raise typer.BadParameter("Create a new case to prepare a fresh baseline after patching")
+    asyncio.run(Manager(cfg, store).prepare(case))
     case = store.get(case_id)
     typer.echo(f"{case.state}: {case.summary}")
 
@@ -94,6 +104,15 @@ def validate(case_id: str):
     cfg, store = context()
     asyncio.run(Manager(cfg, store).validate_case(store.get(case_id)))
     typer.echo(store.get(case_id).model_dump_json(indent=2))
+
+
+@app.command()
+def reduce(case_id: str):
+    """Refine a confirmed baseline replay and revalidate an existing candidate if it changes."""
+    cfg, store = context()
+    asyncio.run(Manager(cfg, store).refine_case(store.get(case_id)))
+    result = store.get(case_id)
+    typer.echo(f"{result.state}: {result.summary}")
 
 
 @app.command("import-case")

@@ -1,0 +1,27 @@
+{
+  "network_mode": "none",
+  "privileged": false,
+  "cap_drop": [
+    "ALL"
+  ],
+  "security_opt": [
+    "no-new-privileges"
+  ],
+  "mount_destinations": [
+    "/workspace"
+  ],
+  "environment_names": [
+    "GRADLE_USER_HOME",
+    "PATH",
+    "JAVA_HOME",
+    "LANG",
+    "LANGUAGE",
+    "LC_ALL",
+    "JAVA_VERSION",
+    "DEBIAN_FRONTEND",
+    "DISPLAY",
+    "XAUTHORITY",
+    "LIBGL_ALWAYS_SOFTWARE",
+    "ALSOFT_DRIVERS"
+  ]
+}

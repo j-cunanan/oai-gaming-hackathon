@@ -1,0 +1,23 @@
+{
+  "root_cause": "CustomRulesDialog.setupMain() explicitly creates the same `@rules.weather` button twice: once in the `environment` category and again in the subsequent `light` category. Both use the identical search predicate and invoke `weatherDialog`, so filtering with \"weather\" deterministically renders two Weather edit controls in separate category results. The replay's clicks on Environment then Lighting match these two construction sites.",
+  "subsystem": "Editor map-information Custom Rules UI (shared CustomRulesDialog rule-list construction)",
+  "candidates": [
+    {
+      "path": "core/src/mindustry/ui/dialogs/CustomRulesDialog.java",
+      "symbol": "CustomRulesDialog.setupMain()",
+      "score": 0.99,
+      "evidence": [
+        "Lines 236-238 add `current.button(\"@rules.weather\", this::weatherDialog)` when the localized Weather label matches `ruleSearch`; at that point `current` is the `environment` category created at line 221.",
+        "Lines 240-256 create the `light` category and then repeat the same predicate and the same `@rules.weather` / `this::weatherDialog` button construction at lines 254-256.",
+        "The common predicate is true for the replay's search text `weather`, which directly accounts for the Environment and Lighting Weather results described by the replay.",
+        "`setupMain()` clears `main` at line 143 before rebuilding categories, indicating this is not stale scroll-pane content; the duplicate is authored during one rebuild."
+      ],
+      "reasoning": "This is the direct render path for the reported map rules menu. Two independently added controls share the same label and handler, matching both the observed duplicate and the deterministic filtered replay."
+    }
+  ],
+  "limitations": [
+    "Source inspection establishes the duplicate construction path but does not independently execute the supplied replay or inspect its screenshots.",
+    "The supplied evidence does not establish whether the unfiltered scrolled presentation is visibly duplicated at every UI scale/language; however, both source sites are unconditional with respect to platform and are independently gated only by localized search matching.",
+    "This localization does not determine why the second placement was introduced or prescribe a future fix."
+  ]
+}

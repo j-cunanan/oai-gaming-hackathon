@@ -1,0 +1,94 @@
+version: 1
+game: mindustry
+commit: a5c178ae5abcc630613c233e0afbb361021d3828
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 255
+  y: 336
+  keys: []
+  text: ''
+  seconds: 2.0
+  scroll_y: 0
+  button: left
+  semantic: Open Editor from main menu
+- action: double_click
+  x: 430
+  y: 550
+  keys: []
+  text: ''
+  seconds: 3.0
+  scroll_y: 0
+  button: left
+  semantic: Open built-in Glacier map in editor
+- action: click
+  x: 491
+  y: 501
+  keys: []
+  text: ''
+  seconds: 4.0
+  scroll_y: 0
+  button: left
+  semantic: Open selected map in editor
+- action: click
+  x: 34
+  y: 52
+  keys: []
+  text: ''
+  seconds: 1.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor menu
+- action: click
+  x: 739
+  y: 185
+  keys: []
+  text: ''
+  seconds: 2.0
+  scroll_y: 0
+  button: left
+  semantic: Open map information and rules
+- action: click
+  x: 530
+  y: 425
+  keys: []
+  text: ''
+  seconds: 2.0
+  scroll_y: 0
+  button: left
+  semantic: Open map rules
+- action: click
+  x: 616
+  y: 92
+  keys: []
+  text: ''
+  seconds: 0.2
+  scroll_y: 0
+  button: left
+  semantic: Focus custom-rules search
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: weather
+  seconds: 2.0
+  scroll_y: 0
+  button: left
+  semantic: Filter custom rules to Weather
+oracle:
+  kind: visual
+  description: The reporter states that the button used to edit weather appears twice
+    in the map rules menu.
+  log_pattern: null
+successful_runs: 5
+total_runs: 5
+original_actions: 23
+deterministic: true
+evidence:
+- md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png
+- md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png
+- md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png
+- md-weather-terra-001-b7f6a84a039ab31092e3-reduced-confirmation.png
+- md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png
