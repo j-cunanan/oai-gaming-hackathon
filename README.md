@@ -15,10 +15,13 @@ uv sync --frozen
 cp .env.example .env
 # Add OPENAI_API_KEY to .env. Keep this file local.
 docker build --platform linux/amd64 -t repro-worker:local infra/docker
+cd apps/web && npm ci && npm run build && cd ../..
 uv run repro serve
 ```
 
 The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial.
+
+The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
 On macOS, Docker may not have file-sharing access to a Documents folder. Set `REPRO_SANDBOX_DIR=/tmp/repro-workspaces` in `.env` in that situation. Case records and evidence stay under `REPRO_DATA_DIR`; only disposable build workspaces use the alternate directory. Temporary builds may need preparation again after a reboot.
 

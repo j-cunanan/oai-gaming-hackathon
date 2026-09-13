@@ -14,5 +14,6 @@ apps/web/dist/
 *.egg-info/
 .DS_Store
 *.log
+*.tsbuildinfo
 benchmarks/results/*
 !benchmarks/results/.gitkeep
