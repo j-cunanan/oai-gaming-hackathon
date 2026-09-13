@@ -1,0 +1,83 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+No Android SDK found. Skipping Android module.
+Local Arc not found. Cloning https://github.com/Anuken/Arc to a directory next to Mindustry is highly recommended, as jitpack is unreliable.
+
+> Configure project :
+Compiling with build: 'custom build'
+
+> Task :annotations:clearCache
+> Task :annotations:compileJava UP-TO-DATE
+> Task :core:clearCache
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :annotations:processResources UP-TO-DATE
+> Task :annotations:classes UP-TO-DATE
+> Task :annotations:jar UP-TO-DATE
+> Task :core:kaptGenerateStubsKotlin SKIPPED
+> Task :core:kaptKotlin UP-TO-DATE
+> Task :core:compileKotlin SKIPPED
+> Task :core:preGen UP-TO-DATE
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :tests:clearCache
+> Task :tests:compileJava NO-SOURCE
+> Task :tests:processResources NO-SOURCE
+> Task :tests:classes UP-TO-DATE
+> Task :tests:compileTestJava UP-TO-DATE
+> Task :tests:processTestResources UP-TO-DATE
+> Task :tests:testClasses UP-TO-DATE
+
+> Task :tests:test
+
+ModTestAllure > begin() FAILED
+    org.opentest4j.AssertionFailedError
+        at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
+        at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
+        at app//arc.util.Http$HttpRequest.block(Http.java:316)
+        at app//GenericModTest.grabMod(GenericModTest.java:16)
+        at app//ModTestAllure.begin(ModTestAllure.java:22)
+
+        Caused by:
+        org.opentest4j.AssertionFailedError
+            at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
+            at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
+            at app//arc.util.Http$HttpRequest.block(Http.java:313)
+            ... 2 more
+
+            Caused by:
+            java.net.UnknownHostException: github.com
+                at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
+                at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+                at java.base/java.net.Socket.connect(Socket.java:633)
+                at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304)
+                at java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:178)
+                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:533)
+                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:638)
+                at java.base/sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:267)
+                at java.base/sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:381)
+                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:196)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1262)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1148)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1077)
+                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:181)
+                at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:142)
+                at arc.util.Http$HttpRequest.block(Http.java:294)
+                ... 2 more
+
+1 test completed, 1 failed
+
+> Task :tests:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tests:test'.
+> There were failing tests. See the report at: file:///workspace/repo/tests/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 22s
+12 actionable tasks: 4 executed, 8 up-to-date

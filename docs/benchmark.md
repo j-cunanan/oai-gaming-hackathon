@@ -17,10 +17,10 @@ The pre-fix source is `a5c178ae5abcc630613c233e0afbb361021d3828`. The evaluator 
 ## Scoring requirements
 
 - Verification requires runtime evidence and independent repeated checks. A source-code match is not reproduction.
-- Action reduction is bounded delta debugging, followed by fresh confirmation. Do not call it globally minimal.
+- Action reduction combines a deletion-only proposal and bounded delta debugging, followed by fresh confirmation. Do not call it globally minimal.
 - Localization compares ranked exact file paths to evaluator ground truth only after investigation.
 - A replay regression should observe the symptom on the retained pre-fix build and demonstrate its absence in the correct target state on the candidate build.
-- A validated candidate requires every recorded gate to pass. Failed/not-run checks stay visible.
+- A validated candidate requires all five required gates to exist and pass. Failed/not-run checks stay visible, including tests blocked by offline networking.
 - A clean launch smoke check is narrower than representative gameplay smoke testing.
 - Include negative/non-bug cases before reporting verification accuracy.
 

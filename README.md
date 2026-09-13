@@ -33,6 +33,7 @@ uv run repro prepare CASE_ID
 uv run repro investigate CASE_ID
 uv run repro replay CASE_ID
 uv run repro replay CASE_ID --regression  # exit 1 when the known bug is observed
+uv run repro reduce CASE_ID  # refine the baseline replay; revalidate a candidate if it changes
 uv run repro validate CASE_ID
 uv run repro report CASE_ID --output investigation.md
 ```
@@ -53,6 +54,8 @@ uv run repro report CASE_ID --output investigation.md
 Mindustry is the primary implementation target. The Luanti adapter is experimental and has not established cross-game performance. Build dependencies and startup behavior vary by historical revision. Visual judgments are model-based, even though verification calls are separate from the investigator; they are not a ground-truth oracle.
 
 Uploads are retained and hashed, but automatic video normalization, save installation and attachment-driven investigation are not implemented. Network/multiplayer experiments, distributed workers, automatic upstream PR publication and reliable ownership inference without CODEOWNERS remain future work. Smoke testing currently checks a clean desktop launch, not broad gameplay coverage. Bounded action reduction is not a proof of global minimality.
+
+Some upstream tests perform network requests at runtime even with Gradle's `--offline` flag. Those tests fail in the isolated worker and remain failed validation gates; the runner does not silently skip them or enable network access to make them pass.
 
 No benchmark success rate is implied by unit tests or mock observations. See [benchmark protocol](docs/benchmark.md) for the evidence boundaries and [development notes](docs/architecture.md) for extension points.
 

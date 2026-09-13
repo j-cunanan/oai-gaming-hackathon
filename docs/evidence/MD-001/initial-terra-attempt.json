@@ -1,0 +1,332 @@
+{
+  "state": "CANCELLED",
+  "model": "gpt-5.6-terra",
+  "usage": {
+    "model_calls": 54,
+    "input_tokens": 984291,
+    "output_tokens": 6133
+  },
+  "reproduction": {
+    "version": 1,
+    "game": "mindustry",
+    "commit": "a5c178ae5abcc630613c233e0afbb361021d3828",
+    "resolution": [
+      1280,
+      720
+    ],
+    "steps": [
+      {
+        "action": "click",
+        "x": 255,
+        "y": 336,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open Editor from main menu"
+      },
+      {
+        "action": "click",
+        "x": 646,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Create a new map for editor context"
+      },
+      {
+        "action": "click",
+        "x": 700,
+        "y": 350,
+        "keys": [],
+        "text": "WeatherTest",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Name new test map"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 351,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus map-name entry"
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "tab"
+        ],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Advance focus to map-name field"
+      },
+      {
+        "action": "click",
+        "x": 577,
+        "y": 427,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Cancel map creation"
+      },
+      {
+        "action": "double_click",
+        "x": 430,
+        "y": 550,
+        "keys": [],
+        "text": "",
+        "seconds": 3.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open built-in Glacier map in editor"
+      },
+      {
+        "action": "click",
+        "x": 491,
+        "y": 501,
+        "keys": [],
+        "text": "",
+        "seconds": 4.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open selected map in editor"
+      },
+      {
+        "action": "click",
+        "x": 34,
+        "y": 52,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open editor menu"
+      },
+      {
+        "action": "click",
+        "x": 739,
+        "y": 185,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open map information and rules"
+      },
+      {
+        "action": "click",
+        "x": 530,
+        "y": 425,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open map rules"
+      },
+      {
+        "action": "move",
+        "x": 774,
+        "y": 552,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Position over rules scroll pane"
+      },
+      {
+        "action": "scroll",
+        "x": 775,
+        "y": 553,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": -18,
+        "button": "left",
+        "semantic": "Scroll downward through map rules"
+      },
+      {
+        "action": "scroll",
+        "x": 777,
+        "y": 558,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": -18,
+        "button": "left",
+        "semantic": "Continue scrolling downward to weather rules"
+      },
+      {
+        "action": "scroll",
+        "x": 774,
+        "y": 548,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": -18,
+        "button": "left",
+        "semantic": "Continue scrolling downward through teams and rules"
+      },
+      {
+        "action": "move",
+        "x": 901,
+        "y": 604,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus rules scrollbar thumb"
+      },
+      {
+        "action": "click",
+        "x": 901,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Page down on custom-rules scrollbar"
+      },
+      {
+        "action": "click",
+        "x": 616,
+        "y": 92,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus custom-rules search"
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "weather",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Filter custom rules to Weather"
+      },
+      {
+        "action": "click",
+        "x": 630,
+        "y": 353,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open Weather editor from Environment result"
+      },
+      {
+        "action": "click",
+        "x": 547,
+        "y": 681,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Return to filtered custom rules"
+      },
+      {
+        "action": "click",
+        "x": 630,
+        "y": 453,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open Weather editor from Lighting result"
+      },
+      {
+        "action": "click",
+        "x": 550,
+        "y": 681,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Return to Custom Rules showing duplicate Weather controls"
+      }
+    ],
+    "oracle": {
+      "kind": "visual",
+      "description": "The reporter states that the button used to edit weather appears twice in the map rules menu.",
+      "log_pattern": null
+    },
+    "successful_runs": 5,
+    "total_runs": 5,
+    "original_actions": 23,
+    "deterministic": true,
+    "evidence": [
+      "md-weather-terra-001-ab610305a729470fb68d-screen.png",
+      "md-weather-terra-001-ab610305a729470fb68d-confirmation.png",
+      "md-weather-terra-001-ab610305a729470fb68d-confirmation.png",
+      "md-weather-terra-001-ab610305a729470fb68d-confirmation.png",
+      "md-weather-terra-001-ab610305a729470fb68d-confirmation.png",
+      "md-weather-terra-001-ab610305a729470fb68d-confirmation.png"
+    ]
+  },
+  "checks": [
+    {
+      "name": "Regression before patch",
+      "status": "pass",
+      "detail": "Bug oracle triggered in 5/5 clean runs; the regression therefore fails on the pre-fix build.",
+      "artifact": null
+    },
+    {
+      "name": "Candidate build",
+      "status": "pass",
+      "detail": "Build exit code 0",
+      "artifact": "md-weather-terra-001-11ac9e67724590b88c13-candidate-build.log"
+    },
+    {
+      "name": "Existing tests",
+      "status": "fail",
+      "detail": "Test exit code 1",
+      "artifact": "md-weather-terra-001-6acae813a4fda648f12e-candidate-tests.log"
+    }
+  ],
+  "validation_replays": [
+    {
+      "seq": 422,
+      "case_id": "md-weather-terra-001",
+      "created_at": "2026-09-13T17:05:43.083238+00:00",
+      "kind": "validation_replay",
+      "data": {
+        "fixed": false,
+        "expected": {
+          "expected_state_reached": false,
+          "symptom_absent": false,
+          "confidence": 0.99,
+          "explanation": "The screenshot shows the map editor terrain/brush interface with a Stone palette, not the map rules menu where the weather-edit button should be evaluated. Therefore the required target state is not visible and the duplicate-button symptom cannot be assessed."
+        },
+        "screenshot": "md-weather-terra-001-c15962772abb5f29872a-post-patch.png"
+      }
+    }
+  ],
+  "elapsed_seconds": 1506.8420538339997,
+  "note": "Initial full investigation was stopped after the original replay left the target state on the candidate build. A subsequent generic action-reduction pass uses the retained pre-fix build; original failures stay in this audit."
+}

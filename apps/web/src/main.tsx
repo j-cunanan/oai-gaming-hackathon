@@ -216,6 +216,8 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [patch, setPatch] = useState("");
   const [filter, setFilter] = useState("");
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refreshList = useCallback(async () => {
@@ -229,6 +231,7 @@ function App() {
       setHealth(status);
       setBenchmark(metrics);
       setConnected(true);
+      setError((previous) => (previous === "Failed to fetch" ? "" : previous));
       setSelected((id) => id || list[0]?.id || "");
     } catch (e) {
       setConnected(false);
@@ -243,6 +246,7 @@ function App() {
         api<Event[]>(`/cases/${selected}/events?tail=150`),
         api<Artifact[]>(`/cases/${selected}/artifacts`),
       ]);
+      if (selectedRef.current !== selected) return;
       setCurrent(c);
       setEvents(log);
       setArtifacts(files);
@@ -326,7 +330,8 @@ function App() {
     if (e.kind === "minimization")
       return `Replay reduced from ${e.data.original} to ${e.data.reduced} actions`;
     if (e.kind === "localization") return String(e.data.root_cause);
-    if (e.kind === "patch") return String(e.data.explanation);
+    if (e.kind === "patch" || e.kind === "reduction_proposal")
+      return String(e.data.explanation);
     if (e.kind === "validation_replay")
       return e.data.fixed
         ? "Expected state reached; symptom absent"
@@ -510,7 +515,7 @@ function App() {
               <div className="benchmark-stats">
                 <div>
                   <strong>{benchmark?.attempted ?? 0}</strong>
-                  <span>Cases attempted</span>
+                  <span>Investigation attempts</span>
                 </div>
                 <div>
                   <strong>{benchmark?.confirmed ?? 0}</strong>
@@ -622,13 +627,13 @@ function App() {
                   >
                     {cases.map((c) => (
                       <option key={c.id} value={c.id}>
-                        {c.report.title}
+                        {c.report.title} · {c.id.slice(-8)}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
-              {!current ? (
+              {!current || current.id !== selected ? (
                 <div className="loading">
                   <LoaderCircle className="spin" />
                   Loading investigation…
@@ -870,6 +875,22 @@ function App() {
                           </ol>
                           <p className="muted">
                             Replay restores the retained pre-patch build.
+                          </p>
+                          <button
+                            className="button secondary small"
+                            disabled={
+                              busy ||
+                              running ||
+                              !current.reproduction.deterministic
+                            }
+                            onClick={() => act("reduce")}
+                          >
+                            <RotateCcw size={12} />
+                            Reduce &amp; revalidate
+                          </button>
+                          <p className="muted">
+                            Tests a shorter baseline replay. If it changes,
+                            candidate validation runs again.
                           </p>
                         </section>
                       )}
@@ -1232,6 +1253,7 @@ function App() {
                             disabled={
                               busy ||
                               running ||
+                              current.checks.length < 5 ||
                               current.checks.some((c) => c.status !== "pass")
                             }
                             onClick={() => act("approve")}

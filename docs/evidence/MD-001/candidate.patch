@@ -1,0 +1,15 @@
+diff --git a/core/src/mindustry/ui/dialogs/CustomRulesDialog.java b/core/src/mindustry/ui/dialogs/CustomRulesDialog.java
+index c0a72ac..6ef522c 100644
+--- a/core/src/mindustry/ui/dialogs/CustomRulesDialog.java
++++ b/core/src/mindustry/ui/dialogs/CustomRulesDialog.java
+@@ -251,10 +251,6 @@ public class CustomRulesDialog extends BaseDialog{
+         }
+         check("@rules.lighting.unitlight", b -> rules.unitLight = b, () -> rules.unitLight);
+ 
+-        if(Core.bundle.get("rules.weather").toLowerCase().contains(ruleSearch)){
+-            current.button("@rules.weather", this::weatherDialog).width(250f).left().row();
+-        }
+-
+         category("music");
+ 
+         Boolp allowMusic = () -> !rules.disableMusic;

@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from repro.adapters import ADAPTERS
 from repro.config import Settings
-from repro.models import ACTIVE_STATES, Case, CaseInput, State
+from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
 from repro.orchestration.manager import Manager
 from repro.storage.store import Store
 
@@ -160,13 +160,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(409, "No candidate patch")
         return dispatch(case, manager.validate_case)
 
+    @app.post("/api/cases/{case_id}/reduce", status_code=202)
+    async def reduce_case(case_id: str):
+        case = get_case(case_id)
+        if not case.reproduction or not case.reproduction.deterministic:
+            raise HTTPException(409, "No confirmed reproduction")
+        return dispatch(case, manager.refine_case)
+
     @app.post("/api/cases/{case_id}/approve")
     async def approve(case_id: str):
         case = get_case(case_id)
         idle(case_id)
         if case.state != State.AWAITING_HUMAN or not case.patch_artifact:
             raise HTTPException(409, "No candidate is awaiting review")
-        if not case.checks or any(c.status != "pass" for c in case.checks):
+        if not patch_validated(case):
             raise HTTPException(
                 409, "All recorded validation gates must pass before marking the candidate approved"
             )
@@ -274,10 +281,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {
             "attempted": len(cases),
             "confirmed": sum(bool(c.reproduction and c.reproduction.deterministic) for c in cases),
-            "validated_patches": sum(
-                bool(c.patch_artifact and c.checks and all(v.status == "pass" for v in c.checks))
-                for c in cases
-            ),
+            "validated_patches": sum(patch_validated(c) for c in cases),
+            "distinct_cases": len({c.benchmark_id for c in cases}),
             "cases": [
                 {"id": c.id, "benchmark_id": c.benchmark_id, "state": c.state} for c in cases
             ],

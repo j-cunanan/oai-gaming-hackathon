@@ -14,7 +14,9 @@ async def minimize(
     while current and trials < max_trials:
         chunk_size = math.ceil(len(current) / granularity)
         reduced = False
-        for start in range(0, len(current), chunk_size):
+        # UI experiments often continue inspecting after the first useful observation.
+        # Try trailing chunks first; ordering never changes which deletions need proof.
+        for start in reversed(range(0, len(current), chunk_size)):
             if trials >= max_trials:
                 break
             candidate = current[:start] + current[start + chunk_size :]

@@ -60,6 +60,10 @@ class Model:
         if self.case.usage.model_calls - self.start_calls >= self.settings.max_model_calls:
             raise BudgetExceeded("Model-call budget exhausted; partial evidence is preserved")
 
+    @property
+    def remaining_calls(self):
+        return self.settings.max_model_calls - (self.case.usage.model_calls - self.start_calls)
+
     def record(self, response, purpose):
         usage = response.usage
         self.case.usage.model_calls += 1
@@ -189,6 +193,8 @@ class Model:
                 except (ValueError, KeyError) as exc:
                     result = {"error": str(exc)[:1000]}
                 screenshot = result.pop("screenshot", None)
+                if "logs" in result:
+                    result["logs"] = result.get("log_delta", result["logs"])[-2000:]
                 output = [{"type": "input_text", "text": json.dumps(result)}]
                 if screenshot:
                     output.append(
@@ -201,8 +207,8 @@ class Model:
                 messages.append(
                     {"type": "function_call_output", "call_id": call.call_id, "output": output}
                 )
-            if done():
-                return
+                if done():
+                    return
             # Keep recent visual context; old screenshots remain in the durable artifact store.
             images = []
             for message in messages:

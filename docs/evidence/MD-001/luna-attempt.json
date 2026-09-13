@@ -1,0 +1,11 @@
+{
+  "model": "gpt-5.6-luna",
+  "state": "NOT_REPRODUCED",
+  "summary": "Independent verification did not confirm the investigator's observation. The screenshot directly shows the bottom of the Custom Rules panel with exactly one visible Weather button above the Back and Edit buttons. No second matching Weather row is visible, so the reported duplicate-button symptom is not demonstrated.",
+  "usage": {
+    "model_calls": 15,
+    "input_tokens": 150585,
+    "output_tokens": 1537
+  },
+  "notes": "Initial infrastructure attempts and one non-confirmed UI investigation are retained in the local event log. This attempt is not counted as a reproduced case."
+}

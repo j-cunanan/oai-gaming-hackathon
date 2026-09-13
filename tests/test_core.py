@@ -9,7 +9,7 @@ from repro.api import create_app
 from repro.config import Settings
 from repro.github.history import audit_history, isolate_history, isolate_snapshot
 from repro.minimization.ddmin import minimize
-from repro.models import Action, Case, CaseInput, Check, State
+from repro.models import REQUIRED_VALIDATION_GATES, Action, Case, CaseInput, Check, State
 from repro.process import run
 from repro.storage.store import Store
 
@@ -116,9 +116,24 @@ def test_api_missing_ai_and_review_validation(tmp_path):
         case = app.state.store.get(case_id)
         case.state = State.AWAITING_HUMAN
         case.patch_artifact = "candidate.patch"
+        case.checks = [
+            Check(
+                name="Regression before patch", status="pass", detail="Expected failure confirmed"
+            )
+        ]
+        case.benchmark_id = "MD-test"
+        app.state.store.save(case)
+        assert client.post(f"/api/cases/{case_id}/approve").status_code == 409
+        assert client.get("/api/benchmarks").json()["validated_patches"] == 0
         case.checks = [Check(name="Replay", status="fail", detail="Still broken")]
         app.state.store.save(case)
         assert client.post(f"/api/cases/{case_id}/approve").status_code == 409
+        case.checks = [
+            Check(name=name, status="pass", detail="Verified") for name in REQUIRED_VALIDATION_GATES
+        ]
+        app.state.store.save(case)
+        assert client.get("/api/benchmarks").json()["validated_patches"] == 1
+        assert client.post(f"/api/cases/{case_id}/approve").status_code == 200
         assert "openai_api_key" not in client.get("/api/health").text
         assert (
             client.post(

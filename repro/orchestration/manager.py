@@ -12,6 +12,7 @@ from repro.computer.replay import replay
 from repro.computer.sandbox import DockerSandbox
 from repro.config import Settings
 from repro.minimization.ddmin import minimize
+from repro.minimization.semantic import propose_reduction
 from repro.models import (
     Action,
     BugSpec,
@@ -22,6 +23,7 @@ from repro.models import (
     OracleSpec,
     Reproduction,
     State,
+    patch_validated,
 )
 from repro.storage.store import Store
 
@@ -64,6 +66,14 @@ class Manager:
     def __init__(self, settings: Settings, store: Store):
         self.settings, self.store = settings, store
 
+    def record_failure(self, case: Case, exc: Exception, state=State.FAILED):
+        detail = str(exc) or type(exc).__name__
+        self.store.artifact(case.id, "worker-error.log", detail)
+        summary = detail.splitlines()[0][:250]
+        self.store.transition(
+            case, state, f"{summary} Inspect worker-error.log in Evidence for details."
+        )
+
     async def prepare(self, case: Case):
         sandbox = DockerSandbox(self.settings, self.store, case)
         self.store.transition(
@@ -85,7 +95,7 @@ class Manager:
             )
             raise
         except Exception as exc:
-            self.store.transition(case, State.ENVIRONMENT_UNSUPPORTED, str(exc)[:2000])
+            self.record_failure(case, exc, State.ENVIRONMENT_UNSUPPORTED)
 
     def source_tools(self, sandbox):
         async def read(args):
@@ -136,6 +146,7 @@ class Manager:
     async def validate_case(self, case: Case):
         if not case.patch_artifact or not case.reproduction:
             raise ValueError("A candidate patch and recorded reproduction are required")
+        started = time.monotonic()
         sandbox = DockerSandbox(self.settings, self.store, case)
         model = Model(self.settings, self.store, case)
         recorder = Recorder(self.store, case, sandbox)
@@ -153,10 +164,71 @@ class Manager:
             )
             raise
         except Exception as exc:
-            self.store.transition(case, State.FAILED, str(exc) or type(exc).__name__)
+            self.record_failure(case, exc)
         finally:
             await sandbox.stop()
             await model.close()
+            case.elapsed_seconds += time.monotonic() - started
+            self.store.save(case)
+            self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
+
+    async def refine_case(self, case: Case):
+        if not case.reproduction or not case.reproduction.deterministic:
+            raise ValueError("A confirmed reproduction is required")
+        started = time.monotonic()
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        sandbox.use_baseline = True
+        model = Model(self.settings, self.store, case)
+        recorder = Recorder(self.store, case, sandbox)
+        try:
+            async with asyncio.timeout(self.settings.max_seconds):
+                original_steps = list(case.reproduction.steps)
+                if case.checks:
+                    self.store.artifact(
+                        case.id,
+                        "validation-before-reduction.json",
+                        case.model_dump_json(indent=2),
+                        "application/json",
+                    )
+                await self.reduce_replay(case, sandbox, model, recorder)
+                if case.reproduction.steps != original_steps:
+                    # Previously recorded checks concern a different replay. Retain their audit.
+                    rep = case.reproduction
+                    case.checks = [
+                        Check(
+                            name="Regression before patch",
+                            status="pass",
+                            detail=f"Reduced trigger observed in {rep.successful_runs}/{rep.total_runs} clean baseline runs.",
+                        )
+                    ]
+                    self.store.save(case)
+                    if case.patch_artifact:
+                        sandbox.use_baseline = False
+                        await self.validate(case, sandbox, model, recorder)
+                self.store.transition(
+                    case,
+                    State.AWAITING_HUMAN if case.patch_artifact else State.REPRO_CONFIRMED,
+                    "Replay refinement finished. Inspect the recorded reduction and validation checks.",
+                )
+        except asyncio.CancelledError:
+            self.store.transition(
+                case, State.CANCELLED, "Replay refinement cancelled; evidence retained."
+            )
+            raise
+        except (BudgetExceeded, TimeoutError) as exc:
+            self.store.transition(
+                case,
+                State.INSUFFICIENT_EVIDENCE,
+                str(exc) or "Replay refinement time budget exhausted; evidence retained.",
+            )
+        except Exception as exc:
+            self.record_failure(case, exc)
+        finally:
+            await sandbox.stop()
+            await model.close()
+            case.elapsed_seconds += time.monotonic() - started
+            self.store.save(case)
+            self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
 
     async def investigate(self, case: Case):
         started = time.monotonic()
@@ -178,7 +250,7 @@ class Manager:
                 str(exc) or "Time budget exhausted; partial findings and evidence retained.",
             )
         except Exception as exc:
-            self.store.transition(case, State.FAILED, str(exc)[:2000])
+            self.record_failure(case, exc)
         finally:
             await sandbox.stop()
             if model:
@@ -214,6 +286,7 @@ class Manager:
             case, State.INVESTIGATING, "Testing the player report in the historical game build."
         )
         result = None
+        verified_observation = None
         discovery_actions = []
 
         async def computer(action):
@@ -242,9 +315,23 @@ class Manager:
             return {"recorded": True}
 
         async def finish(args):
-            nonlocal result
+            nonlocal result, verified_observation
             if args.outcome == "observed" and not args.oracle:
                 raise ValueError("An observed symptom requires an independently checkable oracle")
+            if args.outcome == "observed":
+                # The report defines the symptom. An investigator cannot redefine success.
+                args.oracle.description = case.spec.observed_behavior
+                observation = await recorder.observe()
+                proof = await verify(model, args.oracle, observation, launched_ok=True)
+                self.store.save(case, "verification", proof.model_dump())
+                if not proof.observed:
+                    return {
+                        **observation,
+                        "accepted": False,
+                        "verification": proof.model_dump(),
+                        "next_step": "This screenshot did not prove the reported symptom. Continue testing another view or hypothesis, or finish honestly as not_reproduced. Do not mistake the bottom of a viewport for the end of a scrollable panel.",
+                    }
+                verified_observation = proof
             result = args
             return {"recorded": True, "verification": "Independent replay verification follows."}
 
@@ -297,17 +384,7 @@ class Manager:
             )
             self.store.transition(case, state, result.summary)
             return
-        observation = await recorder.observe()
-        verdict = await verify(model, result.oracle, observation, launched_ok=True)
-        self.store.save(case, "verification", verdict.model_dump())
-        if not verdict.observed:
-            self.store.transition(
-                case,
-                State.NOT_REPRODUCED,
-                "Independent verification did not confirm the investigator's observation. "
-                + verdict.explanation,
-            )
-            return
+        verdict = verified_observation
         case.first_reproduced_seconds = time.monotonic() - started
         rep = case.reproduction = Reproduction(
             game=case.report.game,
@@ -339,40 +416,7 @@ class Manager:
                 f"Observed in {rep.successful_runs}/{rep.total_runs} fresh replays. A stable trigger still needs investigation.",
             )
             return
-        self.store.transition(
-            case,
-            State.MINIMIZING,
-            "Removing actions only when a fresh replay still demonstrates the symptom.",
-        )
-
-        async def reproduces(steps):
-            check, _ = await replay(
-                sandbox, recorder, model, steps, rep.oracle, phase="minimization"
-            )
-            return check.observed
-
-        reduced, trials = await minimize(rep.steps, reproduces, max_trials=8)
-        if reduced != rep.steps:
-            successes, evidence = 0, []
-            for _ in range(self.settings.repetitions):
-                check, _ = await replay(
-                    sandbox, recorder, model, reduced, rep.oracle, phase="reduced-confirmation"
-                )
-                successes += int(check.observed)
-                evidence.extend(check.evidence)
-            if successes == self.settings.repetitions:
-                rep.steps, rep.evidence = reduced, evidence
-        self.store.save(
-            case,
-            "minimization",
-            {
-                "original": rep.original_actions,
-                "reduced": len(rep.steps),
-                "trials": trials,
-                "bounded": True,
-            },
-        )
-        self.save_replay(case)
+        await self.reduce_replay(case, sandbox, model, recorder)
         self.store.transition(
             case,
             State.REPRO_CONFIRMED,
@@ -400,10 +444,64 @@ class Manager:
             "Candidate ready for review. "
             + (
                 "All validation gates passed."
-                if case.checks and all(c.status == "pass" for c in case.checks)
+                if patch_validated(case)
                 else "Validation is incomplete or failed; inspect the recorded checks before using the patch."
             ),
         )
+
+    async def reduce_replay(self, case, sandbox, model, recorder):
+        self.store.transition(
+            case,
+            State.MINIMIZING,
+            "Proposing action deletions and accepting them only after fresh baseline replays.",
+        )
+        rep = case.reproduction
+
+        async def reproduces(steps):
+            check, _ = await replay(
+                sandbox, recorder, model, steps, rep.oracle, phase="minimization"
+            )
+            return check.observed
+
+        current, trials = list(rep.steps), 0
+        # Leave room for repeated confirmation, source work and post-patch verification.
+        if len(current) > 1 and model.remaining_calls > 24:
+            try:
+                candidate, proposal = await propose_reduction(model, current, rep.oracle)
+                self.store.save(case, "reduction_proposal", proposal.model_dump())
+                if len(candidate) < len(current):
+                    trials += 1
+                    if await reproduces(candidate):
+                        current = candidate
+            except ValueError as exc:
+                self.store.save(case, "reduction_proposal_rejected", {"reason": str(exc)})
+        trial_budget = min(10 - trials, max(0, model.remaining_calls - 23))
+        reduced, dd_trials = await minimize(current, reproduces, max_trials=trial_budget)
+        trials += dd_trials
+        successes, evidence = 0, []
+        if reduced != rep.steps:
+            for _ in range(self.settings.repetitions):
+                check, _ = await replay(
+                    sandbox, recorder, model, reduced, rep.oracle, phase="reduced-confirmation"
+                )
+                successes += int(check.observed)
+                evidence.extend(check.evidence)
+            if successes == self.settings.repetitions:
+                rep.steps, rep.evidence = reduced, evidence
+                rep.successful_runs = successes
+                rep.total_runs = self.settings.repetitions
+        self.store.save(
+            case,
+            "minimization",
+            {
+                "original": rep.original_actions,
+                "reduced": len(rep.steps),
+                "trials": trials,
+                "candidate_confirmation_successes": successes,
+                "bounded": True,
+            },
+        )
+        self.save_replay(case)
 
     def save_replay(self, case):
         self.store.artifact(
@@ -561,12 +659,18 @@ class Manager:
             Check(
                 name="Existing tests",
                 status="pass" if code == 0 else "fail",
-                detail=f"Test exit code {code}",
+                detail=f"Test exit code {code}"
+                + (
+                    ". The log contains UnknownHostException; this worker has networking disabled. Inspect the test log."
+                    if code and "UnknownHostException" in output
+                    else ""
+                ),
                 artifact=artifact,
             )
         )
         rep = case.reproduction
         fixed, observed_bugs = 0, 0
+        replay_screenshot = None
         for _ in range(self.settings.repetitions):
             verdict, observation = await replay(
                 sandbox, recorder, model, rep.steps, rep.oracle, phase="post-patch"
@@ -591,6 +695,7 @@ class Manager:
                 and observation.get("process", {}).get("running", False)
             )
             fixed += int(valid)
+            replay_screenshot = observation["screenshot_artifact"]
             self.store.save(
                 case,
                 "validation_replay",
@@ -618,6 +723,9 @@ class Manager:
                 artifact=smoke["screenshot_artifact"],
             )
         )
+        # Leave the target-state evidence in the viewport; the launch check has its own artifact.
+        if replay_screenshot:
+            case.latest_screenshot = replay_screenshot
         self.store.save(case)
 
     @staticmethod

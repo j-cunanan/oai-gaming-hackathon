@@ -1,0 +1,7 @@
+{
+  "diff": "--- a/core/src/mindustry/ui/dialogs/CustomRulesDialog.java\n+++ b/core/src/mindustry/ui/dialogs/CustomRulesDialog.java\n@@ -251,10 +251,6 @@\n         }\n         check(\"@rules.lighting.unitlight\", b -> rules.unitLight = b, () -> rules.unitLight);\n \n-        if(Core.bundle.get(\"rules.weather\").toLowerCase().contains(ruleSearch)){\n-            current.button(\"@rules.weather\", this::weatherDialog).width(250f).left().row();\n-        }\n-\n         category(\"music\");\n \n         Boolp allowMusic = () -> !rules.disableMusic;\n",
+  "explanation": "Remove the second Weather button construction in the light category. The environment-category construction remains unchanged, so Weather is rendered once when its label matches the search.",
+  "risks": [
+    "Weather will no longer appear as a light-category search result; this is intentional because it is already owned by the environment category."
+  ]
+}
