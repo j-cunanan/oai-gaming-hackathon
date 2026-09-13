@@ -14,24 +14,18 @@ Compiling with build: 'custom build'
 > Task :annotations:classes UP-TO-DATE
 > Task :annotations:jar UP-TO-DATE
 > Task :core:kaptGenerateStubsKotlin SKIPPED
-> Task :core:preGen UP-TO-DATE
-> Task :core:processResources NO-SOURCE
-> Task :desktop:clearCache
-> Task :desktop:processResources NO-SOURCE
-> Task :core:kaptKotlin
+> Task :core:kaptKotlin UP-TO-DATE
 > Task :core:compileKotlin SKIPPED
-Caught exception: Couldn't poll for events, error = 4
-Error while receiving file changes
-net.rubygrapefruit.platform.NativeException: Couldn't poll for events, error = 4
-	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop0(Native Method)
-	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop(AbstractNativeFileEventFunctions.java:32)
-	at org.gradle.fileevents.internal.AbstractFileEventFunctions$AbstractFileWatcher$1.run(AbstractFileEventFunctions.java:154)
-> Task :core:compileJava
-> Task :core:classes
-> Task :core:jar
+> Task :core:preGen UP-TO-DATE
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :desktop:clearCache
 > Task :desktop:compileJava UP-TO-DATE
+> Task :desktop:processResources NO-SOURCE
 > Task :desktop:dist
 
-BUILD SUCCESSFUL in 41s
-11 actionable tasks: 7 executed, 4 up-to-date
+BUILD SUCCESSFUL in 21s
+11 actionable tasks: 4 executed, 7 up-to-date
 Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.1/userguide/configuration_cache_enabling.html

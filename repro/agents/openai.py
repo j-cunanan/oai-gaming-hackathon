@@ -194,7 +194,7 @@ class Model:
                     result = {"error": str(exc)[:1000]}
                 screenshot = result.pop("screenshot", None)
                 if "logs" in result:
-                    result["logs"] = result.get("log_delta", result["logs"])[-2000:]
+                    result["logs"] = result.pop("log_delta", result["logs"])[-2000:]
                 output = [{"type": "input_text", "text": json.dumps(result)}]
                 if screenshot:
                     output.append(

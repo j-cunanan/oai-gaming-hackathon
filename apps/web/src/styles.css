@@ -636,6 +636,14 @@ time,
   border-color: #43524a;
   color: #92c5a8;
 }
+.phase.failed {
+  color: #e797a3;
+}
+.phase.failed .phase-icon {
+  color: #e797a3;
+  border-color: #914855;
+  background: #38212b;
+}
 .phase-line {
   flex: 1;
   height: 1px;

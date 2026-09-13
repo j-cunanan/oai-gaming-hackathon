@@ -49,6 +49,12 @@ uv run repro report CASE_ID --output investigation.md
 - Independent visual/log/crash oracles, clean-profile replay, bounded action reduction, source localization, replay regressions, offline candidate builds/tests, post-patch replay, and a narrow launch smoke check.
 - Artifact downloads, Markdown reports and local review decisions. Review approval **does not push or merge changes to target-game repositories**.
 
+## Recorded Mindustry run
+
+The [MD-001 evidence package](docs/evidence/MD-001/README.md) contains a real historical run using Terra: the duplicate Weather-button bug reproduced in **5/5 clean runs**, the replay was reduced from **23 to 8 actions**, and **5/5 candidate replays** reached the correct menu with one Weather button. The first-ranked source file matched the later human-fix file. Screenshots, the generated patch, replay, raw logs and unsuccessful attempts are included.
+
+The candidate builds, but full approval remains blocked: 275/276 upstream tests pass, while a mod test that downloads from GitHub fails in the network-disabled worker. The same test fails on the untouched baseline. This selected development session includes runner improvements and refinement passes; it is not representative benchmark accuracy or one uninterrupted autonomous resolution.
+
 ## Current limits
 
 Mindustry is the primary implementation target. The Luanti adapter is experimental and has not established cross-game performance. Build dependencies and startup behavior vary by historical revision. Visual judgments are model-based, even though verification calls are separate from the investigator; they are not a ground-truth oracle.

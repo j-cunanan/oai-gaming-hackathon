@@ -10,7 +10,7 @@ Each attempted case must retain its outcome, including failed preparation and un
 
 ## First candidate
 
-`MD-001` references [Mindustry issue 12647](https://github.com/Anuken/Mindustry/issues/12647), reported September 12, 2026. The report says that two Weather buttons appear in map rules and gives a short UI navigation hint. It requires no save or mods. The report's platform is Windows; the planned evaluation uses Linux, which must be disclosed.
+`MD-001` references [Mindustry issue 12647](https://github.com/Anuken/Mindustry/issues/12647), reported September 12, 2026. The report says that two Weather buttons appear in map rules and gives a short UI navigation hint. It requires no save or mods. The report's platform is Windows; the recorded evaluation used Linux under Docker on Apple Silicon. The [evidence package](evidence/MD-001/README.md) preserves the actual results and failed attempts.
 
 The pre-fix source is `a5c178ae5abcc630613c233e0afbb361021d3828`. The evaluator knows the later human fix; the investigation receives neither that fix nor its changed-file list. This is a selected, simple visual case, not a representative sample of all game bugs.
 

@@ -19,13 +19,13 @@ The implementation uses the Responses API directly to keep the first control loo
 
 Official documentation checked during implementation:
 
-- [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna): the explicitly requested default, supporting Responses, structured output, image input and function calling.
+- [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna): the default choice from the requested models, supporting Responses, structured output, image input and function calling.
 - [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra): the requested alternative, used for the successful historical visual reproduction.
 - [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): Python `responses.parse` with `text_format`.
 - [Function calling](https://developers.openai.com/api/docs/guides/function-calling): preserve response output items, return matching `call_id` outputs, and pass images with tool results.
 - [Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use): retain the execution environment and return fresh screenshots at native coordinates.
 
-`store=False` is set on model calls. Model reasoning items remain only in the active API conversation; the UI receives concise hypotheses, observations and tool events, not private reasoning. Token usage is measured, but dollar estimates are omitted until a dated price table is configured.
+`store=False` is set on model calls. Model reasoning items remain only in the active API conversation; the UI receives concise hypotheses, observations and tool events, not private reasoning. Call/time budgets apply to each dispatched job; a case's displayed usage accumulates across investigation, manual replay, reduction and validation jobs. Token usage is measured, but dollar estimates are omitted until a dated price table is configured.
 
 The investigator cannot redefine the success condition: verification uses the triaged player symptom. A rejected visual confirmation is returned to the investigator as an observation, allowing another experiment within the same budget. The reducer reserves calls for localization and validation. A budget-exhausted validation can be rerun from the saved candidate without regenerating the patch.
 
@@ -35,6 +35,7 @@ Validation requires all five named gates, so an intermediate passing build or re
 
 ## Next engineering work
 
+- Prepare pinned offline fixtures for upstream tests such as `ModTestAllure`, preserving their assertions and the network-disabled validation boundary.
 - Expand the benchmark only after the first historical run has inspectable artifacts.
 - Add save/profile installation and video extraction without modifying original uploads.
 - Validate the Luanti adapter against a pinned engine revision and separately licensed content pack.

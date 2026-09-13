@@ -499,7 +499,7 @@ function App() {
               value={health?.active_jobs.length ? "Running" : "Idle"}
               caption={
                 health
-                  ? `${health.model} · ${health.max_model_calls} call limit`
+                  ? `${health.model} · ${health.max_model_calls} calls per job`
                   : "Connecting to backend"
               }
               icon={<Activity size={18} />}
@@ -685,22 +685,36 @@ function App() {
                       const Icon = phase.icon;
                       const done = activePhase > i;
                       const active = activePhase === i;
+                      const failed =
+                        phase.label === "Validate" &&
+                        (current.checks.some(
+                          (check) => check.status !== "pass",
+                        ) ||
+                          (done && current.checks.length < 5));
                       return (
                         <React.Fragment key={phase.label}>
                           <div
-                            className={`phase ${done ? "done" : ""} ${active ? "active" : ""}`}
+                            className={`phase ${done ? "done" : ""} ${active ? "active" : ""} ${failed ? "failed" : ""}`}
                           >
                             <span className="phase-icon">
-                              {done ? <Check size={13} /> : <Icon size={14} />}
+                              {failed ? (
+                                <X size={13} />
+                              ) : done ? (
+                                <Check size={13} />
+                              ) : (
+                                <Icon size={14} />
+                              )}
                             </span>
-                            <span>{phase.label}</span>
+                            <span>
+                              {failed ? "Checks failed" : phase.label}
+                            </span>
                             {active && running && (
                               <span className="phase-pulse" />
                             )}
                           </div>
                           {i < phases.length - 1 && (
                             <span
-                              className={`phase-line ${done ? "done" : ""}`}
+                              className={`phase-line ${done && !failed ? "done" : ""}`}
                             />
                           )}
                         </React.Fragment>

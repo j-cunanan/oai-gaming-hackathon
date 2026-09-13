@@ -34,10 +34,46 @@ net.rubygrapefruit.platform.NativeException: Couldn't poll for events, error = 4
 	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop0(Native Method)
 	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop(AbstractNativeFileEventFunctions.java:32)
 	at org.gradle.fileevents.internal.AbstractFileEventFunctions$AbstractFileWatcher$1.run(AbstractFileEventFunctions.java:154)
+
 > Task :tests:test
 
+ModTestAllure > begin() FAILED
+    org.opentest4j.AssertionFailedError
+        at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
+        at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
+        at app//arc.util.Http$HttpRequest.block(Http.java:316)
+        at app//GenericModTest.grabMod(GenericModTest.java:16)
+        at app//ModTestAllure.begin(ModTestAllure.java:22)
+
+        Caused by:
+        org.opentest4j.AssertionFailedError
+            at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
+            at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
+            at app//arc.util.Http$HttpRequest.block(Http.java:313)
+            ... 2 more
+
+            Caused by:
+            java.net.UnknownHostException: github.com
+                at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
+                at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+                at java.base/java.net.Socket.connect(Socket.java:633)
+                at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304)
+                at java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:178)
+                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:533)
+                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:638)
+                at java.base/sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:267)
+                at java.base/sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:381)
+                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:196)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1262)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1148)
+                at java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1077)
+                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:181)
+                at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:142)
+                at arc.util.Http$HttpRequest.block(Http.java:294)
+                ... 2 more
+
 ApplicationTests > conveyorBench() STANDARD_OUT
-    1247.444ms to process 24702 items
+    1262.2216ms to process 24702 items
 
 DataAssetTests > noContentAddedWithError() STANDARD_OUT
     Error loading content: badblock.json: java.lang.IllegalArgumentException: Type not found: Bad
@@ -239,41 +275,6 @@ DataAssetTests > noNullFieldsAllowed() STANDARD_OUT
     	... 95 more
 
 
-ModTestAllure > begin() FAILED
-    org.opentest4j.AssertionFailedError
-        at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
-        at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
-        at app//arc.util.Http$HttpRequest.block(Http.java:316)
-        at app//GenericModTest.grabMod(GenericModTest.java:16)
-        at app//ModTestAllure.begin(ModTestAllure.java:22)
-
-        Caused by:
-        org.opentest4j.AssertionFailedError
-            at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:47)
-            at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:140)
-            at app//arc.util.Http$HttpRequest.block(Http.java:313)
-            ... 2 more
-
-            Caused by:
-            java.net.UnknownHostException: github.com
-                at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
-                at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-                at java.base/java.net.Socket.connect(Socket.java:633)
-                at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304)
-                at java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:178)
-                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:533)
-                at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:638)
-                at java.base/sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:267)
-                at java.base/sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:381)
-                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:196)
-                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1262)
-                at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1148)
-                at java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1077)
-                at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:181)
-                at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:142)
-                at arc.util.Http$HttpRequest.block(Http.java:294)
-                ... 2 more
-
 PatcherTests > unknownFieldWarn() STANDARD_OUT
     [ContentPatcher] Unknown field 'frogs' for class 'BasicBulletType'
     [ContentPatcher] Unknown field 'frogs' for class 'UnitType'
@@ -407,5 +408,5 @@ Execution failed for task ':tests:test'.
 * Try:
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
 
-BUILD FAILED in 1m 7s
+BUILD FAILED in 1m 8s
 12 actionable tasks: 4 executed, 8 up-to-date
