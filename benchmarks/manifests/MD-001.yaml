@@ -1,0 +1,19 @@
+id: MD-001
+input:
+  title: Two Weather buttons in map rules
+  body: >-
+    In the map rules menu, the button to edit the weather appears twice.
+    Open the map rules menu and scroll down. No mods. No save file required.
+  game: mindustry
+  target_commit: a5c178ae5abcc630613c233e0afbb361021d3828
+  platform: Windows (reported); Linux (evaluation)
+  build_version: bleeding-edge build 27828
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12647
+  reported_at: '2026-09-12T14:55:31Z'
+  fix_commit: 60cc6a18392c25c241f7835fb104f16c1d475a1b
+  changed_files:
+    - core/src/mindustry/ui/dialogs/CustomRulesDialog.java
+  positive_case: true
+  selection_notes: Simple visual UI case; not a representative benchmark sample.
+  evidence_notes: Short paraphrase of fetched report; no comments or later diagnosis supplied to investigator.
