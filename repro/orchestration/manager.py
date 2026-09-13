@@ -1,0 +1,660 @@
+import asyncio
+import time
+from typing import Literal
+
+import yaml
+from pydantic import BaseModel, Field
+
+from repro.agents.openai import BudgetExceeded, Model, Tool
+from repro.agents.oracle import verify
+from repro.computer.recorder import Recorder
+from repro.computer.replay import replay
+from repro.computer.sandbox import DockerSandbox
+from repro.config import Settings
+from repro.minimization.ddmin import minimize
+from repro.models import (
+    Action,
+    BugSpec,
+    Case,
+    Check,
+    Findings,
+    Hypothesis,
+    OracleSpec,
+    Reproduction,
+    State,
+)
+from repro.storage.store import Store
+
+
+class Empty(BaseModel):
+    pass
+
+
+class ReadSource(BaseModel):
+    path: str
+    start_line: int = Field(ge=1)
+    line_count: int = Field(ge=1, le=240)
+
+
+class SearchSource(BaseModel):
+    query: str = Field(min_length=1, max_length=200)
+
+
+class InvestigationResult(BaseModel):
+    outcome: Literal["observed", "not_reproduced", "insufficient_evidence"]
+    summary: str
+    oracle: OracleSpec | None
+    limitations: list[str]
+
+
+class PatchProposal(BaseModel):
+    diff: str = Field(min_length=20, max_length=60000)
+    explanation: str
+    risks: list[str]
+
+
+class FixedVerdict(BaseModel):
+    expected_state_reached: bool
+    symptom_absent: bool
+    confidence: float = Field(ge=0, le=1)
+    explanation: str
+
+
+class Manager:
+    def __init__(self, settings: Settings, store: Store):
+        self.settings, self.store = settings, store
+
+    async def prepare(self, case: Case):
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        self.store.transition(
+            case,
+            State.ENVIRONMENT_PREPARING,
+            "Fetching the exact revision and preparing build dependencies.",
+        )
+        try:
+            await sandbox.prepare()
+            self.store.transition(
+                case,
+                State.READY,
+                "Build prepared. Investigation uses an isolated desktop with game network access disabled.",
+            )
+        except asyncio.CancelledError:
+            await sandbox.stop()
+            self.store.transition(
+                case, State.CANCELLED, "Preparation cancelled; artifacts retained."
+            )
+            raise
+        except Exception as exc:
+            self.store.transition(case, State.ENVIRONMENT_UNSUPPORTED, str(exc)[:2000])
+
+    def source_tools(self, sandbox):
+        async def read(args):
+            return {
+                "source": await sandbox.read_source(args.path, args.start_line, args.line_count)
+            }
+
+        async def search(args):
+            return {"matches": await sandbox.search(args.query)}
+
+        return [
+            Tool(
+                "read_source",
+                "Read a file in the pre-fix repository with line numbers.",
+                ReadSource,
+                read,
+            ),
+            Tool(
+                "search_source",
+                "Search the pre-fix repository using ripgrep. No internet or future history.",
+                SearchSource,
+                search,
+            ),
+        ]
+
+    async def replay_case(self, case: Case, *, baseline=True):
+        if not case.reproduction:
+            raise ValueError("This case has no recorded reproduction")
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        sandbox.use_baseline = baseline
+        model = Model(self.settings, self.store, case)
+        recorder = Recorder(self.store, case, sandbox)
+        try:
+            async with asyncio.timeout(self.settings.max_seconds):
+                verdict, _ = await replay(
+                    sandbox,
+                    recorder,
+                    model,
+                    case.reproduction.steps,
+                    case.reproduction.oracle,
+                    phase="manual-baseline" if baseline else "manual-candidate",
+                )
+                return verdict
+        finally:
+            await sandbox.stop()
+            await model.close()
+
+    async def validate_case(self, case: Case):
+        if not case.patch_artifact or not case.reproduction:
+            raise ValueError("A candidate patch and recorded reproduction are required")
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        model = Model(self.settings, self.store, case)
+        recorder = Recorder(self.store, case, sandbox)
+        try:
+            case.checks = [c for c in case.checks if c.name == "Regression before patch"]
+            async with asyncio.timeout(self.settings.max_seconds):
+                await sandbox.start()
+                await self.validate(case, sandbox, model, recorder)
+            self.store.transition(
+                case, State.AWAITING_HUMAN, "Validation rerun finished. Inspect all recorded gates."
+            )
+        except asyncio.CancelledError:
+            self.store.transition(
+                case, State.CANCELLED, "Validation cancelled. Partial checks retained."
+            )
+            raise
+        except Exception as exc:
+            self.store.transition(case, State.FAILED, str(exc) or type(exc).__name__)
+        finally:
+            await sandbox.stop()
+            await model.close()
+
+    async def investigate(self, case: Case):
+        started = time.monotonic()
+        model = None
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        try:
+            model = Model(self.settings, self.store, case)
+            async with asyncio.timeout(self.settings.max_seconds):
+                await self._investigate(case, sandbox, model, started)
+        except asyncio.CancelledError:
+            self.store.transition(
+                case, State.CANCELLED, "Investigation cancelled; all recorded evidence is retained."
+            )
+            raise
+        except (BudgetExceeded, TimeoutError) as exc:
+            self.store.transition(
+                case,
+                State.INSUFFICIENT_EVIDENCE,
+                str(exc) or "Time budget exhausted; partial findings and evidence retained.",
+            )
+        except Exception as exc:
+            self.store.transition(case, State.FAILED, str(exc)[:2000])
+        finally:
+            await sandbox.stop()
+            if model:
+                await model.close()
+            case.elapsed_seconds += time.monotonic() - started
+            self.store.save(case)
+            self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
+
+    async def _investigate(self, case: Case, sandbox: DockerSandbox, model: Model, started):
+        if not case.spec:
+            case.spec = await model.structured(
+                BugSpec,
+                "Normalize this player report. Do not diagnose a cause or assume the issue is real. "
+                "List missing artifacts and uncertainties explicitly.\n"
+                + case.report.model_dump_json(),
+                purpose="triage",
+            )
+        self.store.transition(case, State.TRIAGED, case.spec.summary)
+        if not (sandbox.repo / ".git").exists() or not (sandbox.root / "prepared.json").exists():
+            await self.prepare(case)
+            if case.state != State.READY:
+                return
+        recorder = Recorder(self.store, case, sandbox)
+        observation = recorder.capture(await sandbox.reset(), "initial")
+        if not observation.get("process", {}).get("running"):
+            self.store.transition(
+                case,
+                State.ENVIRONMENT_UNSUPPORTED,
+                "The prepared game did not remain running. Inspect the launch log.",
+            )
+            return
+        self.store.transition(
+            case, State.INVESTIGATING, "Testing the player report in the historical game build."
+        )
+        result = None
+        discovery_actions = []
+
+        async def computer(action):
+            if len(discovery_actions) >= self.settings.max_actions:
+                raise BudgetExceeded("Computer action budget exhausted")
+            observation = await recorder.act(action)
+            discovery_actions.append(action)
+            return observation
+
+        async def observe(_):
+            return await recorder.observe()
+
+        async def reset(_):
+            discovery_actions.clear()
+            recorder.previous_log = ""
+            self.store.save(
+                case,
+                "reset",
+                {"summary": "Restoring clean profile and launching a fresh game process."},
+            )
+            return recorder.capture(await sandbox.reset(), "reset")
+
+        async def hypothesis(args):
+            case.hypotheses = [h for h in case.hypotheses if h.id != args.id] + [args]
+            self.store.save(case, "hypothesis", args.model_dump())
+            return {"recorded": True}
+
+        async def finish(args):
+            nonlocal result
+            if args.outcome == "observed" and not args.oracle:
+                raise ValueError("An observed symptom requires an independently checkable oracle")
+            result = args
+            return {"recorded": True, "verification": "Independent replay verification follows."}
+
+        tools = [
+            Tool(
+                "computer",
+                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). Waits settle the UI.",
+                Action,
+                computer,
+            ),
+            Tool("observe", "Get a fresh screenshot, game process state and logs.", Empty, observe),
+            Tool(
+                "reset",
+                "Discard the current experiment and restart from a clean game profile.",
+                Empty,
+                reset,
+            ),
+            Tool(
+                "hypothesis",
+                "Record a concise hypothesis and observable experiment result.",
+                Hypothesis,
+                hypothesis,
+            ),
+            *self.source_tools(sandbox),
+            Tool(
+                "finish",
+                "Conclude this attempt with a concrete oracle, or an honest inability to reproduce.",
+                InvestigationResult,
+                finish,
+            ),
+        ]
+        await model.loop(
+            "Investigate the following report in the running game. First handle any first-run dialogs. "
+            "Use the UI to test hypotheses. Every action will be replayed from a clean profile, including startup dialogs. "
+            "You may search the code to understand navigation, but source matches alone never verify behavior. "
+            "For a visual bug, end with the symptom clearly visible in one screenshot. "
+            "Record at least one hypothesis and its result. Then call finish.\n"
+            + case.spec.model_dump_json(),
+            tools,
+            purpose="game investigation",
+            done=lambda: result is not None,
+            observation=observation,
+            max_turns=min(45, self.settings.max_model_calls),
+        )
+        if result.outcome != "observed":
+            state = (
+                State.NOT_REPRODUCED
+                if result.outcome == "not_reproduced"
+                else State.INSUFFICIENT_EVIDENCE
+            )
+            self.store.transition(case, state, result.summary)
+            return
+        observation = await recorder.observe()
+        verdict = await verify(model, result.oracle, observation, launched_ok=True)
+        self.store.save(case, "verification", verdict.model_dump())
+        if not verdict.observed:
+            self.store.transition(
+                case,
+                State.NOT_REPRODUCED,
+                "Independent verification did not confirm the investigator's observation. "
+                + verdict.explanation,
+            )
+            return
+        case.first_reproduced_seconds = time.monotonic() - started
+        rep = case.reproduction = Reproduction(
+            game=case.report.game,
+            commit=case.report.target_commit,
+            steps=list(discovery_actions),
+            oracle=result.oracle,
+            original_actions=len(discovery_actions),
+            evidence=verdict.evidence,
+        )
+        self.store.transition(
+            case,
+            State.REPRODUCED,
+            "Symptom observed and independently checked. Repeating from a clean profile.",
+        )
+        for _ in range(self.settings.repetitions):
+            check, _ = await replay(
+                sandbox, recorder, model, rep.steps, rep.oracle, phase="confirmation"
+            )
+            rep.total_runs += 1
+            rep.successful_runs += int(check.observed)
+            rep.evidence.extend(check.evidence)
+            self.store.save(case)
+        rep.deterministic = rep.successful_runs == rep.total_runs and rep.total_runs >= 2
+        if not rep.deterministic:
+            self.save_replay(case)
+            self.store.transition(
+                case,
+                State.INSUFFICIENT_EVIDENCE,
+                f"Observed in {rep.successful_runs}/{rep.total_runs} fresh replays. A stable trigger still needs investigation.",
+            )
+            return
+        self.store.transition(
+            case,
+            State.MINIMIZING,
+            "Removing actions only when a fresh replay still demonstrates the symptom.",
+        )
+
+        async def reproduces(steps):
+            check, _ = await replay(
+                sandbox, recorder, model, steps, rep.oracle, phase="minimization"
+            )
+            return check.observed
+
+        reduced, trials = await minimize(rep.steps, reproduces, max_trials=8)
+        if reduced != rep.steps:
+            successes, evidence = 0, []
+            for _ in range(self.settings.repetitions):
+                check, _ = await replay(
+                    sandbox, recorder, model, reduced, rep.oracle, phase="reduced-confirmation"
+                )
+                successes += int(check.observed)
+                evidence.extend(check.evidence)
+            if successes == self.settings.repetitions:
+                rep.steps, rep.evidence = reduced, evidence
+        self.store.save(
+            case,
+            "minimization",
+            {
+                "original": rep.original_actions,
+                "reduced": len(rep.steps),
+                "trials": trials,
+                "bounded": True,
+            },
+        )
+        self.save_replay(case)
+        self.store.transition(
+            case,
+            State.REPRO_CONFIRMED,
+            f"Verified in {rep.successful_runs}/{rep.total_runs} replays; {rep.original_actions} → {len(rep.steps)} actions.",
+        )
+        await self.localize(case, sandbox, model)
+        self.store.transition(
+            case,
+            State.TEST_GENERATING,
+            "Saving the confirmed replay as an executable regression test.",
+        )
+        case.checks = [
+            Check(
+                name="Regression before patch",
+                status="pass",
+                detail=f"Bug oracle triggered in {rep.successful_runs}/{rep.total_runs} clean runs; the regression therefore fails on the pre-fix build.",
+            )
+        ]
+        await self.propose(case, sandbox, model)
+        if case.patch_artifact:
+            await self.validate(case, sandbox, model, recorder)
+        self.store.transition(
+            case,
+            State.AWAITING_HUMAN,
+            "Candidate ready for review. "
+            + (
+                "All validation gates passed."
+                if case.checks and all(c.status == "pass" for c in case.checks)
+                else "Validation is incomplete or failed; inspect the recorded checks before using the patch."
+            ),
+        )
+
+    def save_replay(self, case):
+        self.store.artifact(
+            case.id,
+            "repro.yaml",
+            yaml.safe_dump(case.reproduction.model_dump(mode="json"), sort_keys=False),
+            "application/yaml",
+        )
+
+    async def localize(self, case, sandbox, model):
+        self.store.transition(
+            case, State.LOCALIZING, "Tracing observed behavior into the pre-fix source."
+        )
+        findings = None
+
+        async def finish(args):
+            nonlocal findings
+            for candidate in args.candidates:
+                await sandbox.read_source(candidate.path, 1, 1)
+            findings = args
+            return {"saved": True}
+
+        await model.loop(
+            "Localize this empirically confirmed bug. Inspect actual source before naming files/symbols. "
+            "Use up to five ranked candidates; explain the evidence and limitations. Do not claim the future human fix is known.\n"
+            + case.spec.model_dump_json()
+            + "\nReplay:\n"
+            + case.reproduction.model_dump_json(),
+            [
+                *self.source_tools(sandbox),
+                Tool(
+                    "finish",
+                    "Submit ranked source findings grounded in inspected files.",
+                    Findings,
+                    finish,
+                ),
+            ],
+            purpose="source localization",
+            done=lambda: findings is not None,
+            max_turns=12,
+        )
+        case.findings = findings
+        for path in (".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"):
+            try:
+                contents = await sandbox.read_source(path, 1, 200)
+                case.owner_evidence.append(
+                    f"CODEOWNERS file {path} (rules must be matched to candidate paths):\n{contents}"
+                )
+                break
+            except ValueError:
+                continue
+        if not case.owner_evidence:
+            case.owner_evidence = [
+                "No CODEOWNERS found. Depth-one history is insufficient to infer ownership reliably."
+            ]
+        self.store.save(case, "localization", findings.model_dump())
+
+    async def propose(self, case, sandbox, model):
+        self.store.transition(
+            case,
+            State.PATCH_PROPOSING,
+            "Designing a small candidate diff in the disposable repository.",
+        )
+        proposed = None
+
+        async def apply(args):
+            nonlocal proposed
+            code, output = await sandbox.exec(
+                ["git", "apply", "--check", "-"], input_text=args.diff, check=False
+            )
+            if code:
+                return {
+                    "error": output[-4000:],
+                    "hint": "Return a valid unified diff with exact context and hunk counts.",
+                }
+            await sandbox.exec(["git", "apply", "-"], input_text=args.diff)
+            await sandbox.exec(["git", "add", "-N", "."])
+            _, diff = await sandbox.exec(["git", "diff", "--no-ext-diff", "--binary", "HEAD"])
+            if not diff.strip():
+                return {"error": "Patch contains no source changes"}
+            case.patch_artifact = self.store.artifact(
+                case.id, "candidate.patch", diff, "text/x-diff"
+            )
+            self.store.artifact(
+                case.id, "patch-rationale.json", args.model_dump_json(indent=2), "application/json"
+            )
+            self.store.save(
+                case,
+                "patch",
+                {
+                    "artifact": case.patch_artifact,
+                    "explanation": args.explanation,
+                    "risks": args.risks,
+                },
+            )
+            proposed = args
+            return {
+                "applied": True,
+                "validation": "Build, tests and replay follow. No upstream repository was changed.",
+            }
+
+        await model.loop(
+            "Propose a minimal causal patch for the confirmed bug. A failing gameplay replay regression already exists. "
+            "Inspect exact source lines, then submit a valid unified diff. Do not add diagnostic shortcuts, weaken the oracle, "
+            "disable behavior, or change unrelated files. Do not change Gradle, dependencies or build scripts.\n"
+            + case.findings.model_dump_json()
+            + "\n"
+            + case.spec.model_dump_json(),
+            [
+                *self.source_tools(sandbox),
+                Tool(
+                    "propose_patch",
+                    "Apply a candidate unified diff in this ephemeral repository only.",
+                    PatchProposal,
+                    apply,
+                ),
+            ],
+            purpose="candidate patch",
+            done=lambda: proposed is not None,
+            max_turns=10,
+        )
+
+    async def validate(self, case, sandbox, model, recorder):
+        self.store.transition(
+            case,
+            State.VALIDATING,
+            "Rebuilding offline, running existing tests, then replaying the original trigger.",
+        )
+        await sandbox.rpc("terminate")
+        build = list(sandbox.adapter.build)
+        if case.report.game == "mindustry":
+            build.append("--offline")
+        code, output = await sandbox.exec(build, timeout=900, check=False)
+        artifact = self.store.artifact(case.id, "candidate-build.log", output)
+        case.checks.append(
+            Check(
+                name="Candidate build",
+                status="pass" if code == 0 else "fail",
+                detail=f"Build exit code {code}",
+                artifact=artifact,
+            )
+        )
+        if code:
+            case.checks.extend(
+                [
+                    Check(name=n, status="not_run", detail="Blocked by failed candidate build")
+                    for n in ("Existing tests", "Original replay after patch", "Smoke test")
+                ]
+            )
+            self.store.save(case)
+            return
+        code, output = await sandbox.exec(list(sandbox.adapter.tests), timeout=600, check=False)
+        artifact = self.store.artifact(case.id, "candidate-tests.log", output)
+        case.checks.append(
+            Check(
+                name="Existing tests",
+                status="pass" if code == 0 else "fail",
+                detail=f"Test exit code {code}",
+                artifact=artifact,
+            )
+        )
+        rep = case.reproduction
+        fixed, observed_bugs = 0, 0
+        for _ in range(self.settings.repetitions):
+            verdict, observation = await replay(
+                sandbox, recorder, model, rep.steps, rep.oracle, phase="post-patch"
+            )
+            observed_bugs += int(verdict.observed)
+            expected = await model.structured(
+                FixedVerdict,
+                "Evaluate a candidate fix using this post-replay screenshot. The original symptom was: "
+                + rep.oracle.description
+                + ". Mark expected_state_reached=true ONLY if this screen shows the exact UI/game state needed to test that symptom. "
+                "A different menu, blank screen, loading state or crashed game is inconclusive. "
+                "Mark symptom_absent=true ONLY when the correct target state is visible and the reported defect is absent. "
+                f"Process state: {observation.get('process')}",
+                purpose="post-patch expected-state verification",
+                screenshot=observation["screenshot"],
+            )
+            valid = (
+                not verdict.observed
+                and expected.expected_state_reached
+                and expected.symptom_absent
+                and expected.confidence >= 0.8
+                and observation.get("process", {}).get("running", False)
+            )
+            fixed += int(valid)
+            self.store.save(
+                case,
+                "validation_replay",
+                {
+                    "fixed": valid,
+                    "expected": expected.model_dump(),
+                    "screenshot": observation["screenshot_artifact"],
+                },
+            )
+        case.checks.append(
+            Check(
+                name="Original replay after patch",
+                status="pass" if fixed == self.settings.repetitions else "fail",
+                detail=f"{fixed}/{self.settings.repetitions} reached expected state without the symptom; bug seen {observed_bugs} times.",
+            )
+        )
+        # A separate clean launch is a narrow smoke check, not a gameplay coverage claim.
+        smoke = recorder.capture(await sandbox.reset(), "smoke")
+        running = smoke.get("process", {}).get("running", False)
+        case.checks.append(
+            Check(
+                name="Smoke test",
+                status="pass" if running else "fail",
+                detail="Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+                artifact=smoke["screenshot_artifact"],
+            )
+        )
+        self.store.save(case)
+
+    @staticmethod
+    def report(case: Case) -> str:
+        lines = [
+            f"# REPRO — {case.report.title}",
+            f"\nStatus: **{case.state}**",
+            f"\n{case.summary}",
+            f"\nGame: {case.report.game} · revision `{case.report.target_commit}`",
+            "\n## Player report",
+            case.report.body,
+        ]
+        if case.reproduction:
+            r = case.reproduction
+            lines += [
+                "\n## Reproduction",
+                f"{r.successful_runs}/{r.total_runs} successful clean replays. "
+                f"{r.original_actions} → {len(r.steps)} actions (bounded reduction, not a proof of global minimality).",
+            ]
+            lines += [
+                f"{i + 1}. {a.semantic or a.action} — `{a.model_dump_json()}`"
+                for i, a in enumerate(r.steps)
+            ]
+        if case.findings:
+            lines += ["\n## Source findings", case.findings.root_cause]
+            lines += [
+                f"- `{c.path}` / {c.symbol or 'symbol unknown'} ({c.score:.2f}): {c.reasoning}"
+                for c in case.findings.candidates
+            ]
+            lines += ["\nLimitations: " + "; ".join(case.findings.limitations)]
+        if case.checks:
+            lines += ["\n## Validation"] + [
+                f"- {c.name}: **{c.status}** — {c.detail}" for c in case.checks
+            ]
+        lines += [
+            "\n## Usage",
+            f"{case.usage.model_calls} model calls; {case.usage.input_tokens} input and {case.usage.output_tokens} output tokens.",
+            "\nCandidate changes exist only in a disposable local repository. Human review does not publish or merge them upstream.",
+        ]
+        return "\n\n".join(lines) + "\n"
