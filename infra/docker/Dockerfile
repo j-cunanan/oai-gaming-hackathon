@@ -14,6 +14,6 @@ COPY worker.py /opt/repro/worker.py
 COPY entrypoint.sh /opt/repro/entrypoint.sh
 RUN chmod +x /opt/repro/entrypoint.sh
 USER worker
-ENV DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 ALSOFT_DRIVERS=null
+ENV DISPLAY=:99 XAUTHORITY=/home/worker/.Xauthority LIBGL_ALWAYS_SOFTWARE=1 ALSOFT_DRIVERS=null
 WORKDIR /workspace/repo
 ENTRYPOINT ["/opt/repro/entrypoint.sh"]
