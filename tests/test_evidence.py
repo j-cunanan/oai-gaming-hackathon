@@ -202,7 +202,7 @@ def test_cli(tmp_path, monkeypatch):
     result = CliRunner().invoke(app, ["import-evidence", str(PACKAGE), "--id", "recording"])
     assert result.exit_code == 0, result.output
     assert "Imported recording: recording" in result.output
-    assert "8 actions" in result.output
+    assert "8 replay steps" in result.output
 
 
 def test_failed_directory_swap_restores_previous_import(tmp_path, package, monkeypatch):
