@@ -146,6 +146,7 @@ type Artifact = {
 };
 type Health = {
   model: string;
+  reasoning_effort?: string;
   ai_configured: boolean;
   active_jobs: string[];
   max_model_calls: number;
@@ -684,7 +685,7 @@ function App() {
               value={health?.active_jobs.length ? "Running" : "Idle"}
               caption={
                 health
-                  ? `${health.model} · ${health.max_model_calls} calls per job`
+                  ? `${health.model}${health.reasoning_effort ? ` · ${health.reasoning_effort} reasoning` : ""} · ${health.max_model_calls} calls per job`
                   : "Connecting to backend"
               }
               icon={<Activity size={18} />}

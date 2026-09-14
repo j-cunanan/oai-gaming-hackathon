@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     worker_platform: str = "linux/amd64"
     validation_network: bool = False
     max_model_calls: int = Field(default=60, ge=1, le=300)
+    max_output_tokens: int = Field(default=4000, ge=512, le=32000)
     max_seconds: int = Field(default=1800, ge=30, le=14400)
     repetitions: int = Field(default=5, ge=2, le=20)
     max_actions: int = Field(default=120, ge=1, le=500)

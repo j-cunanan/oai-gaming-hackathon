@@ -92,6 +92,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {
             "status": "ok",
             "model": settings.model,
+            "reasoning_effort": settings.reasoning_effort,
+            "max_output_tokens": settings.max_output_tokens,
             "ai_configured": bool(
                 settings.openai_api_key and settings.openai_api_key.get_secret_value()
             ),
