@@ -53,3 +53,9 @@ To run another attempt, set `REPRO_MODEL=gpt-5.6-terra` in the local `.env`, imp
 The report's platform was Windows; this run used the Linux AMD64 desktop under Docker on Apple Silicon. Mindustry is the external game being tested, not an original REPRO game. Visual judgments use separate calls to the same model family; they are not calibrated ground truth. The source was a depth-one snapshot, so ownership history is intentionally unavailable. Preparation had temporary network access for dependencies; investigation and candidate validation did not. Startup smoke coverage is limited to a clean launch. No target-game repository was changed upstream.
 
 The unsuccessful attempts, cancellations, refinement passes and test failures are part of the result. Do not present this development session as one uninterrupted autonomous resolution or use it to claim an accuracy percentage.
+
+## Validation gate update — 2026-09-14
+
+REPRO now supports `baseline_failed` for a candidate's existing-tests failure set that equals or is a subset of a recorded untouched offline baseline suite run. This is a pre-existing failure, not a clean pass. Both logs and the named failures must remain inspectable; missing, stale or unparseable baseline evidence blocks acceptance. No assertions are skipped or network access enabled to obtain it.
+
+This change does not alter the original **Blocked** offline result above, or the separately recorded network-enabled rerun. The old single-test baseline log is parser fixture evidence, not an automatically imported full-suite baseline record. A new qualifying offline baseline record and case re-validation are required before claiming approval under the new gate semantics. No such rerun is claimed by this update.

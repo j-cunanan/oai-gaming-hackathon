@@ -84,7 +84,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "repetitions": settings.repetitions,
             "max_model_calls": settings.max_model_calls,
             "worker_image": settings.worker_image,
-            "validation_network": settings.validation_network,
+            "validation_network": False,
             "active_jobs": [k for k, v in jobs.items() if not v.done()],
         }
 
@@ -176,7 +176,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(409, "No candidate is awaiting review")
         if not patch_validated(case):
             raise HTTPException(
-                409, "All recorded validation gates must pass before marking the candidate approved"
+                409, "All required gates must pass or have recorded baseline failures before approval"
             )
         store.transition(
             case,

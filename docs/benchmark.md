@@ -1,6 +1,6 @@
 # Historical benchmark protocol
 
-Preparation, evaluation and the configured build/test validation phase may access GitHub. Investigation and gameplay replays cannot. Model-visible data is limited to the player report, supplied evidence, pre-fix source, prepared dependencies and game runtime. Record the validation network policy with each result; a later network-enabled rerun does not overwrite the original offline outcome.
+Preparation and evaluation may access GitHub. Investigation, baseline tests, candidate build/tests and gameplay replays cannot. Model-visible data is limited to the player report, supplied evidence, pre-fix source, prepared dependencies and game runtime. Record the validation network policy with each result; historical network-enabled reruns do not overwrite the original offline outcomes or qualify as offline baseline evidence.
 
 The default checkout is **depth one at the exact pre-fix SHA**. This intentionally trades ownership/history analysis for small, auditable preparation. There is no future history, remote, shared object database or evaluator mount. A separate ancestor-only bundle exporter is available and tested.
 
@@ -20,8 +20,15 @@ The pre-fix source is `a5c178ae5abcc630613c233e0afbb361021d3828`. The evaluator 
 - Action reduction combines a deletion-only proposal and bounded delta debugging, followed by fresh confirmation. Do not call it globally minimal.
 - Localization compares ranked exact file paths to evaluator ground truth only after investigation.
 - A replay regression should observe the symptom on the retained pre-fix build and demonstrate its absence in the correct target state on the candidate build.
-- A validated candidate requires all five required gates to exist and pass. Failed/not-run checks stay visible, including tests blocked by offline networking.
+- A validated candidate requires a patch and all five required gates. Every recorded check must be `pass` or `baseline_failed`; `fail`, `not_run` and `error` block approval. `baseline_failed` is an accepted pre-existing failure, not a clean pass.
+- The existing-tests baseline-differential gate requires an actual recorded offline suite run on untouched source. A nonzero candidate exit is accepted only when its confidently parsed, nonempty failing-test set equals or is a subset of the baseline failing-test set. Any candidate-only failure blocks approval, even if another baseline failure disappears. Matching identifiers do not establish identical exception causes or prove those tests are healthy.
+- Baseline records are cached per case, keyed by commit SHA. The source revision, exact test command, running worker image digest, platform and parser version must match. Validation re-reads and hashes the stored baseline log and checks its parsed identifiers against the record. Missing, incomplete, stale, corrupt or unparseable evidence blocks differential acceptance. No exception-string heuristic, assertion skip or network exception grants acceptance. Both logs and the named failures remain inspectable.
+- The parser currently supports a complete single-task Gradle/JUnit console report with consistent failure counts and a terminal build marker. Truncated, duplicate, interleaved or unsupported reports fail closed. Passing test commands still produce `pass`.
 - A clean launch smoke check is narrower than representative gameplay smoke testing.
 - Include negative/non-bug cases before reporting verification accuracy.
 
 No evaluation results are populated by the unit tests.
+
+`uv run repro prepare CASE_ID --refresh-baseline-tests` forces a new baseline suite run before patching; successful cached records otherwise retain their timestamp. Interrupted and unparseable attempts are explicitly recorded and are not reusable. Gradle baseline and candidate runs use `--rerun-tasks --no-build-cache --console=plain` with the adapter's full offline test command. Preparation compiles test dependencies without running Mindustry assertions online.
+
+Existing patched cases without qualifying baseline records stay blocked on failing tests. Prepare and investigate a fresh case to obtain new evidence; the CLI deliberately cannot run baseline assertions on a patched checkout. Source/image/command identity does not capture every mutable dependency or flaky test condition, so refresh when those conditions change. No time-based cache expiry or cross-case cache is implemented.
