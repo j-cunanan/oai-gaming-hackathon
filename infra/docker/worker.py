@@ -1,4 +1,5 @@
-"""Small JSON RPC executable inside the network-isolated game container."""
+"""Persistent JSON-lines desktop driver inside one disposable game container."""
+
 import base64
 import io
 import json
@@ -11,16 +12,27 @@ from pathlib import Path
 
 RUNTIME = Path("/workspace/runtime")
 RUNTIME.mkdir(exist_ok=True)
+GAME = None
+SCREEN = None
+
+
+def save_state(state):
+    temporary = RUNTIME / "process.json.tmp"
+    temporary.write_text(json.dumps(state))
+    temporary.replace(RUNTIME / "process.json")
 
 
 def screenshot():
+    global SCREEN
     import mss
     from PIL import Image
 
-    with mss.mss() as screen:
-        shot = screen.grab({"top": 0, "left": 0, "width": 1280, "height": 720})
+    if SCREEN is None:
+        SCREEN = mss.mss()
+    shot = SCREEN.grab({"top": 0, "left": 0, "width": 1280, "height": 720})
     output = io.BytesIO()
-    Image.frombytes("RGB", shot.size, shot.rgb).save(output, format="PNG")
+    # Lossless PNG; avoid expensive compression on the emulated worker CPU.
+    Image.frombytes("RGB", shot.size, shot.rgb).save(output, format="PNG", compress_level=1)
     return base64.b64encode(output.getvalue()).decode()
 
 
@@ -28,77 +40,133 @@ def process_state():
     path = RUNTIME / "process.json"
     if not path.exists():
         return {"running": False, "exit_code": None, "launched": False}
-    data = json.loads(path.read_text())
-    if data.get("exit_code") is None:
+    state = json.loads(path.read_text())
+    if GAME is not None and state["pid"] == GAME.pid:
+        state["exit_code"] = GAME.poll()
+        save_state(state)
+    if state.get("exit_code") is None:
         try:
-            os.kill(data["pid"], 0)
-            data["running"] = True
+            os.kill(state["pid"], 0)
+            state["running"] = True
         except ProcessLookupError:
-            data["running"] = False
+            state["running"] = False
     else:
-        data["running"] = False
-    data["launched"] = True
-    return data
+        state["running"] = False
+    state["launched"] = True
+    return state
+
+
+def observe():
+    log = RUNTIME / "game.log"
+    return {
+        "screenshot": screenshot(),
+        "process": process_state(),
+        "logs": log.read_text(errors="replace")[-16000:] if log.exists() else "",
+    }
+
+
+def launch(args):
+    global GAME
+    if process_state()["running"]:
+        raise ValueError("A game is already running; reset or terminate it first")
+    env = os.environ.copy()
+    env["XDG_DATA_HOME"] = "/workspace/runtime/profile/data"
+    env["XDG_CONFIG_HOME"] = "/workspace/runtime/profile/config"
+    with (RUNTIME / "game.log").open("w") as log:
+        GAME = subprocess.Popen(
+            args["argv"],
+            cwd="/workspace/repo",
+            env=env,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+    save_state({"pid": GAME.pid, "exit_code": None, "started_at": time.time()})
+    return {"started": True}
+
+
+def terminate():
+    state = process_state()
+    if state["running"]:
+        try:
+            os.killpg(state["pid"], signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+    if GAME is not None:
+        try:
+            GAME.wait(timeout=1)
+        except subprocess.TimeoutExpired:
+            os.killpg(GAME.pid, signal.SIGKILL)
+            GAME.wait()
+        process_state()
+    return {"terminated": True}
+
+
+def action(args):
+    import pyautogui as pg
+
+    pg.FAILSAFE = False  # Dedicated Xvfb desktop, never the host desktop.
+    pg.PAUSE = 0.12
+    op = args["action"]
+    if op == "click":
+        pg.click(args["x"], args["y"], button=args.get("button", "left"))
+    elif op == "double_click":
+        pg.doubleClick(args["x"], args["y"], interval=0.1)
+    elif op == "keypress":
+        aliases = {"escape": "esc", "return": "enter", "control": "ctrl", "super": "win"}
+        keys = [aliases.get(k.lower(), k.lower()) for k in args["keys"]]
+        if any(k not in pg.KEYBOARD_KEYS for k in keys):
+            raise ValueError("Unknown keyboard key")
+        pg.hotkey(*keys)
+    elif op == "type":
+        pg.write(args["text"], interval=0.01)
+    elif op == "scroll":
+        pg.moveTo(args["x"], args["y"])
+        pg.scroll(args["scroll_y"])
+    elif op == "move":
+        pg.moveTo(args["x"], args["y"])
+    elif op != "wait":
+        raise ValueError("Unsupported action")
+    # Recorded settling time is preserved; throughput improvements remove process overhead.
+    time.sleep(min(max(args.get("seconds", 0.5), 0), 10))
+    return observe()
+
+
+def dispatch(operation, args):
+    if operation == "ping":
+        return {"protocol": 2}
+    if operation == "launch":
+        return launch(args)
+    if operation == "terminate":
+        return terminate()
+    if operation == "observe":
+        return observe()
+    if operation == "action":
+        return action(args)
+    raise ValueError("Unknown operation")
 
 
 def main():
-    operation = sys.argv[1]
-    args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
-    if operation == "launch":
-        (RUNTIME / "process.json").unlink(missing_ok=True)
-        env = os.environ.copy()
-        env["XDG_DATA_HOME"] = "/workspace/runtime/profile/data"
-        env["XDG_CONFIG_HOME"] = "/workspace/runtime/profile/config"
-        with (RUNTIME / "game.log").open("w") as log:
-            proc = subprocess.Popen(args["argv"], cwd="/workspace/repo", env=env,
-                                    stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
-            state = {"pid": proc.pid, "exit_code": None, "started_at": time.time()}
-            (RUNTIME / "process.json").write_text(json.dumps(state))
-            state["exit_code"] = proc.wait()
-            (RUNTIME / "process.json").write_text(json.dumps(state))
-        return
-    if operation == "terminate":
-        state = process_state()
-        if state["running"]:
-            try:
-                os.killpg(state["pid"], signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-        result = {"terminated": True}
-    elif operation == "observe":
-        log = RUNTIME / "game.log"
-        result = {"screenshot": screenshot(), "process": process_state(),
-                  "logs": log.read_text(errors="replace")[-16000:] if log.exists() else ""}
-    elif operation == "action":
-        import pyautogui as pg
-
-        pg.FAILSAFE = False  # Dedicated disposable Xvfb desktop, never the host desktop.
-        pg.PAUSE = 0.12
-        op = args["action"]
-        if op == "click":
-            pg.click(args["x"], args["y"], button=args.get("button", "left"))
-        elif op == "double_click":
-            pg.doubleClick(args["x"], args["y"], interval=0.1)
-        elif op == "keypress":
-            aliases = {"escape": "esc", "return": "enter", "control": "ctrl", "super": "win"}
-            keys = [aliases.get(k.lower(), k.lower()) for k in args["keys"]]
-            if any(k not in pg.KEYBOARD_KEYS for k in keys):
-                raise ValueError("Unknown keyboard key")
-            pg.hotkey(*keys)
-        elif op == "type":
-            pg.write(args["text"], interval=0.01)
-        elif op == "scroll":
-            pg.moveTo(args["x"], args["y"])
-            pg.scroll(args["scroll_y"])
-        elif op == "move":
-            pg.moveTo(args["x"], args["y"])
-        elif op != "wait":
-            raise ValueError("Unsupported action")
-        time.sleep(min(max(args.get("seconds", 0.5), 0), 10))
-        result = {"ok": True}
+    if sys.argv[1] == "serve":
+        try:
+            for line in sys.stdin:
+                try:
+                    request = json.loads(line)
+                    result = dispatch(request["operation"], request.get("args", {}))
+                    response = {"ok": True, "result": result}
+                except Exception as exc:
+                    response = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+                print(json.dumps(response), flush=True)
+        finally:
+            terminate()
     else:
-        raise ValueError("Unknown operation")
-    print(json.dumps(result))
+        operation = sys.argv[1]
+        result = dispatch(operation, json.loads(sys.argv[2]) if len(sys.argv) > 2 else {})
+        if operation == "launch":
+            GAME.wait()
+            process_state()
+        else:
+            print(json.dumps(result))
 
 
 if __name__ == "__main__":

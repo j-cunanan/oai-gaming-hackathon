@@ -151,12 +151,63 @@ class Manager:
         model = Model(self.settings, self.store, case)
         recorder = Recorder(self.store, case, sandbox)
         try:
-            case.checks = [c for c in case.checks if c.name == "Regression before patch"]
+            self.store.artifact(
+                case.id,
+                "validation-before-rerun.json",
+                case.model_dump_json(indent=2),
+                "application/json",
+            )
+            case.checks = []
             async with asyncio.timeout(self.settings.max_seconds):
-                await sandbox.start()
+                self.store.transition(
+                    case,
+                    State.VALIDATING,
+                    "Rechecking the original trigger on fresh baseline runs.",
+                )
+                self.store.save(
+                    case,
+                    "validation_environment",
+                    {
+                        "network": "none",
+                        "phase": "fresh baseline replays",
+                        "worker_image": self.settings.worker_image,
+                    },
+                )
+                rep = case.reproduction
+                rep.successful_runs = rep.total_runs = 0
+                rep.evidence = []
+                rep.deterministic = False
+                sandbox.use_baseline = True
+                for _ in range(self.settings.repetitions):
+                    verdict, _ = await replay(
+                        sandbox,
+                        recorder,
+                        model,
+                        rep.steps,
+                        rep.oracle,
+                        phase="baseline-revalidation",
+                    )
+                    rep.total_runs += 1
+                    rep.successful_runs += int(verdict.observed)
+                    rep.evidence.extend(verdict.evidence)
+                    self.store.save(case)
+                sandbox.use_baseline = False
+                rep.deterministic = rep.successful_runs == rep.total_runs
+                case.checks.append(
+                    Check(
+                        name="Regression before patch",
+                        status="pass" if rep.deterministic else "fail",
+                        detail=f"Trigger observed in {rep.successful_runs}/{rep.total_runs} fresh baseline runs.",
+                    )
+                )
+                self.save_replay(case)
                 await self.validate(case, sandbox, model, recorder)
             self.store.transition(
-                case, State.AWAITING_HUMAN, "Validation rerun finished. Inspect all recorded gates."
+                case,
+                State.AWAITING_HUMAN,
+                "All validation gates passed. Ready for handoff review."
+                if patch_validated(case)
+                else "Validation is incomplete or failed. Inspect the recorded gates.",
             )
         except asyncio.CancelledError:
             self.store.transition(
@@ -628,11 +679,21 @@ class Manager:
         self.store.transition(
             case,
             State.VALIDATING,
-            "Rebuilding offline, running existing tests, then replaying the original trigger.",
+            "Building the candidate and running existing tests, then replaying the original trigger.",
         )
-        await sandbox.rpc("terminate")
+        network = self.settings.validation_network
+        await sandbox.start(network=network)
+        self.store.save(
+            case,
+            "validation_environment",
+            {
+                "network": "bridge" if network else "none",
+                "phase": "build and existing tests",
+                "worker_image": self.settings.worker_image,
+            },
+        )
         build = list(sandbox.adapter.build)
-        if case.report.game == "mindustry":
+        if case.report.game == "mindustry" and not network:
             build.append("--offline")
         code, output = await sandbox.exec(build, timeout=900, check=False)
         artifact = self.store.artifact(case.id, "candidate-build.log", output)
@@ -653,7 +714,8 @@ class Manager:
             )
             self.store.save(case)
             return
-        code, output = await sandbox.exec(list(sandbox.adapter.tests), timeout=600, check=False)
+        tests = [arg for arg in sandbox.adapter.tests if not (network and arg == "--offline")]
+        code, output = await sandbox.exec(tests, timeout=600, check=False)
         artifact = self.store.artifact(case.id, "candidate-tests.log", output)
         case.checks.append(
             Check(
@@ -662,13 +724,16 @@ class Manager:
                 detail=f"Test exit code {code}"
                 + (
                     ". The log contains UnknownHostException; this worker has networking disabled. Inspect the test log."
-                    if code and "UnknownHostException" in output
+                    if code and not network and "UnknownHostException" in output
                     else ""
                 ),
                 artifact=artifact,
             )
         )
         rep = case.reproduction
+        self.store.save(
+            case, "validation_environment", {"network": "none", "phase": "fresh game replays"}
+        )
         fixed, observed_bugs = 0, 0
         replay_screenshot = None
         for _ in range(self.settings.repetitions):

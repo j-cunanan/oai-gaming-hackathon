@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createRoot } from "react-dom/client";
 import {
   Activity,
@@ -216,9 +222,19 @@ function App() {
   const [connected, setConnected] = useState(false);
   const [patch, setPatch] = useState("");
   const [filter, setFilter] = useState("");
+  const [artifactLimit, setArtifactLimit] = useState(50);
+  const [artifactsLoading, setArtifactsLoading] = useState(false);
   const selectedRef = useRef(selected);
   selectedRef.current = selected;
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const eventRevision = useRef(0);
+  const filteredArtifacts = useMemo(
+    () =>
+      artifacts.filter((a) =>
+        a.name.toLowerCase().includes(filter.toLowerCase()),
+      ),
+    [artifacts, filter],
+  );
 
   const refreshList = useCallback(async () => {
     try {
@@ -241,17 +257,28 @@ function App() {
   const refreshCase = useCallback(async () => {
     if (!selected) return;
     try {
-      const [c, log, files] = await Promise.all([
-        api<Case>(`/cases/${selected}`),
-        api<Event[]>(`/cases/${selected}/events?tail=150`),
-        api<Artifact[]>(`/cases/${selected}/artifacts`),
-      ]);
-      if (selectedRef.current !== selected) return;
+      const revision = eventRevision.current;
+      const c = await api<Case>(`/cases/${selected}`);
+      if (
+        selectedRef.current !== selected ||
+        revision !== eventRevision.current
+      )
+        return;
       setCurrent(c);
-      setEvents(log);
-      setArtifacts(files);
     } catch (e) {
       setError((e as Error).message);
+    }
+  }, [selected]);
+  const refreshArtifacts = useCallback(async () => {
+    if (!selected) return;
+    setArtifactsLoading(true);
+    try {
+      const files = await api<Artifact[]>(`/cases/${selected}/artifacts`);
+      if (selectedRef.current === selected) setArtifacts(files);
+    } catch (e) {
+      if (selectedRef.current === selected) setError((e as Error).message);
+    } finally {
+      if (selectedRef.current === selected) setArtifactsLoading(false);
     }
   }, [selected]);
   useEffect(() => {
@@ -264,32 +291,90 @@ function App() {
     setEvents([]);
     setArtifacts([]);
     setPatch("");
-    void refreshCase();
+    setFilter("");
+    setArtifactLimit(50);
+    eventRevision.current = 0;
     if (!selected) return;
-    const source = new EventSource(`/api/cases/${selected}/stream`);
-    source.addEventListener("update", () => {
-      if (refreshTimer.current) clearTimeout(refreshTimer.current);
-      refreshTimer.current = setTimeout(() => {
-        void refreshCase();
-        void refreshList();
-      }, 180);
-    });
-    source.onerror = () => {
-      /* EventSource reconnects with Last-Event-ID. Polling remains a fallback. */
-    };
+    let disposed = false;
+    let source: EventSource | undefined;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    async function connect() {
+      try {
+        const [c, log] = await Promise.all([
+          api<Case>(`/cases/${selected}`),
+          api<Event[]>(`/cases/${selected}/events?tail=150`),
+        ]);
+        if (disposed || selectedRef.current !== selected) return;
+        setCurrent(c);
+        setEvents(log);
+        eventRevision.current = log.at(-1)?.seq ?? 0;
+        source = new EventSource(
+          `/api/cases/${selected}/stream?after=${eventRevision.current}`,
+        );
+        source.addEventListener("update", (message) => {
+          if (disposed || selectedRef.current !== selected) return;
+          const e = JSON.parse((message as MessageEvent).data) as Event;
+          if (e.seq <= eventRevision.current) return;
+          eventRevision.current = e.seq;
+          setEvents((previous) => [...previous, e].slice(-150));
+          if (e.kind === "action") {
+            setCurrent(
+              (previous) =>
+                previous && {
+                  ...previous,
+                  latest_screenshot: String(e.data.screenshot_after),
+                },
+            );
+          }
+          if (e.kind === "state") void refreshList();
+          if (!refreshTimer.current) {
+            refreshTimer.current = setTimeout(() => {
+              refreshTimer.current = null;
+              void refreshCase();
+            }, 500);
+          }
+        });
+        source.onerror = () => {
+          /* EventSource reconnects with Last-Event-ID; the snapshot poll is a fallback. */
+        };
+      } catch (e) {
+        if (!disposed) {
+          setError((e as Error).message);
+          retry = setTimeout(connect, 2000);
+        }
+      }
+    }
+    void connect();
     const fallback = setInterval(refreshCase, 6000);
     return () => {
-      source.close();
+      disposed = true;
+      source?.close();
+      if (retry) clearTimeout(retry);
       clearInterval(fallback);
       if (refreshTimer.current) clearTimeout(refreshTimer.current);
+      refreshTimer.current = null;
     };
   }, [selected, refreshCase, refreshList]);
   useEffect(() => {
+    if (tab !== "evidence" || !selected) return;
+    void refreshArtifacts();
+    const timer = setInterval(refreshArtifacts, 5000);
+    return () => clearInterval(timer);
+  }, [selected, tab, refreshArtifacts]);
+  useEffect(() => {
+    let disposed = false;
     if (current?.patch_artifact)
       fetch(artifactUrl(current, current.patch_artifact))
         .then((r) => r.text())
-        .then(setPatch)
-        .catch(() => setPatch("Could not load the patch."));
+        .then((text) => {
+          if (!disposed) setPatch(text);
+        })
+        .catch(() => {
+          if (!disposed) setPatch("Could not load the patch.");
+        });
+    return () => {
+      disposed = true;
+    };
   }, [current?.patch_artifact]);
 
   async function act(action: string) {
@@ -1035,15 +1120,14 @@ function App() {
                                 aria-label="Filter artifacts"
                                 placeholder="Find an artifact…"
                                 value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
+                                onChange={(e) => {
+                                  setFilter(e.target.value);
+                                  setArtifactLimit(50);
+                                }}
                               />
                             </div>
-                            {artifacts
-                              .filter((a) =>
-                                a.name
-                                  .toLowerCase()
-                                  .includes(filter.toLowerCase()),
-                              )
+                            {filteredArtifacts
+                              .slice(0, artifactLimit)
                               .map((a) => (
                                 <a
                                   className="artifact-row"
@@ -1069,7 +1153,22 @@ function App() {
                                   <ArrowUpRight size={14} />
                                 </a>
                               ))}
-                            {artifacts.length === 0 && (
+                            {filteredArtifacts.length > artifactLimit && (
+                              <button
+                                className="button secondary small"
+                                onClick={() =>
+                                  setArtifactLimit((count) => count + 50)
+                                }
+                              >
+                                Show 50 more (
+                                {filteredArtifacts.length - artifactLimit}{" "}
+                                remaining)
+                              </button>
+                            )}
+                            {artifactsLoading && artifacts.length === 0 && (
+                              <p className="muted">Loading evidence…</p>
+                            )}
+                            {!artifactsLoading && artifacts.length === 0 && (
                               <EmptyPanel
                                 icon={<Layers3 />}
                                 text="Screenshots, logs and replay files appear after an experiment."

@@ -100,7 +100,7 @@ def replay(case_id: str, candidate: bool = False, regression: bool = False):
 
 @app.command()
 def validate(case_id: str):
-    """Rebuild the candidate and rerun its validation gates offline."""
+    """Rebuild and validate; test networking follows REPRO_VALIDATION_NETWORK."""
     cfg, store = context()
     asyncio.run(Manager(cfg, store).validate_case(store.get(case_id)))
     typer.echo(store.get(case_id).model_dump_json(indent=2))

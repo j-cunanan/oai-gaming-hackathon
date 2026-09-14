@@ -9,7 +9,7 @@ The application is a Python package plus a web dashboard. `repro/api.py` exposes
 3. The container is replaced with one using `--network none`, dropped capabilities, no privilege escalation and CPU/memory/PID limits. The model controller runs outside it. The model has only explicitly implemented tools; it has no web search, GitHub connector or access to the evaluator.
 4. Every input produces screenshot/log/process evidence. Resets recreate the worker and profile. The API key and database never enter the game workspace.
 5. Reproduction is verified independently and repeated before source localization and patching. `repro.yaml` is the executable replay regression. Candidate edits occur only in the disposable repository.
-6. Validation separately records compilation, existing tests, expected-state replay and startup smoke results. Local approval is a handoff decision; it cannot publish to an upstream game.
+6. Validation uses a fresh network-enabled container for compilation and existing tests by default, allowing tests to fetch their fixtures. `REPRO_VALIDATION_NETWORK=false` restores offline validation. The network policy is recorded explicitly. Each subsequent game replay recreates the container with networking disabled. Local approval is a handoff decision; it cannot publish to an upstream game.
 
 Treat these containers as a practical local hackathon isolation boundary, not a hardened multi-tenant execution service. Run the API on loopback. Do not expose a Docker-controlling backend directly on the public internet. A production service needs authentication, separate workers and durable job leases.
 
@@ -31,11 +31,19 @@ The investigator cannot redefine the success condition: verification uses the tr
 
 Reduction starts with a model-proposed subsequence of recorded actions. Indices must be unique, ordered and in range; no action can be invented or changed. A clean baseline replay decides whether to accept the proposal, then bounded delta debugging tries trailing chunks first. Any shorter result needs five fresh confirmations by default. `reduce` can refine an existing case using the retained baseline binary, invalidates checks tied to an older replay, and revalidates a candidate when the sequence changes. The proposal receives only the recorded actions and symptom, never the candidate patch or evaluator metadata.
 
-Validation requires all five named gates, so an intermediate passing build or regression cannot be counted as an approved candidate. Upstream tests that require internet access remain failed in the offline worker. The benchmark records attempts and distinct cases separately; cancelled refinement passes and failed replays remain in the event audit.
+Validation requires all five named gates, so an intermediate passing build or regression cannot be counted as an approved candidate. Upstream tests can now download required fixtures during the network-enabled test phase. Offline failures and later reruns remain separate artifacts. The benchmark records attempts and distinct cases separately; cancelled refinement passes and failed replays remain in the event audit.
+
+An explicit validation rerun snapshots the prior case and repeats the baseline gate as well as the candidate gates. It does not inherit an earlier passing baseline when the worker environment may have changed. The previous evidence remains downloadable.
+
+The desktop driver stays alive on one ordered JSON-lines pipe per container. Each action returns its screenshot and process state in the same response; it no longer starts two Python interpreters per input. PNG compression is reduced without changing pixels, and recorded settling times remain unchanged. A timed-out or malformed response closes the pipe to prevent a late reply from being used for another action. Every replay still recreates the container and profile.
+
+Mindustry startup retains the eight-second minimum and additionally waits for its existing load-complete log marker, with a 45-second bound and one second for the final resize/interactive frames. This prevents the first recorded click from arriving while assets still load on an emulated CPU. First-run dialogs are never dismissed automatically. Other adapters retain their existing startup wait until they define a readiness marker.
+
+The dashboard starts its event stream after the latest loaded event, appends incoming events directly and coalesces case snapshot refreshes. Artifact metadata is fetched only while the Evidence tab is open, and its list renders 50 rows at a time. Filtering still searches the complete fetched index.
 
 ## Next engineering work
 
-- Prepare pinned offline fixtures for upstream tests such as `ModTestAllure`, preserving their assertions and the network-disabled validation boundary.
+- Add reproducible offline fixture preparation for environments that cannot permit network access during tests.
 - Expand the benchmark only after the first historical run has inspectable artifacts.
 - Add save/profile installation and video extraction without modifying original uploads.
 - Validate the Luanti adapter against a pinned engine revision and separately licensed content pack.

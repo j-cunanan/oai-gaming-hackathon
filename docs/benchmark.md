@@ -1,6 +1,6 @@
 # Historical benchmark protocol
 
-Preparation and evaluation may access GitHub. The investigation cannot. Model-visible data is limited to the player report, supplied evidence, pre-fix source, prepared dependencies and game runtime.
+Preparation, evaluation and the configured build/test validation phase may access GitHub. Investigation and gameplay replays cannot. Model-visible data is limited to the player report, supplied evidence, pre-fix source, prepared dependencies and game runtime. Record the validation network policy with each result; a later network-enabled rerun does not overwrite the original offline outcome.
 
 The default checkout is **depth one at the exact pre-fix SHA**. This intentionally trades ownership/history analysis for small, auditable preparation. There is no future history, remote, shared object database or evaluator mount. A separate ancestor-only bundle exporter is available and tested.
 
