@@ -1,0 +1,14 @@
+./core/src/mindustry/entities/comp/TargetDummyComp.java:6:import mindustry.world.blocks.defense.TargetDummy.*;
+./core/src/mindustry/entities/comp/TargetDummyComp.java:9:abstract class TargetDummyComp implements Unitc, Healthc{
+./core/src/mindustry/entities/comp/TargetDummyComp.java:21:        if(building instanceof TargetDummyBuild td){
+./core/src/mindustry/mod/ClassMap.java:190:        classes.put("TargetDummy", mindustry.world.blocks.defense.TargetDummy.class);
+./core/src/mindustry/mod/ClassMap.java:191:        classes.put("TargetDummyBuild", mindustry.world.blocks.defense.TargetDummy.TargetDummyBuild.class);
+./core/src/mindustry/content/UnitTypes.java:81:    public static @EntityDef({TargetDummyc.class, Unitc.class}) UnitType dummy;
+./core/src/mindustry/content/Blocks.java:108:    mender, mendProjector, overdriveProjector, overdriveDome, forceProjector, shockMine, targetDummy,
+./core/src/mindustry/content/Blocks.java:6787:        targetDummy = new TargetDummy("target-dummy"){{
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:25:public class TargetDummy extends Block{
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:34:    public TargetDummy(String name){
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:44:        config(FloatSeq.class, (TargetDummyBuild tile, FloatSeq config) -> {
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:66:        addBar("dps", (TargetDummyBuild entity) -> new Bar(
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:80:    public class TargetDummyBuild extends Building implements UnitTetherBlock{
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:112:                    if(unit instanceof TargetDummyUnit td){

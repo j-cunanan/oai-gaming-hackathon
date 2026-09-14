@@ -1,0 +1,6 @@
+./core/assets/bundles/bundle_fil.properties:1671:rules.reactorexplosions = Reactor Explosions
+./core/assets/bundles/bundle.properties:1676:rules.reactorexplosions = Reactor Explosions
+./core/assets/bundles/bundle_et.properties:1671:rules.reactorexplosions = Reactor Explosions
+./core/assets/bundles/bundle_tk.properties:1671:rules.reactorexplosions = Reactor Explosions
+./core/assets/bundles/bundle_nl_BE.properties:1671:rules.reactorexplosions = Reactor Explosions
+./core/assets/bundles/bundle_sv.properties:1671:rules.reactorexplosions = Reactor Explosions

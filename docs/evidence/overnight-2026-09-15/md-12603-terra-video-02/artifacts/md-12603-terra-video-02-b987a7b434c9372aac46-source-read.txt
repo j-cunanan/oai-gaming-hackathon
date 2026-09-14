@@ -1,0 +1,86 @@
+1: package mindustry.game;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.util.*;
+6: import mindustry.maps.*;
+7: 
+8: /** Defines preset rule sets. */
+9: public enum Gamemode{
+10:     survival(rules -> {
+11:         rules.waveTimer = true;
+12:         rules.waves = true;
+13:     }, map -> map.spawns > 0),
+14:     sandbox(rules -> {
+15:         rules.infiniteResources = true;
+16:         rules.allowEditRules = true;
+17:         rules.waves = true;
+18:         rules.waveTimer = false;
+19:     }),
+20:     attack(rules -> {
+21:         rules.attackMode = true;
+22:         rules.waveTimer = true;
+23: 
+24:         rules.waveSpacing = 2f * Time.toMinutes;
+25:         rules.waveTeam.rules().infiniteResources = true;
+26:     }, map -> map.teams.size > 1),
+27:     pvp(rules -> {
+28:         rules.pvp = true;
+29:         rules.enemyCoreBuildRadius = 600f;
+30:         rules.buildCostMultiplier = 1f;
+31:         rules.buildSpeedMultiplier = 1f;
+32:         rules.unitBuildSpeedMultiplier = 2f;
+33:         rules.attackMode = true;
+34:     }, map -> map.teams.size > 1),
+35:     editor(true, rules -> {
+36:         rules.infiniteResources = true;
+37:         rules.instantBuild = true;
+38:         rules.editor = true;
+39:         rules.waves = false;
+40:         rules.waveTimer = false;
+41:     });
+42: 
+43:     private final Cons<Rules> rules;
+44:     private final Boolf<Map> validator;
+45: 
+46:     public final boolean hidden;
+47:     public final static Gamemode[] all = values();
+48: 
+49:     Gamemode(Cons<Rules> rules){
+50:         this(false, rules);
+51:     }
+52: 
+53:     Gamemode(boolean hidden, Cons<Rules> rules){
+54:          this(hidden, rules, m -> true);
+55:     }
+56: 
+57:     Gamemode(Cons<Rules> rules, Boolf<Map> validator){
+58:         this(false, rules, validator);
+59:     }
+60: 
+61:     Gamemode(boolean hidden, Cons<Rules> rules, Boolf<Map> validator){
+62:         this.rules = rules;
+63:         this.hidden = hidden;
+64:         this.validator = validator;
+65:     }
+66: 
+67:     /** Applies this preset to this ruleset. */
+68:     public Rules apply(Rules in){
+69:         rules.get(in);
+70:         return in;
+71:     }
+72: 
+73:     /** @return whether this mode can be played on the specified map. */
+74:     public boolean valid(Map map){
+75:         return validator.get(map);
+76:     }
+77: 
+78:     public String description(){
+79:         return Core.bundle.get("mode." + name() + ".description");
+80:     }
+81: 
+82:     @Override
+83:     public String toString(){
+84:         return Core.bundle.get("mode." + name() + ".name");
+85:     }
+86: }

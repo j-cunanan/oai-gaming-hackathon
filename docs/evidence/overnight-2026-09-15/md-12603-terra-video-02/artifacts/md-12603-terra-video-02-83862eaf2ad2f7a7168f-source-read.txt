@@ -1,0 +1,200 @@
+1: package mindustry.ui.fragments;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.graphics.*;
+6: import arc.graphics.g2d.*;
+7: import arc.input.*;
+8: import arc.math.*;
+9: import arc.scene.*;
+10: import arc.scene.actions.*;
+11: import arc.scene.event.*;
+12: import arc.scene.style.*;
+13: import arc.scene.ui.*;
+14: import arc.scene.ui.ImageButton.*;
+15: import arc.scene.ui.layout.*;
+16: import arc.struct.*;
+17: import arc.util.*;
+18: import mindustry.*;
+19: import mindustry.annotations.Annotations.*;
+20: import mindustry.content.*;
+21: import mindustry.core.GameState.*;
+22: import mindustry.core.*;
+23: import mindustry.ctype.*;
+24: import mindustry.entities.abilities.*;
+25: import mindustry.game.EventType.*;
+26: import mindustry.game.*;
+27: import mindustry.gen.*;
+28: import mindustry.graphics.*;
+29: import mindustry.input.*;
+30: import mindustry.net.Packets.*;
+31: import mindustry.type.*;
+32: import mindustry.ui.*;
+33: import mindustry.world.*;
+34: import mindustry.world.blocks.environment.*;
+35: import mindustry.world.meta.*;
+36: 
+37: import static mindustry.Vars.*;
+38: import static mindustry.gen.Tex.*;
+39: 
+40: public class HudFragment{
+41:     private static final float dsize = 65f, pauseHeight = 36f;
+42: 
+43:     public PlacementFragment blockfrag = new PlacementFragment();
+44:     public CoreItemsDisplay coreItems = new CoreItemsDisplay();
+45:     public boolean shown = true;
+46: 
+47:     private ImageButton flip;
+48: 
+49:     private String hudText = "";
+50:     private boolean showHudText;
+51: 
+52:     private Table lastUnlockTable;
+53:     private Table lastUnlockLayout;
+54:     private long lastToast;
+55:     private float pauseDisableDur;
+56: 
+57:     private Seq<Block> blocksOut = new Seq<>();
+58:     private Table hudLabel;
+59:     private float coreAttackTime;
+60: 
+61:     private static ObjectSet<String> favoriteBlocks = new ObjectSet<>();
+62:     private static String lastFavorited = null;
+63: 
+64:     private void addBlockSelection(Table cont){
+65:         Table blockSelection = new Table();
+66:         var pane = new ScrollPane(blockSelection, Styles.smallPane);
+67:         pane.setFadeScrollBars(false);
+68:         Planet[] last = {state.rules.planet};
+69:         pane.update(() -> {
+70:             if(pane.hasScroll()){
+71:                 Element result = Core.scene.getHoverElement();
+72:                 if(result == null || !result.isDescendantOf(pane)){
+73:                     Core.scene.setScrollFocus(null);
+74:                 }
+75:             }
+76: 
+77:             if(state.rules.planet != last[0]){
+78:                 last[0] = state.rules.planet;
+79:                 rebuildBlockSelection(blockSelection, "");
+80:             }
+81:         });
+82: 
+83:         Table[] configTable = {null};
+84:         Block[] lastBlock = {null};
+85: 
+86:         cont.table(search -> {
+87:             search.image(Icon.zoom).padRight(8);
+88:             search.field("", text -> rebuildBlockSelection(blockSelection, text)).growX()
+89:             .name("editor/search").maxTextLength(maxNameLength).get().setMessageText("@players.search");
+90:         }).growX().pad(-2).padLeft(6f);
+91:         cont.row();
+92:         cont.collapser(t -> {
+93:             configTable[0] = t;
+94:         }, () -> control.input.block != null && control.input.block.editorConfigurable).with(c -> c.setEnforceMinSize(true)).update(col -> {
+95: 
+96:             if(lastBlock[0] != control.input.block){
+97:                 configTable[0].clear();
+98:                 if(control.input.block != null){
+99:                     control.input.block.buildEditorConfig(configTable[0]);
+100:                     col.invalidateHierarchy();
+101:                 }
+102:                 lastBlock[0] = control.input.block;
+103:             }
+104:         }).growX().row();
+105:         cont.add(pane).expandY().top().left();
+106: 
+107:         rebuildBlockSelection(blockSelection, "");
+108:     }
+109: 
+110:     private static void loadFavorites(){
+111:         favoriteBlocks = Core.settings.getJson("editor-block-favorites", ObjectSet.class, String.class, ObjectSet::new);
+112:     }
+113: 
+114:     private static void saveFavorites(){
+115:         Core.settings.putJson("editor-block-favorites", String.class, favoriteBlocks);
+116:     }
+117: 
+118:     private static boolean isFavorite(Block block){
+119:         return favoriteBlocks.contains(block.name);
+120:     }
+121: 
+122:     private static void toggleFavorite(Block block){
+123:         boolean isFav = favoriteBlocks.contains(block.name);
+124:         if(isFav){
+125:             favoriteBlocks.remove(block.name);
+126:             Sounds.uiFavorite.play(0.35f, 0.67f, 0f);
+127:         }else{
+128:             favoriteBlocks.add(block.name);
+129:             lastFavorited = block.name;
+130:             Sounds.uiFavorite.play(0.6f, 2.0f, 0f);
+131:         }
+132:         saveFavorites();
+133:     }
+134: 
+135:     private void rebuildBlockSelection(Table blockSelection, String searchText){
+136:         blockSelection.clear();
+137: 
+138:         blocksOut.clear();
+139:         // Favorites first
+140:         for(Block block : Vars.content.blocks()){
+141:             if(isFavorite(block)){
+142:                 blocksOut.add(block);
+143:             }
+144:         }
+145: 
+146:         for(Block block : Vars.content.blocks()){
+147:             if(!isFavorite(block)){
+148:                 blocksOut.add(block);
+149:             }
+150:         }
+151:         blocksOut.sort((b1, b2) -> {
+152:             // These two block should stay at the top
+153:             if(b1 == Blocks.removeOre || b1 == Blocks.removeWall) return -1;
+154:             if(b2 == Blocks.removeOre || b2 == Blocks.removeWall) return 1;
+155:             int fav = Boolean.compare(isFavorite(b2), isFavorite(b1));
+156:             if(fav != 0) return fav;
+157:             int synth = Boolean.compare(b1.synthetic(), b2.synthetic());
+158:             if(synth != 0) return synth;
+159:             int ore = Boolean.compare(b1 instanceof OverlayFloor && b1 != Blocks.removeOre, b2 instanceof OverlayFloor && b2 != Blocks.removeOre);
+160:             if(ore != 0) return ore;
+161:             return Integer.compare(b1.id, b2.id);
+162:         });
+163: 
+164:         int i = 0;
+165: 
+166:         for(Block block : blocksOut){
+167:             TextureRegion region = block.uiIcon;
+168: 
+169:             if(!Core.atlas.isFound(region)
+170:             || (!block.inEditor && !(block instanceof RemoveWall) && !(block instanceof RemoveOre))
+171:             || !block.isOnPlanet(state.rules.planet)
+172:             || block.buildVisibility == BuildVisibility.debugOnly
+173:             || (!searchText.isEmpty() && !(block == Blocks.removeOre || block == Blocks.removeWall) && !block.localizedName.toLowerCase().contains(searchText.trim().replaceAll(" +", " ").toLowerCase()))
+174:             ) continue;
+175: 
+176:             ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
+177:             button.getStyle().imageUp = new TextureRegionDrawable(region);
+178:             button.clicked(() -> control.input.block = block);
+179:             // Pc input for favorites
+180:             button.clicked(KeyCode.mouseRight, () -> {
+181:                 if(block == Blocks.removeOre || block == Blocks.removeWall) return;
+182:                 toggleFavorite(block);
+183:                 rebuildBlockSelection(blockSelection, searchText);
+184:                 control.input.block = block;
+185:             });
+186:             // Mobile double-click for favorites
+187:             button.addListener(new ClickListener(){
+188:                 @Override
+189:                 public void clicked(InputEvent event, float x, float y){
+190:                     if(mobile && getTapCount() == 2){
+191:                         if(block == Blocks.removeOre || block == Blocks.removeWall) return;
+192:                         toggleFavorite(block);
+193:                         rebuildBlockSelection(blockSelection, searchText);
+194:                         control.input.block = block;
+195:                     }
+196:                 }
+197:             });
+198:             button.resizeImage(8 * 4f);
+199:             button.update(() -> button.setChecked(control.input.block == block));
+200: 

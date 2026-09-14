@@ -1,0 +1,13 @@
+diff --git a/core/src/mindustry/world/blocks/defense/TargetDummy.java b/core/src/mindustry/world/blocks/defense/TargetDummy.java
+index be2cd52..030221f 100644
+--- a/core/src/mindustry/world/blocks/defense/TargetDummy.java
++++ b/core/src/mindustry/world/blocks/defense/TargetDummy.java
+@@ -268,7 +268,7 @@ public class TargetDummy extends Block{
+             write.f(unitArmor);
+             write.f(resetTime);
+             write.f(dummySize);
+-            write.i(unitTeam.id);
++            write.i((unitTeam == null ? team : unitTeam).id);
+         }
+ 
+         @Override

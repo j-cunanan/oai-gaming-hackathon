@@ -1,0 +1,133 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.graphics.g2d.*;
+4: import arc.math.*;
+5: import arc.util.*;
+6: import arc.util.io.*;
+7: import mindustry.ctype.*;
+8: import mindustry.game.*;
+9: import mindustry.gen.*;
+10: import mindustry.graphics.*;
+11: import mindustry.type.*;
+12: import mindustry.world.*;
+13: 
+14: import static mindustry.Vars.*;
+15: 
+16: public class BuildPayload implements Payload{
+17:     public Building build;
+18: 
+19:     public BuildPayload(Block block, Team team){
+20:         this.build = block.newBuilding().create(block, team);
+21:         this.build.tile = emptyTile;
+22:     }
+23: 
+24:     public BuildPayload(Building build){
+25:         this.build = build;
+26:     }
+27: 
+28:     public Block block(){
+29:         return build.block;
+30:     }
+31: 
+32:     public void place(Tile tile){
+33:         place(tile, 0);
+34:     }
+35: 
+36:     public void place(Tile tile, int rotation){
+37:         tile.setBlock(build.block, build.team, rotation, () -> build);
+38:         build.dropped();
+39:     }
+40: 
+41:     @Override
+42:     public boolean contentEquals(Payload other){
+43:         return other instanceof BuildPayload bp && bp.block() == build.block;
+44:     }
+45: 
+46:     @Override
+47:     public UnlockableContent content(){
+48:         return build.block;
+49:     }
+50: 
+51:     @Override
+52:     public void update(@Nullable Unit unitHolder, @Nullable Building buildingHolder){
+53:         if(unitHolder != null && (!build.block.updateInUnits || (!state.rules.unitPayloadUpdate && !build.block.alwaysUpdateInUnits))) return;
+54: 
+55:         build.tile = emptyTile;
+56:         build.updatePayload(unitHolder, buildingHolder);
+57:     }
+58: 
+59:     @Override
+60:     public void destroyed(){
+61:         build.dead = true;
+62:         build.onDestroyed();
+63:     }
+64: 
+65:     @Override
+66:     public ItemStack[] requirements(){
+67:         return build.block.requirements;
+68:     }
+69: 
+70:     @Override
+71:     public float buildTime(){
+72:         return build.block.buildTime;
+73:     }
+74: 
+75:     @Override
+76:     public float x(){
+77:         return build.x;
+78:     }
+79: 
+80:     @Override
+81:     public float y(){
+82:         return build.y;
+83:     }
+84: 
+85:     @Override
+86:     public float size(){
+87:         return build.block.size * tilesize;
+88:     }
+89: 
+90:     @Override
+91:     public void remove(){
+92:         build.remove();
+93:     }
+94: 
+95:     @Override
+96:     public void write(Writes write){
+97:         write.b(payloadBlock);
+98:         write.s(build.block.id);
+99:         write.b(build.version());
+100:         build.writeAll(write);
+101:     }
+102: 
+103:     @Override
+104:     public void set(float x, float y, float rotation){
+105:         build.set(x, y);
+106:     }
+107: 
+108:     @Override
+109:     public void drawShadow(float alpha){
+110:         Drawf.squareShadow(build.x, build.y, build.block.size * tilesize * 1.85f, alpha);
+111:     }
+112: 
+113:     @Override
+114:     public void draw(){
+115:         float prevZ = Draw.z();
+116:         Draw.z(prevZ - 0.001f);
+117:         drawShadow(1f);
+118:         Draw.z(prevZ);
+119:         Draw.zTransform(z ->
+120:             z >= Layer.flyingUnitLow + 1f ? z :
+121:             0.0011f + Math.min(Mathf.clamp((z - prevZ)/100f, -0.0009f, 0.9f) + prevZ, Layer.flyingUnitLow - 1f)
+122:         );
+123:         build.tile = emptyTile;
+124:         build.payloadDraw();
+125:         Draw.zTransform();
+126:         Draw.z(prevZ);
+127:     }
+128: 
+129:     @Override
+130:     public TextureRegion icon(){
+131:         return block().fullIcon;
+132:     }
+133: }

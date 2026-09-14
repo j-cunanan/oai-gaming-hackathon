@@ -1,0 +1,38 @@
+./core/src/mindustry/game/FogControl.java:97:        SaveVersion.addCustomChunk("static-fog-data", this);
+./core/src/mindustry/mod/ContentParser.java:1401:                        TechNode parent = TechTree.all.find(t -> t.content.name.equals(researchName) || t.content.name.equals(currentMod.name + "-" + researchName) || t.content.name.equals(SaveVersion.mapFallback(researchName)));
+./core/src/mindustry/io/MapIO.java:42:            SaveVersion ver = SaveIO.getSaveWriter(version);
+./core/src/mindustry/io/MapIO.java:81:            SaveVersion ver = SaveIO.getSaveWriter(version);
+./core/src/mindustry/io/SaveIO.java:22:    public static final IntMap<SaveVersion> versions = new IntMap<>();
+./core/src/mindustry/io/SaveIO.java:23:    public static final Seq<SaveVersion> versionArray = Seq.with(new Save1(), new Save2(), new Save3(), new Save4(), new Save5(), new Save6(), new Save7(), new Save8(), new Save9(), new Save10(), new Save11(), new Save12(), new Save13());
+./core/src/mindustry/io/SaveIO.java:26:        for(SaveVersion version : versionArray){
+./core/src/mindustry/io/SaveIO.java:31:    public static SaveVersion getSaveWriter(){
+./core/src/mindustry/io/SaveIO.java:35:    public static @Nullable SaveVersion getSaveWriter(int version){
+./core/src/mindustry/io/SaveIO.java:98:            SaveVersion ver = versions.get(version);
+./core/src/mindustry/io/SaveIO.java:129:            SaveVersion ver = getVersion();
+./core/src/mindustry/io/SaveIO.java:168:            SaveVersion ver = versions.get(version);
+./core/src/mindustry/io/SaveVersion.java:30:public abstract class SaveVersion extends SaveFileReader{
+./core/src/mindustry/io/SaveVersion.java:43:    public SaveVersion(int version){
+./core/src/mindustry/io/JsonIO.java:203:                if(block == null) block = Vars.content.getByName(ContentType.block, SaveVersion.fallback.get(jsonData.asString(), ""));
+./core/src/mindustry/io/versions/Save1.java:7:public class Save1 extends LegacySaveVersion{
+./core/src/mindustry/io/versions/Save2.java:7:public class Save2 extends LegacySaveVersion{
+./core/src/mindustry/io/versions/Save5.java:4:public class Save5 extends LegacySaveVersion2{
+./core/src/mindustry/io/versions/Save8.java:3:/** Adds support for the marker binary data region. The code is unchanged here, because it was easier to add a >= 8 check in the SaveVersion class itself. */
+./core/src/mindustry/io/versions/Save8.java:4:public class Save8 extends ShortChunkSaveVersion{
+./core/src/mindustry/io/versions/Save4.java:9:public class Save4 extends LegacySaveVersion2{
+./core/src/mindustry/io/versions/LegacySaveVersion2.java:10:public class LegacySaveVersion2 extends LegacyRegionSaveVersion{
+./core/src/mindustry/io/versions/LegacySaveVersion2.java:12:    public LegacySaveVersion2(int version){
+./core/src/mindustry/io/versions/Save9.java:4:public class Save9 extends ShortChunkSaveVersion{
+./core/src/mindustry/io/versions/Save13.java:6:public class Save13 extends SaveVersion{
+./core/src/mindustry/io/versions/Save11.java:18:public class Save11 extends SaveVersion{
+./core/src/mindustry/io/versions/LegacyRegionSaveVersion.java:11:public class LegacyRegionSaveVersion extends ShortChunkSaveVersion{
+./core/src/mindustry/io/versions/LegacyRegionSaveVersion.java:13:    public LegacyRegionSaveVersion(int version){
+./core/src/mindustry/io/versions/Save10.java:6:public class Save10 extends SaveVersion{
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:14:public class ShortChunkSaveVersion extends SaveVersion{
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:16:    public ShortChunkSaveVersion(int version){
+./core/src/mindustry/io/versions/Save3.java:11:public class Save3 extends LegacySaveVersion{
+./core/src/mindustry/io/versions/Save12.java:15:public class Save12 extends SaveVersion{
+./core/src/mindustry/io/versions/LegacySaveVersion.java:13:public abstract class LegacySaveVersion extends LegacyRegionSaveVersion{
+./core/src/mindustry/io/versions/LegacySaveVersion.java:15:    public LegacySaveVersion(int version){
+./core/src/mindustry/io/versions/Save7.java:3:public class Save7 extends ShortChunkSaveVersion{
+./core/src/mindustry/io/versions/Save6.java:4:public class Save6 extends LegacyRegionSaveVersion{
+./core/src/mindustry/core/ContentLoader.java:236:            name = SaveVersion.modContentNameMap.get(name, name);

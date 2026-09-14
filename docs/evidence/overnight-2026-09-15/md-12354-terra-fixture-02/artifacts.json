@@ -1,0 +1,462 @@
+{
+  "artifacts/md-12354-terra-fixture-02-99f2077b89d55764b133-report.md": {
+    "artifact_id": "md-12354-terra-fixture-02-99f2077b89d55764b133-report.md",
+    "sha256": "99f2077b89d55764b133203fddf5b67a6ea318e0181494ba85793c48c6dee04f",
+    "media_type": "text/markdown"
+  },
+  "artifacts/md-12354-terra-fixture-02-e4704bdd7d59a662b90e-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-e4704bdd7d59a662b90e-investigation.png",
+    "sha256": "e4704bdd7d59a662b90ed41ae6407008f9767cda450dc40f91e1d5b3605edb99",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-4d0965419e0613f3c98c-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-4d0965419e0613f3c98c-investigation.png",
+    "sha256": "4d0965419e0613f3c98c78e59cbe2388806c6e0bc6b03eb9d483197002e347aa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-18c5be4921fa1903301a-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-18c5be4921fa1903301a-investigation.png",
+    "sha256": "18c5be4921fa1903301aabb3ac64f2e55ebf460277f0132d87270840a598aaa0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-034a8acd2a32cf9ed72f-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-034a8acd2a32cf9ed72f-investigation.png",
+    "sha256": "034a8acd2a32cf9ed72fcc8044357aabcf766f81be9326dc533cb542a294ee33",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-4cb064c9ae631b0149e6-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-4cb064c9ae631b0149e6-investigation.png",
+    "sha256": "4cb064c9ae631b0149e68a169723c367d86f983c76b25dacfb632f8e773825ff",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-3fee65bd722401204b66-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-3fee65bd722401204b66-investigation.png",
+    "sha256": "3fee65bd722401204b66427ff2b3a208d10c7047ee0a42435b82dfe263f54e32",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-50e6edeb7f0d19b64d16-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-50e6edeb7f0d19b64d16-investigation.png",
+    "sha256": "50e6edeb7f0d19b64d16e70710b12a292c144b995074f9490bdb76c3e67d886a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-849329667bfc505e4cbd-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-849329667bfc505e4cbd-investigation.png",
+    "sha256": "849329667bfc505e4cbdfbe9c63bd5b1bb1f0669c6f9b83c4eb18fcaaf16bd04",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-9db02fdba66ef9a905c6-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-9db02fdba66ef9a905c6-investigation.png",
+    "sha256": "9db02fdba66ef9a905c6006825d8b2ae9bfe45bb0f32cab7f21fc9dd58d8f127",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-b425511f8c498b097688-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-b425511f8c498b097688-investigation.png",
+    "sha256": "b425511f8c498b097688d446bda95994b6a1555e1f9763bc23005f726c9fd706",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-39a061a72409e43ecb02-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-39a061a72409e43ecb02-investigation.png",
+    "sha256": "39a061a72409e43ecb02098e9d21a7e41b275d065751d5f0c9ebd42af60a36b7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-1cf5d7d7add197ae39c4-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-1cf5d7d7add197ae39c4-investigation.png",
+    "sha256": "1cf5d7d7add197ae39c4260841b9dc98b39e40e55142efad2806cc80c0b5b604",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-f445b5b290aeb9f50510-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-f445b5b290aeb9f50510-investigation.png",
+    "sha256": "f445b5b290aeb9f50510ae79be997de5a8972088629353f3a12c936314c31c68",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-780674449ee2c6c1d0b3-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-780674449ee2c6c1d0b3-investigation.png",
+    "sha256": "780674449ee2c6c1d0b3e3f6994be35a5f82c00d76b0ca564a54e52d6d7c2a1f",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-15de6437f798d3f5e7a9-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-15de6437f798d3f5e7a9-investigation.png",
+    "sha256": "15de6437f798d3f5e7a94f069b656a0e734d330bbe7459c992e6e938b437acaa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-cd046314ce53f7be11f3-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-cd046314ce53f7be11f3-investigation.png",
+    "sha256": "cd046314ce53f7be11f3f8ff069aed4f4b25598469c087630fcc3a9c4efd5fa1",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-175d65639dc77dec1f35-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-175d65639dc77dec1f35-investigation.png",
+    "sha256": "175d65639dc77dec1f350bb46299726d712d07a65f10aaf69abfbdaa02eecbaa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-47ba9ded2f2f33654d52-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-47ba9ded2f2f33654d52-investigation.png",
+    "sha256": "47ba9ded2f2f33654d52aa27703eb91c2d60edadfaf4ccb56248fb073fe531bc",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-88c0448d3bd25391533f-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-88c0448d3bd25391533f-investigation.png",
+    "sha256": "88c0448d3bd25391533fd41ed95f1625b85a10bfeade6a84e61ad7f0e1291572",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-b4032d6fe793d09c9ed4-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-b4032d6fe793d09c9ed4-investigation.png",
+    "sha256": "b4032d6fe793d09c9ed4ea25b531a4dd6a5c15d3c17fa361fa47e686db8f7543",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-b30438009bee40946711-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-b30438009bee40946711-investigation.png",
+    "sha256": "b30438009bee409467114e0aa63ea2fe8917c22e55555a872df5ec45a1112e95",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-54a98ad7cd3697b23bb3-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-54a98ad7cd3697b23bb3-investigation.png",
+    "sha256": "54a98ad7cd3697b23bb322d9e07fd42f2e03d081fc98f867682939fe270866a7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-90e06b9fa269c15bbdb1-source-search.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-90e06b9fa269c15bbdb1-source-search.txt",
+    "sha256": "90e06b9fa269c15bbdb12d0b633eceb02a6d64a0476aec5d41fe2b0a968a8190",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-e3b0c44298fc1c149afb-source-search.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-e3b0c44298fc1c149afb-source-search.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-728d98cb9073b68aafbb-source-read.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-728d98cb9073b68aafbb-source-read.txt",
+    "sha256": "728d98cb9073b68aafbbd89031e5d04a2631b765dce23e4f03183c2654fe66af",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-d2f38e1fc6aac4b9bd2a-source-search.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-d2f38e1fc6aac4b9bd2a-source-search.txt",
+    "sha256": "d2f38e1fc6aac4b9bd2a75e1c0cf1cbed9e9f0681ddd0757c700eea6b72cdd4f",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-3a29b356fe2c54986c51-source-read.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-3a29b356fe2c54986c51-source-read.txt",
+    "sha256": "3a29b356fe2c54986c51e3a746fda821e8be48aae0a36db99abc3f37caff5e15",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-be925145a4fb40662bcc-source-read.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-be925145a4fb40662bcc-source-read.txt",
+    "sha256": "be925145a4fb40662bcc6e6c15d56d7caf1f1fb4187352fb7a236a0feba619c5",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-14dc69122ecf8c34c586-source-read.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-14dc69122ecf8c34c586-source-read.txt",
+    "sha256": "14dc69122ecf8c34c586551f5f49b6ee7a0e95e676129b5028e6edd086f2c2f8",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-e458100b86b7f6f729a1-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-e458100b86b7f6f729a1-investigation.png",
+    "sha256": "e458100b86b7f6f729a1ebf490728999354a177759556c145ffe9c633467fbd7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-0ee7ef21b61a12b9817d-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-0ee7ef21b61a12b9817d-investigation.png",
+    "sha256": "0ee7ef21b61a12b9817da8b758572d66bd94ee06d1c5a35e8bd2869735934932",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-3b62848ea580aadfc203-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-3b62848ea580aadfc203-investigation.png",
+    "sha256": "3b62848ea580aadfc203a8d5913fa31cfc8341512efe311ca6fc08e75252fe9f",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-5f0b057769492de00f5b-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-5f0b057769492de00f5b-investigation.png",
+    "sha256": "5f0b057769492de00f5bb03257af1603df8b7b1b37d11bdd4b38cd8877b2319b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-dda433e05e99303d8d3b-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-dda433e05e99303d8d3b-investigation.png",
+    "sha256": "dda433e05e99303d8d3bb652cfb8688dda4e54117ed5856b15dbc7b9c450991e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-bc8f1c11b7bd582fef0b-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-bc8f1c11b7bd582fef0b-investigation.png",
+    "sha256": "bc8f1c11b7bd582fef0b4388f4a8a651c5784a78c12cb8d252a664c6ced59f66",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-6a4bf31368c56f63c29d-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-6a4bf31368c56f63c29d-investigation.png",
+    "sha256": "6a4bf31368c56f63c29df2f453c3e5f21220f7f0ba6365b0afd4f0e9dc58b5c4",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-03f46e3b211025c4ba29-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-03f46e3b211025c4ba29-investigation.png",
+    "sha256": "03f46e3b211025c4ba291b055b87472c3227c1434393f9b5ab7e7c9abcde1806",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-5e189a8a2d10eb7a18b4-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-5e189a8a2d10eb7a18b4-investigation.png",
+    "sha256": "5e189a8a2d10eb7a18b49f23bde5a721d5004c6b19dc748200fbc61c31983e7b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-341977f319368e4c2590-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-341977f319368e4c2590-investigation.png",
+    "sha256": "341977f319368e4c25905278a98a764d9372f29a29cf19e2e025f9e7fa56514a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-dc6ea1031f6ffa4dc5e6-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-dc6ea1031f6ffa4dc5e6-investigation.png",
+    "sha256": "dc6ea1031f6ffa4dc5e628e6d2563018e7ee9447ec359470ec3c26c919b20b3a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-05c4f2844299ae596b81-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-05c4f2844299ae596b81-investigation.png",
+    "sha256": "05c4f2844299ae596b81b1f27d26ede1baf01b11dba526226f1ed87887a4fd5c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-743d61cd921dbc73a8f9-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-743d61cd921dbc73a8f9-investigation.png",
+    "sha256": "743d61cd921dbc73a8f9827686be33654cdf1d864f2b4d53061802f3bcfa3703",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-5459016d89bbc301d8a1-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-5459016d89bbc301d8a1-investigation.png",
+    "sha256": "5459016d89bbc301d8a19c6bab426fa18a12852b2f83c445c93cdfa3eea60282",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-6a15d25570257a09da97-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-6a15d25570257a09da97-investigation.png",
+    "sha256": "6a15d25570257a09da970df5a533a66391818bc2fc86fc3a89981c84ad8f2084",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-d763dd0f1d843a6d8b19-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-d763dd0f1d843a6d8b19-investigation.png",
+    "sha256": "d763dd0f1d843a6d8b197326555b7cbcd5f9da45fa5365c75d18554e4dd6a0fa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-d4ea7c8360da6aef76eb-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-d4ea7c8360da6aef76eb-investigation.png",
+    "sha256": "d4ea7c8360da6aef76eb4c3f7bf65ed4c4ee615bdc95e61cc2cabe9ddb56a09f",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-3ed9fff015e507e6e67a-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-3ed9fff015e507e6e67a-investigation.png",
+    "sha256": "3ed9fff015e507e6e67aa7a1d5e6f4f5a2c12b6f64cd5f500e6282115484e39d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-e36877a85e1a339e2b76-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-e36877a85e1a339e2b76-investigation.png",
+    "sha256": "e36877a85e1a339e2b76333546d44d53ce2095d64f38fbe6650066c7353d1d87",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-c19713f5566e10154699-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-c19713f5566e10154699-investigation.png",
+    "sha256": "c19713f5566e101546992ff4d85578a667d8a704582cf2c2515d90e5cb2139bc",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-62502c0053c1df52b3d3-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-62502c0053c1df52b3d3-investigation.png",
+    "sha256": "62502c0053c1df52b3d3924ee72e7509231b13af9b75661b1691a0b0a5bb5e7c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-6998fe4af9f5732cc73a-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-6998fe4af9f5732cc73a-investigation.png",
+    "sha256": "6998fe4af9f5732cc73ac78237c947aff85b98f6dd6020b7fedcac5b9cad9df5",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-6d33c2095412aad56542-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-6d33c2095412aad56542-investigation.png",
+    "sha256": "6d33c2095412aad5654243fb4df37854d39abe4b1b3275adf1a93428ad893db6",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-3657bb491f2a556dde10-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-3657bb491f2a556dde10-investigation.png",
+    "sha256": "3657bb491f2a556dde1059a7770658f9395ccc9ba494a874d5da2471f69603a4",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-805aece68cb0055929ab-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-805aece68cb0055929ab-investigation.png",
+    "sha256": "805aece68cb0055929abaa8a10368fa6cf367346513ee407aaddac65056b96a8",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-eb9d1a56648c973b523d-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-eb9d1a56648c973b523d-investigation.png",
+    "sha256": "eb9d1a56648c973b523d086ca18e6b02124d2af5cc62bcd5a461d7a8f7fc532b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-5464c3a1ded48af63bd8-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-5464c3a1ded48af63bd8-investigation.png",
+    "sha256": "5464c3a1ded48af63bd8975561667b6302120400f4ac5dafdcac7c79ec13da1a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-22112fe3049ea7af99f2-source-search.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-22112fe3049ea7af99f2-source-search.txt",
+    "sha256": "22112fe3049ea7af99f261be07eb1297e7616b47ab00aa8515044216de2ce21f",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-06b08c6b16b785d0ed26-source-search.txt": {
+    "artifact_id": "md-12354-terra-fixture-02-06b08c6b16b785d0ed26-source-search.txt",
+    "sha256": "06b08c6b16b785d0ed2651ffb86baeccf3c593b9e9ac35e3afb39559f553ab27",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-27f2fd1c8d3c91f0b20b-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-27f2fd1c8d3c91f0b20b-investigation.png",
+    "sha256": "27f2fd1c8d3c91f0b20b078acacc2acbb7dbd3e06c61fd9830dbf9f0221af503",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-8dd513d50db71142f0d9-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-8dd513d50db71142f0d9-investigation.png",
+    "sha256": "8dd513d50db71142f0d99255c67353f009068acedb797bd8ae4bd426b2593b56",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-4efda20c129829ea2266-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-4efda20c129829ea2266-investigation.png",
+    "sha256": "4efda20c129829ea22667a624d67dd3d99d63c5d67ab83a97ee52979b708addb",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-5b449fc515a78e1b92d3-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-5b449fc515a78e1b92d3-investigation.png",
+    "sha256": "5b449fc515a78e1b92d3dc42d149988596f23b47fcc6fef01a4a6601cafc2796",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-f6a2c0ffc3087b1a1810-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-f6a2c0ffc3087b1a1810-investigation.png",
+    "sha256": "f6a2c0ffc3087b1a1810e8e21c85de138b65cfce0f845364c4f1b35081f8cc6e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-ea6a4f8ef86860d4c793-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-ea6a4f8ef86860d4c793-investigation.png",
+    "sha256": "ea6a4f8ef86860d4c7931a720dc5784d8dc0a7fe4c3f418542c966f06398de7c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-71ee3b58f4add04c1575-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-71ee3b58f4add04c1575-investigation.png",
+    "sha256": "71ee3b58f4add04c15751ba055d7a593585605dbed6edac94eeb1eb6de650002",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-299af8da73a4e3ee585a-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-299af8da73a4e3ee585a-investigation.png",
+    "sha256": "299af8da73a4e3ee585a7bda1e4856570a6609d0225bd3d132a593834a860727",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-8f7c90c40aed96c34367-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-8f7c90c40aed96c34367-investigation.png",
+    "sha256": "8f7c90c40aed96c34367ac8e813247079de7c7518060e73e712f13e6a856cbf1",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-6537206828c9af954cc4-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-6537206828c9af954cc4-investigation.png",
+    "sha256": "6537206828c9af954cc49a32a7a38d32111809351028a15df8b3fc6fceb45187",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-bf014a462d7f308a0d6b-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-bf014a462d7f308a0d6b-investigation.png",
+    "sha256": "bf014a462d7f308a0d6b23b529b9638937f99e93a11b9e3709d1d0771c42214b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-9814c95ef7e658a789b8-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-9814c95ef7e658a789b8-investigation.png",
+    "sha256": "9814c95ef7e658a789b8e442fd620895ba402d413bb8bc5ea877e6b17b99d722",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-04f289878e65d25aa20e-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-04f289878e65d25aa20e-investigation.png",
+    "sha256": "04f289878e65d25aa20ef8f190ac91e98ed3615bf8099ec74bb0e8689c103aa8",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-55fb4871ecc8d87602a4-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-55fb4871ecc8d87602a4-investigation.png",
+    "sha256": "55fb4871ecc8d87602a4b76e2dfe4097c5eef403e018632a3961c8b59786c548",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-1db4efde0ac0618e4ef8-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-1db4efde0ac0618e4ef8-investigation.png",
+    "sha256": "1db4efde0ac0618e4ef8b8a27c00050a3da2eae185b9f47838e396dfbe9cd3aa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-55b79c8474db3d28cf91-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-55b79c8474db3d28cf91-investigation.png",
+    "sha256": "55b79c8474db3d28cf9132b7089deac77c1eb6461e4b6eeb1b8c75c24a10dde0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-e4b2c8a192eea990f208-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-e4b2c8a192eea990f208-investigation.png",
+    "sha256": "e4b2c8a192eea990f208b0d346a492953f98150452d5cb2adc04d489987dbe0e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-784ed7db3d792ca49c76-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-784ed7db3d792ca49c76-investigation.png",
+    "sha256": "784ed7db3d792ca49c76af4db8ff22cbb8df4f3b81707b278fa1a559ebeea0ac",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-dd8ba6e097e89ba62d45-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-dd8ba6e097e89ba62d45-investigation.png",
+    "sha256": "dd8ba6e097e89ba62d4568f45d69e73fa61fc655fa8ea666344dcaef8966a8e5",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-e4a128a919fca22856a8-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-e4a128a919fca22856a8-investigation.png",
+    "sha256": "e4a128a919fca22856a8025fc6c1f028a343f82d58a9e6a3c24e0357437217d7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-1cc84865cb8126727f35-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-1cc84865cb8126727f35-investigation.png",
+    "sha256": "1cc84865cb8126727f356fef9409471bbb99867e5c9489d740dd8405451a67cd",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-9d46191e5189ef574700-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-9d46191e5189ef574700-investigation.png",
+    "sha256": "9d46191e5189ef574700e718a5159c6550f1bd94ca76cd92071a84eaa04353a6",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-b7399cbb2bf50152926e-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-b7399cbb2bf50152926e-investigation.png",
+    "sha256": "b7399cbb2bf50152926eceb3e47f5bae2968b6dfc50e8290bdf3181c45cd01a7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-383b6a0cc5f0e8b706e2-investigation.png": {
+    "artifact_id": "md-12354-terra-fixture-02-383b6a0cc5f0e8b706e2-investigation.png",
+    "sha256": "383b6a0cc5f0e8b706e29cf3c4b984eec54381b5f7f20a05c7ed0f00ba9b6c9d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-3b5ca8851b3c0cb05c92-initial.log": {
+    "artifact_id": "md-12354-terra-fixture-02-3b5ca8851b3c0cb05c92-initial.log",
+    "sha256": "3b5ca8851b3c0cb05c9252f34801c706395ce063d29e4757528405b96e070029",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-718ea9f0d7d7a8746bc5-initial.png": {
+    "artifact_id": "md-12354-terra-fixture-02-718ea9f0d7d7a8746bc5-initial.png",
+    "sha256": "718ea9f0d7d7a8746bc58a9b1f9c6c3dcedfa7434bc37ca0550e5d94e338342b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12354-terra-fixture-02-db3033c4818efb4ab05b-cargo-mix-tech.msav": {
+    "artifact_id": "md-12354-terra-fixture-02-db3033c4818efb4ab05b-cargo-mix-tech.msav",
+    "sha256": "db3033c4818efb4ab05bd060ae2fc5d9b1ada740c52c981fa5b13125e5acc255",
+    "media_type": "application/octet-stream"
+  },
+  "artifacts/md-12354-terra-fixture-02-81d1f6d8c20f66647ea6-cargo-test-map.msav": {
+    "artifact_id": "md-12354-terra-fixture-02-81d1f6d8c20f66647ea6-cargo-test-map.msav",
+    "sha256": "81d1f6d8c20f66647ea655f410b8870219c5b5990dd895b75f5d14c23b52d618",
+    "media_type": "application/octet-stream"
+  },
+  "artifacts/md-12354-terra-fixture-02-41f7a2402f4b532a3963-baseline-tests.log": {
+    "artifact_id": "md-12354-terra-fixture-02-41f7a2402f4b532a3963-baseline-tests.log",
+    "sha256": "41f7a2402f4b532a3963f543c184387dea8aed00f6793ed6774e5c61fa05a033",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-80b227f989de8551f682-prepare-test-dependencies.log": {
+    "artifact_id": "md-12354-terra-fixture-02-80b227f989de8551f682-prepare-test-dependencies.log",
+    "sha256": "80b227f989de8551f6826250399ee4bfb1728cef54b381e795283f79da7ab30b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-b99749f5324d9bee36b7-prepare-build.log": {
+    "artifact_id": "md-12354-terra-fixture-02-b99749f5324d9bee36b7-prepare-build.log",
+    "sha256": "b99749f5324d9bee36b75a6754548a491878aa8ebe7d52bd563e5d6c5939f407",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12354-terra-fixture-02-69ac0a733c8581b3cf22-history-audit.json": {
+    "artifact_id": "md-12354-terra-fixture-02-69ac0a733c8581b3cf22-history-audit.json",
+    "sha256": "69ac0a733c8581b3cf220a14c343de7fb13953553314b46557da31cfe8ac9a3b",
+    "media_type": "application/json"
+  },
+  "artifacts/md-12354-terra-fixture-02-9b449f430617fb2cf0af-arc-dependency-audit.json": {
+    "artifact_id": "md-12354-terra-fixture-02-9b449f430617fb2cf0af-arc-dependency-audit.json",
+    "sha256": "9b449f430617fb2cf0af83003f200c3b6a74a4a618b8d12063f561bb4fe5cc25",
+    "media_type": "application/json"
+  }
+}

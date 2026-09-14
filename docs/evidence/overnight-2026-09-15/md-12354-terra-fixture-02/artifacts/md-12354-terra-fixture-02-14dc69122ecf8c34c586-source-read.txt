@@ -1,0 +1,220 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.*;
+4: import arc.graphics.g2d.*;
+5: import arc.math.*;
+6: import arc.math.geom.*;
+7: import arc.util.*;
+8: import arc.util.io.*;
+9: import mindustry.annotations.Annotations.*;
+10: import mindustry.core.*;
+11: import mindustry.ctype.Content;
+12: import mindustry.entities.*;
+13: import mindustry.gen.*;
+14: import mindustry.graphics.*;
+15: import mindustry.world.*;
+16: import mindustry.world.meta.*;
+17: 
+18: import static mindustry.Vars.*;
+19: 
+20: public class PayloadConveyor extends Block{
+21:     public float moveTime = 45f, moveForce = 201f;
+22:     public @Load("@-top") TextureRegion topRegion;
+23:     public @Load("@-edge") TextureRegion edgeRegion;
+24:     public Interp interp = Interp.pow5;
+25:     public float payloadLimit = 3f;
+26:     public boolean pushUnits = true;
+27: 
+28:     public PayloadConveyor(String name){
+29:         super(name);
+30:         group = BlockGroup.payloads;
+31:         size = 3;
+32:         rotate = true;
+33:         update = true;
+34:         outputsPayload = true;
+35:         noUpdateDisabled = true;
+36:         acceptsUnitPayloads = true;
+37:         priority = TargetPriority.transport;
+38:         envEnabled |= Env.space | Env.underwater;
+39:         sync = true;
+40:         underBullets = true;
+41:     }
+42: 
+43:     @Override
+44:     protected TextureRegion[] icons(){
+45:         return new TextureRegion[]{Core.atlas.find(name + "-icon")};
+46:     }
+47: 
+48:     @Override
+49:     public void drawPlace(int x, int y, int rotation, boolean valid){
+50:         super.drawPlace(x, y, rotation, valid);
+51: 
+52:         int ntrns = size;
+53: 
+54:         for(int i = 0; i < 4; i++){
+55:             Tile tile = world.tile(x + Geometry.d4x[i] * ntrns, y + Geometry.d4y[i] * ntrns);
+56:             if(tile != null && tile.build != null && tile.isCenter() && tile.build.block.outputsPayload && tile.build.block.size == size && (i == rotation || tile.block().rotate && i == (tile.build.rotation + 2) % 4)){
+57:                 Drawf.selected(tile.x, tile.y, tile.block(), tile.build.team.color);
+58:             }
+59:         }
+60:     }
+61: 
+62:     @Override
+63:     public void setStats(){
+64:         super.setStats();
+65: 
+66:         stats.add(Stat.payloadCapacity, StatValues.squared(payloadLimit, StatUnit.blocksSquared));
+67:     }
+68: 
+69:     @Override
+70:     public void init(){
+71:         super.init();
+72: 
+73:         //increase clip size for oversize loads
+74:         clipSize = Math.max(clipSize, size * tilesize * 2.1f);
+75:     }
+76: 
+77:     public class PayloadConveyorBuild extends Building{
+78:         public @Nullable Payload item;
+79:         public float progress, itemRotation, animation;
+80:         public float curInterp, lastInterp;
+81:         public @Nullable Building next;
+82:         public boolean blocked;
+83:         public int step = -1, stepAccepted = -1;
+84: 
+85:         @Override
+86:         public boolean canControlSelect(Unit unit){
+87:             return this.item == null && unit.type.allowedInPayloads && !unit.spawnedByCore && unit.hitSize / tilesize <= payloadLimit && unit.tileOn() != null && unit.tileOn().build == this;
+88:         }
+89: 
+90:         @Override
+91:         public void onControlSelect(Unit player){
+92:             handleUnitPayload(player, p -> item = p);
+93:         }
+94: 
+95:         @Override
+96:         public Payload takePayload(){
+97:             Payload t = item;
+98:             item = null;
+99:             return t;
+100:         }
+101: 
+102:         @Override
+103:         public void onProximityUpdate(){
+104:             super.onProximityUpdate();
+105: 
+106:             Building accept = nearby(Geometry.d4(rotation).x * (size/2+1), Geometry.d4(rotation).y * (size/2+1));
+107:             //next block must be aligned and of the same size
+108:             if(accept != null && (
+109:                 //same size
+110:                 (accept.block.size == size && tileX() + Geometry.d4(rotation).x * size == accept.tileX() && tileY() + Geometry.d4(rotation).y * size == accept.tileY()) ||
+111: 
+112:                 //differing sizes
+113:                 (accept.block.size > size &&
+114:                     (rotation % 2 == 0 ? //check orientation
+115:                     Math.abs(accept.y - y) <= (accept.block.size * tilesize - size * tilesize)/2f : //check Y alignment
+116:                     Math.abs(accept.x - x) <= (accept.block.size * tilesize - size * tilesize)/2f   //check X alignment
+117:                 )))){
+118:                 next = accept;
+119:             }else{
+120:                 next = null;
+121:             }
+122:             checkBlocked();
+123:         }
+124: 
+125:         void checkBlocked(){
+126:             int ntrns = 1 + size/2;
+127:             Tile next = tile.nearby(Geometry.d4(rotation).x * ntrns, Geometry.d4(rotation).y * ntrns);
+128:             blocked = (next != null && next.solid() && !(next.block().outputsPayload || next.block().acceptsPayload)) || (this.next != null && this.next.payloadCheck(rotation));
+129:         }
+130: 
+131:         @Override
+132:         public Payload getPayload(){
+133:             return item;
+134:         }
+135: 
+136:         @Override
+137:         public void updateTile(){
+138:             if(!enabled) return;
+139: 
+140:             if(item != null){
+141:                 item.update(null, this);
+142:             }
+143: 
+144:             lastInterp = curInterp;
+145:             curInterp = fract();
+146:             //rollover skip
+147:             if(lastInterp > curInterp) lastInterp = 0f;
+148:             progress = time() % moveTime;
+149: 
+150:             updatePayload();
+151:             if(item != null && next == null){
+152:                 PayloadBlock.pushOutput(item, progress / moveTime);
+153:             }
+154: 
+155:             //TODO nondeterministic input priority
+156:             int curStep = curStep();
+157:             if(curStep > step){
+158:                 boolean valid = step != -1;
+159:                 step = curStep;
+160:                 boolean had = item != null;
+161: 
+162:                 if(valid && stepAccepted != curStep && item != null){
+163:                     checkBlocked();
+164:                     if(next != null){
+165:                         //trigger update forward
+166:                         next.updateTile();
+167: 
+168:                         //TODO add self to queue of next conveyor, then check if this conveyor was selected next frame - selection happens deterministically
+169:                         if(next != null && next.acceptPayload(this, item)){
+170:                             //move forward.
+171:                             next.handlePayload(this, item);
+172:                             item = null;
+173:                             moved();
+174:                         }
+175:                     }else if(!blocked){
+176:                         //dump item forward
+177:                         if(item.dump()){
+178:                             item = null;
+179:                             moved();
+180:                             NetServer.syncBuilding(this);
+181:                         }
+182:                     }
+183:                 }
+184: 
+185:                 if(had && item != null){
+186:                     moveFailed();
+187:                 }
+188:             }
+189:         }
+190: 
+191:         public void moveFailed(){
+192: 
+193:         }
+194: 
+195:         public void moved(){
+196: 
+197:         }
+198: 
+199:         public void drawBottom(){
+200:             super.draw();
+201:         }
+202: 
+203:         @Override
+204:         public void onDestroyed(){
+205:             if(item != null) item.destroyed();
+206:             super.onDestroyed();
+207:         }
+208: 
+209:         @Override
+210:         public void draw(){
+211:             super.draw();
+212: 
+213:             float dst = 0.8f;
+214: 
+215:             float glow = Math.max((dst - (Math.abs(fract() - 0.5f) * 2)) / dst, 0);
+216:             Draw.mixcol(team.color, glow);
+217: 
+218:             float s = tilesize * size;
+219:             float trnext = s * fract(), trprev = s * (fract() - 1), rot = rotdeg();
+220: 

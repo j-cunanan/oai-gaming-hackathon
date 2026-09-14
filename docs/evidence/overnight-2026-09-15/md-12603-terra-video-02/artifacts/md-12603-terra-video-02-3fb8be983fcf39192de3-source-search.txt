@@ -1,0 +1,4 @@
+./core/src/mindustry/editor/EditorTile.java:14:public class EditorTile extends Tile{
+./core/src/mindustry/editor/EditorRenderer.java:17:public class EditorRenderer implements Disposable{
+./core/src/mindustry/editor/EditorSpriteCache.java:10:public class EditorSpriteCache implements Disposable{
+./core/src/mindustry/ui/dialogs/EditorMapsDialog.java:19:public class EditorMapsDialog extends MapListDialog{

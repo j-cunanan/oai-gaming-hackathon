@@ -1,0 +1,43 @@
+./core/assets/bundles/bundle_ko.properties:1408:category.power = 전력
+./core/assets/bundles/bundle_fil.properties:1408:category.power = Kuryente
+./core/assets/bundles/bundle_ro.properties:1408:category.power = Electricitate
+./core/assets/bundles/bundle_ja.properties:1408:category.power = 電力
+./core/assets/bundles/bundle_eu.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_fi.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_ca.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_fr.properties:1408:category.power = Énergie
+./core/assets/bundles/bundle_th.properties:1408:category.power = พลังงาน
+./core/assets/bundles/bundle_uk_UA.properties:1408:category.power = Енергія
+./core/assets/bundles/bundle_be.properties:1408:category.power = Энергія
+./core/assets/bundles/bundle_id_ID.properties:1408:category.power = Tenaga
+./core/assets/bundles/bundle_pl.properties:1408:category.power = Prąd
+./core/assets/bundles/bundle_vi.properties:1408:category.power = Năng lượng
+./core/assets/bundles/bundle.properties:1413:category.power = Power
+./core/assets/bundles/bundle_sr.properties:1408:category.power = Energija
+./core/assets/bundles/bundle_bg.properties:1408:category.power = Електричество
+./core/assets/bundles/bundle_zh_CN.properties:1408:category.power = 电力
+./core/assets/bundles/bundle_de.properties:1408:category.power = Strom
+./core/assets/bundles/bundle_nl.properties:1408:category.power = Stroom
+./core/assets/bundles/bundle_ru.properties:1408:category.power = Энергия
+./core/assets/bundles/bundle_et.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_it.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_lt.properties:1408:category.power = Energija
+./core/assets/bundles/bundle_zh_TW.properties:1408:category.power = 能量
+./core/assets/bundles/bundle_pt_BR.properties:1408:category.power = Energia
+./core/assets/bundles/bundle_hu.properties:1408:category.power = Áram
+./core/assets/bundles/bundle_tr.properties:1408:category.power = Enerji
+./core/assets/bundles/bundle_sv.properties:1408:category.power = Energi
+./core/assets/bundles/bundle_tk.properties:1408:category.power = Guc
+./core/assets/bundles/bundle_cs.properties:1408:category.power = Energie
+./core/assets/bundles/bundle_da.properties:1408:category.power = Strøm
+./core/assets/bundles/bundle_nl_BE.properties:1408:category.power = Power
+./core/assets/bundles/bundle_pt_PT.properties:1408:category.power = Poder
+./core/assets/bundles/bundle_es.properties:1408:category.power = Energía
+./core/src/mindustry/content/Blocks.java:2483:            requirements(Category.power, with(Items.copper, 2, Items.lead, 6));
+./core/src/mindustry/content/Blocks.java:2491:            requirements(Category.power, with(Items.titanium, 5, Items.lead, 10, Items.silicon, 3));
+./core/src/mindustry/content/Blocks.java:2498:            requirements(Category.power, with(Items.titanium, 7, Items.lead, 10, Items.silicon, 15, Items.surgeAlloy, 15));
+./core/src/mindustry/content/Blocks.java:2506:            requirements(Category.power, with(Items.silicon, 10, Items.plastanium, 5, Items.metaglass, 10));
+./core/src/mindustry/content/Blocks.java:2510:            requirements(Category.power, with(Items.copper, 5, Items.lead, 20));
+./core/src/mindustry/content/Blocks.java:2516:            requirements(Category.power, with(Items.titanium, 20, Items.lead, 50, Items.silicon, 30));
+./core/src/mindustry/content/Blocks.java:2523:            requirements(Category.power, with(Items.copper, 25, Items.lead, 15));
+./core/src/mindustry/content/Blocks.java:2543:            requirements(Category.power, with(Items.copper, 40, Items.graphite, 35, Items.lead, 50, Items.silicon, 35, Items.metaglass, 40));

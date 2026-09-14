@@ -1,0 +1,85 @@
+270:             visibleFlags = read.l();
+271:         }
+272:     }
+273: 
+274:     public int moduleBitmask(){
+275:         return
+276:         (items != null ? 1 : 0) |
+277:         (power != null ? 1 << 1 : 0) |
+278:         (liquids != null ? 1 << 2 : 0) |
+279:         1 << 3 | //old consume module
+280:         (timeScale != 1f ? 1 << 4 : 0) |
+281:         (lastDisabler != null && lastDisabler.isValid() ? 1 << 5 : 0);
+282:     }
+283: 
+284:     public void writeAll(Writes write){
+285:         writeBase(write);
+286:         write(write);
+287:     }
+288: 
+289:     public void readAll(Reads read, byte revision){
+290:         readBase(read);
+291:         read(read, revision);
+292:     }
+293: 
+294:     public void writeSync(Writes write){
+295:         writeAll(write);
+296:     }
+297: 
+298:     public void readSync(Reads read, byte revision){
+299:         readAll(read, revision);
+300:     }
+301: 
+302:     @CallSuper
+303:     public void write(Writes write){
+304:         //overriden by subclasses!
+305:     }
+306: 
+307:     @CallSuper
+308:     public void read(Reads read, byte revision){
+309:         //overriden by subclasses!
+310:     }
+311: 
+312:     //endregion
+313:     //region utility methods
+314: 
+315:     public boolean isDiscovered(Team viewer){
+316:         if(state.rules.limitMapArea && world.getDarkness(tile.x, tile.y) >= 3){
+317:             return false;
+318:         }
+319: 
+320:         if(viewer == null || !state.rules.staticFog || !state.rules.fog){
+321:             return true;
+322:         }
+323:         if(block.size <= 2){
+324:             return fogControl.isDiscovered(viewer, tile.x, tile.y);
+325:         }else{
+326:             int s = block.size / 2;
+327:             return fogControl.isDiscovered(viewer, tile.x, tile.y) ||
+328:                 fogControl.isDiscovered(viewer, tile.x - s, tile.y - s) ||
+329:                 fogControl.isDiscovered(viewer, tile.x - s, tile.y + s) ||
+330:                 fogControl.isDiscovered(viewer, tile.x + s, tile.y + s) ||
+331:                 fogControl.isDiscovered(viewer, tile.x + s, tile.y - s);
+332:         }
+333:     }
+334: 
+335:     public void addPlan(boolean checkPrevious){
+336:         addPlan(checkPrevious, false);
+337:     }
+338: 
+339:     public void addPlan(boolean checkPrevious, boolean ignoreConditions){
+340:         if(!ignoreConditions && (!block.rebuildable || (team == state.rules.defaultTeam && state.isCampaign() && !block.isVisible()))) return;
+341: 
+342:         Object overrideConfig = null;
+343:         Block toAdd = this.block;
+344: 
+345:         if(self() instanceof ConstructBuild entity){
+346:             //update block to reflect the fact that something was being constructed
+347:             if(entity.current != null && entity.current.synthetic() && entity.wasConstructing){
+348:                 toAdd = entity.current;
+349:                 overrideConfig = entity.lastConfig;
+350:             }else{
+351:                 //otherwise this was a deconstruction that was interrupted, don't want to rebuild that
+352:                 return;
+353:             }
+354:         }

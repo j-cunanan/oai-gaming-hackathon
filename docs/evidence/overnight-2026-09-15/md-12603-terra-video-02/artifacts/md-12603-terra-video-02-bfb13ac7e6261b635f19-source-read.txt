@@ -1,0 +1,145 @@
+450:                 cont.row();
+451:             }
+452: 
+453:             cont.update(() -> {
+454:                 if(Core.input.keyTap(Binding.toggleMenus) && !ui.chatfrag.shown() && !Core.scene.hasDialog() && !Core.scene.hasField()){
+455:                     Core.settings.getBoolOnce("ui-hidden", () -> {
+456:                         ui.announce(Core.bundle.format("showui",  Binding.toggleMenus.value.key.toString(), 11));
+457:                     });
+458:                     toggleMenus();
+459:                 }
+460: 
+461:                 if(Core.input.keyTap(Binding.skipWave) && canSkipWave() && !Core.scene.hasDialog() && !Core.scene.hasField()){
+462:                     if(net.client() && player.admin){
+463:                         Call.adminRequest(player, AdminAction.wave, null);
+464:                     }else{
+465:                         logic.skipWave();
+466:                     }
+467:                 }
+468:             });
+469: 
+470:             Table wavesMain, editorMain;
+471: 
+472:             cont.stack(wavesMain = new Table(), editorMain = new Table(), new Element(){
+473:                 //this may seem insane, but adding an empty element of a specific height to this stack fixes layout issues on mobile.
+474: 
+475:                 {
+476:                     visible = false;
+477:                     touchable = Touchable.disabled;
+478:                 }
+479: 
+480:                 @Override
+481:                 public float getPrefHeight(){
+482:                     return Scl.scl(123f);
+483:                 }
+484:             }).name("waves/editor");
+485: 
+486:             wavesMain.visible(() -> shown() && !state.isEditor());
+487:             wavesMain.top().left().name = "waves";
+488: 
+489:             wavesMain.table(s -> {
+490:                 //wave info button with text
+491:                 s.add(makeStatusTable()).grow().name("status");
+492: 
+493:                 var rightStyle = new ImageButtonStyle(){{
+494:                     over = buttonRightOver;
+495:                     down = buttonRightDown;
+496:                     up = buttonRight;
+497:                     disabled = buttonRightDisabled;
+498:                     imageDisabledColor = Color.clear;
+499:                     imageUpColor = Color.white;
+500:                 }};
+501: 
+502:                 //table with button to skip wave
+503:                 s.button(Icon.play, rightStyle, 30f, () -> {
+504:                     if(net.client() && player.admin){
+505:                         Call.adminRequest(player, AdminAction.wave, null);
+506:                     }else{
+507:                         logic.skipWave();
+508:                     }
+509:                 }).growY().fillX().right().width(40f).disabled(b -> !canSkipWave()).name("skip").get().toBack();
+510:             }).width(dsize * 5 + 4f).name("statustable");
+511: 
+512:             wavesMain.row();
+513: 
+514:             addInfoTable(wavesMain.table().width(dsize * 5f + 4f).left().get());
+515: 
+516:             editorMain.name = "editor";
+517:             editorMain.table(Tex.buttonEdge4, t -> {
+518:                 t.name = "teams";
+519: 
+520:                 t.top().table(teams -> {
+521:                     teams.left();
+522:                     for(Team team : Team.baseTeams){
+523:                         ImageButton button = teams.button(Tex.whiteui, Styles.clearNoneTogglei, 33f, () -> Call.setPlayerTeamEditor(player, team))
+524:                         .size(45f).margin(6f).get();
+525:                         button.getImageCell().grow();
+526:                         button.getStyle().imageUpColor = team.color;
+527:                         button.update(() -> button.setChecked(player.team() == team));
+528:                     }
+529: 
+530:                     teams.button(Icon.downOpen, Styles.emptyi, () -> Core.settings.put("editor-blocks-shown", !Core.settings.getBool("editor-blocks-shown")))
+531:                     .size(45f).update(m -> m.getStyle().imageUp = (Core.settings.getBool("editor-blocks-shown") ? Icon.upOpen : Icon.downOpen));
+532:                 }).top().left().row();
+533: 
+534:                 t.collapser(this::addBlockSelection, () -> Core.settings.getBool("editor-blocks-shown"));
+535: 
+536:             }).width(dsize * 5 + 4f).top();
+537:             if(mobile){
+538:                 editorMain.row().spacerY(() -> {
+539:                     if(control.input instanceof MobileInput mob && Core.settings.getBool("editor-blocks-shown")){
+540:                         if(Core.graphics.isPortrait()) return Core.graphics.getHeight() / 2f / Scl.scl(1f);
+541:                         if(mob.hasSchematic()) return 156f;
+542:                         if(mob.showCancel()) return 50f;
+543:                     }
+544:                     return 0f;
+545:                 });
+546:             }
+547: 
+548:             editorMain.row().add().growY();
+549:             editorMain.visible(() -> shown() && state.isEditor());
+550: 
+551:             //fps display
+552:             cont.table(info -> {
+553:                 info.name = "fps/ping";
+554:                 info.touchable = Touchable.disabled;
+555:                 info.top().left().margin(4).visible(() -> Core.settings.getBool("fps") && shown());
+556:                 IntFormat fps = new IntFormat("fps");
+557:                 IntFormat ping = new IntFormat("ping");
+558:                 IntFormat tps = new IntFormat("tps");
+559:                 IntFormat mem = new IntFormat("memory");
+560:                 IntFormat memnative = new IntFormat("memory2");
+561: 
+562:                 info.label(() -> fps.get(Core.graphics.getFramesPerSecond())).left().style(Styles.outlineLabel).name("fps");
+563:                 info.row();
+564: 
+565:                 if(android){
+566:                     info.label(() -> memnative.get((int)(Core.app.getJavaHeap() / 1024 / 1024), (int)(Core.app.getNativeHeap() / 1024 / 1024))).left().style(Styles.outlineLabel).name("memory2");
+567:                 }else{
+568:                     info.label(() -> mem.get((int)(Core.app.getJavaHeap() / 1024 / 1024))).left().style(Styles.outlineLabel).name("memory");
+569:                 }
+570:                 info.row();
+571: 
+572:                 info.label(() -> ping.get(netClient.getPing())).visible(net::client).left().style(Styles.outlineLabel).name("ping").row();
+573:                 info.label(() -> tps.get(state.serverTps == -1 ? 60 : state.serverTps)).visible(net::client).left().style(Styles.outlineLabel).name("tps").row();
+574: 
+575:             }).top().left();
+576:         });
+577: 
+578:         //core info
+579:         parent.fill(t -> {
+580:             t.top();
+581: 
+582:             if(Core.settings.getBool("macnotch") ){
+583:                 t.margin(macNotchHeight);
+584:             }
+585: 
+586:             t.visible(this::shown);
+587: 
+588:             t.name = "coreinfo";
+589: 
+590:             t.collapser(v -> v.add().height(pauseHeight), () -> !netServer.isWaitingForPlayers() && (state.isPaused() || pauseDisableDur > 0f)).row();
+591: 
+592:             t.table(c -> {
+593:                 //core items
+594:                 c.top().collapser(coreItems, () -> Core.settings.getBool("coreitems") && !mobile && shown()).fillX().row();

@@ -1,0 +1,112 @@
+1: package mindustry.io;
+2: 
+3: import arc.files.*;
+4: import arc.graphics.*;
+5: import arc.struct.*;
+6: import arc.util.io.*;
+7: import mindustry.content.*;
+8: import mindustry.core.*;
+9: import mindustry.ctype.*;
+10: import mindustry.game.*;
+11: import mindustry.maps.*;
+12: import mindustry.world.*;
+13: import mindustry.world.blocks.environment.*;
+14: import mindustry.world.blocks.storage.*;
+15: 
+16: import java.io.*;
+17: import java.util.zip.*;
+18: 
+19: import static mindustry.Vars.*;
+20: 
+21: /** Reads and writes map files. */
+22: public class MapIO{
+23:     private static final int[] pngHeader = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+24: 
+25:     public static boolean isImage(Fi file){
+26:         try(InputStream stream = file.read(32)){
+27:             for(int i1 : pngHeader){
+28:                 if(stream.read() != i1){
+29:                     return false;
+30:                 }
+31:             }
+32:             return true;
+33:         }catch(IOException e){
+34:             return false;
+35:         }
+36:     }
+37: 
+38:     public static Map createMap(Fi file, boolean custom) throws IOException{
+39:         try(InputStream is = new InflaterInputStream(file.read(bufferSize)); CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+40:             SaveIO.readHeader(stream);
+41:             int version = stream.readInt();
+42:             SaveVersion ver = SaveIO.getSaveWriter(version);
+43:             if(ver == null) throw new IOException("Unknown save version: " + version + ". Are you trying to load a save from a newer version?");
+44:             StringMap tags = new StringMap();
+45:             ver.readRegion("meta", stream, counter, in -> tags.putAll(ver.readStringMap(in)));
+46:             return new Map(file, tags.getInt("width"), tags.getInt("height"), tags, custom, version, Version.build);
+47:         }
+48:     }
+49: 
+50:     public static void writeMap(Fi file, Map map) throws IOException{
+51:         writeMap(file, map, true);
+52:     }
+53: 
+54:     /** @param embed if true, assets will be embedded in the map - this is needed for external export. */
+55:     public static void writeMap(Fi file, Map map, boolean embed) throws IOException{
+56:         try{
+57:             SaveIO.write(file, new SaveOptions(){{
+58:                 extraTags = map.tags;
+59:                 embedAssets = embed;
+60:             }});
+61:         }catch(Exception e){
+62:             throw new IOException(e);
+63:         }
+64:     }
+65: 
+66:     public static void loadMap(Map map){
+67:         SaveIO.load(map.file);
+68:     }
+69: 
+70:     public static void loadMap(Map map, WorldContext cons){
+71:         SaveIO.load(map.file, cons);
+72:     }
+73: 
+74:     public static Pixmap generatePreview(Map map) throws IOException{
+75:         map.spawns = 0;
+76:         map.teams.clear();
+77: 
+78:         try(InputStream is = new InflaterInputStream(map.file.read(bufferSize)); CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+79:             SaveIO.readHeader(stream);
+80:             int version = stream.readInt();
+81:             SaveVersion ver = SaveIO.getSaveWriter(version);
+82:             if(ver == null) throw new IOException("Unknown save version: " + version + ". Are you trying to load a save from a newer version?");
+83:             ver.readRegion("meta", stream, counter, ver::readStringMap);
+84: 
+85:             Pixmap floors = new Pixmap(map.width, map.height);
+86:             Pixmap walls = new Pixmap(map.width, map.height);
+87:             int black = 255;
+88:             int shade = Color.rgba8888(0f, 0f, 0f, 0.5f);
+89: 
+90:             int width = map.width, height = map.height;
+91:             int len = width*height;
+92:             short[] floorIds = new short[len];
+93:             boolean[] overlays = new boolean[len];
+94: 
+95:             CachedTile tile = new CachedTile(){
+96:                 @Override
+97:                 public void setBlock(Block type){
+98:                     //do not super.setBlock as that affects the current world
+99:                     this.block = type;
+100:                     this.build = type.newBuilding().init(this, this.team(), false, 0);
+101:                     int c = colorFor(type, Blocks.air, Blocks.air, team());
+102:                     if(c != black){
+103:                         walls.setRaw(x, floors.height - 1 - y, c);
+104:                         floors.set(x, floors.height - 1 - y + 1, shade);
+105:                     }
+106:                 }
+107:             };
+108: 
+109:             //version 12 has content patches here, version 11 has them after the content header
+110:             if(ver.version >= 12) ver.skipChunk(stream);
+111:             ver.readRegion("content", stream, counter, MapIO::readPreviewContentHeader);
+112:             if(ver.version == 11) ver.skipChunk(stream);

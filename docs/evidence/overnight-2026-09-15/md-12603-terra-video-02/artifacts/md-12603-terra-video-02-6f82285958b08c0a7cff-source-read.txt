@@ -1,0 +1,90 @@
+6730:             consumePower(2f);
+6731:             size = 3;
+6732:             fogRadius = 5;
+6733:         }};
+6734: 
+6735:         payloadUnloader = new PayloadUnloader("payload-unloader"){{
+6736:             requirements(Category.units, with(Items.graphite, 140, Items.silicon, 220, Items.tungsten, 180));
+6737:             regionSuffix = "-dark";
+6738:             hasPower = true;
+6739:             consumePower(2f);
+6740:             size = 3;
+6741:             fogRadius = 5;
+6742:         }};
+6743: 
+6744:         //endregion
+6745:         //region sandbox
+6746: 
+6747:         powerSource = new PowerSource("power-source"){{
+6748:             requirements(Category.power, BuildVisibility.sandboxOnly, with());
+6749:             powerProduction = 1000000f / 60f;
+6750:             alwaysUnlocked = true;
+6751:         }};
+6752: 
+6753:         powerVoid = new PowerVoid("power-void"){{
+6754:             requirements(Category.power, BuildVisibility.sandboxOnly, with());
+6755:             alwaysUnlocked = true;
+6756:         }};
+6757: 
+6758:         itemSource = new ItemSource("item-source"){{
+6759:             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+6760:             alwaysUnlocked = true;
+6761:         }};
+6762: 
+6763:         itemVoid = new ItemVoid("item-void"){{
+6764:             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+6765:             alwaysUnlocked = true;
+6766:         }};
+6767: 
+6768:         liquidSource = new LiquidSource("liquid-source"){{
+6769:             requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+6770:             alwaysUnlocked = true;
+6771:             floating = true;
+6772:         }};
+6773: 
+6774:         liquidVoid = new LiquidVoid("liquid-void"){{
+6775:             requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+6776:             alwaysUnlocked = true;
+6777:             floating = true;
+6778:         }};
+6779: 
+6780:         payloadSource = new PayloadSource("payload-source"){{
+6781:             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+6782:             size = 5;
+6783:             alwaysUnlocked = true;
+6784:         }};
+6785: 
+6786:         payloadVoid = new PayloadVoid("payload-void"){{
+6787:             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+6788:             size = 5;
+6789:             alwaysUnlocked = true;
+6790:         }};
+6791: 
+6792:         heatSource = new HeatProducer("heat-source"){{
+6793:             requirements(Category.crafting, BuildVisibility.sandboxOnly, with());
+6794:             drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
+6795:             rotateDraw = false;
+6796:             size = 1;
+6797:             heatOutput = 1000f;
+6798:             warmupRate = 1000f;
+6799:             regionRotated1 = 1;
+6800:             itemCapacity = 0;
+6801:             alwaysUnlocked = true;
+6802:             ambientSound = Sounds.none;
+6803:             allDatabaseTabs = true;
+6804:         }};
+6805: 
+6806:         targetDummy = new TargetDummy("target-dummy"){{
+6807:             requirements(Category.defense, BuildVisibility.sandboxOnly, with());
+6808:             size = 2;
+6809:             alwaysUnlocked = true;
+6810:         }};
+6811: 
+6812:         //TODO move
+6813:         illuminator = new LightBlock("illuminator"){{
+6814:             requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.graphite, 12, Items.silicon, 8, Items.lead, 8));
+6815:             brightness = 0.75f;
+6816:             radius = 140f;
+6817:             consumePower(0.05f);
+6818:         }};
+6819: 

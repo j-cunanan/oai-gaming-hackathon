@@ -392,8 +392,31 @@ def render_report(case: Case, store: Store) -> bytes:
 
     screenshots = []
     if rep and rep.evidence:
-        screenshots.append(("Baseline replay evidence", rep.evidence[-1]))
-    if case.latest_screenshot and case.latest_screenshot not in {a for _, a in screenshots}:
+        for artifact_id in reversed(rep.evidence):
+            try:
+                _, media_type = store.artifact_path(case.id, artifact_id)
+            except (KeyError, OSError):
+                continue
+            if media_type in {"image/png", "image/jpeg"}:
+                screenshots.append(("Baseline replay evidence", artifact_id))
+                break
+    candidate_screen = None
+    if any(
+        check.name == "Original replay after patch" and check.status in {"pass", "fail"}
+        for check in case.checks
+    ):
+        cursor = 0
+        while events := store.events(case.id, cursor):
+            cursor = events[-1]["seq"]
+            for event in events:
+                data = event["data"]
+                if event["kind"] == "state" and data.get("state") == "VALIDATING":
+                    candidate_screen = None
+                elif event["kind"] == "validation_replay":
+                    candidate_screen = data.get("screenshot")
+    if candidate_screen and candidate_screen not in {a for _, a in screenshots}:
+        screenshots.append(("Candidate replay outcome", candidate_screen))
+    elif case.latest_screenshot and case.latest_screenshot not in {a for _, a in screenshots}:
         screenshots.append(("Latest recorded game screen", case.latest_screenshot))
     if screenshots:
         story += [PageBreak(), p("Recorded screenshots", heading)]

@@ -6,7 +6,7 @@ The eight checkpoints compare the final reduced-baseline confirmation (replay ev
 
 The original report-only attempt remains at 3/5 confirmation. The shown fresh attempt received explicitly labeled guidance to include both save confirmations, but no source diagnosis or historical developer patch. Its all-five-gates result includes 5/5 baseline and candidate replay outcomes and 276/276 upstream tests with zero skips. The test concerns persistence of an editor-accepted patch entry; it does not establish changes to gameplay balance or other patch effects.
 
-`repro-report.pdf` is the reviewed eight-page REPRO report generated from the saved case using the renderer from PR23. Its source-review notes remain verbatim, under an explicit source-analysis scope. A static SHA-256 manifest covers the delivered files.
+`repro-report.pdf` is the reviewed eight-page REPRO report generated from the saved case using the candidate-outcome-aware renderer identified by SHA-256 in `report-provenance.json`. Its final page now shows the recorded candidate result after reopen; startup smoke no longer replaces that evidence. Its source-review notes remain verbatim, under an explicit source-analysis scope. A static SHA-256 manifest covers the delivered files.
 
 Rebuild the checkpoint data without new executions:
 

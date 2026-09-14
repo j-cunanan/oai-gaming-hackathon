@@ -1,0 +1,4 @@
+regex parse error:
+    editor("editor"
+          ^
+error: unclosed group

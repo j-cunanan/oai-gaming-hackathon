@@ -1,0 +1,1 @@
+./core/src/mindustry/editor/BannedContentDialog.java:73:                    for(Category category : Category.values()){

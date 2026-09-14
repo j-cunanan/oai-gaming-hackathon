@@ -1,0 +1,80 @@
+308:         @Override
+309:         public void write(Writes write){
+310:             super.write(write);
+311: 
+312:             write.f(progress);
+313:             write.f(itemRotation);
+314:             Payload.write(item, write);
+315:         }
+316: 
+317:         @Override
+318:         public void read(Reads read, byte revision){
+319:             super.read(read, revision);
+320: 
+321:             read.f(); //why is progress written?
+322:             itemRotation = read.f();
+323:             item = Payload.read(read);
+324:         }
+325: 
+326:         public void updatePayload(){
+327:             if(item != null){
+328:                 if(animation > fract()){
+329:                     animation = Mathf.lerp(animation, 0.8f, 0.15f);
+330:                 }
+331: 
+332:                 animation = Math.max(animation, fract());
+333: 
+334:                 float fract = animation;
+335:                 float rot = Mathf.slerp(itemRotation, rotdeg(), fract);
+336: 
+337:                 if(fract < 0.5f){
+338:                     Tmp.v1.trns(itemRotation + 180, (0.5f - fract) * tilesize * size);
+339:                 }else{
+340:                     Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
+341:                 }
+342: 
+343:                 float vx = Tmp.v1.x, vy = Tmp.v1.y;
+344: 
+345:                 item.set(x + vx, y + vy, rot);
+346:             }
+347:         }
+348: 
+349:         protected boolean blends(int direction){
+350:             if(direction == rotation){
+351:                 return !blocked || next != null;
+352:             }
+353:             return PayloadBlock.blends(this, direction);
+354:         }
+355: 
+356:         protected TextureRegion clipRegion(Rect bounds, Rect sprite, TextureRegion region){
+357:             Rect over = Tmp.r3;
+358: 
+359:             boolean overlaps = Intersector.intersectRectangles(bounds, sprite, over);
+360: 
+361:             TextureRegion out = Tmp.tr1;
+362:             out.set(region.texture);
+363:             out.scale = region.scale;
+364: 
+365:             if(overlaps){
+366:                 float w = region.u2 - region.u;
+367:                 float h = region.v2 - region.v;
+368:                 float x = region.u, y = region.v;
+369:                 float newX = (over.x - sprite.x) / sprite.width * w + x;
+370:                 float newY = (over.y - sprite.y) / sprite.height * h + y;
+371:                 float newW = (over.width / sprite.width) * w, newH = (over.height / sprite.height) * h;
+372: 
+373:                 out.set(newX, newY, newX + newW, newY + newH);
+374:             }else{
+375:                 out.set(0f, 0f, 0f, 0f);
+376:             }
+377: 
+378:             return out;
+379:         }
+380: 
+381:         public int curStep(){
+382:             return (int)((time()) / moveTime);
+383:         }
+384: 
+385:         public float fract(){
+386:             return interp.apply(progress / moveTime);
+387:         }

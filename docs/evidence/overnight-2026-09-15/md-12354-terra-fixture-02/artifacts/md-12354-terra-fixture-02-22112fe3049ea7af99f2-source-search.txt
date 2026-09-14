@@ -1,0 +1,16 @@
+./core/assets/bundles/bundle_cs.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_ro.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_fil.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_uk_UA.properties:2565:block.payload-conveyor.description = Англійська назва: Payload Conveyor\nПереміщує великі вантажі, як-от одиниці з заводів.
+./core/assets/bundles/bundle_uk_UA.properties:2674:block.reinforced-payload-conveyor.description = Англійська назва: Reinforced Payload Conveyor\nПереміщує вантаж вперед.
+./core/assets/bundles/bundle_nl.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle.properties:2058:block.payload-conveyor.name = Payload Conveyor
+./core/assets/bundles/bundle.properties:2222:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_et.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_lt.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_it.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_tk.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_nl_BE.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_da.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/assets/bundles/bundle_sv.properties:2217:block.reinforced-payload-conveyor.name = Reinforced Payload Conveyor
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:96:                        //this condition intentionally uses "accept from itself" conditions, because payload conveyors only accept during the start

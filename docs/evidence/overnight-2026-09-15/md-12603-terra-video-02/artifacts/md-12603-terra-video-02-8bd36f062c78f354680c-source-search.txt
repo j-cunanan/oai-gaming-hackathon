@@ -1,0 +1,4 @@
+regex parse error:
+    addBlockSelection(parent
+                     ^
+error: unclosed group

@@ -1,11 +1,13 @@
 from io import BytesIO
 
+import pytest
 from fastapi.testclient import TestClient
+from PIL import Image
 from pypdf import PdfReader
 
 from repro.api import create_app
 from repro.config import Settings
-from repro.models import Case, CaseInput, Check, PatchRationale
+from repro.models import Case, CaseInput, Check, OracleSpec, PatchRationale, Reproduction
 from repro.reporting import render_report
 from repro.storage.store import Store
 
@@ -128,3 +130,61 @@ def test_pdf_includes_stage_times_and_branded_header(tmp_path):
         "No recorded activity",
     ):
         assert expected in text
+
+
+@pytest.mark.parametrize("fresh_candidate", [True, False])
+def test_pdf_shows_current_candidate_evidence_and_never_reuses_a_prior_validation(
+    tmp_path, fresh_candidate
+):
+    store = Store(tmp_path)
+    case = Case(report=case_input())
+
+    def screenshot(name, color):
+        output = BytesIO()
+        Image.new("RGB", (32, 18), color).save(output, format="PNG")
+        return store.artifact(case.id, name, output.getvalue(), "image/png")
+
+    old = screenshot("old-candidate.png", "red")
+    current = screenshot("current-candidate.png", "green")
+    smoke = screenshot("startup-smoke.png", "blue")
+    baseline = screenshot("baseline.png", "black")
+    baseline_log = store.artifact(case.id, "baseline.log", "Recorded crash signature")
+    case.reproduction = Reproduction(
+        game="mindustry",
+        commit=case.report.target_commit,
+        steps=[],
+        oracle=OracleSpec(
+            kind="crash", description="Game crashes", log_pattern="Recorded crash signature"
+        ),
+        evidence=[baseline, baseline_log],
+    )
+    store.save(case, "validation_replay", {"fixed": True, "screenshot": old})
+    store.save(case, "state", {"state": "VALIDATING", "summary": "A new validation attempt"})
+    if fresh_candidate:
+        store.save(case, "validation_replay", {"fixed": True, "screenshot": current})
+    case.checks = [
+        Check(
+            name="Original replay after patch",
+            status="pass" if fresh_candidate else "fail",
+            detail="Recorded result",
+        )
+    ]
+    case.latest_screenshot = smoke
+    store.save(case)
+    reader = PdfReader(BytesIO(render_report(case, store)))
+    text = "\n".join(page.extract_text() for page in reader.pages)
+    pixels = [
+        image.image.convert("RGB").getpixel((0, 0))
+        for page in reader.pages
+        for image in page.images
+    ]
+    assert (255, 0, 0) not in pixels
+    assert (0, 0, 0) in pixels
+    assert "Baseline replay evidence: screenshot unavailable" not in text
+    if fresh_candidate:
+        assert "Candidate replay outcome" in text
+        assert (0, 128, 0) in pixels and (0, 0, 255) not in pixels
+    else:
+        assert "Candidate replay outcome" not in text
+        assert "Latest recorded game screen" in text
+        assert (0, 0, 255) in pixels and (0, 128, 0) not in pixels

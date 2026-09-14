@@ -1,0 +1,165 @@
+version: 1
+game: mindustry
+commit: f7ededb3a1950c396e5c113d96a19dd88e71da9a
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 253
+  y: 335
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open Editor from main menu
+  checkpoint: open-editor
+- action: click
+  x: 640
+  y: 680
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Create a new editor map
+  checkpoint: new-map-dialog
+- action: click
+  x: 640
+  y: 383
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the modal map name input underline
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: DummySaveTest
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Input new blank map name
+  checkpoint: map-name-entered
+- action: click
+  x: 704
+  y: 429
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm creation of blank map
+  checkpoint: blank-editor
+- action: click
+  x: 94
+  y: 225
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Switch editor palette to block placement
+  checkpoint: ''
+- action: click
+  x: 1112
+  y: 43
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus editor block search
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: Target Dummy
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Search for Target Dummy block
+  checkpoint: target-dummy-search
+- action: click
+  x: 1165
+  y: 133
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select Target Dummy block from results
+  checkpoint: ''
+- action: click
+  x: 600
+  y: 370
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Place selected Target Dummy on blank map
+  checkpoint: target-dummy-placed
+- action: click
+  x: 35
+  y: 52
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor map menu to save
+  checkpoint: ''
+- action: click
+  x: 548
+  y: 186
+  keys: []
+  text: ''
+  seconds: 5.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Save map containing Target Dummy
+  checkpoint: save-target-dummy
+oracle:
+  kind: crash
+  description: On Windows, the reporter states that placing a Target Dummy in the
+    editor and saving the map crashes the game. The reporter further states that attempting
+    to load the resulting saved map produces an error.
+  log_pattern: TargetDummy$TargetDummyBuild.write(TargetDummy.java:271)
+  checkpoints:
+  - blank-editor
+  - target-dummy-search
+  - target-dummy-placed
+  - save-target-dummy
+successful_runs: 5
+total_runs: 5
+original_actions: 15
+deterministic: true
+evidence:
+- md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png
+- md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log
+- md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png
+- md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log
+- md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png
+- md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log
+- md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png
+- md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log
+- md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png
+- md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log
