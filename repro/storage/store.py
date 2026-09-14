@@ -6,7 +6,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-from repro.models import Case, State, now
+from repro.models import Case, PatchRationale, State, now
 
 
 class Store:
@@ -58,7 +58,23 @@ class Store:
             row = db.execute("SELECT data FROM cases WHERE id=?", (case_id,)).fetchone()
         if not row:
             raise KeyError(case_id)
-        return Case.model_validate_json(row["data"])
+        case = Case.model_validate_json(row["data"])
+        if case.patch_artifact and not case.patch_rationale:
+            # Older cases already saved the explanation in their patch event.
+            # Match this exact patch, rather than an unrelated later proposal/upload.
+            with self.connect() as db:
+                rows = db.execute(
+                    "SELECT data FROM events WHERE case_id=? AND kind='patch' ORDER BY seq DESC",
+                    (case_id,),
+                )
+                for event in rows:
+                    data = json.loads(event["data"])
+                    if data.get("artifact") == case.patch_artifact and data.get("explanation"):
+                        case.patch_rationale = PatchRationale(
+                            explanation=data["explanation"], risks=data.get("risks", [])
+                        )
+                        break
+        return case
 
     def list(self) -> list[Case]:
         with self.connect() as db:

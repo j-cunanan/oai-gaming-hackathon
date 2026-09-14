@@ -23,6 +23,8 @@ The API is available at `http://127.0.0.1:8000/api` and its interactive referenc
 
 The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
+An **investigation** is one bug case, from the player report through reproduction, diagnosis, and review. Small info buttons explain the stats, stages, and actions on hover, keyboard focus, or click; Escape dismisses the explanation. **Proposed patch** shows the saved justification and risks above the exact source diff, with green additions, red deletions, and old/new line numbers. Validation evidence is shown separately from the proposed explanation.
+
 On macOS, Docker may not have file-sharing access to a Documents folder. Set `REPRO_SANDBOX_DIR=/tmp/repro-workspaces` in `.env` in that situation. Case records and evidence stay under `REPRO_DATA_DIR`; only disposable build workspaces use the alternate directory. Temporary builds may need preparation again after a reboot.
 
 Mindustry's pinned SDL desktop dependency does not ship a Linux ARM64 native library. Use the AMD64 image even on Apple Silicon (Docker emulates it); do not count an architecture-related launch failure as a reproduced game bug.
@@ -35,8 +37,10 @@ uv run repro replay CASE_ID
 uv run repro replay CASE_ID --regression  # exit 1 when the known bug is observed
 uv run repro reduce CASE_ID  # refine the baseline replay; revalidate a candidate if it changes
 uv run repro validate CASE_ID
-uv run repro report CASE_ID --output investigation.md
+uv run repro report CASE_ID --output output/pdf/repro-report.pdf
 ```
+
+**Export PDF** downloads a plain **REPRO Report** with the current saved report, reproduction steps, diagnosis, patch explanation and diff, validation results, and screenshots. Export makes no model calls. `GET /api/cases/CASE_ID/report` also returns PDF by default. For Markdown, add `?format=markdown`, use a `.md` CLI output path, or omit `--output` to print it to the terminal.
 
 `replay` uses the retained pre-patch Mindustry build. `--candidate` uses the candidate build. A visual replay needs API access for its independent verifier. An explicit `validate` rerun repeats both baseline and candidate gates, retaining the previous result as an artifact. The validation workflow additionally checks that the expected game/UI state was reached; simply failing to observe the bug is insufficient to approve a patch.
 
@@ -47,7 +51,7 @@ uv run repro report CASE_ID --output investigation.md
 - A 1280 × 720 Xvfb desktop with recorded inputs, screenshots, logs and process state.
 - Exact historical source snapshots, no future Git objects/remotes, and network-disabled investigation containers. The model controller keeps its API key outside the game sandbox.
 - Independent visual/log/crash oracles, clean-profile replay, bounded action reduction, source localization, replay regressions, candidate builds/tests, post-patch replay, and a narrow launch smoke check.
-- Artifact downloads, Markdown reports and local review decisions. Review approval **does not push or merge changes to target-game repositories**.
+- Artifact downloads, PDF and Markdown reports, saved patch justifications, and local review decisions. Review approval **does not push or merge changes to target-game repositories**.
 
 ## Recorded Mindustry run
 
@@ -72,6 +76,9 @@ No benchmark success rate is implied by unit tests or mock observations. See [be
 ```bash
 uv run ruff check repro tests scripts infra/docker/worker.py
 uv run pytest -q
+cd apps/web
+npm test
+npm run build
 ```
 
 PRs are the collaboration unit. Keep changes scoped, include validation and limitations, and preserve team members' work. Never commit `.env`, runtime data, API keys, downloaded target-game source, or evaluator-only material inside a model-visible workspace.

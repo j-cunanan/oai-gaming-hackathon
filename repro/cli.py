@@ -7,6 +7,7 @@ import yaml
 from repro.config import Settings
 from repro.models import Case, CaseInput
 from repro.orchestration.manager import Manager
+from repro.reporting import render_report
 from repro.storage.store import Store
 
 app = typer.Typer(no_args_is_help=True, help="REPRO: evidence-driven game bug investigation")
@@ -69,9 +70,15 @@ def investigate(case_id: str):
 
 @app.command()
 def report(case_id: str, output: Path | None = None):
-    """Export the engineering report."""
+    """Export to .pdf or Markdown; omit --output to print Markdown."""
     cfg, store = context()
-    text = Manager(cfg, store).report(store.get(case_id))
+    case = store.get(case_id)
+    if output and output.suffix.lower() == ".pdf":
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(render_report(case, store))
+        typer.echo(str(output))
+        return
+    text = Manager(cfg, store).report(case)
     if output:
         output.write_text(text)
     else:
