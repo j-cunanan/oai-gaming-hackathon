@@ -77,6 +77,7 @@ class Action(BaseModel):
     scroll_y: int = Field(default=0, ge=-20, le=20)
     button: Literal["left", "right", "middle"] = "left"
     semantic: str = Field(default="", max_length=500)
+    checkpoint: str = Field(default="", max_length=80)
 
     @model_validator(mode="after")
     def coordinates(self):
@@ -89,9 +90,20 @@ class Action(BaseModel):
 
 
 class OracleSpec(BaseModel):
-    kind: Literal["visual", "crash", "log"]
+    kind: Literal["visual", "sequence", "crash", "log"]
     description: str = Field(min_length=5, max_length=2000)
     log_pattern: str | None = None
+    checkpoints: list[str] = Field(default_factory=list, max_length=8)
+
+    @model_validator(mode="after")
+    def ordered_checkpoints(self):
+        if self.kind == "sequence" and (
+            len(self.checkpoints) < 2
+            or len(set(self.checkpoints)) != len(self.checkpoints)
+            or any(not label.strip() or len(label) > 80 for label in self.checkpoints)
+        ):
+            raise ValueError("Sequence verification requires 2–8 distinct checkpoint labels")
+        return self
 
 
 class Verdict(BaseModel):
@@ -99,6 +111,11 @@ class Verdict(BaseModel):
     confidence: float = Field(ge=0, le=1)
     explanation: str
     evidence: list[str]
+
+
+class SequenceVerdict(Verdict):
+    expected_state_reached: bool = False
+    symptom_absent: bool = False
 
 
 class Hypothesis(BaseModel):
