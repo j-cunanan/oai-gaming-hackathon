@@ -1,0 +1,35 @@
+{
+  "scope": "Actual X11 input events in a disposable desktop; no game or AI calls",
+  "modifier_at_click": false,
+  "held_w_ms": 3,
+  "requested_hold_ms": 300,
+  "passed": false,
+  "events": [
+    {
+      "type": 4,
+      "detail": 1,
+      "state": 0,
+      "time": 1003356
+    },
+    {
+      "type": 5,
+      "detail": 1,
+      "state": 256,
+      "time": 1003357
+    },
+    {
+      "type": 2,
+      "detail": 25,
+      "state": 0,
+      "time": 1003655
+    },
+    {
+      "type": 3,
+      "detail": 25,
+      "state": 0,
+      "time": 1003658
+    }
+  ],
+  "image": "repro-worker:overnight-20260915",
+  "image_digest": "sha256:5a9200c0e2e51efe26a19442f915f15cff4a4d09e60afd8210ceb74e26a9d4e1"
+}

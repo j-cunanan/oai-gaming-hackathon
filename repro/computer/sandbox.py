@@ -151,8 +151,8 @@ class DockerSandbox:
             ["docker", "exec", "-i", self.name, "python3", "-u", "/opt/repro/worker.py", "serve"],
             self.root / "worker-rpc.log",
         )
-        if (await self.rpc("ping")).get("protocol") != 2:
-            raise RuntimeError("Rebuild the worker image to enable the persistent worker protocol")
+        if (await self.rpc("ping")).get("protocol") != 3:
+            raise RuntimeError("Rebuild the worker image to enable modifier clicks and timed input")
 
     async def stop(self):
         try:

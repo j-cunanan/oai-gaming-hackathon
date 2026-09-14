@@ -74,6 +74,7 @@ class Action(BaseModel):
     keys: list[str] = Field(default_factory=list, max_length=5)
     text: str = Field(default="", max_length=2000)
     seconds: float = Field(default=0.5, ge=0, le=10)
+    hold_seconds: float = Field(default=0, ge=0, le=10)
     scroll_y: int = Field(default=0, ge=-20, le=20)
     button: Literal["left", "right", "middle"] = "left"
     semantic: str = Field(default="", max_length=500)
@@ -86,6 +87,10 @@ class Action(BaseModel):
                 raise ValueError("Pointer actions require x and y")
         if self.action == "keypress" and not self.keys:
             raise ValueError("keypress requires keys")
+        if self.hold_seconds and self.action not in {"click", "keypress"}:
+            raise ValueError("hold_seconds applies only to click or keypress")
+        if self.keys and self.action in {"type", "wait"}:
+            raise ValueError("Use keypress or a pointer action for held keys")
         return self
 
 
