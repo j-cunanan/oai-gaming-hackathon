@@ -1,0 +1,63 @@
+99:     void showImport(Cons<String> handler){
+100:         BaseDialog dialog = new BaseDialog("@editor.import");
+101:         dialog.cont.pane(p -> {
+102:             p.margin(10f);
+103:             p.table(Tex.button, t -> {
+104:                 TextButtonStyle style = Styles.flatt;
+105:                 t.defaults().size(280f, 60f).left();
+106:                 t.row();
+107:                 t.button("@load.clipboard", Icon.copy, style, () -> {
+108:                     dialog.hide();
+109:                     handler.get(Core.app.getClipboardText());
+110:                 }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+111:                 t.row();
+112:                 //currently doesn't allow multi import because it could be replacing exactly 1 patch
+113:                 t.button("@import.file", Icon.download, style, () -> FileChooser.open("json", "hjson", "json5").submit(file -> {
+114:                     dialog.hide();
+115:                     handler.get(file.readString());
+116:                 })).marginLeft(12f);
+117:                 t.row();
+118:             });
+119:         });
+120: 
+121:         dialog.addCloseButton();
+122:         dialog.show();
+123:     }
+124: 
+125:     void addPatch(String patch){
+126:         addPatch(patch, -1);
+127:     }
+128: 
+129:     void addPatch(String patch, int replaceIndex){
+130:         var patches = state.data.getPatches();
+131:         var oldPatches = patches.copy();
+132: 
+133:         try{
+134:             Jval.read(patch); //validation
+135: 
+136:             if(replaceIndex == -1){
+137:                 patches.add(new PatchAsset(patch));
+138:             }else{
+139:                 patches.set(replaceIndex, new PatchAsset(patch));
+140:             }
+141: 
+142:             state.data.reloadPatches(patches);
+143: 
+144:         }catch(Exception e){
+145:             patches.set(oldPatches);
+146:             ui.showException("@patch.importerror", e);
+147:         }
+148:     }
+149: 
+150:     int countFields(JsonValue value){
+151:         if(value.isObject() || value.isArray()){
+152:             int sum = 0;
+153:             for(var child : value){
+154:                 sum += countFields(child);
+155:             }
+156:             return Math.max(sum, 1);
+157:         }else{
+158:             return 1;
+159:         }
+160:     }
+161: }

@@ -5,6 +5,7 @@ shortlist. Each package below is a frozen snapshot, including unsuccessful attem
 
 New records retained after the initial gameplay attempts:
 
+- [`md-12620-terra-overnight-02`](md-12620-terra-overnight-02/README.md): a separate evidence-guided investigation with a fresh AI patch and **all five gates passing**. The 30-action trigger reproduces 5/5; the candidate preserves deletion after reopening in 5/5. All 276 upstream tests pass with zero skips. `datapatch-suite-audit` retains that completed suite's JUnit XML. This is currently the strongest new end-to-end result.
 - `md-12579-terra-overnight-01`: verified 12-action crash trigger and a fresh AI patch.
   Three gates pass; the existing-test fixture returns 404, and the full candidate
   visual check passed only 1/5 because reopening was not recorded. The patch avoids
@@ -71,6 +72,7 @@ The new crash and persistence packages use the same importer:
 ```bash
 uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12579-terra-overnight-01 --manifest benchmarks/candidates/MD-candidate-12579.yaml --id recorded-md-12579
 uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12620-terra-overnight-01 --manifest benchmarks/candidates/MD-candidate-12620.yaml --id recorded-md-12620
+uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12620-terra-overnight-02 --manifest benchmarks/candidates/MD-candidate-12620-guided.yaml --id recorded-md-12620-guided
 uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12565-terra-overnight-02 --manifest benchmarks/candidates/MD-candidate-12565-guided.yaml --id recorded-md-12565-guided
 ```
 

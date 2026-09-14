@@ -1,0 +1,99 @@
+{
+  "source_case_id": "md-12620-terra-overnight-02",
+  "captured_at": "2026-09-14T17:52:18.780958+00:00",
+  "target_commit": "63b2069e9685063c74abc41fae84a66f73e9e09b",
+  "candidate_patch_sha256": "8a4309b8ce8b10655f1ba09315b0ab5e11819f0f87ec7c9fff839d3d13394090",
+  "candidate_tests_log_artifact": "md-12620-terra-overnight-02-5cc6f514bc42f3905fc4-candidate-tests.log",
+  "candidate_tests_log_sha256": "5cc6f514bc42f3905fc47255f858a63205795099eb421bd029e736f5e74e06ac",
+  "counts": {
+    "tests": 276,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "ApplicationTests",
+      "tests": 135,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-ApplicationTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.164651+00:00"
+    },
+    {
+      "name": "DataAssetTests",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-DataAssetTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.167827+00:00"
+    },
+    {
+      "name": "LogicTests",
+      "tests": 63,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-LogicTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.167318+00:00"
+    },
+    {
+      "name": "ModTestAllure",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-ModTestAllure.xml",
+      "mtime_utc": "2026-09-14T17:41:19.165273+00:00"
+    },
+    {
+      "name": "PatcherTests",
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-PatcherTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.176028+00:00"
+    },
+    {
+      "name": "power.ConsumeGeneratorTests",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-power.ConsumeGeneratorTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.172379+00:00"
+    },
+    {
+      "name": "power.DirectConsumerTests",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-power.DirectConsumerTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.172363+00:00"
+    },
+    {
+      "name": "power.PowerTests$PowerGraphTests",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "TEST-power.PowerTests$PowerGraphTests.xml",
+      "mtime_utc": "2026-09-14T17:41:19.176076+00:00"
+    }
+  ],
+  "files": {
+    "TEST-ApplicationTests.xml": "ed3d1d89d4202a2c0cb26625b5009e16456ac40fad0b282e94bba9ed2774d031",
+    "TEST-DataAssetTests.xml": "7e30606f9b771c6b4c680cd06b4e1e4e66a8a394c90b317bb9698be9e39ba985",
+    "TEST-LogicTests.xml": "b8086795e4ec32c03d4c1c64193d70e1c2e9e6046ef5898286f7d7ddbca27feb",
+    "TEST-ModTestAllure.xml": "0d8f885f11c61b64aa9a206ab348f494fc5992e5bc9b35129fb2f740113317c8",
+    "TEST-PatcherTests.xml": "3f966ac8b1fa4c229ca12f1dba91f5851abdb331ad826860daf19b52a57ccfe9",
+    "TEST-power.ConsumeGeneratorTests.xml": "dbc380da2c6e90d36fc9cecd93205347b53eb91cf857f9df2718aa22ec08be55",
+    "TEST-power.DirectConsumerTests.xml": "6d9d1c2be8beaae6df3c1465fa906861dfc567b447e7acc708c74545201e6683",
+    "TEST-power.PowerTests$PowerGraphTests.xml": "b6b74c2b69f9c0301fadaebbd5ebf6578dfa6069104543f271b657b6b5715261"
+  },
+  "scope": "Retained JUnit XML from the completed candidate suite, not an additional execution. The frozen case export retains the corresponding Gradle command log and validation result."
+}

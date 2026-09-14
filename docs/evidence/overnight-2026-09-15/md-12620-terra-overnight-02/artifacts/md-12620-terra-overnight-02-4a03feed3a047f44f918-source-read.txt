@@ -1,0 +1,17 @@
+118: 
+119:                 r.row();
+120: 
+121:                 r.button("@asset.title", Icon.fileCode, style, () -> {
+122:                     hide();
+123:                     patches.show();
+124:                 }).marginLeft(10f).colspan(2).width(460f).row();
+125:             }).colspan(2).center();
+126: 
+127:             name.change();
+128:             description.change();
+129:             author.change();
+130: 
+131:             t.margin(16f);
+132:         }).growX().scrollX(false);
+133:     }
+134: }

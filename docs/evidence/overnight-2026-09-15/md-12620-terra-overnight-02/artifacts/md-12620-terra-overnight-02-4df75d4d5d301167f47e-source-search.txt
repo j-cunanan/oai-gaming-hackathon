@@ -1,0 +1,35 @@
+./server/src/mindustry/server/ServerControl.java:386:        Events.on(DataPatchLoadEvent.class, event -> {
+./core/src/mindustry/editor/data/MapAssetsDialog.java:62:            DataPatcher.fixContentArrays();
+./core/src/mindustry/mod/DataManager.java:16:    private DataPatcher patcher = new DataPatcher();
+./core/src/mindustry/editor/data/MapImagesView.java:46:                        if(width > DataPatcher.maxImageSize || height > DataPatcher.maxImageSize){
+./core/src/mindustry/editor/data/MapImagesView.java:47:                            ui.showErrorMessage(Core.bundle.format("asset.image.toolarge", width, height, DataPatcher.maxImageSize, DataPatcher.maxImageSize));
+./core/src/mindustry/editor/data/MapImagesView.java:114:                                                if(res.width < DataPatcher.maxImageSize && res.height < DataPatcher.maxImageSize){
+./core/src/mindustry/editor/data/MapImagesView.java:140:                                        if(image.width > DataPatcher.maxImageSize || image.height > DataPatcher.maxImageSize || image.hash == null){
+./core/src/mindustry/editor/data/MapImagesView.java:141:                                            errors.add("[accent]" + image.path + "[white]: " + Core.bundle.format("asset.image.toolarge", image.width, image.height, DataPatcher.maxImageSize, DataPatcher.maxImageSize));
+./core/src/mindustry/mod/DataImagePacker.java:215:            if(pixmap.width > DataPatcher.maxImageSize || pixmap.height > DataPatcher.maxImageSize){
+./core/src/mindustry/mod/DataImagePacker.java:216:                Log.err("Server-provided image '" + name + "' exceeds max size of " + DataPatcher.maxImageSize);
+./core/src/mindustry/mod/DataPatcher.java:33:public class DataPatcher{
+./core/src/mindustry/mod/DataPatcher.java:46:    private static DataPatcher currentDataPatcher;
+./core/src/mindustry/mod/DataPatcher.java:71:                if(currentDataPatcher!= null){
+./core/src/mindustry/mod/DataPatcher.java:72:                    currentDataPatcher.warnContext(currentContent, currentFile, string, format);
+./core/src/mindustry/mod/DataPatcher.java:102:        currentDataPatcher = this;
+./core/src/mindustry/Vars.java:85:    public static final String patchesGuideURL = "https://mindustrygame.github.io/wiki/datapatches/";
+./core/src/mindustry/game/EventType.java:114:    public static class DataPatchLoadEvent{
+./core/src/mindustry/game/EventType.java:117:        public DataPatchLoadEvent(Seq<DataAsset> assets){
+./core/src/mindustry/net/NetworkIO.java:48:            writer.writeDataPatches(stream, false);
+./core/src/mindustry/net/NetworkIO.java:82:            writer.readDataPatches(stream, new SaveReadState(world.context));
+./core/src/mindustry/ctype/Content.java:70:        return minfo.mod == DataPatcher.dpMod;
+./core/src/mindustry/core/NetServer.java:558:     * Use {@link PixmapIO#writePngBytes} to get Pixmap bytes. Respect {@link mindustry.mod.DataPatcher#maxImageSize}.
+./core/src/mindustry/io/SaveVersion.java:65:        if(version >= 12) readRegion("patches", stream, counter, in -> readDataPatches(in, saveState));
+./core/src/mindustry/io/SaveVersion.java:81:        writeRegion("patches", stream, out -> writeDataPatches(out, options.embedAssets));
+./core/src/mindustry/io/SaveVersion.java:554:    public void readDataPatches(DataInput stream, SaveReadState saveState) throws IOException{
+./core/src/mindustry/io/SaveVersion.java:587:        Events.fire(new DataPatchLoadEvent(assets));
+./core/src/mindustry/io/SaveVersion.java:595:    public void writeDataPatches(DataOutput stream, boolean forceEmbed) throws IOException{
+./core/src/mindustry/io/SaveVersion.java:596:        stream.writeInt(DataPatcher.patchFormatVersion);
+./core/src/mindustry/io/SaveVersion.java:641:            Events.fire(new DataPatchLoadEvent(assets));
+./core/src/mindustry/io/versions/Save11.java:30:            readRegion("patches", stream, counter, in -> readDataPatches(in, saveState));
+./core/src/mindustry/io/versions/Save11.java:42:    public void readDataPatches(DataInput stream, SaveReadState saveState) throws IOException{
+./core/src/mindustry/io/versions/Save11.java:53:        Events.fire(new DataPatchLoadEvent(assets));
+./core/src/mindustry/io/versions/Save12.java:22:    public void readDataPatches(DataInput stream, SaveReadState saveState) throws IOException{
+./core/src/mindustry/io/versions/Save12.java:46:        Events.fire(new DataPatchLoadEvent(assets));
+./core/assets/scripts/global.js:212:const DataPatchLoadEvent = Packages.mindustry.game.EventType.DataPatchLoadEvent

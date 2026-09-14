@@ -1,0 +1,70 @@
+205:                             }
+206: 
+207:                             //close zip file contents
+208:                             zipped.delete();
+209: 
+210:                             if(results.size > 0){
+211:                                 var prev = state.data.getAllAssets().copy();
+212:                                 prev.addAll(results);
+213:                                 prev.sort();
+214:                                 state.data.load(prev);
+215:                                 if(state.data.getContent().size > 0){
+216:                                     //TODO: packs twice (bad)
+217:                                     state.data.regenerateContentSprites(false);
+218:                                 }
+219:                                 rebuild();
+220:                             }
+221: 
+222:                             var idiag = new BaseDialog("@asset.image.imports");
+223:                             if(results.size > 0) idiag.cont.add(Core.bundle.format("asset.imported", results.size)).row();
+224:                             if(!errors.isEmpty()){
+225:                                 idiag.cont.add("@asset.image.error").padBottom(10f).row();
+226:                                 idiag.cont.pane(ep -> {
+227:                                     ep.add(Seq.with(errors).toString("\n", s -> "[gray]- []" + s)).labelAlign(Align.left, Align.left).grow();
+228:                                 });
+229:                             }else if(results.size == 0){
+230:                                 idiag.cont.add("@asset.import.none");
+231:                             }
+232:                             idiag.buttons.button("@ok", Icon.ok, idiag::hide).size(200f, 64f);
+233:                             idiag.show();
+234: 
+235:                         }catch(Throwable e){
+236:                             ui.showException(e);
+237:                         }
+238:                     });
+239:                 })).marginLeft(12f).row();
+240:                 t.button("@asset.exportzip", Icon.upload, style, () -> FileChooser.export("assets", "zip", file -> {
+241:                     dialog.hide();
+242:                     try(OutputStream fos = file.write(false, 8192); ZipOutputStream zos = new ZipOutputStream(fos)){
+243:                         for(var asset : state.data.getAllAssets()){
+244:                             String path = asset.getFullPath();
+245:                             if(asset.isAlwaysEmbedded()){
+246:                                 zos.putNextEntry(new ZipEntry(path));
+247:                                 zos.write(asset.getData());
+248:                                 zos.closeEntry();
+249:                             }else{
+250:                                 Fi cacheFile = asset.getCacheFile();
+251:                                 if(cacheFile == null) continue;
+252: 
+253:                                 zos.putNextEntry(new ZipEntry(path));
+254:                                 zos.write(cacheFile.readBytes());
+255:                                 zos.closeEntry();
+256:                             }
+257:                         }
+258:                     }
+259:                 })).marginLeft(12f).row();
+260:                 t.button("@asset.clearall", Icon.trash, style, () -> {
+261:                     dialog.hide();
+262:                     ui.showConfirm("@asset.clearall.confirm", () -> {
+263:                         state.data.unload();
+264:                         rebuild();
+265:                     });
+266:                 }).marginLeft(12f).row();
+267:             });
+268:         });
+269: 
+270:         dialog.addCloseButton();
+271:         dialog.show();
+272:     }
+273: 
+274: }

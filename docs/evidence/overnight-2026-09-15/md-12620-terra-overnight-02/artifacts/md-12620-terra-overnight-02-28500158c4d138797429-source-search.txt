@@ -1,0 +1,4 @@
+./core/src/mindustry/mod/DataManager.java:263:    public Seq<DataAsset> getAllAssets(){
+./core/src/mindustry/editor/data/MapAssetsDialog.java:211:                                var prev = state.data.getAllAssets().copy();
+./core/src/mindustry/editor/data/MapAssetsDialog.java:243:                        for(var asset : state.data.getAllAssets()){
+./core/src/mindustry/io/SaveVersion.java:598:        var assets = state.data.getAllAssets();

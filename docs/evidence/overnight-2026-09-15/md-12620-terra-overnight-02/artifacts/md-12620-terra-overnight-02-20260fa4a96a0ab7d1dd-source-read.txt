@@ -1,0 +1,161 @@
+1: package mindustry.editor.data;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.scene.ui.TextButton.*;
+6: import arc.scene.ui.layout.*;
+7: import arc.util.*;
+8: import arc.util.serialization.*;
+9: import mindustry.*;
+10: import mindustry.gen.*;
+11: import mindustry.mod.data.*;
+12: import mindustry.ui.*;
+13: import mindustry.ui.dialogs.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class MapPatchesView implements AssetView{
+18: 
+19:     @Override
+20:     public void buildButtons(MapAssetsDialog diag, Table buttons){
+21:         buttons.button("@add", Icon.add, () -> showImport(s -> {
+22:             addPatch(s);
+23:             diag.rebuild();
+24:         })).size(190f, 64f);
+25:     }
+26: 
+27:     @Override
+28:     public void build(MapAssetsDialog diag, Table list){
+29:         float h = 50f;
+30: 
+31:         var patches = state.data.getPatches();
+32: 
+33:         list.defaults().pad(4f);
+34:         for(var patch : patches){
+35:             if(diag.searchString != null && !patch.name.toLowerCase().contains(diag.searchString)) continue;
+36: 
+37:             int fields = countFields(patch.json);
+38: 
+39:             if(patch.warnings.size > 0){
+40:                 list.button(Icon.warning, Styles.graySquarei, iconMed, () -> {
+41:                     BaseDialog dialog = new BaseDialog("@patch.errors");
+42:                     dialog.cont.top().pane(p -> {
+43:                         p.top();
+44: 
+45:                         for(var warning : patch.warnings){
+46:                             p.table(Styles.grayPanel, in -> {
+47:                                 in.add(warning.replaceAll("\t", "  "), Styles.monoLabel).grow().wrap();
+48:                             }).margin(6f).growX().pad(3f).row();
+49:                         }
+50:                     }).grow();
+51:                     dialog.addCloseButton();
+52:                     dialog.show();
+53:                 }).size(h);
+54:             }else{
+55:                 list.add().size(h);
+56:             }
+57: 
+58:             list.button((patch.name.isEmpty() ? "<unnamed>\n" : "[accent]" + patch.name + "\n") + "[lightgray][[" + Core.bundle.format("patch.fields", fields) + "]", Styles.grayt, () -> {
+59:                 BaseDialog dialog = new BaseDialog(Core.bundle.format("patch.set", patch.name.isEmpty() ? "<unnamed>" : patch.name));
+60:                 dialog.cont.top().pane(p -> {
+61:                     p.top();
+62:                     p.table(Styles.grayPanel, in -> {
+63:                         in.add(patch.patch.replaceAll("\t", "  "), Styles.monoLabel).grow().wrap().left().labelAlign(Align.left);
+64:                     }).margin(6f).growX().pad(5f).row();
+65:                 }).grow();
+66:                 dialog.addCloseButton();
+67:                 dialog.show();
+68:             }).size(mobile ? 390f : 450f, h).margin(10f).with(b -> {
+69:                 b.getLabel().setAlignment(Align.left, Align.left);
+70:             });
+71: 
+72:             list.button(Icon.copy, Styles.graySquarei, Vars.iconMed, () -> {
+73:                 Core.app.setClipboardText(patch.patch);
+74:                 ui.showInfoFade("@copied");
+75:             }).size(h);
+76: 
+77:             list.button(Icon.refresh, Styles.graySquarei, Vars.iconMed, () -> {
+78:                 showImport(str -> {
+79:                     addPatch(str, patches.indexOf(patch));
+80:                     diag.rebuild();
+81:                 });
+82:             }).size(h);
+83: 
+84:             list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+85:                 ui.showConfirm("@patch.delete.confirm",  () -> {
+86:                     patches.remove(patch);
+87:                     diag.rebuild();
+88:                 });
+89:             }).size(h);
+90: 
+91:             list.row();
+92:         }
+93: 
+94:         if(list.getChildren().isEmpty()){
+95:             list.add("@patch.none");
+96:         }
+97:     }
+98: 
+99:     void showImport(Cons<String> handler){
+100:         BaseDialog dialog = new BaseDialog("@editor.import");
+101:         dialog.cont.pane(p -> {
+102:             p.margin(10f);
+103:             p.table(Tex.button, t -> {
+104:                 TextButtonStyle style = Styles.flatt;
+105:                 t.defaults().size(280f, 60f).left();
+106:                 t.row();
+107:                 t.button("@load.clipboard", Icon.copy, style, () -> {
+108:                     dialog.hide();
+109:                     handler.get(Core.app.getClipboardText());
+110:                 }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+111:                 t.row();
+112:                 //currently doesn't allow multi import because it could be replacing exactly 1 patch
+113:                 t.button("@import.file", Icon.download, style, () -> FileChooser.open("json", "hjson", "json5").submit(file -> {
+114:                     dialog.hide();
+115:                     handler.get(file.readString());
+116:                 })).marginLeft(12f);
+117:                 t.row();
+118:             });
+119:         });
+120: 
+121:         dialog.addCloseButton();
+122:         dialog.show();
+123:     }
+124: 
+125:     void addPatch(String patch){
+126:         addPatch(patch, -1);
+127:     }
+128: 
+129:     void addPatch(String patch, int replaceIndex){
+130:         var patches = state.data.getPatches();
+131:         var oldPatches = patches.copy();
+132: 
+133:         try{
+134:             Jval.read(patch); //validation
+135: 
+136:             if(replaceIndex == -1){
+137:                 patches.add(new PatchAsset(patch));
+138:             }else{
+139:                 patches.set(replaceIndex, new PatchAsset(patch));
+140:             }
+141: 
+142:             state.data.reloadPatches(patches);
+143: 
+144:         }catch(Exception e){
+145:             patches.set(oldPatches);
+146:             ui.showException("@patch.importerror", e);
+147:         }
+148:     }
+149: 
+150:     int countFields(JsonValue value){
+151:         if(value.isObject() || value.isArray()){
+152:             int sum = 0;
+153:             for(var child : value){
+154:                 sum += countFields(child);
+155:             }
+156:             return Math.max(sum, 1);
+157:         }else{
+158:             return 1;
+159:         }
+160:     }
+161: }

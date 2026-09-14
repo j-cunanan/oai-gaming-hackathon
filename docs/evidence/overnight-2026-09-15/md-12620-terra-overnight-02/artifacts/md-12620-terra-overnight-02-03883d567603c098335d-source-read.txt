@@ -1,0 +1,120 @@
+1: package mindustry.editor;
+2: 
+3: import arc.scene.ui.*;
+4: import arc.struct.*;
+5: import mindustry.*;
+6: import mindustry.editor.data.*;
+7: import mindustry.game.*;
+8: import mindustry.gen.*;
+9: import mindustry.io.*;
+10: import mindustry.maps.filters.*;
+11: import mindustry.type.*;
+12: import mindustry.ui.*;
+13: import mindustry.ui.dialogs.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class MapInfoDialog extends BaseDialog{
+18:     private WaveInfoDialog waveInfo  = new WaveInfoDialog();
+19:     private MapGenerateDialog generate = new MapGenerateDialog(false);
+20:     private CustomRulesDialog ruleInfo = new CustomRulesDialog();
+21:     private MapObjectivesDialog objectives = new MapObjectivesDialog();
+22:     private MapLocalesDialog locales = new MapLocalesDialog();
+23:     private MapProcessorsDialog processors = new MapProcessorsDialog();
+24:     private MapAssetsDialog patches = new MapAssetsDialog();
+25: 
+26:     public MapInfoDialog(){
+27:         super("@editor.mapinfo");
+28: 
+29:         addCloseButton();
+30: 
+31:         shown(this::setup);
+32:     }
+33: 
+34:     private void setup(){
+35:         cont.clear();
+36: 
+37:         ObjectMap<String, String> tags = editor.tags;
+38: 
+39:         cont.pane(t -> {
+40:             t.add("@editor.mapname").padRight(8).left();
+41:             t.defaults().padTop(15);
+42: 
+43:             TextField name = t.field(tags.get("name", ""), text -> {
+44:                 tags.put("name", text);
+45:             }).size(400, 55f).maxTextLength(50).get();
+46:             name.setMessageText("@unknown");
+47: 
+48:             t.row();
+49:             t.add("@editor.description").padRight(8).left();
+50: 
+51:             TextArea description = t.area(tags.get("description", ""), Styles.areaField, text -> {
+52:                 tags.put("description", text);
+53:             }).size(400f, 140f).maxTextLength(1000).get();
+54: 
+55:             t.row();
+56:             t.add("@editor.author").padRight(8).left();
+57: 
+58:             TextField author = t.field(tags.get("author", ""), text -> {
+59:                 tags.put("author", text);
+60:             }).size(400, 55f).maxTextLength(50).get();
+61:             author.setMessageText("@unknown");
+62: 
+63:             t.row();
+64: 
+65:             t.table(Tex.button, r -> {
+66:                 r.defaults().width(230f).height(60f);
+67: 
+68:                 var style = Styles.flatt;
+69: 
+70:                 r.button("@editor.rules", Icon.list, style, () -> {
+71:                     ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
+72:                     hide();
+73:                 }).marginLeft(10f);
+74: 
+75:                 r.button("@editor.waves", Icon.units, style, () -> {
+76:                     waveInfo.show();
+77:                     hide();
+78:                 }).marginLeft(10f);
+79: 
+80:                 r.row();
+81: 
+82:                 r.button("@editor.objectives", Icon.info, style, () -> {
+83:                     objectives.show(state.rules.objectives.all, state.rules.objectives.all::set);
+84:                     hide();
+85:                 }).marginLeft(10f);
+86: 
+87:                 r.button("@editor.generation", Icon.terrain, style, () -> {
+88:                     //randomize so they're not all the same seed
+89:                     var res = maps.readFilters(editor.tags.get("genfilters", ""));
+90:                     res.each(GenerateFilter::randomize);
+91: 
+92:                     generate.show(res,
+93:                     filters -> {
+94:                         //reset seed to 0 so it is not written
+95:                         filters.each(f -> f.seed = 0);
+96:                         editor.tags.put("genfilters", JsonIO.write(filters));
+97:                     });
+98:                     hide();
+99:                 }).marginLeft(10f);
+100: 
+101:                 r.row();
+102: 
+103:                 r.button("@editor.locales", Icon.fileText, style, () -> {
+104:                     try{
+105:                         MapLocales res = JsonIO.read(MapLocales.class, editor.tags.get("locales", "{}"));
+106:                         locales.show(res);
+107:                     }catch(Throwable e){
+108:                         locales.show(new MapLocales());
+109:                         ui.showException(e);
+110:                     }
+111:                     hide();
+112:                 }).marginLeft(10f);
+113: 
+114:                 r.button("@editor.worldprocessors", Icon.logic, style, () -> {
+115:                     hide();
+116:                     processors.show();
+117:                 }).marginLeft(10f);
+118: 
+119:                 r.row();
+120: 

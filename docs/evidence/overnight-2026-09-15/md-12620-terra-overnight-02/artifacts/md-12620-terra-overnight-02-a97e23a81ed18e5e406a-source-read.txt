@@ -1,0 +1,115 @@
+210:     public void load(Seq<DataAsset> newAssets){
+211:         unload(); //if already loaded
+212: 
+213:         if(newAssets.isEmpty()) return;
+214: 
+215:         for(var asset : newAssets){
+216:             assets.get(asset.getType(), Seq::new).add(asset);
+217:         }
+218: 
+219:         soundLoader.load(getSounds(), getMusic());
+220: 
+221:         if(!Vars.headless){
+222:             bundleLoader.load(getBundles());
+223:             packer.pack(getImages());
+224:         }
+225: 
+226:         patcher.apply(getPatches(), getContent());
+227: 
+228:         rebuildOrderedAssets();
+229:     }
+230: 
+231:     public void unload(){
+232:         patcher.unapply();
+233:         if(!Vars.headless){
+234:             bundleLoader.unload();
+235:             packer.unload();
+236:         }
+237:         soundLoader.unload();
+238: 
+239:         assets.clear();
+240:         orderedAssets.clear();
+241:         orderedExternalAssets.clear();
+242:     }
+243: 
+244:     private void rebuildOrderedAssets(){
+245:         orderedAssets.clear();
+246:         orderedExternalAssets.clear();
+247:         for(DataAssetType type : DataAssetType.all){
+248:             var seq = assets.get(type);
+249:             if(seq != null){
+250:                 orderedAssets.addAll(seq);
+251:                 if(!type.embedded){
+252:                     orderedExternalAssets.addAll(seq);
+253:                 }
+254:             }
+255:         }
+256:     }
+257: 
+258:     /** @return broken assets with no cache file */
+259:     public Seq<DataAsset> getMissingAssets(){
+260:         return orderedExternalAssets.select(d -> !d.isCached());
+261:     }
+262: 
+263:     public Seq<DataAsset> getAllAssets(){
+264:         return orderedAssets;
+265:     }
+266: 
+267:     public boolean hasAssetPath(DataAssetType type, String path){
+268:         return getAssets(type).contains(a -> a.path.equals(path));
+269:     }
+270: 
+271:     public boolean hasAssetName(DataAssetType type, String name){
+272:         return getAssets(type).contains(a -> a.name.equals(name));
+273:     }
+274: 
+275:     public boolean hasAssetNameOrPath(DataAssetType type, String name, String path){
+276:         return getAssets(type).contains(a -> a.name.equals(name) || a.path.equals(path));
+277:     }
+278: 
+279:     /** @return whether any assets like audio/images (external to saves) are loaded, requiring separate network transmission. */
+280:     public boolean hasExternalAssets(){
+281:         return orderedExternalAssets.size > 0;
+282:     }
+283: 
+284:     /** @return all assets that can be external to a save (for network sync) */
+285:     public Seq<DataAsset> getAllExternalAssets(){
+286:         return orderedExternalAssets;
+287:     }
+288: 
+289:     public boolean isPatched(Object content){
+290:         return patcher.isPatched(content);
+291:     }
+292: 
+293:     public <T extends DataAsset> Seq<T> getAssets(DataAssetType type){
+294:         return assets.get(type, Seq::new).as();
+295:     }
+296: 
+297:     public void clearGeneratedImages(){
+298:         getImages().removeAll(ImageAsset::isGenerated);
+299:     }
+300: 
+301:     public Seq<ImageAsset> getImages(){
+302:         return getAssets(DataAssetType.image);
+303:     }
+304: 
+305:     public Seq<PatchAsset> getPatches(){
+306:         return getAssets(DataAssetType.patch);
+307:     }
+308: 
+309:     public Seq<MusicAsset> getMusic(){
+310:         return getAssets(DataAssetType.music);
+311:     }
+312: 
+313:     public Seq<SoundAsset> getSounds(){
+314:         return getAssets(DataAssetType.sound);
+315:     }
+316: 
+317:     public Seq<BundleAsset> getBundles(){
+318:         return getAssets(DataAssetType.bundle);
+319:     }
+320: 
+321:     public Seq<ContentAsset> getContent(){
+322:         return getAssets(DataAssetType.content);
+323:     }
+324: }

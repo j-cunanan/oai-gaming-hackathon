@@ -1,0 +1,17 @@
+./core/src/mindustry/editor/MapInfoDialog.java:24:    private MapAssetsDialog patches = new MapAssetsDialog();
+./core/src/mindustry/editor/data/MapAssetsDialog.java:25:public class MapAssetsDialog extends BaseDialog{
+./core/src/mindustry/editor/data/MapAssetsDialog.java:50:    public MapAssetsDialog(){
+./core/src/mindustry/editor/data/MapContentView.java:38:    public void build(MapAssetsDialog diag, Table list){
+./core/src/mindustry/editor/data/MapContentView.java:179:    public void buildButtons(MapAssetsDialog diag, Table buttons){
+./core/src/mindustry/editor/data/MapContentView.java:183:    void addContent(MapAssetsDialog diag, ContentType type, String path, String data){
+./core/src/mindustry/editor/data/MapContentView.java:193:    void showImport(MapAssetsDialog diag){
+./core/src/mindustry/editor/data/MapBundlesView.java:24:    public void build(MapAssetsDialog diag, Table list){
+./core/src/mindustry/editor/data/MapBundlesView.java:136:    public void buildButtons(MapAssetsDialog diag, Table buttons){
+./core/src/mindustry/editor/data/MapPatchesView.java:20:    public void buildButtons(MapAssetsDialog diag, Table buttons){
+./core/src/mindustry/editor/data/MapPatchesView.java:28:    public void build(MapAssetsDialog diag, Table list){
+./core/src/mindustry/editor/data/AssetView.java:6:    void build(MapAssetsDialog diag, Table table);
+./core/src/mindustry/editor/data/AssetView.java:7:    void buildButtons(MapAssetsDialog diag, Table buttons);
+./core/src/mindustry/editor/data/MapImagesView.java:30:    public void buildButtons(MapAssetsDialog diag, Table buttons){
+./core/src/mindustry/editor/data/MapImagesView.java:210:    public void build(MapAssetsDialog diag, Table inner){
+./core/src/mindustry/editor/data/MapAudioView.java:29:    public void build(MapAssetsDialog diag, Table list){
+./core/src/mindustry/editor/data/MapAudioView.java:131:    public void buildButtons(MapAssetsDialog diag, Table buttons){
