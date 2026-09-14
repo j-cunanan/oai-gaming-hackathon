@@ -1,0 +1,80 @@
+{
+  "tests": 276,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "name": "ApplicationTests",
+      "tests": "135",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:47:56.426Z",
+      "time": "31.365"
+    },
+    {
+      "name": "DataAssetTests",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:29.156Z",
+      "time": "1.412"
+    },
+    {
+      "name": "LogicTests",
+      "tests": "63",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:32.890Z",
+      "time": "1.525"
+    },
+    {
+      "name": "ModTestAllure",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:47:50.400Z",
+      "time": "4.661"
+    },
+    {
+      "name": "PatcherTests",
+      "tests": "34",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:35.955Z",
+      "time": "1.608"
+    },
+    {
+      "name": "power.ConsumeGeneratorTests",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:39.901Z",
+      "time": "1.045"
+    },
+    {
+      "name": "power.DirectConsumerTests",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:42.150Z",
+      "time": "1.005"
+    },
+    {
+      "name": "power.PowerTests$PowerGraphTests",
+      "tests": "17",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-09-14T04:48:47.516Z",
+      "time": "0.078"
+    }
+  ]
+}

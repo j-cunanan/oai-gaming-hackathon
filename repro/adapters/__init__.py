@@ -9,6 +9,7 @@ class GameAdapter:
     launch: tuple[str, ...]
     tests: tuple[str, ...]
     status: str
+    ready_log: str | None = None
 
 
 MINDUSTRY = GameAdapter(
@@ -18,6 +19,7 @@ MINDUSTRY = GameAdapter(
     ("java", "-Duser.home=/workspace/runtime/profile", "-jar", "desktop/build/libs/Mindustry.jar"),
     ("bash", "./gradlew", "tests:test", "--offline", "--no-daemon"),
     "Desktop Java adapter; each historical commit must be built and checked.",
+    ready_log="Total time to load:",
 )
 LUANTI = GameAdapter(
     "luanti",

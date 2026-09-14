@@ -1,0 +1,15 @@
+{
+  "repro-worker:amd64": {
+    "Id": "sha256:c88c11bb7fa0e5f80f26f7944cb442a5f5507d07f721af3a97a9bafd16c2c6c1",
+    "Created": "2026-09-13T16:33:33.22205221Z",
+    "Architecture": "amd64",
+    "Os": "linux"
+  },
+  "repro-worker:amd64-fast": {
+    "Id": "sha256:40cc0cc208b87744d6125cbf3099d472a39d7bb062394b382c752372daecfd95",
+    "Created": "2026-09-14T04:35:42.340766175Z",
+    "Architecture": "amd64",
+    "Os": "linux"
+  },
+  "same_first_seven_layers": true
+}

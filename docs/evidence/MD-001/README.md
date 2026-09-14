@@ -2,6 +2,8 @@
 
 This is a selected historical Mindustry case, evaluated on September 14, 2026 (Japan time). It is one case with a Luna investigation and a Terra investigation plus refinement passes, not a representative benchmark.
 
+**Latest result:** the [subsequent network-enabled validation](network-validation/README.md) passed all five gates, including all 276 upstream tests, and enabled local handoff review. The original offline outcome below is preserved as recorded.
+
 The player [reported two Weather buttons in map rules](https://github.com/Anuken/Mindustry/issues/12647). The investigation received the short report and exact pre-fix revision `a5c178ae5abcc630613c233e0afbb361021d3828`. It did not receive the later human patch, changed-file list, GitHub comments or internet access.
 
 ## Recorded evidence
@@ -19,7 +21,7 @@ The player [reported two Weather buttons in map rules](https://github.com/Anuken
 - [Luna attempt](luna-attempt.json): not reproduced; retained alongside the successful Terra reproduction.
 - [Initial Terra attempt](initial-terra-attempt.json): 5/5 baseline replays with 23 actions. Its candidate replay left the required target state, so expected-state verification rejected it and the run was stopped for replay refinement.
 
-## Final observed result
+## Original offline result
 
 | Check | Result |
 | --- | --- |
@@ -42,7 +44,7 @@ The proposed patch was generated from the inspected pre-fix source. The evaluato
 
 ## Inspect or repeat
 
-The local dashboard's `md-weather-terra-001` case contains the full runtime artifact store. Inspect its Source and Patch tabs, the eight recorded actions, and the five validation gates. The approval button stays disabled while the existing-tests gate is failed. Cloning this repository gives the selected evidence files above; it does not create fictional local investigation records.
+The local dashboard's `md-weather-terra-001` case contains the full runtime artifact store. Inspect its Source and Patch tabs, the eight recorded actions, and the five validation gates. Approval was blocked by this offline failure; the subsequent network-enabled rerun passed and enabled handoff review. Cloning this repository gives the selected evidence files above; it does not create fictional local investigation records.
 
 To run another attempt, set `REPRO_MODEL=gpt-5.6-terra` in the local `.env`, import `benchmarks/manifests/MD-001.yaml` with `uv run repro import-case`, then prepare and investigate the returned case ID. Only the manifest's `input` fields are passed to the investigation.
 

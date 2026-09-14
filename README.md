@@ -19,7 +19,7 @@ cd apps/web && npm ci && npm run build && cd ../..
 uv run repro serve
 ```
 
-The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial.
+The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial. Rebuild the worker image after pulling driver changes: the backend now uses protocol 2 over a persistent connection.
 
 The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
@@ -38,7 +38,7 @@ uv run repro validate CASE_ID
 uv run repro report CASE_ID --output investigation.md
 ```
 
-`replay` uses the retained pre-patch Mindustry build. `--candidate` uses the candidate build. A visual replay needs API access for its independent verifier. The validation workflow additionally checks that the expected game/UI state was reached; simply failing to observe the bug is insufficient to approve a patch.
+`replay` uses the retained pre-patch Mindustry build. `--candidate` uses the candidate build. A visual replay needs API access for its independent verifier. An explicit `validate` rerun repeats both baseline and candidate gates, retaining the previous result as an artifact. The validation workflow additionally checks that the expected game/UI state was reached; simply failing to observe the bug is insufficient to approve a patch.
 
 ## What is implemented
 
@@ -46,14 +46,16 @@ uv run repro report CASE_ID --output investigation.md
 - Responses API triage, hypothesis recording, screenshot-guided computer actions, source search and candidate diffs. Default: **`gpt-5.6-luna`**; `REPRO_MODEL=gpt-5.6-terra` is the requested alternative.
 - A 1280 × 720 Xvfb desktop with recorded inputs, screenshots, logs and process state.
 - Exact historical source snapshots, no future Git objects/remotes, and network-disabled investigation containers. The model controller keeps its API key outside the game sandbox.
-- Independent visual/log/crash oracles, clean-profile replay, bounded action reduction, source localization, replay regressions, offline candidate builds/tests, post-patch replay, and a narrow launch smoke check.
+- Independent visual/log/crash oracles, clean-profile replay, bounded action reduction, source localization, replay regressions, candidate builds/tests, post-patch replay, and a narrow launch smoke check.
 - Artifact downloads, Markdown reports and local review decisions. Review approval **does not push or merge changes to target-game repositories**.
 
 ## Recorded Mindustry run
 
 The [MD-001 evidence package](docs/evidence/MD-001/README.md) contains a real historical run using Terra: the duplicate Weather-button bug reproduced in **5/5 clean runs**, the replay was reduced from **23 to 8 actions**, and **5/5 candidate replays** reached the correct menu with one Weather button. The first-ranked source file matched the later human-fix file. Screenshots, the generated patch, replay, raw logs and unsuccessful attempts are included.
 
-The candidate builds, but full approval remains blocked: 275/276 upstream tests pass, while a mod test that downloads from GitHub fails in the network-disabled worker. The same test fails on the untouched baseline. This selected development session includes runner improvements and refinement passes; it is not representative benchmark accuracy or one uninterrupted autonomous resolution.
+The [latest validation rerun](docs/evidence/MD-001/network-validation/README.md) passed **all five gates**, including **276/276 upstream tests with zero skips**, and enabled local handoff review. The initial offline run passed 275/276 tests; a mod test could not download its GitHub fixture. That failure and the later network-enabled result are preserved separately. This selected development session includes runner improvements and refinement passes; it is not representative benchmark accuracy or one uninterrupted autonomous resolution.
+
+A [controlled worker comparison](docs/evidence/MD-001/network-validation/worker-timing/README.md) measured the eight-action desktop replay at a median **47.3 → 30.9 seconds**, about **35% faster**, excluding model calls. Both workers used the same loading guard and recorded waits, and all six timing runs reached the target view. Dashboard updates now avoid repeatedly fetching event history and rendering the entire artifact list.
 
 ## Current limits
 
@@ -61,14 +63,14 @@ Mindustry is the primary implementation target. The Luanti adapter is experiment
 
 Uploads are retained and hashed, but automatic video normalization, save installation and attachment-driven investigation are not implemented. Network/multiplayer experiments, distributed workers, automatic upstream PR publication and reliable ownership inference without CODEOWNERS remain future work. Smoke testing currently checks a clean desktop launch, not broad gameplay coverage. Bounded action reduction is not a proof of global minimality.
 
-Some upstream tests perform network requests at runtime even with Gradle's `--offline` flag. Those tests fail in the isolated worker and remain failed validation gates; the runner does not silently skip them or enable network access to make them pass.
+Some upstream tests perform network requests at runtime even with Gradle's `--offline` flag. Candidate build/test validation now has network access by default (`REPRO_VALIDATION_NETWORK=true`) so those dependencies can load. Set it to `false` for an offline validation run. The selected policy is recorded in the event audit. Game investigation and replay still use fresh containers with networking disabled; credentials stay in the controller. No tests are skipped.
 
 No benchmark success rate is implied by unit tests or mock observations. See [benchmark protocol](docs/benchmark.md) for the evidence boundaries and [development notes](docs/architecture.md) for extension points.
 
 ## Development
 
 ```bash
-uv run ruff check repro tests scripts
+uv run ruff check repro tests scripts infra/docker/worker.py
 uv run pytest -q
 ```
 

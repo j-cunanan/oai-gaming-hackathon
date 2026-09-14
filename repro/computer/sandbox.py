@@ -4,6 +4,7 @@ import shutil
 from pathlib import Path
 
 from repro.adapters import ADAPTERS
+from repro.computer.rpc import WorkerRPC
 from repro.config import Settings
 from repro.github.history import audit_history, isolate_snapshot
 from repro.models import Action, Case
@@ -23,6 +24,7 @@ class DockerSandbox:
         self.repo = self.root / "repo"
         self.name = f"repro-{case.id}"
         self.use_baseline = False
+        self._rpc: WorkerRPC | None = None
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / "runtime").mkdir(exist_ok=True)
         (self.root / "gradle").mkdir(exist_ok=True)
@@ -69,8 +71,13 @@ class DockerSandbox:
         finally:
             await self.stop()
 
-    async def start(self, network=False):
+    async def start(self, network=False, *, fresh_profile=False):
         await self.stop()
+        if fresh_profile:
+            runtime = self.root / "runtime"
+            if runtime.exists():
+                shutil.rmtree(runtime)
+            (runtime / "profile").mkdir(parents=True)
         await run(
             [
                 "docker",
@@ -102,9 +109,20 @@ class DockerSandbox:
             timeout=30,
         )
         await asyncio.sleep(1)
+        self._rpc = await WorkerRPC.start(
+            ["docker", "exec", "-i", self.name, "python3", "-u", "/opt/repro/worker.py", "serve"],
+            self.root / "worker-rpc.log",
+        )
+        if (await self.rpc("ping")).get("protocol") != 2:
+            raise RuntimeError("Rebuild the worker image to enable the persistent worker protocol")
 
     async def stop(self):
-        await run(["docker", "rm", "-f", self.name], check=False, timeout=30)
+        try:
+            await run(["docker", "rm", "-f", self.name], check=False, timeout=30)
+        finally:
+            if self._rpc:
+                await self._rpc.close()
+                self._rpc = None
 
     async def exec(self, argv, *, timeout=120, check=True, input_text=None, output_path=None):
         return await run(
@@ -116,10 +134,9 @@ class DockerSandbox:
         )
 
     async def rpc(self, operation: str, args: dict | None = None):
-        _, output = await self.exec(
-            ["python3", "/opt/repro/worker.py", operation, json.dumps(args or {})], timeout=30
-        )
-        return json.loads(output)
+        if not self._rpc:
+            raise RuntimeError("Start the worker before issuing desktop commands")
+        return await self._rpc.request(operation, args)
 
     async def launch(self):
         argv = self.adapter.launch
@@ -135,39 +152,33 @@ class DockerSandbox:
                 "-jar",
                 "/workspace/baseline/Mindustry.jar",
             )
-        await run(
-            [
-                "docker",
-                "exec",
-                "-d",
-                self.name,
-                "python3",
-                "/opt/repro/worker.py",
-                "launch",
-                json.dumps({"argv": argv}),
-            ],
-            timeout=20,
-        )
+        await self.rpc("launch", {"argv": argv})
         await asyncio.sleep(8)
+        if self.adapter.ready_log:
+            # Emulated startup can exceed the minimum wait. Do not lose the first
+            # replay click while assets are still loading; never dismiss dialogs.
+            async with asyncio.timeout(45):
+                while True:
+                    observation = await self.observe()
+                    if not observation.get("process", {}).get("running", False):
+                        return observation
+                    if self.adapter.ready_log in observation.get("logs", ""):
+                        break
+                    await asyncio.sleep(0.5)
+            # ClientLoadEvent precedes the final resize and first interactive frames.
+            await asyncio.sleep(1)
         return await self.observe()
 
     async def reset(self):
         # Recreate the container, which reaps all game/Gradle child processes.
-        await self.stop()
-        runtime = self.root / "runtime"
-        if runtime.exists():
-            shutil.rmtree(runtime)
-        runtime.mkdir()
-        (runtime / "profile").mkdir()
-        await self.start()
+        await self.start(fresh_profile=True)
         return await self.launch()
 
     async def observe(self):
         return await self.rpc("observe")
 
     async def action(self, action: Action):
-        await self.rpc("action", action.model_dump())
-        return await self.observe()
+        return await self.rpc("action", action.model_dump())
 
     async def read_source(self, path: str, start: int = 1, count: int = 160):
         target = (self.repo / path).resolve()

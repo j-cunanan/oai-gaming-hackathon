@@ -1,0 +1,154 @@
+[
+  {
+    "created": "2026-09-14T04:46:34.691873051Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:47:08.358342594Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "bridge",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:48:48.585264168Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:49:26.998352881Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:50:03.007234217Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:50:40.924274971Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:51:17.891893168Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  },
+  {
+    "created": "2026-09-14T04:51:54.271664671Z",
+    "image": "repro-worker:amd64-fast",
+    "network": "none",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "read_only_root": true,
+    "memory": 5368709120,
+    "nano_cpus": 3000000000,
+    "pids_limit": 512,
+    "mount_destinations": [
+      "/workspace"
+    ],
+    "secret_env_present": false
+  }
+]
