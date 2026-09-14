@@ -31,6 +31,10 @@ class Store:
                 );
             """)
 
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(events)")}
+            if "recorded_seq" not in columns:
+                db.execute("ALTER TABLE events ADD COLUMN recorded_seq INTEGER")
+
     def connect(self):
         db = sqlite3.connect(self.database, timeout=15)
         db.row_factory = sqlite3.Row

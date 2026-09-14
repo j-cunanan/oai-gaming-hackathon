@@ -99,6 +99,8 @@ def activity_snapshot(store: Store, case_id: str, after: int = 0) -> dict:
     First/last are event times, not invented job start/end times or active durations.
     Scan the full audit (not the 500-event SSE page) to retain earlier stages.
     """
+    imported = store.get(case_id).imported_from is not None
+    available_artifacts = {a["id"] for a in store.artifacts(case_id)} if imported else set()
     stages = {
         key: {
             "key": key,
@@ -137,7 +139,11 @@ def activity_snapshot(store: Store, case_id: str, after: int = 0) -> dict:
                 ("artifact", "Artifact"),
             ):
                 artifact = data.get(field)
-                if isinstance(artifact, str) and artifact.startswith(case_id + "-"):
+                if isinstance(artifact, str) and (
+                    artifact in available_artifacts
+                    if imported
+                    else artifact.startswith(case_id + "-")
+                ):
                     links.append({"id": artifact, "label": label})
             state = data.get("state", "")
             attention = (

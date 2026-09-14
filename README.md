@@ -23,6 +23,36 @@ The API is available at `http://127.0.0.1:8000/api` and its interactive referenc
 
 The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
+To inspect the exported MD-001 recording without running Docker or making model calls:
+
+```bash
+uv run repro import-evidence docs/evidence/MD-001
+# Optional: --id another-recording-id; --force replaces only an imported case.
+```
+
+This explicitly imports a read-only **Imported recording**, with its original case ID,
+recorded date, source directory and import timestamp. The dashboard initially selects
+an all-five-gates-passing case, then the furthest progressed state, then the latest
+recorded update. MD-001 retains `AWAITING_HUMAN`: five stages are finished and the sixth
+contains the recorded handoff-review state, not an invented human approval.
+
+Identical re-imports are a no-op; changed packages require `--force`. Local cases are
+never replaced. Artifact IDs are global in this store: if another case already owns a
+recorded artifact ID, use a separate `REPRO_DATA_DIR`. Event streams are merged in
+recorded sequence order; API `seq` is the local cursor and `recorded_seq` preserves the
+original sequence. Missing artifact references remain in raw events but are not shown
+as downloadable activity links.
+
+Integrity coverage follows the export: every entry in either `artifacts.json` is checked
+before any import writes. This checkout has only the network-validation manifest; the
+patch is additionally checked against `patch_unchanged_sha256` in its result. These yield
+10 unique artifacts and 738 events. The root JSON metadata and event streams have no
+published checksums, so their authenticity cannot be independently verified. No prose
+is parsed and no missing artifacts or metrics are reconstructed. Usage and elapsed time
+retain the explicit original totals; rerun-only counters are not relabeled as lifetime
+totals. Missing usage/timing snapshots remain null. Importing does not rerun the recorded
+276 upstream tests or any validation gate.
+
 An **investigation** is one bug case, from the player report through reproduction, diagnosis, and review. Small info buttons explain the stats, stages, and actions on hover, keyboard focus, or click; Escape dismisses the explanation. **Proposed patch** shows the saved justification and risks above the exact source diff, with green additions, red deletions, and old/new line numbers. Validation evidence is shown separately from the proposed explanation.
 
 The **Viewing case** banner, sticky header, Recent Cases list, and case picker show the unique case ID so reports with identical titles stay distinguishable. Benchmark labels such as `MD-001` are shown separately. The browser tab and `?case=CASE_ID` URL follow the selected case, and reloading preserves that selection. Use the copy button beside the case heading to copy its ID.

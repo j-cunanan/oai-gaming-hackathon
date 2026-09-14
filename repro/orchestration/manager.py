@@ -810,6 +810,12 @@ class Manager:
             "\n## Player report",
             case.report.body,
         ]
+        if case.imported_from:
+            lines.insert(
+                1,
+                f"**Imported recording: {case.imported_from.original_case_id}** · "
+                f"Recorded {case.created_at}; imported {case.imported_from.imported_at}.",
+            )
         if case.reproduction:
             r = case.reproduction
             lines += [
@@ -844,7 +850,11 @@ class Manager:
                 lines += ["No saved explanation is available for this patch."]
         lines += [
             "\n## Usage",
-            f"{case.usage.model_calls} model calls; {case.usage.input_tokens} input and {case.usage.output_tokens} output tokens.",
+            (
+                f"{case.usage.model_calls} model calls; {case.usage.input_tokens} input and {case.usage.output_tokens} output tokens."
+                if case.usage
+                else "Usage not recorded."
+            ),
             "\nCandidate changes exist only in a disposable local repository. Human review does not publish or merge them upstream.",
         ]
         return "\n\n".join(lines) + "\n"
