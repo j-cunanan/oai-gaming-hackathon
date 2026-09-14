@@ -1,0 +1,180 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.*;
+4: import arc.graphics.g2d.*;
+5: import arc.math.*;
+6: import arc.math.geom.*;
+7: import arc.util.*;
+8: import arc.util.io.*;
+9: import mindustry.ctype.*;
+10: import mindustry.gen.*;
+11: import mindustry.graphics.*;
+12: import mindustry.world.*;
+13: import mindustry.world.meta.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class PayloadBlock extends Block{
+18:     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
+19: 
+20:     public String regionSuffix = "";
+21:     public TextureRegion topRegion, outRegion, inRegion;
+22: 
+23:     public PayloadBlock(String name){
+24:         super(name);
+25: 
+26:         update = true;
+27:         sync = true;
+28:         group = BlockGroup.payloads;
+29:         acceptsUnitPayloads = true;
+30:         envEnabled |= Env.space | Env.underwater;
+31:     }
+32: 
+33:     @Override
+34:     public void load(){
+35:         super.load();
+36: 
+37:         topRegion = findFactoryRegion("-top");
+38:         outRegion =  findFactoryRegion("-out");
+39:         inRegion =  findFactoryRegion("-in");
+40:     }
+41: 
+42:     protected TextureRegion findFactoryRegion(String suf){
+43:         TextureRegion region = Core.atlas.find(name + suf);
+44: 
+45:         if(!region.found() && minfo.mod != null) region = Core.atlas.find(minfo.mod.name + "-factory" + suf + "-" + size + regionSuffix);
+46:         if(!region.found()) region = Core.atlas.find("factory" + suf + "-" + size + regionSuffix);
+47: 
+48:         return region;
+49:     }
+50: 
+51:     public static boolean blends(Building build, int direction){
+52:         int size = build.block.size;
+53:         int trns = build.block.size/2 + 1;
+54:         Building accept = build.nearby(Geometry.d4(direction).x * trns, Geometry.d4(direction).y * trns);
+55:         return accept != null &&
+56:             accept.block.outputsPayload &&
+57: 
+58:             //if size is the same, block must either be facing this one, or not be rotating
+59:             ((accept.block.size == size
+60:             && Math.abs(accept.tileX() - build.tileX()) % size == 0 //check alignment
+61:             && Math.abs(accept.tileY() - build.tileY()) % size == 0
+62:             && ((accept.block.rotate && accept.tileX() + Geometry.d4(accept.rotation).x * size == build.tileX() && accept.tileY() + Geometry.d4(accept.rotation).y * size == build.tileY())
+63:             || !accept.block.rotate
+64:             || !accept.block.outputFacing)) ||
+65: 
+66:             //if the other block is smaller, check alignment
+67:             (accept.block.size != size &&
+68:             (accept.rotation % 2 == 0 ? //check orientation; make sure it's aligned properly with this block.
+69:                 Math.abs(accept.y - build.y) <= Math.abs(size * tilesize - accept.block.size * tilesize)/2f : //check Y alignment
+70:                 Math.abs(accept.x - build.x) <= Math.abs(size * tilesize - accept.block.size * tilesize)/2f   //check X alignment
+71:                 )) && (!accept.block.rotate || accept.front() == build || !accept.block.outputFacing) //make sure it's facing this block
+72:             );
+73:     }
+74: 
+75:     public static void pushOutput(Payload payload, float progress){
+76:         float thresh = 0.55f;
+77:         if(progress >= thresh){
+78:             boolean legStep = payload instanceof UnitPayload u && u.unit.type.allowLegStep;
+79:             float size = payload.size(), radius = size/2f, x = payload.x(), y = payload.y(), scl = Mathf.clamp(((progress - thresh) / (1f - thresh)) * 1.1f);
+80: 
+81:             Groups.unit.intersect(x - size/2f, y - size/2f, size, size, u -> {
+82:                 float dst = u.dst(payload);
+83:                 float rs = radius + u.hitSize/2f;
+84:                 if(u.isGrounded() && u.type.allowLegStep == legStep && dst < rs){
+85:                     u.vel.add(Tmp.v1.set(u.x - x, u.y - y).setLength(Math.min(rs - dst, 1f)).scl(scl));
+86:                 }
+87:             });
+88:         }
+89:     }
+90: 
+91:     public class PayloadBlockBuild<T extends Payload> extends Building{
+92:         public @Nullable T payload;
+93:         //TODO redundant; already stored in payload?
+94:         public Vec2 payVector = new Vec2();
+95:         public float payRotation;
+96:         public boolean carried;
+97: 
+98:         public boolean acceptUnitPayload(Unit unit){
+99:             return false;
+100:         }
+101: 
+102:         @Override
+103:         public boolean canControlSelect(Unit unit){
+104:             return !unit.spawnedByCore && unit.type.allowedInPayloads && this.payload == null && acceptUnitPayload(unit) && unit.tileOn() != null && unit.tileOn().build == this;
+105:         }
+106: 
+107:         @Override
+108:         public void onControlSelect(Unit player){
+109:             float x = player.x, y = player.y;
+110:             handleUnitPayload(player, p -> payload = (T)p);
+111:             this.payVector.set(x, y).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+112:             this.payRotation = player.rotation;
+113:         }
+114: 
+115:         @Override
+116:         public boolean acceptPayload(Building source, Payload payload){
+117:             return this.payload == null;
+118:         }
+119: 
+120:         @Override
+121:         public void handlePayload(Building source, Payload payload){
+122:             this.payload = (T)payload;
+123:             this.payVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+124:             this.payRotation = payload.rotation();
+125: 
+126:             updatePayload();
+127:         }
+128: 
+129:         @Override
+130:         public Payload getPayload(){
+131:             return payload;
+132:         }
+133: 
+134:         @Override
+135:         public void pickedUp(){
+136:             carried = true;
+137:         }
+138: 
+139:         @Override
+140:         public void drawTeamTop(){
+141:             carried = false;
+142:         }
+143: 
+144:         @Override
+145:         public Payload takePayload(){
+146:             T t = payload;
+147:             payload = null;
+148:             return t;
+149:         }
+150: 
+151:         @Override
+152:         public void onRemoved(){
+153:             super.onRemoved();
+154:             if(payload != null && !carried) payload.dump();
+155:         }
+156: 
+157:         @Override
+158:         public void updateTile(){
+159:             if(payload != null){
+160:                 payload.update(null, this);
+161:             }
+162:         }
+163: 
+164:         @Override
+165:         public void onDestroyed(){
+166:             if(payload != null) payload.destroyed();
+167:             super.onDestroyed();
+168:         }
+169: 
+170:         public boolean blends(int direction){
+171:             return PayloadBlock.blends(this, direction);
+172:         }
+173: 
+174:         public void updatePayload(){
+175:             if(payload != null){
+176:                 payload.set(x + payVector.x, y + payVector.y, payRotation);
+177:             }
+178:         }
+179: 
+180:         /** @return true if the payload is in position. */

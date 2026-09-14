@@ -1,0 +1,12 @@
+./tests/src/test/java/ApplicationTests.java:1007:        tile.setTeam(Team.sharded);
+./core/src/mindustry/editor/EditorTool.java:71:                editor.drawCircle(x, y, tile -> tile.setTeam(editor.drawTeam));
+./core/src/mindustry/editor/EditorTool.java:172:                    fill(x, y, true, t -> t.getTeamID() == dest.id && t.synthetic(), t -> t.setTeam(editor.drawTeam));
+./core/src/mindustry/editor/DrawOperation.java:103:                case opTeam -> tile.setTeam(Team.get(to));
+./core/src/mindustry/editor/EditorTile.java:97:    public void setTeam(Team team){
+./core/src/mindustry/editor/EditorTile.java:99:            super.setTeam(team);
+./core/src/mindustry/editor/EditorTile.java:105:        super.setTeam(team);
+./core/src/mindustry/world/Tile.java:209:    public void setTeam(Team team){
+./core/src/mindustry/world/Tile.java:802:    public static void setTeam(Building build, Team team){
+./core/src/mindustry/world/Tile.java:809:    public static void setTeams(int[] positions, Team team){
+./core/src/mindustry/io/versions/LegacySaveVersion.java:72:                            tile.setTeam(Team.get(team));
+./core/src/mindustry/game/Teams.java:412:            derelictBuffer.chunked(1000, values -> Call.setTeams(values, Team.derelict));

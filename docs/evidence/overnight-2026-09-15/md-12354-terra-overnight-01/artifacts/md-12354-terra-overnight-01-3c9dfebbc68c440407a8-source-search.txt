@@ -1,0 +1,4 @@
+regex parse error:
+    register("
+            ^
+error: unclosed group

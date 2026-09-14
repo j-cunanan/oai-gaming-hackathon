@@ -1,0 +1,55 @@
+1060: 
+1061:     /** @return the config value returned when this block is picked on a certain tile. This is only called for non-buildings. */
+1062:     public Object getConfig(Tile tile){
+1063:         return null;
+1064:     }
+1065: 
+1066:     /** Called when this block is set on the specified tile. */
+1067:     public void blockChanged(Tile tile){}
+1068: 
+1069:     /** Called when building of this block begins. */
+1070:     public void placeBegan(Tile tile, Block previous){
+1071: 
+1072:     }
+1073: 
+1074:     /** Called when building of this block begins. */
+1075:     public void placeBegan(Tile tile, Block previous, @Nullable Unit builder){
+1076:         placeBegan(tile, previous);
+1077:     }
+1078: 
+1079:     /** Called when building of this block ends. */
+1080:     public void placeEnded(Tile tile, @Nullable Unit builder, int rotation, @Nullable Object config){
+1081: 
+1082:     }
+1083: 
+1084:     /** Called right before building of this block begins. */
+1085:     public void beforePlaceBegan(Tile tile, Block previous){
+1086: 
+1087:     }
+1088: 
+1089:     /** Called when pick blocked in the editor. */
+1090:     public void editorPicked(Tile tile){
+1091: 
+1092:     }
+1093: 
+1094:     public boolean isFloor(){
+1095:         return this instanceof Floor;
+1096:     }
+1097: 
+1098:     public boolean isOverlay(){
+1099:         return this instanceof OverlayFloor;
+1100:     }
+1101: 
+1102:     public Floor asFloor(){
+1103:         return (Floor)this;
+1104:     }
+1105: 
+1106:     public boolean isAir(){
+1107:         return id == 0;
+1108:     }
+1109: 
+1110:     public boolean canBeBuilt(){
+1111:         return buildVisibility != BuildVisibility.hidden && buildVisibility != BuildVisibility.debugOnly;
+1112:     }
+1113: 
+1114:     public boolean environmentBuildable(){

@@ -1,0 +1,65 @@
+300:         public int unitCount;
+301:         /** Counts for each type of unit. Do not access directly. */
+302:         public @Nullable int[] typeCounts;
+303:         /** Cached buildings by type. */
+304:         public ObjectMap<Block, Seq<Building>> buildingTypes = new ObjectMap<>();
+305:         /** Units of this team. Updated each frame. */
+306:         public Seq<Unit> units = new Seq<>(false);
+307:         /** Same as units, but players. */
+308:         public Seq<Player> players = new Seq<>(false);
+309:         /** All buildings. Updated on team change / building addition or removal. Includes even buildings that do not update(). */
+310:         public Seq<Building> buildings = new Seq<>(false);
+311:         /** Units of this team by type. Updated each frame. */
+312:         public @Nullable Seq<Unit>[] unitsByType;
+313: 
+314:         public TeamData(Team team){
+315:             this.team = team;
+316:         }
+317: 
+318:         public Seq<Building> getBuildings(Block block){
+319:             return buildingTypes.get(block, () -> new Seq<>(false));
+320:         }
+321: 
+322:         public int getCount(Block block){
+323:             var res = buildingTypes.get(block);
+324:             return res == null ? 0 : res.size;
+325:         }
+326: 
+327:         /** Destroys this team's presence on the map, killing part of its buildings and converting everything to 'derelict'. */
+328:         public void destroyToDerelict(){
+329: 
+330:             //grab all buildings from quadtree.
+331:             var builds = new Seq<Building>();
+332:             if(buildingTree != null){
+333:                 buildingTree.getObjects(builds);
+334:             }
+335: 
+336:             //no remaining blocks, cease building if applicable
+337:             plans.clear();
+338: 
+339:             //convert all team tiles to neutral, randomly killing them
+340:             for(var b : builds){
+341:                 if(b.block.privileged) continue;
+342: 
+343:                 if(b instanceof CoreBuild){
+344:                     b.kill();
+345:                 }else{
+346:                     scheduleDerelict(b);
+347:                 }
+348:             }
+349: 
+350:             finishScheduleDerelict();
+351: 
+352:             //kill all units randomly
+353:             units.each(u -> Time.run(Mathf.random(0f, 60f * 5f), () -> {
+354:                 //ensure unit hasn't switched teams for whatever reason
+355:                 if(u.team == team){
+356:                     u.kill();
+357:                 }
+358:             }));
+359:         }
+360: 
+361:         /** Make all buildings within this range derelict/explode. */
+362:         public void timeDestroy(float x, float y, float range){
+363:             var builds = new Seq<Building>();
+364:             if(buildingTree != null){

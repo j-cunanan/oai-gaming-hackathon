@@ -1,0 +1,56 @@
+180:         return block().offset + worldy();
+181:     }
+182: 
+183:     public boolean isDarkened(){
+184:         return block.isDarkened(this);
+185:     }
+186: 
+187:     public Floor floor(){
+188:         return floor;
+189:     }
+190: 
+191:     public Block block(){
+192:         return block;
+193:     }
+194: 
+195:     public Floor overlay(){
+196:         return overlay;
+197:     }
+198: 
+199:     @SuppressWarnings("unchecked")
+200:     public <T extends Block> T cblock(){
+201:         return (T)block;
+202:     }
+203: 
+204:     public Team team(){
+205:         return build == null ? Team.derelict : build.team;
+206:     }
+207: 
+208:     /** Do not call unless you know what you are doing! This does not update the indexer! */
+209:     public void setTeam(Team team){
+210:         if(build != null){
+211:             build.team(team);
+212:         }
+213:     }
+214: 
+215:     public boolean isCenter(){
+216:         return build == null || build.tile == this;
+217:     }
+218: 
+219:     public int centerX(){
+220:         return build == null ? x : build.tile.x;
+221:     }
+222: 
+223:     public int centerY(){
+224:         return build == null ? y : build.tile.y;
+225:     }
+226: 
+227:     public int getTeamID(){
+228:         return team().id;
+229:     }
+230: 
+231:     public void setBlock(Block type, Team team, int rotation){
+232:         setBlock(type, team, rotation, type::newBuilding);
+233:     }
+234: 
+235:     public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){

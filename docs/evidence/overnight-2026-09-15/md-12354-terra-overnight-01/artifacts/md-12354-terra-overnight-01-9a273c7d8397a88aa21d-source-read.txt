@@ -1,0 +1,105 @@
+100:             return data;
+101:         }else{
+102:             return map[team.id] = new TeamData(team);
+103:         }
+104:     }
+105: 
+106:     public @Nullable TeamData getOrNull(Team team){
+107:         return map[team.id];
+108:     }
+109: 
+110:     public Seq<CoreBuild> playerCores(){
+111:         return get(state.rules.defaultTeam).cores;
+112:     }
+113: 
+114:     /** Do not modify! */
+115:     public Seq<CoreBuild> cores(Team team){
+116:         return get(team).cores;
+117:     }
+118: 
+119:     /** Returns whether a team is active, e.g. whether it has any cores remaining. */
+120:     public boolean isActive(Team team){
+121:         //the enemy wave team is always active
+122:         return get(team).active();
+123:     }
+124: 
+125:     public boolean canInteract(Team team, Team other){
+126:         return team == other || other == Team.derelict;
+127:     }
+128: 
+129:     /** Do not modify. */
+130:     public Seq<TeamData> getActive(){
+131:         active.removeAll(t -> !t.active());
+132:         return active;
+133:     }
+134: 
+135:     public void updateActive(Team team){
+136:         TeamData data = get(team);
+137:         //register in active list if needed
+138:         if(data.active() && !active.contains(data)){
+139:             active.add(data);
+140:             updateEnemies();
+141:         }
+142:     }
+143: 
+144:     public void registerCore(CoreBuild core){
+145:         TeamData data = get(core.team);
+146:         //add core if not present
+147:         if(!data.cores.contains(core)){
+148:             data.cores.add(core);
+149:         }
+150: 
+151:         //register in active list if needed
+152:         if(data.active() && !active.contains(data)){
+153:             active.add(data);
+154:             updateEnemies();
+155:         }
+156:     }
+157: 
+158:     public void unregisterCore(CoreBuild entity){
+159:         TeamData data = get(entity.team);
+160:         data.cores.remove(entity);
+161:         //unregister in active list
+162:         if(!data.active()){
+163:             active.remove(data);
+164:             updateEnemies();
+165:         }
+166:     }
+167: 
+168:     private void count(Unit unit){
+169:         unit.team.data().updateCount(unit.type, 1);
+170: 
+171:         if(unit instanceof Payloadc payloadc){
+172:             var payloads = payloadc.payloads();
+173:             for(int i = 0; i < payloads.size; i++){
+174:                 if(payloads.get(i) instanceof UnitPayload payload){
+175:                     count(payload.unit);
+176:                 }
+177:             }
+178:         }
+179:     }
+180: 
+181:     public void updateTeamStats(){
+182:         present.clear();
+183:         bosses.clear();
+184: 
+185:         for(Team team : Team.all){
+186:             TeamData data = team.data();
+187: 
+188:             data.presentFlag = data.buildings.size > 0;
+189:             data.unitCount = 0;
+190:             data.units.clear();
+191:             data.players.clear();
+192:             if(data.cores.size > 0){
+193:                 data.lastCore = data.cores.first();
+194:             }
+195:             if(data.unitTree != null){
+196:                 data.unitTree.clear();
+197:             }
+198: 
+199:             if(data.typeCounts != null){
+200:                 Arrays.fill(data.typeCounts, 0);
+201:             }
+202: 
+203:             //clear old unit records
+204:             if(data.unitsByType != null){

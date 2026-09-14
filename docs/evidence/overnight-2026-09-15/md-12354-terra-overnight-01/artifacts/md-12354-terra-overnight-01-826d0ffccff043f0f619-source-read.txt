@@ -1,0 +1,183 @@
+1: package mindustry.game;
+2: 
+3: import arc.*;
+4: import arc.graphics.*;
+5: import arc.math.*;
+6: import arc.struct.*;
+7: import arc.util.*;
+8: import mindustry.game.Rules.*;
+9: import mindustry.game.Teams.*;
+10: import mindustry.graphics.*;
+11: import mindustry.logic.*;
+12: import mindustry.world.blocks.storage.CoreBlock.*;
+13: import mindustry.world.modules.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class Team implements Comparable<Team>, Senseable{
+18:     public final int id;
+19:     public final Color color = new Color();
+20:     public final Color[] palette = {new Color(), new Color(), new Color()};
+21:     public final int[] palettei = new int[3];
+22:     public boolean ignoreUnitCap = false;
+23:     public String emoji = "";
+24:     public boolean hasPalette;
+25:     public String name;
+26: 
+27:     /** All 256 registered teams. */
+28:     public static final Team[] all = new Team[256];
+29:     /** The 6 base teams used in the editor. */
+30:     public static final Team[] baseTeams = new Team[6];
+31: 
+32:     public final static Team
+33:         derelict = new Team(0, "derelict", Color.valueOf("4d4e58")),
+34:         sharded = new Team(1, "sharded", Pal.accent.cpy(), Color.valueOf("ffd37f"), Color.valueOf("eab678"), Color.valueOf("d4816b")),
+35:         crux = new Team(2, "crux", Color.valueOf("f25555"), Color.valueOf("fc8e6c"), Color.valueOf("f25555"), Color.valueOf("a04553")),
+36:         malis = new Team(3, "malis", Color.valueOf("a27ce5"), Color.valueOf("c7a4f5"), Color.valueOf("896fd6"), Color.valueOf("504cba")),
+37: 
+38:         //TODO temporarily no palettes for these teams.
+39:         green = new Team(4, "green", Color.valueOf("54d67d")),//Color.valueOf("96f58c"), Color.valueOf("54d67d"), Color.valueOf("28785c")),
+40:         blue = new Team(5, "blue", Color.valueOf("6c87fd")), //Color.valueOf("85caf9"), Color.valueOf("6c87fd"), Color.valueOf("3b3392")
+41:         neoplastic = new Team(6, "neoplastic", Color.valueOf("e05438")); //yes, it looks very similar to crux, you're not supposed to use this team for block regions anyway
+42: 
+43:     static{
+44:         Mathf.rand.setSeed(8);
+45:         //fix random seed shift caused by new team
+46:         for(int i = 0; i < 3; i++){
+47:             Mathf.random();
+48:         }
+49:         //create the whole 256 placeholder teams
+50:         for(int i = 7; i < all.length; i++){
+51:             new Team(i, "team#" + i, Color.HSVtoRGB(360f * Mathf.random(), 100f * Mathf.random(0.4f, 1f), 100f * Mathf.random(0.6f, 1f), 1f));
+52:         }
+53:         Mathf.rand.setSeed(new Rand().nextLong());
+54: 
+55:         neoplastic.ignoreUnitCap = true;
+56:     }
+57: 
+58:     public static Team get(int id){
+59:         return all[((byte)id) & 0xff];
+60:     }
+61: 
+62:     protected Team(int id, String name, Color color){
+63:         this.name = name;
+64:         this.color.set(color);
+65:         this.id = id;
+66: 
+67:         if(id < 6) baseTeams[id] = this;
+68:         all[id] = this;
+69: 
+70:         setPalette(color);
+71:     }
+72: 
+73:     /** Specifies a 3-color team palette. */
+74:     protected Team(int id, String name, Color color, Color pal1, Color pal2, Color pal3){
+75:         this(id, name, color);
+76: 
+77:         setPalette(pal1, pal2, pal3);
+78:         this.color.set(color);
+79:     }
+80: 
+81:     /** @return the core items for this team, or an empty item module.
+82:      * Never add to the resulting item module, as it is mutable. */
+83:     public ItemModule items(){
+84:         return core() == null ? ItemModule.empty : core().items;
+85:     }
+86: 
+87:     /** @return the team-specific rules. */
+88:     public TeamRule rules(){
+89:         return state.rules.teams.get(this);
+90:     }
+91: 
+92:     public TeamData data(){
+93:         return state.teams.get(this);
+94:     }
+95: 
+96:     @Nullable
+97:     public CoreBuild core(){
+98:         return data().core();
+99:     }
+100: 
+101:     /** @return whether this team has any buildings on this map; in waves mode, this is always true for the enemy team. */
+102:     public boolean active(){
+103:         return state.teams.isActive(this);
+104:     }
+105: 
+106:     /** @return whether this team has any active cores. Not the same as active()! */
+107:     public boolean isAlive(){
+108:         return data().isAlive();
+109:     }
+110: 
+111:     /** @return whether this team is supposed to be AI-controlled. */
+112:     public boolean isAI(){
+113:         return (state.rules.waves || state.rules.attackMode || state.isCampaign()) && this != state.rules.defaultTeam && !state.rules.pvp;
+114:     }
+115: 
+116:     /** @return whether this team is solely comprised of AI (with no players possible). */
+117:     public boolean isOnlyAI(){
+118:         return isAI() && data().players.size == 0;
+119:     }
+120: 
+121:     /** @return whether this team needs a flow field for "dumb" wave pathfinding. */
+122:     public boolean needsFlowField(){
+123:         return isAI() && !rules().rtsAi;
+124:     }
+125: 
+126:     /** @return whether unit factories should be active, according to the game rule. */
+127:     public boolean activateUnitFactories(){
+128:         return state.tick >= state.rules.unitActivationDelay(this);
+129:     }
+130: 
+131:     public Seq<CoreBuild> cores(){
+132:         return state.teams.cores(this);
+133:     }
+134: 
+135:     public String localized(){
+136:         return Core.bundle.get("team." + name + ".name", name);
+137:     }
+138: 
+139:     public String coloredName(){
+140:         return emoji + "[#" + color + "]" + localized() + "[]";
+141:     }
+142: 
+143:     public void setPalette(Color color){
+144:         setPalette(color, color.cpy().mul(0.75f), color.cpy().mul(0.5f));
+145:         hasPalette = false;
+146:     }
+147: 
+148:     public void setPalette(Color pal1, Color pal2, Color pal3){
+149:         color.set(pal1);
+150:         palette[0].set(pal1);
+151:         palette[1].set(pal2);
+152:         palette[2].set(pal3);
+153:         for(int i = 0; i < 3; i++){
+154:             palettei[i] = palette[i].rgba();
+155:         }
+156:         hasPalette = true;
+157:     }
+158: 
+159:     @Override
+160:     public int compareTo(Team team){
+161:         return Integer.compare(id, team.id);
+162:     }
+163: 
+164:     @Override
+165:     public String toString(){
+166:         return name;
+167:     }
+168: 
+169:     @Override
+170:     public double sense(LAccess sensor){
+171:         return switch(sensor){
+172:             case id -> id;
+173:             case color -> color.toDoubleBits();
+174:             default -> Double.NaN;
+175:         };
+176:     }
+177: 
+178:     @Override
+179:     public Object senseObject(LAccess sensor){
+180:         if(sensor == LAccess.name) return name;
+181:         return Senseable.noSensed;
+182:     }
+183: }

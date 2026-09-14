@@ -1,0 +1,216 @@
+70:         ));
+71:     }
+72: 
+73:     @Override
+74:     public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+75:         super.drawDefaultPlanRegion(plan, list);
+76: 
+77:         Draw.rect(unitType.fullIcon, plan.drawx(), plan.drawy());
+78:     }
+79: 
+80:     public class TargetDummyBuild extends Building implements UnitTetherBlock{
+81:         //needs to be "unboxed" after reading, since units are read after buildings.
+82:         public int readUnitId = -1;
+83:         public Unit unit;
+84:         public float resetTime = 120f;
+85:         public float total, reset = resetTime, time, dummySize = 12f;
+86:         public float dps, totalDisplay, timeDisplay;
+87:         public int hits;
+88:         public int hitsDisplay;
+89:         public boolean boosting;
+90:         public float unitArmor;
+91:         public Team unitTeam;
+92: 
+93:         @Override
+94:         public void updateTile(){
+95:             //unit was lost/destroyed somehow
+96:             if(unit != null && (unit.dead || !unit.isAdded())){
+97:                 unit = null;
+98:             }
+99: 
+100:             if(readUnitId != -1){
+101:                 unit = Groups.unit.getByID(readUnitId);
+102:                 if(unit != null || !net.client()){
+103:                     readUnitId = -1;
+104:                 }
+105:             }
+106: 
+107:             if(unitTeam == null) unitTeam = team;
+108: 
+109:             if(unit == null){
+110:                 if(!net.client()){
+111:                     unit = unitType.create(team);
+112:                     if(unit instanceof TargetDummyUnit td){
+113:                         td.building(this);
+114:                     }
+115:                     unit.set(x, y);
+116:                     unit.rotation = 90f;
+117:                     unit.add();
+118:                     Call.unitTetherBlockSpawned(tile, unit.id);
+119:                 }
+120:             }
+121: 
+122:             if(unit != null){
+123:                 unit.updateBoosting(boosting);
+124:                 unit.armor(unitArmor);
+125:                 unit.team(unitTeam);
+126:                 unit.hitSize = dummySize;
+127: 
+128:                 //similar to impulseNet but does not factor in mass
+129:                 Tmp.v1.set(this).sub(unit).limit(dst(unit) * pullScale * Time.delta);
+130:                 unit.vel.add(Tmp.v1);
+131: 
+132:                 //manually move units to simulate velocity for remote players
+133:                 if(unit.isRemote()) unit.move(Tmp.v1);
+134: 
+135:                 if(unit.moving()) unit.lookAt(unit.vel().angle());
+136:             }
+137: 
+138:             time += Time.delta;
+139:             reset += Time.delta;
+140: 
+141:             if(timer(dpsUpdateTime, 20)){
+142:                 dps = total / time * 60f;
+143:                 totalDisplay = total;
+144:                 timeDisplay = time / 60f;
+145:                 hitsDisplay = hits;
+146:             }
+147: 
+148:             if(reset >= resetTime){
+149:                 total = time = dps = hits = 0;
+150:             }
+151:         }
+152: 
+153:         public void spawned(int id){
+154:             Fx.spawn.at(x, y);
+155:             if(net.client()){
+156:                 readUnitId = id;
+157:             }
+158:         }
+159: 
+160:         @Override
+161:         public void draw(){
+162:             super.draw();
+163: 
+164:             if(tether.found() && unit != null){
+165:                 float z = unit.elevation > 0.5f ? unit.type.flyingLayer - 0.01f : unitType.groundLayer + Mathf.clamp(unitType.hitSize / 4000f, 0, 0.01f);
+166:                 Draw.z(z - 0.01f);
+167:                 Draw.color(team.color);
+168:                 Drawf.laser(tether, tetherEnd, x, y, unit.x, unit.y);
+169:                 Draw.color();
+170:             }
+171: 
+172:             Draw.z(Layer.overlayUI);
+173:             String text = displayDPS(true) + "\n" + "(" + displayTotal() + ")" + "\n" + displayHits();
+174:             Drawf.text(text, x, y + size / (2.5f*2f), team.color, size / 2.5f);
+175:         }
+176: 
+177:         @Override
+178:         public void drawSelect(){
+179:             Drawf.square(x, y, dummySize, 0f, team.color);
+180:         }
+181: 
+182:         public String displayDPS(boolean round){
+183:             if(time > 0){
+184:                 return Core.bundle.format("bar.dps", (round ? (dps > 0 ? Mathf.round(dps) : emptyStr) : Strings.autoFixed(total / time * 60f, 2)));
+185:             }else{
+186:                 return Core.bundle.format("bar.dps", emptyStr);
+187:             }
+188:         }
+189: 
+190:         public String displayTotal(){
+191:             if(time > 0){
+192:                 return Core.bundle.format("bar.damagetimetotal", Mathf.round(totalDisplay), Strings.autoFixed(timeDisplay, 2));
+193:             }else{
+194:                 return Core.bundle.format("bar.damagetimetotal", emptyStr, emptyStr);
+195:             }
+196:         }
+197: 
+198:         public String displayHits(){
+199:             if(time > 0){
+200:                 return Core.bundle.format("bar.hits", hitsDisplay);
+201:             }else{
+202:                 return Core.bundle.format("bar.hits", emptyStr);
+203:             }
+204:         }
+205: 
+206:         @Override
+207:         public boolean collide(Bullet other){ //Hit the unit, not the building
+208:             return false;
+209:         }
+210: 
+211:         @Override
+212:         public boolean collision(Bullet other){ //Hit the unit, not the building
+213:             return false;
+214:         }
+215: 
+216:         public void dummyHit(float damage){
+217:             reset = 0f;
+218:             total += damage;
+219:             hits++;
+220:         }
+221: 
+222:         @Override
+223:         public void damage(float damage){
+224:             //just in case
+225:         }
+226: 
+227:         @Override
+228:         public void buildConfiguration(Table table){
+229:             table.table(t -> {
+230:                 t.background(Styles.black6);
+231:                 t.defaults().left();
+232: 
+233:                 t.check(Core.bundle.get("rules.enemyteam"), unitTeam != team, b -> configureFloat(0, Mathf.num(b))).colspan(3).row();
+234:                 t.check(Core.bundle.get("stat.flying"), boosting, b -> configureFloat(1, Mathf.num(b))).colspan(3).row();
+235:                 t.add(Core.bundle.get("stat.armor"));
+236:                 t.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configureFloat(2, Strings.parseFloat(s))).width(200f).padLeft(8f).colspan(2).row();
+237:                 t.add(Core.bundle.get("stat.resettime"));
+238:                 t.field(Strings.autoFixed(resetTime / 60f, 2), TextFieldFilter.floatsOnly, s -> configureFloat(3, Strings.parseFloat(s) * 60f)).padLeft(8f).growX();
+239:                 t.add(StatUnit.seconds.localized()).padLeft(8).row();
+240:                 t.add(Core.bundle.get("stat.hitsize"));
+241:                 t.field("" + (dummySize/tilesize), TextFieldFilter.floatsOnly, s -> configureFloat(4, Strings.parseFloat(s) * tilesize)).padLeft(8f).growX();
+242:                 t.add(StatUnit.blocks.localized()).padLeft(8f);
+243:             }).top().grow().margin(8f);
+244:         }
+245: 
+246:         //helper to send the rest of values, since config does not support arrays
+247:         public void configureFloat(int index, float value){
+248:             FloatSeq seq = FloatSeq.with(Mathf.num(unitTeam != team), Mathf.num(boosting), unitArmor, resetTime, dummySize);
+249:             seq.set(index, value);
+250:             configure(seq);
+251:         }
+252: 
+253:         public int dummyTeam(){
+254:             if(unitTeam != team) return team.id; //Return to own team
+255:             return team != state.rules.waveTeam ? state.rules.waveTeam.id : (team.id % (Team.all.length - 1)) + 1;
+256:         }
+257: 
+258:         @Override
+259:         public Object config(){
+260:             return FloatSeq.with(Mathf.num(unitTeam != team), Mathf.num(boosting), unitArmor, resetTime, dummySize);
+261:         }
+262: 
+263:         @Override
+264:         public void write(Writes write){
+265:             super.write(write);
+266:             write.i(unit == null ? -1 : unit.id);
+267:             write.bool(boosting);
+268:             write.f(unitArmor);
+269:             write.f(resetTime);
+270:             write.f(dummySize);
+271:             write.i(unitTeam.id);
+272:         }
+273: 
+274:         @Override
+275:         public void read(Reads read, byte revision){
+276:             super.read(read, revision);
+277:             readUnitId = read.i();
+278:             boosting = read.bool();
+279:             unitArmor = read.f();
+280:             resetTime = read.f();
+281:             dummySize = read.f();
+282:             unitTeam = Team.get(read.i());
+283:         }
+284:     }
+285: }

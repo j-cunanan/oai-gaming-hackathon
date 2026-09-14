@@ -1,0 +1,6 @@
+./core/src/mindustry/world/Build.java:103:            tile.build.checkAllowUpdate();
+./core/src/mindustry/entities/comp/BuildingComp.java:136:        checkAllowUpdate();
+./core/src/mindustry/entities/comp/BuildingComp.java:1841:        checkAllowUpdate();
+./core/src/mindustry/entities/comp/BuildingComp.java:2259:    public void checkAllowUpdate(){
+./core/src/mindustry/core/World.java:50:                build.checkAllowUpdate();
+./core/src/mindustry/core/World.java:473:                build.checkAllowUpdate();

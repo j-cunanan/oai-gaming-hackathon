@@ -1,0 +1,240 @@
+1: package mindustry.io;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.math.geom.*;
+6: import arc.struct.*;
+7: import arc.util.*;
+8: import arc.util.io.*;
+9: import mindustry.content.*;
+10: import mindustry.content.TechTree.*;
+11: import mindustry.core.*;
+12: import mindustry.ctype.*;
+13: import mindustry.entities.*;
+14: import mindustry.game.EventType.*;
+15: import mindustry.game.*;
+16: import mindustry.game.Teams.*;
+17: import mindustry.gen.*;
+18: import mindustry.maps.Map;
+19: import mindustry.mod.*;
+20: import mindustry.mod.data.*;
+21: import mindustry.type.*;
+22: import mindustry.world.*;
+23: import mindustry.world.meta.*;
+24: 
+25: import java.io.*;
+26: import java.util.*;
+27: 
+28: import static mindustry.Vars.*;
+29: 
+30: public abstract class SaveVersion extends SaveFileReader{
+31:     protected static OrderedMap<String, CustomChunk> customChunks = new OrderedMap<>();
+32: 
+33:     public final int version;
+34: 
+35:     /**
+36:      * Registers a custom save chunk reader/writer by name. This is mostly used for mods that need to save extra data.
+37:      * @param name a mod-specific, unique name for identifying this chunk. Prefixing is recommended.
+38:      * */
+39:     public static void addCustomChunk(String name, CustomChunk chunk){
+40:         customChunks.put(name, chunk);
+41:     }
+42: 
+43:     public SaveVersion(int version){
+44:         this.version = version;
+45:     }
+46: 
+47:     public SaveMeta getMeta(DataInput stream) throws IOException{
+48:         stream.readInt(); //length of data, doesn't matter here
+49:         StringMap map = readStringMap(stream);
+50:         return new SaveMeta(
+51:             map.getInt("version"),
+52:             map.getLong("saved"),
+53:             map.getLong("playtime"),
+54:             map.getInt("build"),
+55:             map.get("mapname"),
+56:             map.getInt("wave"),
+57:             JsonIO.read(Rules.class, map.get("rules", "{}")),
+58:             map
+59:         );
+60:     }
+61: 
+62:     @Override
+63:     public void read(DataInputStream stream, CounterInputStream counter, SaveReadState saveState) throws IOException{
+64:         readRegion("meta", stream, counter, in -> readMeta(in, saveState));
+65:         if(version >= 12) readRegion("patches", stream, counter, in -> readDataPatches(in, saveState));
+66: 
+67:         try{
+68:             readRegion("content", stream, counter, this::readContentHeader);
+69:             readRegion("map", stream, counter, in -> readMap(in, saveState.context));
+70:             readRegion("entities", stream, counter, this::readEntities);
+71:             if(version >= 8) readRegion("markers", stream, counter, this::readMarkers);
+72:             readRegion("custom", stream, counter, this::readCustomChunks);
+73:         }finally{
+74:             content.setTemporaryMapper(null);
+75:         }
+76:     }
+77: 
+78:     @Override
+79:     public void write(DataOutputStream stream, SaveOptions options) throws IOException{
+80:         writeRegion("meta", stream, out -> writeMeta(out, options.extraTags));
+81:         writeRegion("patches", stream, out -> writeDataPatches(out, options.embedAssets));
+82:         writeRegion("content", stream, this::writeContentHeader);
+83:         writeRegion("map", stream, this::writeMap);
+84:         writeRegion("entities", stream, this::writeEntities);
+85:         writeRegion("markers", stream, this::writeMarkers);
+86:         writeRegion("custom", stream, s -> writeCustomChunks(s, false));
+87:     }
+88: 
+89:     public void writeCustomChunks(DataOutput stream, boolean net) throws IOException{
+90:         var chunks = customChunks.orderedKeys().select(s -> customChunks.get(s).shouldWrite() && (!net || customChunks.get(s).writeNet()));
+91:         stream.writeInt(chunks.size);
+92:         for(var chunkName : chunks){
+93:             var chunk = customChunks.get(chunkName);
+94:             stream.writeUTF(chunkName);
+95: 
+96:             writeChunk(stream, writes -> chunk.write(writes.output));
+97:         }
+98:     }
+99: 
+100:     public void readCustomChunks(DataInput stream) throws IOException{
+101:         int amount = stream.readInt();
+102:         for(int i = 0; i < amount; i++){
+103:             String name = stream.readUTF();
+104:             var chunk = customChunks.get(name);
+105:             if(chunk != null){
+106:                 readChunk(stream, chunk::read);
+107:             }else{
+108:                 skipChunk(stream);
+109:             }
+110:         }
+111:     }
+112: 
+113:     public void writeMeta(DataOutput stream, StringMap tags) throws IOException{
+114:         //prepare campaign data for writing
+115:         if(state.isCampaign()){
+116:             state.rules.sector.info.prepare(state.rules.sector);
+117:             state.rules.sector.saveInfo();
+118:         }
+119: 
+120:         //flush tech node progress
+121:         for(TechNode node : TechTree.all){
+122:             node.save();
+123:         }
+124: 
+125:         StringMap result = new StringMap();
+126:         if(tags != null) result.putAll(tags);
+127: 
+128:         writeStringMap(stream, result.merge(StringMap.of(
+129:             "saved", Time.millis(),
+130:             "playtime", headless ? 0 : control.saves.getTotalPlaytime(),
+131:             "build", Version.build,
+132:             "mapname", state.map.name(),
+133:             "wave", state.wave,
+134:             "tick", state.tick,
+135:             "wavetime", state.wavetime,
+136:             "stats", JsonIO.write(state.stats),
+137:             "rules", JsonIO.write(state.rules),
+138:             "sectorPreset", state.rules.sector != null && state.rules.sector.preset != null ? state.rules.sector.preset.name : "", //empty string is a placeholder for null (null is possible but may be finicky)
+139:             "locales", JsonIO.write(state.mapLocales),
+140:             "mods", JsonIO.write(mods.getModStrings().toArray(String.class)),
+141:             "controlGroups", headless || control == null ? "null" : JsonIO.write(control.input.controlGroups),
+142:             "width", world.width(),
+143:             "height", world.height(),
+144:             "viewpos", Tmp.v1.set(player == null ? Vec2.ZERO : player).toString(),
+145:             "controlledType", headless || control.input.controlledType == null ? "null" : control.input.controlledType.name,
+146:             "nocores", state.rules.defaultTeam.cores().isEmpty(),
+147:             "playerteam", player == null ? state.rules.defaultTeam.id : player.team().id,
+148:             "hasExternalAssets", state.data.getAllExternalAssets().size > 0
+149:         )));
+150:     }
+151: 
+152:     public void readMeta(DataInput stream, SaveReadState saveState) throws IOException{
+153:         StringMap map = readStringMap(stream);
+154: 
+155:         state.wave = map.getInt("wave");
+156:         state.wavetime = map.getFloat("wavetime", state.rules.waveSpacing);
+157:         state.tick = map.getFloat("tick");
+158:         state.stats = JsonIO.read(GameStats.class, map.get("stats", "{}"));
+159:         state.mapLocales = JsonIO.read(MapLocales.class, map.get("locales", "{}"));
+160: 
+161:         saveState.ruleString = map.get("rules", "{}");
+162: 
+163:         //for versions >= 13, rules are parsed after data patches are loaded
+164:         if(version < 13){
+165:             readRules(saveState);
+166:         }
+167: 
+168:         if(!headless){
+169:             Tmp.v1.tryFromString(map.get("viewpos"));
+170:             Core.camera.position.set(Tmp.v1);
+171:             player.set(Tmp.v1);
+172: 
+173:             control.input.controlledType = content.getByName(ContentType.unit, map.get("controlledType", "<none>"));
+174:             Team team = Team.get(map.getInt("playerteam", state.rules.defaultTeam.id));
+175:             if(!net.client() && team != Team.derelict){
+176:                 player.team(team);
+177:             }
+178: 
+179:             var groups = JsonIO.read(IntSeq[].class, map.get("controlGroups", "null"));
+180:             if(groups != null && groups.length == control.input.controlGroups.length){
+181:                 control.input.controlGroups = groups;
+182:             }
+183:         }
+184: 
+185:         Map worldmap = maps.byName(map.get("mapname", "\\\\\\"));
+186:         state.map = worldmap == null ? new Map(StringMap.of(
+187:             "name", map.get("mapname", "Unknown"),
+188:             "width", 1,
+189:             "height", 1
+190:         )) : worldmap;
+191:     }
+192: 
+193:     public void readRules(SaveReadState saveState){
+194:         if(saveState.ruleString == null) return; //in NetworkIO, rules are null, not read here
+195:         state.rules = JsonIO.read(Rules.class, saveState.ruleString);
+196: 
+197:         if(state.rules.spawns.isEmpty()) state.rules.spawns = waves.get();
+198: 
+199:         if(saveState.context.getSector() != null){
+200:             state.rules.sector = saveState.context.getSector();
+201:             if(state.rules.sector != null){
+202:                 state.rules.sector.planet.applyRules(state.rules);
+203:             }
+204:         }
+205: 
+206:         //replace the default serpulo env with erekir
+207:         if(state.rules.planet == Planets.serpulo && state.rules.hasEnv(Env.scorching)){
+208:             state.rules.planet = Planets.erekir;
+209:         }
+210:     }
+211: 
+212:     public void writeMap(DataOutput stream) throws IOException{
+213:         //write world size
+214:         stream.writeShort(world.width());
+215:         stream.writeShort(world.height());
+216: 
+217:         //floor + overlay
+218:         for(int i = 0; i < world.width() * world.height(); i++){
+219:             Tile tile = world.tiles.geti(i);
+220:             stream.writeShort(tile.floorID());
+221:             stream.writeShort(tile.overlayID());
+222:             int consecutives = 0;
+223: 
+224:             for(int j = i + 1; j < world.width() * world.height() && consecutives < 255; j++){
+225:                 Tile nextTile = world.rawTile(j % world.width(), j / world.width());
+226: 
+227:                 if(nextTile.floorID() != tile.floorID() || nextTile.overlayID() != tile.overlayID()){
+228:                     break;
+229:                 }
+230: 
+231:                 consecutives++;
+232:             }
+233: 
+234:             stream.writeByte(consecutives);
+235:             i += consecutives;
+236:         }
+237: 
+238:         //blocks
+239:         for(int i = 0; i < world.width() * world.height(); i++){
+240:             Tile tile = world.tiles.geti(i);

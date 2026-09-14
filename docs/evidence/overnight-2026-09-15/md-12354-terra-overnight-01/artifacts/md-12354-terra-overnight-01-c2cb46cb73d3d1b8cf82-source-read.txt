@@ -1,0 +1,240 @@
+1: package mindustry.editor;
+2: 
+3: import arc.files.*;
+4: import arc.func.*;
+5: import arc.graphics.*;
+6: import arc.math.*;
+7: import arc.math.geom.*;
+8: import arc.struct.*;
+9: import mindustry.content.*;
+10: import mindustry.entities.units.*;
+11: import mindustry.game.*;
+12: import mindustry.gen.*;
+13: import mindustry.io.*;
+14: import mindustry.maps.*;
+15: import mindustry.world.*;
+16: import mindustry.world.blocks.environment.*;
+17: 
+18: import static mindustry.Vars.*;
+19: 
+20: public class MapEditor{
+21:     public static final float[] brushSizes = {1, 1.5f, 2, 3, 4, 5, 9, 15, 20};
+22: 
+23:     public StringMap tags = new StringMap();
+24:     public EditorRenderer renderer = new EditorRenderer();
+25: 
+26:     private final Context context = new Context();
+27:     private OperationStack stack = new OperationStack();
+28:     private DrawOperation currentOp;
+29:     private boolean loading;
+30: 
+31:     public float brushSize = 1;
+32:     public int rotation;
+33:     public Block drawBlock = Blocks.stone;
+34:     public Team drawTeam = Team.sharded;
+35:     public boolean showTerrain = true, showFloor = true, showBuildings = true;
+36: 
+37:     public boolean isLoading(){
+38:         return loading;
+39:     }
+40: 
+41:     public void beginEdit(int width, int height){
+42:         reset();
+43: 
+44:         loading = true;
+45:         createTiles(width, height);
+46:         renderer.resize(width, height);
+47:         loading = false;
+48:     }
+49: 
+50:     public void beginEdit(Map map){
+51:         reset();
+52: 
+53:         loading = true;
+54:         tags.putAll(map.tags);
+55:         if(map.file.parent().parent().name().equals("1127400") && steam){
+56:             tags.put("steamid",  map.file.parent().name());
+57:         }
+58:         load(() -> MapIO.loadMap(map, context));
+59:         if(!headless) renderer.resize(width(), height());
+60:         loading = false;
+61:     }
+62: 
+63:     public void beginEdit(Pixmap pixmap){
+64:         reset();
+65: 
+66:         createTiles(pixmap.width, pixmap.height);
+67:         load(() -> MapIO.readImage(pixmap, tiles()));
+68:         if(!headless) renderer.resize(width(), height());
+69:     }
+70: 
+71:     public void updateRenderer(){
+72:         Tiles tiles = world.tiles;
+73:         Seq<Building> builds = new Seq<>();
+74: 
+75:         for(int i = 0; i < tiles.width * tiles.height; i++){
+76:             Tile tile = tiles.geti(i);
+77:             var build = tile.build;
+78:             if(build != null && tile.isCenter()){
+79:                 builds.add(build);
+80:             }
+81:             tiles.seti(i, new EditorTile(tile.x, tile.y, tile.floorID(), tile.overlayID(), build == null ? tile.blockID() : 0));
+82:         }
+83: 
+84:         for(var build : builds){
+85:             tiles.get(build.tileX(), build.tileY()).setBlock(build.block, build.team, build.rotation, () -> build);
+86:         }
+87: 
+88:         renderer.resize(width(), height());
+89:     }
+90: 
+91:     public void load(Runnable r){
+92:         loading = true;
+93:         r.run();
+94:         loading = false;
+95:     }
+96: 
+97:     /** Creates a 2-D array of EditorTiles with stone as the floor block. */
+98:     private void createTiles(int width, int height){
+99:         Tiles tiles = world.resize(width, height);
+100: 
+101:         for(int x = 0; x < width; x++){
+102:             for(int y = 0; y < height; y++){
+103:                 tiles.set(x, y, new EditorTile(x, y, Blocks.stone.id, (short)0, (short)0));
+104:             }
+105:         }
+106:     }
+107: 
+108:     public Map createMap(Fi file){
+109:         return new Map(file, width(), height(), new StringMap(tags), true);
+110:     }
+111: 
+112:     private void reset(){
+113:         clearOp();
+114:         brushSize = 1;
+115:         drawBlock = Blocks.stone;
+116:         tags = new StringMap();
+117:     }
+118: 
+119:     public Tiles tiles(){
+120:         return world.tiles;
+121:     }
+122: 
+123:     public Tile tile(int x, int y){
+124:         return world.rawTile(x, y);
+125:     }
+126: 
+127:     public int width(){
+128:         return world.width();
+129:     }
+130: 
+131:     public int height(){
+132:         return world.height();
+133:     }
+134: 
+135:     public void drawBlocksReplace(int x, int y){
+136:         drawBlocks(x, y, tile -> tile.block() != Blocks.air || drawBlock.isFloor());
+137:     }
+138: 
+139:     public void drawBlocks(int x, int y){
+140:         drawBlocks(x, y, false, false, tile -> true);
+141:     }
+142: 
+143:     public void drawBlocks(int x, int y, Boolf<Tile> tester){
+144:         drawBlocks(x, y, false, false, tester);
+145:     }
+146: 
+147:     public void drawBlocks(int x, int y, boolean square, boolean forceOverlay, Boolf<Tile> tester){
+148:         if(drawBlock.isMultiblock()){
+149:             x = Mathf.clamp(x, (drawBlock.size - 1) / 2, width() - drawBlock.size / 2 - 1);
+150:             y = Mathf.clamp(y, (drawBlock.size - 1) / 2, height() - drawBlock.size / 2 - 1);
+151:             if(!hasOverlap(x, y)){
+152:                 tile(x, y).setBlock(drawBlock, drawTeam, rotation);
+153:                 addTileOp(TileOp.get((short)x, (short)y, DrawOperation.opTeam, (byte)drawTeam.id));
+154:             }
+155:         }else{
+156:             boolean isFloor = drawBlock.isFloor() && drawBlock != Blocks.air;
+157: 
+158:             Cons<Tile> drawer = tile -> {
+159:                 if(!tester.get(tile)) return;
+160:                 boolean changed = false;
+161: 
+162:                 boolean didDataOp = false;
+163:                 int oldData1 = 0, oldData2 = 0;
+164: 
+165:                 if(drawBlock.saveData || tile.shouldSaveData()){
+166:                     addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opData, TileOpData.get(tile.data, tile.floorData, tile.overlayData)));
+167:                     addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opDataExtra, tile.extraData));
+168:                     oldData1 = TileOpData.get(tile.data, tile.floorData, tile.overlayData);
+169:                     oldData2 = tile.extraData;
+170:                     didDataOp = true;
+171:                 }
+172: 
+173:                 int preDataOps = ops();
+174: 
+175:                 if(isFloor){
+176:                     if(forceOverlay){
+177:                         tile.setOverlay(drawBlock.asFloor());
+178:                         changed = true;
+179:                     }else{
+180:                         if(!(drawBlock.asFloor().wallOre && !tile.block().solid)){
+181:                             tile.setFloor(drawBlock.asFloor());
+182:                             if(!(tile.overlay() instanceof OverlayFloor) && !drawBlock.asFloor().supportsOverlay){
+183:                                 tile.setOverlay(Blocks.air);
+184:                             }
+185:                             changed = true;
+186:                         }
+187:                     }
+188:                 }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
+189:                     if(drawBlock.rotate && tile.build != null && tile.build.rotation != rotation){
+190:                         addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opRotation, (byte)rotation));
+191:                     }
+192: 
+193:                     tile.setBlock(drawBlock, drawTeam, rotation);
+194:                     changed = !drawBlock.synthetic();
+195: 
+196:                     if(drawBlock.synthetic()){
+197:                         addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opTeam, (byte)drawTeam.id));
+198:                     }
+199:                 }
+200: 
+201:                 if(changed && drawBlock.saveConfig){
+202:                     drawBlock.placeEnded(tile, null, editor.rotation, drawBlock.lastConfig);
+203:                     renderer.updateStatic(tile.x, tile.y);
+204:                 }
+205: 
+206:                 //data and block did not change, undo the data ops
+207:                 if(didDataOp && ops() == preDataOps && oldData1 == TileOpData.get(tile.data, tile.floorData, tile.overlayData) && oldData2 == tile.extraData){
+208:                     removeLastOps(2);
+209:                 }
+210:             };
+211: 
+212:             if(square){
+213:                 drawSquare(x, y, drawer);
+214:             }else{
+215:                 drawCircle(x, y, drawer);
+216:             }
+217:         }
+218:     }
+219: 
+220:     boolean hasOverlap(int x, int y){
+221:         Tile tile = world.tile(x, y);
+222:         //allow direct replacement of blocks of the same size
+223:         if(tile != null && tile.isCenter() && tile.block() != drawBlock && tile.block().size == drawBlock.size && tile.x == x && tile.y == y){
+224:             return false;
+225:         }
+226: 
+227:         //else, check for overlap
+228:         int offsetx = -(drawBlock.size - 1) / 2;
+229:         int offsety = -(drawBlock.size - 1) / 2;
+230:         for(int dx = 0; dx < drawBlock.size; dx++){
+231:             for(int dy = 0; dy < drawBlock.size; dy++){
+232:                 int worldx = dx + offsetx + x;
+233:                 int worldy = dy + offsety + y;
+234:                 Tile other = world.tile(worldx, worldy);
+235: 
+236:                 if(other != null && other.block().isMultiblock()){
+237:                     return true;
+238:                 }
+239:             }
+240:         }

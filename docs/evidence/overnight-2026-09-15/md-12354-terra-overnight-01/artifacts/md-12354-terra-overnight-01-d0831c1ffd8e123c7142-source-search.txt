@@ -1,0 +1,13 @@
+./desktop/src/mindustry/desktop/DesktopLauncher.java:221:            public boolean enabled(){
+./core/src/mindustry/mod/Mods.java:945:    public void setEnabled(LoadedMod mod, boolean enabled){
+./core/src/mindustry/mod/Mods.java:1262:        public boolean enabled(){
+./core/src/mindustry/entities/comp/BuildingComp.java:79:    transient boolean enabled = true;
+./core/src/mindustry/Vars.java:218:    public static boolean enableDarkness = true;
+./core/src/mindustry/game/CampaignRules.java:25:            boolean enabled = rtsAI && rules.attackMode; //if attackMode becomes false (waves enabled), turn off RTS AI
+./core/src/mindustry/world/Block.java:164:    public boolean enableDrawStatus = true;
+./core/src/mindustry/graphics/LightRenderer.java:186:    public boolean enabled(){
+./core/src/mindustry/ai/types/CommandAI.java:70:    public void setStance(UnitStance stance, boolean enabled){
+./core/src/mindustry/graphics/Pixelator.java:60:    public boolean enabled(){
+./core/src/mindustry/service/GameService.java:50:    public boolean enabled(){
+./core/src/mindustry/core/Version.java:28:    public static boolean enabled = true;
+./core/src/mindustry/core/Renderer.java:291:    public void toggleBloom(boolean enabled){

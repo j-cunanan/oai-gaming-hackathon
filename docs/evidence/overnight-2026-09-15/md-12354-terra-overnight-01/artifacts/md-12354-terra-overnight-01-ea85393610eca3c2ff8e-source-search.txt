@@ -1,0 +1,8 @@
+./core/src/mindustry/editor/MapEditorDialog.java:826:                    editor.drawBlock.buildEditorConfig(configTable[0]);
+./core/src/mindustry/world/Block.java:89:    /** if true, {@link #buildEditorConfig(Table)} will be called for configuring this block in the editor. */
+./core/src/mindustry/world/Block.java:1038:    public void buildEditorConfig(Table table){}
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:39:    public void buildEditorConfig(Table table){
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:43:    public void buildEditorConfig(Table table){
+./core/src/mindustry/world/blocks/environment/CharacterOverlay.java:65:    public void buildEditorConfig(Table table){
+./core/src/mindustry/world/blocks/environment/RuneOverlay.java:85:    public void buildEditorConfig(Table table){
+./core/src/mindustry/ui/fragments/HudFragment.java:99:                    control.input.block.buildEditorConfig(configTable[0]);

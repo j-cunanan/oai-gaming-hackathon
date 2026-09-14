@@ -1,0 +1,210 @@
+1: package mindustry.entities.comp;
+2: 
+3: import arc.*;
+4: import arc.audio.*;
+5: import arc.math.*;
+6: import arc.scene.ui.layout.*;
+7: import arc.struct.*;
+8: import arc.util.*;
+9: import mindustry.*;
+10: import mindustry.annotations.Annotations.*;
+11: import mindustry.content.*;
+12: import mindustry.core.*;
+13: import mindustry.entities.*;
+14: import mindustry.game.EventType.*;
+15: import mindustry.game.*;
+16: import mindustry.gen.*;
+17: import mindustry.type.*;
+18: import mindustry.world.*;
+19: import mindustry.world.blocks.payloads.*;
+20: import mindustry.world.blocks.power.*;
+21: 
+22: /** An entity that holds a payload. */
+23: @Component
+24: abstract class PayloadComp implements Posc, Rotc, Hitboxc, Unitc{
+25:     @Import float x, y, rotation;
+26:     @Import Team team;
+27:     @Import UnitType type;
+28: 
+29:     Seq<Payload> payloads = new Seq<>();
+30: 
+31:     private transient @Nullable PowerGraph payloadPower;
+32: 
+33:     @Override
+34:     public void update(){
+35:         if(payloadPower != null){
+36:             payloadPower.clear();
+37:         }
+38: 
+39:         //update power graph first, resolve everything
+40:         for(Payload pay : payloads){
+41:             if(pay instanceof BuildPayload pb && pb.build.power != null){
+42:                 if(payloadPower == null) payloadPower = new PowerGraph(false);
+43: 
+44:                 //pb.build.team = team;
+45:                 pb.build.power.graph = null;
+46:                 payloadPower.add(pb.build);
+47:             }
+48:         }
+49: 
+50:         if(payloadPower != null){
+51:             payloadPower.update();
+52:         }
+53: 
+54:         for(Payload pay : payloads){
+55:             //apparently BasedUser doesn't want this and several plugins use it
+56:             //if(pay instanceof BuildPayload build){
+57:             //    build.build.team = team;
+58:             //}
+59:             pay.set(x, y, rotation);
+60:             pay.update(self(), null);
+61:         }
+62:     }
+63: 
+64:     @Override
+65:     public void remove(){
+66:         for(Payload pay : payloads){
+67:             pay.remove();
+68:         }
+69:         payloads.clear();
+70:     }
+71: 
+72:     public void destroy(){
+73:         if(Vars.state.rules.unitPayloadsExplode) payloads.each(Payload::destroyed);
+74:     }
+75: 
+76:     float payloadUsed(){
+77:         return payloads.sumf(p -> p.size() * p.size());
+78:     }
+79: 
+80:     boolean canPickup(Unit unit){
+81:         return type.pickupUnits && payloadUsed() + unit.hitSize * unit.hitSize <= type.payloadCapacity + 0.001f && unit.team == team() && unit.isAI() && unit.type.allowedInPayloads;
+82:     }
+83: 
+84:     boolean canPickup(Building build){
+85:         return payloadUsed() + build.block.size * build.block.size * Vars.tilesize * Vars.tilesize <= type.payloadCapacity + 0.001f && build.canPickup() && build.team == team;
+86:     }
+87: 
+88:     boolean canPickupPayload(Payload pay){
+89:         return payloadUsed() + pay.size()*pay.size() <= type.payloadCapacity + 0.001f && (type.pickupUnits || !(pay instanceof UnitPayload));
+90:     }
+91: 
+92:     boolean hasPayload(){
+93:         return payloads.size > 0;
+94:     }
+95: 
+96:     void addPayload(Payload load){
+97:         payloads.add(load);
+98:     }
+99: 
+100:     void pickup(Unit unit){
+101:         if(unit.isAdded()) unit.team.data().updateCount(unit.type, 1);
+102: 
+103:         unit.remove();
+104:         addPayload(new UnitPayload(unit));
+105:         Fx.unitPickup.at(unit);
+106:         if(Vars.net.client()){
+107:             Vars.netClient.clearRemovedEntity(unit.id);
+108:         }
+109:         Sounds.payloadPickup.at(self(), Mathf.random(0.9f, 1.1f));
+110:         Events.fire(new PickupEvent(self(), unit));
+111:     }
+112: 
+113:     void pickup(Building tile){
+114:         tile.pickedUp();
+115:         tile.tile.remove();
+116:         tile.afterPickedUp();
+117:         addPayload(new BuildPayload(tile));
+118:         Fx.unitPickup.at(tile);
+119:         Sounds.payloadPickup.at(self());
+120:         Events.fire(new PickupEvent(self(), tile));
+121:     }
+122: 
+123:     boolean dropLastPayload(){
+124:         if(payloads.isEmpty()) return false;
+125: 
+126:         Payload load = payloads.peek();
+127: 
+128:         if(tryDropPayload(load)){
+129:             payloads.pop();
+130:             return true;
+131:         }
+132:         return false;
+133:     }
+134: 
+135:     boolean tryDropPayload(Payload payload){
+136:         Tile on = tileOn();
+137: 
+138:         //clear removed state of unit so it can be synced
+139:         if(Vars.net.client() && payload instanceof UnitPayload u){
+140:             Vars.netClient.clearRemovedEntity(u.unit.id);
+141:         }
+142: 
+143:         //drop off payload on an acceptor if possible
+144:         if(on != null && on.build != null && on.build.team == team && on.build.acceptPayload(on.build, payload)){
+145:             Fx.unitDrop.at(on.build);
+146:             on.build.handlePayload(on.build, payload);
+147:             return true;
+148:         }
+149: 
+150:         if(payload instanceof BuildPayload b){
+151:             return dropBlock(b);
+152:         }else if(payload instanceof UnitPayload p){
+153:             return dropUnit(p);
+154:         }
+155:         return false;
+156:     }
+157: 
+158:     boolean canDropPayload(){
+159:         if(payloads.isEmpty()) return false;
+160: 
+161:         Payload payload = payloads.peek();
+162:         Tile on = tileOn();
+163: 
+164:         if(on != null && on.build != null && on.build.team == team && on.build.acceptPayload(on.build, payload)) return true;
+165: 
+166:         if(payload instanceof BuildPayload b){
+167:             Building tile = b.build;
+168:             int tx = World.toTile(x - tile.block.offset), ty = World.toTile(y - tile.block.offset);
+169:             on = Vars.world.tile(tx, ty);
+170:             return on != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false);
+171:         }else if(payload instanceof UnitPayload p){
+172:             var u = p.unit;
+173:             return !(!u.canPass(World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y)) || Units.count(x, y, u.physicSize(), o -> o.isGrounded() && o.hitSize > 14f) > 1);
+174:         }
+175:         return false;
+176:     }
+177: 
+178:     boolean dropUnit(UnitPayload payload){
+179:         Unit u = payload.unit;
+180: 
+181:         //add random offset to prevent unit stacking
+182:         Tmp.v1.rnd(Mathf.random(2f));
+183: 
+184:         //can't drop ground units
+185:         //allow stacking for small units for now - otherwise, unit transfer would get annoying
+186:         if(!u.canPass(World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y)) || Units.count(x, y, u.physicSize(), o -> o.isGrounded() && o.hitSize > 14f) > 1){
+187:             return false;
+188:         }
+189: 
+190:         Fx.unitDrop.at(this);
+191: 
+192:         //clients do not drop payloads
+193:         if(Vars.net.client()) return true;
+194: 
+195:         u.set(x + Tmp.v1.x, y + Tmp.v1.y);
+196:         u.rotation(rotation);
+197:         //reset the ID to a new value to make sure it's synced
+198:         u.id = EntityGroup.nextId();
+199:         //decrement count to prevent double increment
+200:         if(!u.isAdded()) u.team.data().updateCount(u.type, -1);
+201:         u.add();
+202:         u.unloaded();
+203:         Sound dropSound =
+204:             payload.size() <= 12f ? Sounds.payloadDrop1 :
+205:             payload.size() <= 20f ? Sounds.payloadDrop2 :
+206:             Sounds.payloadDrop3;
+207:         dropSound.at(self(), Mathf.random(0.9f, 1.1f));
+208:         Events.fire(new PayloadDropEvent(self(), u));
+209: 
+210:         return true;

@@ -1,0 +1,57 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+No Android SDK found. Skipping Android module.
+Compiling with localArc
+Caught exception: Couldn't poll for events, error = 4
+Error while receiving file changes
+net.rubygrapefruit.platform.NativeException: Couldn't poll for events, error = 4
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop0(Native Method)
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop(AbstractNativeFileEventFunctions.java:32)
+	at org.gradle.fileevents.internal.AbstractFileEventFunctions$AbstractFileWatcher$1.run(AbstractFileEventFunctions.java:154)
+> Task :Arc:arc-core:compileJava UP-TO-DATE
+> Task :Arc:extensions:packer:compileJava UP-TO-DATE
+> Task :Arc:extensions:packer:processResources NO-SOURCE
+> Task :Arc:extensions:packer:classes UP-TO-DATE
+> Task :Arc:extensions:packer:jar UP-TO-DATE
+> Task :Arc:arc-core:processResources NO-SOURCE
+> Task :Arc:arc-core:classes UP-TO-DATE
+> Task :Arc:arc-core:jar UP-TO-DATE
+
+> Configure project :
+Compiling with build: 'custom build'
+
+> Task :annotations:clearCache
+> Task :Arc:extensions:flabel:compileJava UP-TO-DATE
+> Task :Arc:extensions:freetype:compileJava UP-TO-DATE
+> Task :annotations:compileJava UP-TO-DATE
+> Task :core:clearCache
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :Arc:extensions:fx:compileJava UP-TO-DATE
+> Task :Arc:extensions:arcnet:compileJava UP-TO-DATE
+> Task :Arc:extensions:g3d:compileJava UP-TO-DATE
+> Task :Arc:backends:backend-headless:compileJava UP-TO-DATE
+> Task :annotations:processResources UP-TO-DATE
+> Task :annotations:classes UP-TO-DATE
+> Task :annotations:jar UP-TO-DATE
+> Task :core:kaptGenerateStubsKotlin SKIPPED
+> Task :core:kaptKotlin UP-TO-DATE
+> Task :core:compileKotlin SKIPPED
+> Task :core:preGen UP-TO-DATE
+> Task :core:compileJava UP-TO-DATE
+> Task :tests:clearCache
+> Task :tests:compileJava NO-SOURCE
+> Task :tests:processResources NO-SOURCE
+> Task :tests:classes UP-TO-DATE
+
+> Task :tests:compileTestJava
+Note: /workspace/repo/tests/src/test/java/DataAssetTests.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tests:processTestResources
+> Task :tests:testClasses
+> Task :reproResolveTestRuntime
+
+[Incubating] Problems report is available at: file:///workspace/repo/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 28s
+21 actionable tasks: 6 executed, 15 up-to-date

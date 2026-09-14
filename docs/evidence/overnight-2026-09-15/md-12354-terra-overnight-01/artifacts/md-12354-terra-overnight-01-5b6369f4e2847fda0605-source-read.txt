@@ -1,0 +1,220 @@
+1: package mindustry.ui.dialogs;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.graphics.*;
+6: import arc.scene.ui.*;
+7: import arc.scene.ui.ImageButton.*;
+8: import arc.scene.ui.layout.*;
+9: import arc.struct.*;
+10: import arc.util.*;
+11: import arc.util.serialization.*;
+12: import mindustry.*;
+13: import mindustry.audio.*;
+14: import mindustry.content.*;
+15: import mindustry.ctype.*;
+16: import mindustry.editor.*;
+17: import mindustry.game.*;
+18: import mindustry.game.Rules.*;
+19: import mindustry.gen.*;
+20: import mindustry.graphics.*;
+21: import mindustry.io.*;
+22: import mindustry.type.*;
+23: import mindustry.type.Weather.*;
+24: import mindustry.ui.*;
+25: import mindustry.world.*;
+26: 
+27: import static arc.Core.*;
+28: import static arc.util.Time.*;
+29: import static mindustry.Vars.*;
+30: 
+31: public class CustomRulesDialog extends BaseDialog{
+32:     Rules rules;
+33:     private Table main;
+34:     private Prov<Rules> resetter;
+35:     private LoadoutDialog loadoutDialog;
+36:     private BannedContentDialog<Block> bannedBlocks = new BannedContentDialog<>("@bannedblocks", ContentType.block, Block::canBeBuilt);
+37:     private BannedContentDialog<UnitType> bannedUnits = new BannedContentDialog<>("@bannedunits", ContentType.unit, u -> !u.isHidden());
+38:     public boolean showRuleEditRule;
+39:     public Seq<Table> categories;
+40:     public Table current;
+41:     public Seq<String> categoryNames;
+42:     public String currentName = "";
+43:     public String ruleSearch = "";
+44:     public Seq<Runnable> additionalSetup; // for modding to easily add new rules
+45: 
+46:     public CustomRulesDialog(){
+47:         this(false);
+48:     }
+49: 
+50:     public CustomRulesDialog(boolean showRuleEditRule){
+51:         super("@mode.custom");
+52: 
+53:         this.showRuleEditRule = showRuleEditRule;
+54: 
+55:         loadoutDialog = new LoadoutDialog();
+56: 
+57:         setFillParent(true);
+58:         shown(this::setup);
+59:         addCloseButton();
+60: 
+61:         additionalSetup = new Seq<>();
+62:         categories = new Seq<>();
+63:         categoryNames = new Seq<>();
+64: 
+65:         buttons.button("@edit", Icon.pencil, () -> {
+66:             BaseDialog dialog = new BaseDialog("@edit.menu");
+67:             dialog.addCloseButton();
+68:             dialog.setFillParent(false);
+69: 
+70:             dialog.cont.table(Tex.button, t -> {
+71:                 var style = Styles.cleart;
+72:                 t.defaults().size(280f, 64f).pad(2f);
+73: 
+74:                 t.button("@copy.clipboard", Icon.copy, style, () -> {
+75:                     ui.showInfoFade("@copied");
+76: 
+77:                     //hack: don't write the spawns, they just waste space
+78:                     var spawns = rules.spawns;
+79:                     rules.spawns = new Seq<>();
+80:                     Core.app.setClipboardText(JsonIO.write(rules));
+81:                     rules.spawns = spawns;
+82:                     dialog.hide();
+83:                 }).marginLeft(12f).row();
+84: 
+85:                 t.button("@load.clipboard", Icon.download, style, () -> {
+86:                     try{
+87:                         Rules newRules = JsonIO.read(Rules.class, Core.app.getClipboardText());
+88:                         //objectives and spawns are considered to be map-specific; don't use them
+89:                         newRules.spawns = rules.spawns;
+90:                         newRules.objectives = rules.objectives;
+91:                         JsonIO.copy(newRules, rules);
+92:                         refresh();
+93:                     }catch(Throwable e){
+94:                         Log.err(e);
+95:                         ui.showErrorMessage("@rules.invaliddata");
+96:                     }
+97:                     dialog.hide();
+98:                 }).disabled(Core.app.getClipboardText() == null || !Core.app.getClipboardText().startsWith("{")).marginLeft(12f).row();
+99: 
+100:                 t.button("@settings.reset", Icon.refresh, style, () -> {
+101:                     JsonIO.copy(resetter.get(), rules);
+102:                     refresh();
+103:                 }).marginLeft(12f);
+104:             });
+105: 
+106:             dialog.show();
+107:         });
+108:     }
+109: 
+110:     void refresh(){
+111:         setup();
+112:         requestKeyboard();
+113:         requestScroll();
+114:     }
+115: 
+116:     public void show(Rules rules, Prov<Rules> resetter){
+117:         this.rules = rules;
+118:         this.resetter = resetter;
+119:         show();
+120:     }
+121: 
+122:     void setup(){
+123:         cont.clear();
+124:         cont.table(t -> {
+125:             t.add("@search").padRight(10);
+126:             var field = t.field(ruleSearch, text -> {
+127:                 ruleSearch = text.trim().replaceAll(" +", " ").toLowerCase();
+128:                 setupMain();
+129:             }).grow().pad(8).get();
+130:             field.setCursorPosition(ruleSearch.length());
+131:             Core.scene.setKeyboardFocus(field);
+132:             t.button(Icon.cancel, Styles.emptyi, () -> {
+133:                 ruleSearch = "";
+134:                 setupMain();
+135:             }).padLeft(10f).size(35f);
+136:         }).row();
+137:         Cell<ScrollPane> paneCell = cont.pane(m -> main = m);
+138: 
+139:         setupMain();
+140: 
+141:         paneCell.scrollX(main.getPrefWidth() + 40f > graphics.getWidth());
+142:     }
+143: 
+144:     void setupMain(){
+145:         categories.clear();
+146:         main.clear();
+147:         main.left().defaults().fillX().left();
+148:         main.row();
+149: 
+150:         category("waves");
+151:         check("@rules.waves", b -> rules.waves = b, () -> rules.waves);
+152:         check("@rules.wavesending", b -> rules.waveSending = b, () -> rules.waveSending, () -> rules.waves);
+153:         check("@rules.wavetimer", b -> rules.waveTimer = b, () -> rules.waveTimer, () -> rules.waves);
+154:         check("@rules.waitForWaveToEnd", b -> rules.waitEnemies = b, () -> rules.waitEnemies, () -> rules.waves && rules.waveTimer);
+155:         check("@rules.randomwaveai", b -> rules.randomWaveAI = b, () -> rules.randomWaveAI, () -> rules.waves);
+156:         check("@rules.wavespawnatcores", b -> rules.wavesSpawnAtCores = b, () -> rules.wavesSpawnAtCores, () -> rules.waves);
+157:         check("@rules.airUseSpawns", b -> rules.airUseSpawns = b, () -> rules.airUseSpawns, () -> rules.waves);
+158:         numberi("@rules.wavelimit", f -> rules.winWave = f, () -> rules.winWave, () -> rules.waves, 0, Integer.MAX_VALUE);
+159:         number("@rules.wavespacing", false, f -> rules.waveSpacing = f * 60f, () -> rules.waveSpacing / 60f, () -> rules.waves && rules.waveTimer, 1, Float.MAX_VALUE);
+160:         number("@rules.initialwavespacing", false, f -> rules.initialWaveSpacing = f * 60f, () -> rules.initialWaveSpacing / 60f, () -> rules.waves && rules.waveTimer, 0, Float.MAX_VALUE);
+161:         number("@rules.dropzoneradius", false, f -> rules.dropZoneRadius = f * tilesize, () -> rules.dropZoneRadius / tilesize, () -> rules.waves);
+162: 
+163:         category("resourcesbuilding");
+164:         check("@rules.alloweditworldprocessors", b -> rules.allowEditWorldProcessors = b, () -> rules.allowEditWorldProcessors);
+165:         check("@rules.infiniteresources", b -> rules.infiniteResources = b, () -> rules.infiniteResources);
+166:         check("@rules.onlydepositcore", b -> rules.onlyDepositCore = b, () -> rules.onlyDepositCore);
+167:         check("@rules.coreunloaders", b -> rules.allowCoreUnloaders = b, () -> rules.allowCoreUnloaders);
+168:         check("@rules.derelictrepair", b -> rules.derelictRepair = b, () -> rules.derelictRepair);
+169:         check("@rules.reactorexplosions", b -> rules.reactorExplosions = b, () -> rules.reactorExplosions);
+170:         check("@rules.schematic", b -> rules.schematicsAllowed = b, () -> rules.schematicsAllowed);
+171:         check("@rules.coreincinerates", b -> rules.coreIncinerates = b, () -> rules.coreIncinerates);
+172:         check("@rules.cleanupdeadteams", b -> rules.cleanupDeadTeams = b, () -> rules.cleanupDeadTeams, () -> rules.pvp);
+173:         check("@rules.disableworldprocessors", b -> rules.disableWorldProcessors = b, () -> rules.disableWorldProcessors);
+174:         number("@rules.buildcostmultiplier", false, f -> rules.buildCostMultiplier = f, () -> rules.buildCostMultiplier, () -> !rules.infiniteResources);
+175:         number("@rules.buildspeedmultiplier", f -> rules.buildSpeedMultiplier = f, () -> rules.buildSpeedMultiplier, 0.001f, 50f);
+176:         number("@rules.deconstructrefundmultiplier", false, f -> rules.deconstructRefundMultiplier = f, () -> rules.deconstructRefundMultiplier, () -> !rules.infiniteResources, 0f, 1f);
+177:         number("@rules.blockhealthmultiplier", f -> rules.blockHealthMultiplier = f, () -> rules.blockHealthMultiplier);
+178:         number("@rules.blockdamagemultiplier", f -> rules.blockDamageMultiplier = f, () -> rules.blockDamageMultiplier);
+179: 
+180:         if(Core.bundle.get("configure").toLowerCase().contains(ruleSearch)){
+181:             current.button("@configure",
+182:                 () -> loadoutDialog.show(999999, rules.loadout,
+183:                     i -> true,
+184:                     () -> rules.loadout.clear().add(new ItemStack(Items.copper, 100)),
+185:                     () -> {}, () -> {}
+186:             )).left().width(300f).row();
+187:         }
+188: 
+189:         if(Core.bundle.get("bannedblocks").toLowerCase().contains(ruleSearch)){
+190:             current.button("@bannedblocks", () -> bannedBlocks.show(rules.bannedBlocks)).left().width(300f).row();
+191:         }
+192:         check("@rules.hidebannedblocks", b -> rules.hideBannedBlocks = b, () -> rules.hideBannedBlocks);
+193:         check("@bannedblocks.whitelist", b -> rules.blockWhitelist = b, () -> rules.blockWhitelist);
+194: 
+195:         category("unit");
+196:         check("@rules.unitcapvariable", b -> rules.unitCapVariable = b, () -> rules.unitCapVariable);
+197:         check("@rules.unitpayloadsexplode", b -> rules.unitPayloadsExplode = b, () -> rules.unitPayloadsExplode);
+198:         numberi("@rules.unitcap", f -> rules.unitCap = f, () -> rules.unitCap, -999, 999);
+199: 
+200:         number("@rules.unitfactoryactivation", f -> rules.unitFactoryActivationDelay = f * 60f, () -> rules.unitFactoryActivationDelay / 60f);
+201:         number("@rules.unitdamagemultiplier", f -> rules.unitDamageMultiplier = f, () -> rules.unitDamageMultiplier);
+202:         number("@rules.unitcrashdamagemultiplier", f -> rules.unitCrashDamageMultiplier = f, () -> rules.unitCrashDamageMultiplier);
+203:         number("@rules.unitminespeedmultiplier", f -> rules.unitMineSpeedMultiplier = f, () -> rules.unitMineSpeedMultiplier);
+204:         number("@rules.unitbuildspeedmultiplier", f -> rules.unitBuildSpeedMultiplier = f, () -> rules.unitBuildSpeedMultiplier, 0f, 50f);
+205:         number("@rules.unitcostmultiplier", f -> rules.unitCostMultiplier = f, () -> rules.unitCostMultiplier);
+206:         check("@rules.logicunitcontrol", b -> rules.logicUnitControl = b, () -> rules.logicUnitControl);
+207:         check("@rules.logicunitbuild", b -> rules.logicUnitBuild = b, () -> rules.logicUnitBuild, () -> rules.logicUnitControl);
+208:         check("@rules.logicunitdeconstruct", b -> rules.logicUnitDeconstruct = b, () -> rules.logicUnitDeconstruct, () -> rules.logicUnitControl);
+209: 
+210:         if(Core.bundle.get("bannedunits").toLowerCase().contains(ruleSearch)){
+211:             current.button("@bannedunits", () -> bannedUnits.show(rules.bannedUnits)).left().width(300f).row();
+212:         }
+213:         check("@bannedunits.whitelist", b -> rules.unitWhitelist = b, () -> rules.unitWhitelist);
+214: 
+215:         category("enemy");
+216:         check("@rules.attack", b -> rules.attackMode = b, () -> rules.attackMode);
+217:         check("@rules.corecapture", b -> rules.coreCapture = b, () -> rules.coreCapture);
+218:         check("@rules.placerangecheck", b -> rules.placeRangeCheck = b, () -> rules.placeRangeCheck);
+219:         check("@rules.polygoncoreprotection", b -> rules.polygonCoreProtection = b, () -> rules.polygonCoreProtection);
+220:         number("@rules.enemycorebuildradius", f -> rules.enemyCoreBuildRadius = f * tilesize, () -> Math.min(rules.enemyCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);

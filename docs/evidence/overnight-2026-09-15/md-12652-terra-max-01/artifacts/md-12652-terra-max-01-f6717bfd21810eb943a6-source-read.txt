@@ -1,0 +1,46 @@
+840: 
+841:     private void rebuildBlockSelection(String searchText){
+842:         blockSelection.clear();
+843: 
+844:         blocksOut.clear();
+845:         blocksOut.addAll(Vars.content.blocks());
+846:         blocksOut.sort((b1, b2) -> {
+847:             int core = -Boolean.compare(b1 instanceof CoreBlock, b2 instanceof CoreBlock);
+848:             if(core != 0) return core;
+849:             int synth = Boolean.compare(b1.synthetic(), b2.synthetic());
+850:             if(synth != 0) return synth;
+851:             int ore = Boolean.compare(b1 instanceof OverlayFloor, b2 instanceof OverlayFloor);
+852:             if(ore != 0) return ore;
+853:             return Integer.compare(b1.id, b2.id);
+854:         });
+855: 
+856:         int i = 0;
+857:         String search = searchText.trim().replaceAll(" +", " ").toLowerCase();
+858: 
+859:         for(Block block : blocksOut){
+860:             TextureRegion region = block.uiIcon;
+861: 
+862:             if(!Core.atlas.isFound(region) || !block.inEditor
+863:                     || block.buildVisibility == BuildVisibility.debugOnly
+864:                     || (!searchText.isEmpty() && !block.localizedName.toLowerCase().contains(search))
+865:             ) continue;
+866: 
+867:             ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
+868:             button.getStyle().imageUp = new TextureRegionDrawable(region);
+869:             button.clicked(() -> editor.drawBlock = block);
+870:             button.resizeImage(8 * 4f);
+871:             button.update(() -> button.setChecked(editor.drawBlock == block));
+872:             blockSelection.add(button).size(50f).tooltip(block.localizedName);
+873: 
+874:             int cols = mobile ? 4 : 6;
+875: 
+876:             if(++i % cols == 0){
+877:                 blockSelection.row();
+878:             }
+879:         }
+880: 
+881:         if(i == 0){
+882:             blockSelection.add("@none.found").padLeft(54f).padTop(10f);
+883:         }
+884:     }
+885: }

@@ -1,0 +1,2 @@
+./core/src/mindustry/world/blocks/payloads/PayloadSource.java:25:public class PayloadSource extends PayloadBlock{
+./core/src/mindustry/world/blocks/payloads/PayloadSource.java:97:    public class PayloadSourceBuild extends PayloadBlockBuild<Payload>{

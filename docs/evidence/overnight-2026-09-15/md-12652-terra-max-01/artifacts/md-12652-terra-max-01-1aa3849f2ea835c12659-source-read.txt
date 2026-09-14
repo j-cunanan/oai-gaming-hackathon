@@ -1,0 +1,240 @@
+1: package mindustry.editor.data;
+2: 
+3: import arc.*;
+4: import arc.func.*;
+5: import arc.graphics.*;
+6: import arc.scene.event.*;
+7: import arc.scene.style.*;
+8: import arc.scene.ui.TextButton.*;
+9: import arc.scene.ui.layout.*;
+10: import arc.struct.*;
+11: import arc.util.*;
+12: import mindustry.*;
+13: import mindustry.ctype.*;
+14: import mindustry.gen.*;
+15: import mindustry.graphics.*;
+16: import mindustry.mod.data.*;
+17: import mindustry.ui.*;
+18: import mindustry.ui.dialogs.*;
+19: 
+20: import java.util.regex.*;
+21: 
+22: import static mindustry.Vars.*;
+23: 
+24: public class MapContentView implements AssetView{
+25:     private static final Pattern unsafeNamePattern = Pattern.compile("[\\[\\]{}`!@#$%^&*();:,]");
+26: 
+27:     static ObjectMap<ContentType, TextureRegionDrawable> contentIcons = ObjectMap.of(
+28:     ContentType.item, Icon.box,
+29:     ContentType.liquid, Icon.liquid,
+30:     ContentType.unit, Icon.units,
+31:     ContentType.block, Icon.distribution,
+32:     ContentType.planet, Icon.planet,
+33:     ContentType.weather, Icon.drizzle,
+34:     ContentType.status, Icon.power
+35:     );
+36: 
+37:     @Override
+38:     public void build(MapAssetsDialog diag, Table list){
+39:         float h = 50f;
+40: 
+41:         var contents = state.data.getContent();
+42: 
+43:         ContentType lastType = null;
+44: 
+45:         list.defaults().pad(4f);
+46:         for(var content : contents){
+47:             if(diag.searchString != null && !content.name.toLowerCase().contains(diag.searchString)) continue;
+48: 
+49:             if(lastType != content.type){
+50:                 lastType = content.type;
+51:                 list.table(t -> {
+52:                     t.left();
+53:                     t.image(contentIcons.get(content.type)).color(Color.lightGray).size(iconSmall);
+54:                     t.add("@content." + content.type.name()).left().color(Color.lightGray).padLeft(12f).padRight(4f);
+55:                     t.image(Tex.whiteui).growX().color(Color.lightGray).height(4f);
+56:                 }).colspan(6).fillX().padBottom(8f).row();
+57:             }
+58: 
+59:             if(content.warnings.size > 0){
+60:                 list.button(Icon.warning, Styles.graySquarei, iconMed, () -> {
+61:                     BaseDialog dialog = new BaseDialog("@asset.content.errors");
+62:                     dialog.cont.top().pane(p -> {
+63:                         p.top();
+64: 
+65:                         var warns = content.warnings;
+66:                         if(content.errored){
+67:                             warns = new Seq<>();
+68:                             warns.add(Iconc.warning + " This content has critical errors, and cannot be used until the errors are fixed.");
+69:                             warns.addAll(content.warnings);
+70:                         }
+71: 
+72:                         for(var warning : warns){
+73:                             p.table(Styles.grayPanel, in -> {
+74:                                 in.add(warning.replaceAll("\t", "  "), Styles.monoLabel).grow().wrap();
+75:                             }).margin(6f).growX().pad(3f).row();
+76:                         }
+77:                     }).grow();
+78:                     dialog.addCloseButton();
+79:                     dialog.show();
+80:                 }).size(h);
+81:             }else{
+82:                 list.add().size(h);
+83:             }
+84: 
+85:             list.button(content.content instanceof UnlockableContent u && u.uiIcon != null && (u.uiIcon.found() || u.fullIcon.found()) ? new TextureRegionDrawable(u.uiIcon.found() ? u.uiIcon : u.fullIcon) :
+86:                 contentIcons.get(content.type, Icon.warning), Styles.graySquarei, iconMed, () -> {}).touchable(Touchable.disabled).size(h);
+87: 
+88:             list.button(("[accent]" + content.name + "\n") + "[lightgray]" + Core.bundle.get("content." + content.type), Styles.grayt, () -> {
+89:                 BaseDialog dialog = new BaseDialog(content.name);
+90:                 dialog.cont.top().pane(p -> {
+91:                     p.top();
+92:                     p.table(Styles.grayPanel, in -> {
+93:                         in.add(content.data.replaceAll("\t", "  "), Styles.monoLabel).grow().wrap().left().labelAlign(Align.left);
+94:                     }).margin(6f).growX().pad(5f).row();
+95:                 }).grow();
+96:                 dialog.addCloseButton();
+97:                 dialog.show();
+98:             }).size(mobile ? 390f : 450f, h).margin(10f).with(b -> {
+99:                 b.getLabel().setAlignment(Align.left, Align.left);
+100:             });
+101: 
+102:             list.button(Icon.refresh, Styles.graySquarei, Vars.iconMed, () -> {
+103:                 Cons<String> handler = str -> {
+104:                     content.data = str;
+105:                     ui.loadAnd(() -> {
+106:                         state.data.reloadContent(false);
+107:                         state.data.regenerateContentSprites(false);
+108:                         diag.rebuild();
+109:                     });
+110:                 };
+111: 
+112:                 BaseDialog dialog = new BaseDialog("@editor.import");
+113:                 dialog.cont.pane(p -> {
+114:                     p.margin(10f);
+115:                     p.table(Tex.button, t -> {
+116:                         TextButtonStyle style = Styles.flatt;
+117:                         t.defaults().size(280f, 60f).left();
+118:                         t.row();
+119:                         t.button("@load.clipboard", Icon.copy, style, () -> {
+120:                             dialog.hide();
+121:                             handler.get(Core.app.getClipboardText());
+122:                         }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+123:                         t.row();
+124:                         t.button("@import.file", Icon.download, style, () -> FileChooser.open("json", "hjson", "json5").submit(file -> {
+125:                             dialog.hide();
+126:                             handler.get(file.readString());
+127:                         })).marginLeft(12f);
+128:                         t.row();
+129:                     });
+130:                 });
+131: 
+132:                 dialog.addCloseButton();
+133:                 dialog.show();
+134:             }).size(h);
+135: 
+136:             list.button(Icon.export, Styles.graySquarei, Vars.iconMed, () -> {
+137:                 BaseDialog dialog = new BaseDialog("@editor.export");
+138:                 dialog.addCloseButton();
+139:                 dialog.cont.pane(p -> {
+140:                     p.margin(10f);
+141:                     p.table(Tex.button, t -> {
+142:                         TextButtonStyle style = Styles.flatt;
+143:                         t.defaults().size(280f, 60f).left();
+144:                         t.row();
+145:                         t.button("@copy.clipboard", Icon.copy, style, () -> {
+146:                             dialog.hide();
+147:                             Core.app.setClipboardText(content.data);
+148:                             ui.showInfoFade("@copied");
+149:                         }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+150:                         t.row();
+151:                         t.button("@export.file", Icon.export, style, () -> {
+152:                             dialog.hide();
+153:                             FileChooser.export(content.name, "json", file -> file.writeString(content.data));
+154:                         }).marginLeft(12f);
+155:                         t.row();
+156:                     });
+157:                 });
+158:                 dialog.show();
+159:             }).size(h);
+160: 
+161:             list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+162:                 ui.showConfirm("@asset.delete.confirm",  () -> {
+163:                     contents.remove(content);
+164:                     Vars.content.remove(content.content);
+165:                     state.data.reloadContent(false);
+166:                     diag.rebuild();
+167:                 });
+168:             }).size(h);
+169: 
+170:             list.row();
+171:         }
+172: 
+173:         if(list.getChildren().isEmpty()){
+174:             list.add("@none.found");
+175:         }
+176:     }
+177: 
+178:     @Override
+179:     public void buildButtons(MapAssetsDialog diag, Table buttons){
+180:         buttons.button("@add", Icon.add, () -> showImport(diag)).size(190f, 64f);
+181:     }
+182: 
+183:     void addContent(MapAssetsDialog diag, ContentType type, String path, String data){
+184:         ui.loadAnd(() -> {
+185:             ContentAsset asset = new ContentAsset(path, type, data);
+186:             state.data.getContent().add(asset);
+187:             state.data.reloadContent(false);
+188:             state.data.regenerateContentSprites(false);
+189:             diag.rebuild();
+190:         });
+191:     }
+192: 
+193:     void showImport(MapAssetsDialog diag){
+194:         ContentType[] selected = {ContentType.item};
+195:         boolean[] invalid = {false};
+196: 
+197:         BaseDialog choose = new BaseDialog("@asset.content.add");
+198:         choose.setFillParent(false);
+199:         choose.closeOnBack();
+200:         choose.cont.add("@name").padRight(10f);
+201:         var nameField = choose.cont.field("", text -> {})
+202:         .with(t -> {
+203:             t.setFilter((field, c) -> !Character.isWhitespace(c));
+204:             t.setValidator(MapContentView::isSafeContentName);
+205:             t.changed(() -> invalid[0] = content.byName(t.getText()) != null || !t.isValid());
+206:         }).width(400f).get();
+207:         choose.cont.row();
+208: 
+209:         choose.cont.add("@asset.content.type").padRight(10f);
+210:         choose.cont.table(t -> {
+211:             t.table(Styles.grayPanel, c -> {
+212:                 c.margin(8f);
+213:                 c.label(() -> "@content." + selected[0].name());
+214:             }).height(50f).pad(4f).marginLeft(5f).marginRight(5f).width(160f);
+215: 
+216:             t.image(Tex.whiteui, Pal.accent).size(4f, 50f).pad(4f);
+217: 
+218:             for(ContentType type : ContentAsset.loadableContent){
+219:                 t.button(contentIcons.get(type), Styles.grayTogglei, iconMed, () -> selected[0] = type).checked(b -> selected[0] == type).size(50f).pad(4f).tooltip("@content." + type.name());
+220:             }
+221:         });
+222: 
+223:         choose.cont.row();
+224: 
+225:         choose.cont.label(() -> !nameField.isValid() ? "@asset.content.badname" : "@asset.content.exists").colspan(2).visible(() -> invalid[0]);
+226: 
+227:         choose.buttons.button("@cancel", Icon.cancel, choose::hide).size(170f, 64f);
+228: 
+229:         choose.buttons.button("@asset.content.import.file", Icon.fileText, () -> FileChooser.open("json", "json5", "hjson").submit(file -> {
+230:             choose.hide();
+231:             addContent(diag, selected[0], nameField.getText() + ".json", file.readString());
+232:             diag.rebuild();
+233:         })).size(200f, 64f).disabled(b -> nameField.getText().isEmpty() || invalid[0]);
+234: 
+235:         choose.buttons.button("@asset.content.import.clipboard", Icon.copy, () -> {
+236:             String text = Core.app.getClipboardText();
+237:             if(text == null) return;
+238: 
+239:             choose.hide();
+240:             addContent(diag, selected[0], nameField.getText() + ".json", text);

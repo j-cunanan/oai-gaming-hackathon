@@ -1,0 +1,3 @@
+./core/src/mindustry/entities/comp/TargetDummyComp.java:9:abstract class TargetDummyComp implements Unitc, Healthc{
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:25:public class TargetDummy extends Block{
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:80:    public class TargetDummyBuild extends Building implements UnitTetherBlock{

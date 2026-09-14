@@ -1,0 +1,2 @@
+./core/src/mindustry/editor/MapEditorDialog.java:316:    public void resumeEditing(){
+./core/src/mindustry/ui/dialogs/PausedDialog.java:194:            ui.editor.resumeEditing();

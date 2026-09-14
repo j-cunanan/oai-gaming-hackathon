@@ -1,0 +1,190 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.*;
+4: import arc.graphics.g2d.*;
+5: import arc.math.*;
+6: import arc.math.geom.*;
+7: import arc.scene.ui.layout.*;
+8: import arc.struct.*;
+9: import arc.util.*;
+10: import arc.util.io.*;
+11: import mindustry.*;
+12: import mindustry.ctype.*;
+13: import mindustry.entities.units.*;
+14: import mindustry.game.EventType.*;
+15: import mindustry.gen.*;
+16: import mindustry.io.*;
+17: import mindustry.type.*;
+18: import mindustry.world.*;
+19: import mindustry.world.blocks.*;
+20: import mindustry.world.blocks.storage.*;
+21: 
+22: import static mindustry.Vars.*;
+23: 
+24: /** Generic building that produces other buildings. */
+25: public class PayloadSource extends PayloadBlock{
+26: 
+27:     public PayloadSource(String name){
+28:         super(name);
+29: 
+30:         size = 3;
+31:         update = true;
+32:         outputsPayload = true;
+33:         hasPower = false;
+34:         rotate = true;
+35:         configurable = true;
+36:         selectionRows = selectionColumns = 8;
+37:         //make sure to display large units.
+38:         clipSize = 120;
+39:         noUpdateDisabled = true;
+40:         clearOnDoubleTap = true;
+41:         regionRotated1 = 1;
+42:         acceptsUnitPayloads = false;
+43:         commandable = true;
+44: 
+45:         config(Block.class, (PayloadSourceBuild build, Block block) -> {
+46:             if(canProduce(block) && build.configBlock != block){
+47:                 build.configBlock = block;
+48:                 build.unit = null;
+49:                 build.payload = null;
+50:                 build.scl = 0f;
+51:             }
+52:         });
+53: 
+54:         config(UnitType.class, (PayloadSourceBuild build, UnitType unit) -> {
+55:             if(canProduce(unit) && build.unit != unit){
+56:                 build.unit = unit;
+57:                 build.configBlock = null;
+58:                 build.payload = null;
+59:                 build.scl = 0f;
+60:             }
+61:         });
+62: 
+63:         configClear((PayloadSourceBuild build) -> {
+64:             build.configBlock = null;
+65:             build.unit = null;
+66:             build.payload = null;
+67:             build.scl = 0f;
+68:         });
+69:     }
+70: 
+71:     @Override
+72:     public void getPlanConfigs(Seq<UnlockableContent> options){
+73:         options.add(content.blocks().select(this::canProduce));
+74:         options.add(content.units().select(this::canProduce));
+75:     }
+76: 
+77:     @Override
+78:     public TextureRegion[] icons(){
+79:         return new TextureRegion[]{region, outRegion, topRegion};
+80:     }
+81: 
+82:     @Override
+83:     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+84:         Draw.rect(region, plan.drawx(), plan.drawy());
+85:         Draw.rect(outRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
+86:         Draw.rect(topRegion, plan.drawx(), plan.drawy());
+87:     }
+88: 
+89:     public boolean canProduce(Block b){
+90:         return b.isVisible() && b.size < size && !(b instanceof CoreBlock) && !state.rules.isBanned(b) && b.environmentBuildable();
+91:     }
+92: 
+93:     public boolean canProduce(UnitType t){
+94:         return !t.isHidden() && !t.isBanned() && t.supportsEnv(state.rules.env);
+95:     }
+96: 
+97:     public class PayloadSourceBuild extends PayloadBlockBuild<Payload>{
+98:         public UnitType unit;
+99:         public Block configBlock;
+100:         public @Nullable Vec2 commandPos;
+101:         public float scl;
+102: 
+103:         @Override
+104:         public Vec2 getCommandPosition(){
+105:             return commandPos;
+106:         }
+107: 
+108:         @Override
+109:         public void onCommand(Vec2 target){
+110:             commandPos = target;
+111:         }
+112: 
+113:         @Override
+114:         public void buildConfiguration(Table table){
+115:             ItemSelection.buildTable(PayloadSource.this, table,
+116:                 content.blocks().select(PayloadSource.this::canProduce).<UnlockableContent>as()
+117:                 .add(content.units().select(PayloadSource.this::canProduce).as()),
+118:             () -> (UnlockableContent)config(), this::configure, selectionRows, selectionColumns);
+119:         }
+120: 
+121:         @Override
+122:         public Object config(){
+123:             return unit == null ? configBlock : unit;
+124:         }
+125: 
+126:         @Override
+127:         public boolean acceptPayload(Building source, Payload payload){
+128:             return false;
+129:         }
+130: 
+131:         @Override
+132:         public void updateTile(){
+133:             super.updateTile();
+134:             if(payload == null){
+135:                 scl = 0f;
+136:                 if(unit != null){
+137:                     payload = new UnitPayload(unit.create(team));
+138: 
+139:                     Unit p = ((UnitPayload)payload).unit;
+140:                     if(commandPos != null && p.isCommandable()){
+141:                         p.command().commandPosition(commandPos);
+142:                     }
+143: 
+144:                     Events.fire(new UnitCreateEvent(p, this));
+145:                 }else if(configBlock != null){
+146:                     payload = new BuildPayload(configBlock, team);
+147:                 }
+148:                 payVector.setZero();
+149:                 payRotation = rotdeg();
+150:             }
+151:             scl = Mathf.lerpDelta(scl, 1f, 0.1f);
+152: 
+153:             moveOutPayload();
+154:         }
+155: 
+156:         @Override
+157:         public void draw(){
+158:             Draw.rect(region, x, y);
+159:             Draw.rect(outRegion, x, y, rotdeg());
+160:             Draw.rect(topRegion, x, y);
+161: 
+162:             Draw.scl(scl);
+163:             drawPayload();
+164:             Draw.reset();
+165:         }
+166: 
+167:         @Override
+168:         public byte version(){
+169:             return 1;
+170:         }
+171: 
+172:         @Override
+173:         public void write(Writes write){
+174:             super.write(write);
+175:             write.s(unit == null ? -1 : unit.id);
+176:             write.s(configBlock == null ? -1 : configBlock.id);
+177:             TypeIO.writeVecNullable(write, commandPos);
+178:         }
+179: 
+180:         @Override
+181:         public void read(Reads read, byte revision){
+182:             super.read(read, revision);
+183:             unit = Vars.content.unit(read.s());
+184:             configBlock = Vars.content.block(read.s());
+185:             if(revision >= 1){
+186:                 commandPos = TypeIO.readVecNullable(read);
+187:             }
+188:         }
+189:     }
+190: }

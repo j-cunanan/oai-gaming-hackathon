@@ -1,0 +1,11 @@
+{
+  "commit": "7637600c41922c078ac6bde26953ef1e71746f35",
+  "future_objects": false,
+  "remotes": [],
+  "isolated": true,
+  "dependency": "Anuken/Arc",
+  "requested_archash": "7637600c41",
+  "upstream": "https://github.com/Anuken/Arc.git",
+  "mode": "Historical pinned source dependency through the upstream-supported local Arc composite build",
+  "reason": "JitPack has no packer/arc-core artifacts for the original required revision. Game source remains unchanged."
+}

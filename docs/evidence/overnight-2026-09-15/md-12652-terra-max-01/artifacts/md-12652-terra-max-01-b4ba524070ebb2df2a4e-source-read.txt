@@ -1,0 +1,88 @@
+130:                         ui.database.show();
+131:                     }else{
+132:                         load.show();
+133:                     }
+134:                 }).update(t -> {
+135:                     Image image = (Image)t.getChildren().first();
+136:                     image.setDrawable(net.active() ? Icon.book : Icon.download);
+137:                     t.setText(net.active() ? "@database" : "@load");
+138:                 });
+139:             }else if(state.isCampaign()){
+140:                 cont.buttonRow("@research", Icon.tree, ui.research::show);
+141: 
+142:                 cont.row();
+143: 
+144:                 cont.buttonRow("@planetmap", Icon.map, () -> {
+145:                     hide();
+146:                     ui.planet.show();
+147:                 });
+148:             }else{
+149:                 cont.row();
+150:             }
+151: 
+152:             cont.buttonRow("@hostserver.mobile", Icon.host, ui.host::show).disabled(b -> net.active());
+153: 
+154:             cont.buttonRow("@quit", Icon.exit, this::showQuitConfirm).update(s -> {
+155:                 s.setText(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave() ? "@save.quit" : "@quit");
+156:                 s.getLabelCell().growX().wrap();
+157:             });
+158:         }
+159:     }
+160: 
+161:     void showQuitConfirm(){
+162:         Runnable quit = () -> {
+163:             runExitSave();
+164:             hide();
+165:         };
+166: 
+167:         if(confirmExit){
+168:             ui.showConfirm("@confirm", "@quit.confirm", quit);
+169:         }else{
+170:             quit.run();
+171:         }
+172:     }
+173: 
+174:     public boolean checkPlaytest(){
+175:         if(state.playtestingMap != null){
+176:             //no exit save here
+177:             var testing = state.playtestingMap;
+178:             logic.reset();
+179:             ui.editor.resumeAfterPlaytest(testing);
+180:             return true;
+181:         }
+182:         return false;
+183:     }
+184: 
+185:     public void runExitSave(){
+186:         runExitSave(true);
+187:     }
+188: 
+189:     public void runExitSave(boolean save){
+190:         boolean wasClient = net.client();
+191:         if(net.client()) netClient.disconnectQuietly();
+192: 
+193:         if(state.isEditor() && !wasClient){
+194:             ui.editor.resumeEditing();
+195:             return;
+196:         }else if(checkPlaytest()){
+197:             return;
+198:         }
+199: 
+200:         if(control.saves.getCurrent() == null || !control.saves.getCurrent().isAutosave() || wasClient || state.gameOver || disableSave){
+201:             logic.reset();
+202:             return;
+203:         }
+204: 
+205:         if(save){
+206:             ui.loadAnd("@saving", () -> {
+207:                 try{
+208:                     control.saves.getCurrent().save();
+209:                 }catch(Throwable e){
+210:                     Log.err(e);
+211:                     ui.showException("[accent]" + Core.bundle.get("savefail"), e);
+212:                 }
+213:                 logic.reset();
+214:             });
+215:         }
+216:     }
+217: }

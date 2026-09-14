@@ -1,0 +1,114 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.graphics.g2d.*;
+4: import arc.math.geom.*;
+5: import arc.util.*;
+6: import arc.util.io.*;
+7: import mindustry.ctype.*;
+8: import mindustry.game.*;
+9: import mindustry.gen.*;
+10: import mindustry.type.*;
+11: import mindustry.world.*;
+12: 
+13: import static mindustry.Vars.*;
+14: 
+15: public interface Payload extends Position{
+16:     int payloadUnit = 0, payloadBlock = 1;
+17: 
+18:     /** sets this payload's position on the map. */
+19:     void set(float x, float y, float rotation);
+20: 
+21:     /** draws this payload at a position. */
+22:     void draw();
+23: 
+24:     void drawShadow(float alpha);
+25: 
+26:     /** @return hitbox size of the payload. */
+27:     float size();
+28: 
+29:     float x();
+30: 
+31:     float y();
+32: 
+33:     /** @return the items needed to make this payload; may be empty. */
+34:     ItemStack[] requirements();
+35: 
+36:     /** @return the time taken to build this payload. */
+37:     float buildTime();
+38: 
+39:     boolean contentEquals(Payload other);
+40: 
+41:     /** update this payload inside a container unit or building. either can be null. */
+42:     default void update(@Nullable Unit unitHolder, @Nullable Building buildingHolder){}
+43: 
+44:     /** @return whether this payload was dumped. */
+45:     default boolean dump(){
+46:         return false;
+47:     }
+48: 
+49:     /** @return whether this payload fits in a given size. 3 is the max for a standard 3x3 conveyor. */
+50:     default boolean fits(float s){
+51:         return size() / tilesize <= s;
+52:     }
+53: 
+54:     /** @return rotation of this payload. */
+55:     default float rotation(){
+56:         return 0f;
+57:     }
+58: 
+59:     default void destroyed(){};
+60: 
+61:     /** writes the payload for saving. */
+62:     void write(Writes write);
+63: 
+64:     /** @return icon describing the contents. */
+65:     TextureRegion icon();
+66: 
+67:     /** @return content describing this payload (block or unit) */
+68:     UnlockableContent content();
+69: 
+70:     @Override
+71:     default float getX(){
+72:         return x();
+73:     }
+74: 
+75:     @Override
+76:     default float getY(){
+77:         return y();
+78:     }
+79: 
+80:     default void remove(){}
+81: 
+82:     static void write(@Nullable Payload payload, Writes write){
+83:         if(payload == null){
+84:             write.bool(false);
+85:         }else{
+86:             write.bool(true);
+87:             payload.write(write);
+88:         }
+89:     }
+90: 
+91:     @SuppressWarnings("unchecked")
+92:     @Nullable
+93:     static <T extends Payload> T read(Reads read){
+94:         boolean exists = read.bool();
+95:         if(!exists) return null;
+96: 
+97:         byte type = read.b();
+98:         if(type == payloadBlock){
+99:             Block block = content.block(read.s());
+100:             BuildPayload payload = new BuildPayload(block, Team.derelict);
+101:             byte version = read.b();
+102:             payload.build.readAll(read, version);
+103:             payload.build.tile = emptyTile;
+104:             return (T)payload;
+105:         }else if(type == payloadUnit){
+106:             byte id = read.b();
+107:             if(EntityMapping.map(id) == null) throw new RuntimeException("No type with ID " + id + " found.");
+108:             Unit unit = (Unit)EntityMapping.map(id).get();
+109:             unit.read(read);
+110:             return (T)new UnitPayload(unit);
+111:         }
+112:         throw new IllegalArgumentException("Unknown payload type: " + type);
+113:     }
+114: }

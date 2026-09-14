@@ -1,0 +1,9 @@
+./server/src/mindustry/server/ServerControl.java:9:import arc.util.CommandHandler.*;
+./server/src/mindustry/server/ServerControl.java:57:    public final CommandHandler handler = new CommandHandler("");
+./core/src/mindustry/mod/Mod.java:36:    public void registerServerCommands(CommandHandler handler){
+./core/src/mindustry/mod/Mod.java:41:    public void registerClientCommands(CommandHandler handler){
+./core/src/mindustry/core/NetServer.java:10:import arc.util.CommandHandler.*;
+./core/src/mindustry/core/NetServer.java:56:    public CommandHandler clientCommands = new CommandHandler("/");
+./core/src/mindustry/core/NetServer.java:80:    public InvalidCommandHandler invalidHandler = (player, response) -> {
+./core/src/mindustry/core/NetServer.java:1450:    public interface InvalidCommandHandler{
+./core/src/mindustry/core/NetClient.java:10:import arc.util.CommandHandler.*;

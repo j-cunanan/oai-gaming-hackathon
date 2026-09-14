@@ -1,0 +1,235 @@
+210:         if(Core.bundle.get("bannedunits").toLowerCase().contains(ruleSearch)){
+211:             current.button("@bannedunits", () -> bannedUnits.show(rules.bannedUnits)).left().width(300f).row();
+212:         }
+213:         check("@bannedunits.whitelist", b -> rules.unitWhitelist = b, () -> rules.unitWhitelist);
+214: 
+215:         category("enemy");
+216:         check("@rules.attack", b -> rules.attackMode = b, () -> rules.attackMode);
+217:         check("@rules.corecapture", b -> rules.coreCapture = b, () -> rules.coreCapture);
+218:         check("@rules.placerangecheck", b -> rules.placeRangeCheck = b, () -> rules.placeRangeCheck);
+219:         check("@rules.polygoncoreprotection", b -> rules.polygonCoreProtection = b, () -> rules.polygonCoreProtection);
+220:         number("@rules.enemycorebuildradius", f -> rules.enemyCoreBuildRadius = f * tilesize, () -> Math.min(rules.enemyCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);
+221: 
+222:         category("environment");
+223:         check("@rules.pauseDisabled", b -> rules.pauseDisabled = b, () -> rules.pauseDisabled);
+224:         check("@rules.explosions", b -> rules.damageExplosions = b, () -> rules.damageExplosions);
+225:         check("@rules.fire", b -> rules.fire = b, () -> rules.fire);
+226:         check("@rules.fog", b -> rules.fog = b, () -> rules.fog);
+227:         check("@rules.lighting", b -> rules.lighting = b, () -> rules.lighting);
+228: 
+229:         check("@rules.limitarea", b -> rules.limitMapArea = b, () -> rules.limitMapArea, () -> !state.isGame());
+230:         numberi("x", x -> rules.limitX = x, () -> rules.limitX, () -> rules.limitMapArea && !state.isGame(), 0, 10000);
+231:         numberi("y", y -> rules.limitY = y, () -> rules.limitY, () -> rules.limitMapArea && !state.isGame(), 0, 10000);
+232:         numberi("w", w -> rules.limitWidth = w, () -> rules.limitWidth, () -> rules.limitMapArea && !state.isGame(), 0, 10000);
+233:         numberi("h", h -> rules.limitHeight = h, () -> rules.limitHeight, () -> rules.limitMapArea && !state.isGame(), 0, 10000);
+234: 
+235:         number("@rules.solarmultiplier", f -> rules.solarMultiplier = f, () -> rules.solarMultiplier);
+236: 
+237:         if(Core.bundle.get("rules.ambientlight").toLowerCase().contains(ruleSearch)){
+238:             current.button(b -> {
+239:                 b.left();
+240:                 b.table(Tex.pane, in -> {
+241:                     in.stack(new Image(Tex.alphaBg), new Image(Tex.whiteui){{
+242:                         update(() -> setColor(rules.ambientLight));
+243:                     }}).grow();
+244:                 }).margin(4).size(50f).padRight(10);
+245:                 b.add("@rules.ambientlight");
+246:             }, () -> ui.picker.show(rules.ambientLight, rules.ambientLight::set)).left().width(250f).row();
+247:         }
+248: 
+249:         if(Core.bundle.get("rules.weather").toLowerCase().contains(ruleSearch)){
+250:             current.button("@rules.weather", this::weatherDialog).width(250f).left().row();
+251:         }
+252: 
+253:         category("music");
+254: 
+255:         Boolp allowMusic = () -> !state.rules.disableMusic;
+256:         Func<String, Seq<MusicContainer>> parser = str -> {
+257:             try{
+258:                 return Seq.map(new JsonReader().parse("[" + str + "]").asStringArray(), MusicContainer::new);
+259:             }catch(Throwable e){
+260:                 return null;
+261:             }
+262:         };
+263: 
+264:         check("@rules.alwaysplaymusic", b -> rules.alwaysPlayMusic = b, () -> rules.alwaysPlayMusic, allowMusic);
+265:         check("@rules.nomusic", b -> rules.disableMusic = b, () -> rules.disableMusic);
+266: 
+267:         text("@rules.ambientmusic",
+268:             s -> state.rules.ambientMusic = s.trim().isEmpty() ? null : parser.get(s),
+269:             () -> rules.ambientMusic == null ? "" : rules.ambientMusic.toString(", "),
+270:             text -> parser.get(text) != null,
+271:         allowMusic);
+272: 
+273:         text("@rules.darkmusic",
+274:             s -> state.rules.darkMusic = s.trim().isEmpty() ? null : parser.get(s),
+275:             () -> rules.darkMusic == null ? "" : rules.darkMusic.toString(", "),
+276:             text -> parser.get(text) != null,
+277:         allowMusic);
+278: 
+279:         category("planet");
+280:         if(Core.bundle.get("rules.title.planet").toLowerCase().contains(ruleSearch)){
+281:             current.table(Tex.button, t -> {
+282:                 t.margin(10f);
+283:                 var group = new ButtonGroup<>();
+284:                 var style = Styles.flatTogglet;
+285: 
+286:                 t.defaults().size(140f, 50f);
+287: 
+288:                 for(Planet planet : content.planets().select(p -> p.accessible && p.visible && p.isLandable())){
+289:                     t.button(planet.localizedName, style, () -> {
+290:                         planet.applyRules(rules, true);
+291:                     }).group(group).checked(b -> rules.planet == planet);
+292: 
+293:                     if(t.getChildren().size % 3 == 0){
+294:                         t.row();
+295:                     }
+296:                 }
+297: 
+298:                 t.button("@rules.anyenv", style, () -> {
+299:                     rules.attributes.clear();
+300:                     rules.env = Vars.defaultEnv;
+301:                     rules.planet = Planets.sun;
+302:                 }).group(group).checked(b -> rules.planet == Planets.sun);
+303:             }).left().fill(false).expand(false, false).row();
+304:         }
+305: 
+306:         category("teams");
+307:         //not sure where else to put this
+308:         if(showRuleEditRule){
+309:             check("@rules.allowedit", b -> rules.allowEditRules = b, () -> rules.allowEditRules);
+310:         }
+311:         team("@rules.playerteam", t -> rules.defaultTeam = t, () -> rules.defaultTeam);
+312:         team("@rules.enemyteam", t -> rules.waveTeam = t, () -> rules.waveTeam);
+313: 
+314:         for(Team team : Team.baseTeams){
+315:             boolean[] shown = {false};
+316:             Table wasCurrent = current;
+317: 
+318:             Table teamRules = new Table(); // just button and collapser in one table
+319:             teamRules.button(team.coloredName(), Icon.downOpen, Styles.togglet, () -> {
+320:                 shown[0] = !shown[0];
+321:             }).marginLeft(14f).width(260f).height(55f).update(t -> {
+322:                 ((Image)t.getChildren().get(1)).setDrawable(shown[0] ? Icon.upOpen : Icon.downOpen);
+323:                 t.setChecked(shown[0]);
+324:             }).left().padBottom(2f).row();
+325: 
+326:             teamRules.collapser(c -> {
+327:                 c.left().defaults().fillX().left().pad(5);
+328:                 current = c;
+329:                 TeamRule teams = rules.teams.get(team);
+330: 
+331:                 number("@rules.blockhealthmultiplier", f -> teams.blockHealthMultiplier = f, () -> teams.blockHealthMultiplier);
+332:                 number("@rules.blockdamagemultiplier", f -> teams.blockDamageMultiplier = f, () -> teams.blockDamageMultiplier);
+333: 
+334:                 check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> team != rules.defaultTeam);
+335:                 numberi("@rules.rtsminsquadsize", f -> teams.rtsMinSquad = f, () -> teams.rtsMinSquad, () -> teams.rtsAi, 0, 100);
+336:                 numberi("@rules.rtsmaxsquadsize", f -> teams.rtsMaxSquad = f, () -> teams.rtsMaxSquad, () -> teams.rtsAi, 1, 1000);
+337:                 number("@rules.rtsminattackweight", f -> teams.rtsMinWeight = f, () -> teams.rtsMinWeight, () -> teams.rtsAi);
+338: 
+339:                 //disallow on Erekir (this is broken for mods I'm sure, but whatever)
+340:                 check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> team != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
+341:                 number("@rules.buildaitier", false, f -> teams.buildAiTier = f, () -> teams.buildAiTier, () -> teams.buildAi && rules.env != Planets.erekir.defaultEnv && !rules.pvp, 0, 1);
+342: 
+343:                 check("@rules.protectcores", b -> teams.protectCores = b, () -> teams.protectCores);
+344:                 number("@rules.extracorebuildradius", f -> teams.extraCoreBuildRadius = f * tilesize, () -> Math.min(teams.extraCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection && teams.protectCores);
+345:                 check("@rules.checkplacement", b -> teams.checkPlacement = b, () -> teams.checkPlacement);
+346: 
+347:                 check("@rules.infiniteresources", b -> teams.infiniteResources = b, () -> teams.infiniteResources);
+348:                 check("@rules.fillitems", b -> teams.fillItems = b, () -> teams.fillItems);
+349:                 number("@rules.buildspeedmultiplier", f -> teams.buildSpeedMultiplier = f, () -> teams.buildSpeedMultiplier, 0.001f, 50f);
+350: 
+351:                 number("@rules.unitfactoryactivation", f -> teams.unitFactoryActivationDelay = f * 60f, () -> teams.unitFactoryActivationDelay / 60f);
+352:                 number("@rules.unitdamagemultiplier", f -> teams.unitDamageMultiplier = f, () -> teams.unitDamageMultiplier);
+353:                 number("@rules.unitcrashdamagemultiplier", f -> teams.unitCrashDamageMultiplier = f, () -> teams.unitCrashDamageMultiplier);
+354:                 number("@rules.unitminespeedmultiplier", f -> teams.unitMineSpeedMultiplier = f, () -> teams.unitMineSpeedMultiplier);
+355:                 number("@rules.unitbuildspeedmultiplier", f -> teams.unitBuildSpeedMultiplier = f, () -> teams.unitBuildSpeedMultiplier, 0.001f, 50f);
+356:                 number("@rules.unitcostmultiplier", f -> teams.unitCostMultiplier = f, () -> teams.unitCostMultiplier);
+357:                 number("@rules.unithealthmultiplier", f -> teams.unitHealthMultiplier = f, () -> teams.unitHealthMultiplier);
+358: 
+359:                 if(!current.hasChildren()){
+360:                     teamRules.clear();
+361:                 }else{
+362:                     wasCurrent.add(teamRules).row();
+363:                 }
+364: 
+365:                 current = wasCurrent;
+366:             }, () -> shown[0]).left().growX().row();
+367:         }
+368: 
+369:         additionalSetup.each(Runnable::run);
+370: 
+371:         for(var i = 0; i < categories.size; i++){
+372:             addToMain(categories.get(i), Core.bundle.get("rules.title." + categoryNames.get(i)));
+373:         }
+374:     }
+375: 
+376:     public void category(String name){
+377:         current = new Table();
+378:         current.left().defaults().fillX().expandX().left().pad(5);
+379:         currentName = name;
+380:         categories.add(current);
+381:         categoryNames.add(currentName);
+382:     }
+383: 
+384:     void addToMain(Table category, String title){
+385:         if(category.hasChildren()){
+386:             main.add(title).color(Pal.accent).padTop(20).padRight(100f).padBottom(-3).fillX().left().pad(5).row();
+387:             main.image().color(Pal.accent).height(3f).padRight(100f).padBottom(20).fillX().left().pad(5).row();
+388:             main.add(category).row();
+389:         }
+390:     }
+391: 
+392:     public void team(String text, Cons<Team> cons, Prov<Team> prov){
+393:         if(!Core.bundle.get(text.substring(1)).toLowerCase().contains(ruleSearch)) return;
+394:         current.table(t -> {
+395:             t.left();
+396:             t.add(text).left().padRight(5);
+397: 
+398:             for(Team team : Team.baseTeams){
+399:                 t.button(Tex.whiteui, Styles.squareTogglei, 38f, () -> {
+400:                     cons.get(team);
+401:                 }).pad(1f).checked(b -> prov.get() == team).size(60f).tooltip(team.coloredName()).with(i -> i.getStyle().imageUpColor = team.color);
+402:             }
+403:         }).padTop(0).row();
+404:     }
+405: 
+406:     public void number(String text, Floatc cons, Floatp prov){
+407:         number(text, false, cons, prov, () -> true, 0, Float.MAX_VALUE);
+408:     }
+409: 
+410:     public void number(String text, Floatc cons, Floatp prov, float min, float max){
+411:         number(text, false, cons, prov, () -> true, min, max);
+412:     }
+413: 
+414:     public void number(String text, boolean integer, Floatc cons, Floatp prov, Boolp condition){
+415:         number(text, integer, cons, prov, condition, 0, Float.MAX_VALUE);
+416:     }
+417: 
+418:     public void number(String text, Floatc cons, Floatp prov, Boolp condition){
+419:         number(text, false, cons, prov, condition, 0, Float.MAX_VALUE);
+420:     }
+421: 
+422:     public void numberi(String text, Intc cons, Intp prov, int min, int max){
+423:         numberi(text, cons, prov, () -> true, min, max);
+424:     }
+425: 
+426:     public void numberi(String text, Intc cons, Intp prov, Boolp condition, int min, int max){
+427:         if(!Core.bundle.get(text.substring(1)).toLowerCase().contains(ruleSearch)) return;
+428:         var cell = current.table(t -> {
+429:             t.left();
+430:             t.add(text).left().padRight(5)
+431:                 .update(a -> a.setColor(condition.get() ? Color.white : Color.gray));
+432:             t.field((prov.get()) + "", s -> cons.get(Strings.parseInt(s)))
+433:                 .update(a -> a.setDisabled(!condition.get()))
+434:                 .padRight(100f)
+435:                 .valid(f -> Strings.parseInt(f) >= min && Strings.parseInt(f) <= max).width(120f).left();
+436:         }).padTop(0);
+437:         ruleInfo(cell, text);
+438:         current.row();
+439:     }
+440: 
+441:     public void number(String text, boolean integer, Floatc cons, Floatp prov, Boolp condition, float min, float max){
+442:         if(!Core.bundle.get(text.substring(1)).toLowerCase().contains(ruleSearch)) return;
+443:         var cell = current.table(t -> {
+444:             t.left();

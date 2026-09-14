@@ -1,0 +1,90 @@
+1770: 
+1771:         damage(other, other.team, damage);
+1772: 
+1773:         if(health <= 0 && !wasDead){
+1774:             Events.fire(new BuildingBulletDestroyEvent(self(), other));
+1775:         }
+1776: 
+1777:         return true;
+1778:     }
+1779: 
+1780:     /** Used to handle damage from splash damage for certain types of blocks. */
+1781:     public void damage(@Nullable Team source, float damage){
+1782:         damage(damage);
+1783:     }
+1784: 
+1785:     /** Handles splash damage with a bullet source. */
+1786:     public void damage(Bullet bullet, Team source, float damage){
+1787:         damage(source, damage);
+1788:         Events.fire(bulletDamageEvent.set(self(), bullet));
+1789:     }
+1790: 
+1791:     /** Changes this building's team in a safe manner. */
+1792:     public void changeTeam(Team next){
+1793:         changeTeam(next, true);
+1794:     }
+1795: 
+1796:     /** Changes this building's team in a safe manner. */
+1797:     public void changeTeam(Team next, boolean updatePower){
+1798:         if(this.team == next) return;
+1799:         if(block.forceTeam != null) team = block.forceTeam;
+1800: 
+1801:         Team last = this.team;
+1802: 
+1803:         if(last == next) return;
+1804: 
+1805:         boolean was = isValid();
+1806: 
+1807:         if(was) indexer.removeIndex(tile);
+1808: 
+1809:         this.team = next;
+1810: 
+1811:         if(power != null && updatePower){
+1812:             var oldGraph = power.graph;
+1813:             for(var other : proximity){
+1814:                 if(other != null && other.team != team && other.power != null && other.power.graph == oldGraph){
+1815:                     new PowerGraph().reflow(other);
+1816:                 }
+1817:             }
+1818:             for(int i = 0; i < power.links.size; i++){
+1819:                 var other = world.build(power.links.items[i]);
+1820: 
+1821:                 //only reflow links that were connected to the old power graph; ones that have a new one were already covered.
+1822:                 if(other != null && other.team != team && other.power != null && other.power.graph == oldGraph){
+1823:                     power.links.removeIndex(i);
+1824:                     other.power.links.removeValue(pos());
+1825: 
+1826:                     new PowerGraph().reflow(other);
+1827: 
+1828:                     i --;
+1829:                 }
+1830:             }
+1831:             new PowerGraph().reflow(self());
+1832: 
+1833:             updatePowerGraph();
+1834:         }
+1835: 
+1836:         if(was){
+1837:             indexer.addIndex(tile);
+1838:             Events.fire(teamChangeEvent.set(last, self()));
+1839:         }
+1840: 
+1841:         checkAllowUpdate();
+1842:     }
+1843: 
+1844:     public boolean canPickup(){
+1845:         return block.canPickup;
+1846:     }
+1847: 
+1848:     /** Called right before this building is picked up. */
+1849:     public void pickedUp(){
+1850: 
+1851:     }
+1852: 
+1853:     /** Called right after this building is picked up. */
+1854:     public void afterPickedUp(){
+1855:         if(power != null){
+1856:             //TODO can lead to ghost graphs?
+1857:             power.graph = new PowerGraph();
+1858:             power.links.clear();
+1859:             if(block.consPower != null && !block.consPower.buffered){

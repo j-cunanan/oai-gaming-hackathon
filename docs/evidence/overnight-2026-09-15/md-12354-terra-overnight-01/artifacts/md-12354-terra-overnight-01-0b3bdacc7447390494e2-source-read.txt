@@ -1,0 +1,64 @@
+150:             cont.buttonRow("@quit", Icon.exit, this::showQuitConfirm).update(s -> {
+151:                 s.setText(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave() ? "@save.quit" : "@quit");
+152:                 s.getLabelCell().growX().wrap();
+153:             });
+154:         }
+155:     }
+156: 
+157:     void showQuitConfirm(){
+158:         Runnable quit = () -> {
+159:             runExitSave();
+160:             hide();
+161:         };
+162: 
+163:         if(confirmExit){
+164:             ui.showConfirm("@confirm", "@quit.confirm", quit);
+165:         }else{
+166:             quit.run();
+167:         }
+168:     }
+169: 
+170:     public boolean checkPlaytest(){
+171:         if(state.playtestingMap != null){
+172:             //no exit save here
+173:             var testing = state.playtestingMap;
+174:             logic.reset();
+175:             ui.editor.resumeAfterPlaytest(testing);
+176:             return true;
+177:         }
+178:         return false;
+179:     }
+180: 
+181:     public void runExitSave(){
+182:         runExitSave(true);
+183:     }
+184: 
+185:     public void runExitSave(boolean save){
+186:         boolean wasClient = net.client();
+187:         if(net.client()) netClient.disconnectQuietly();
+188: 
+189:         if(state.isEditor() && !wasClient){
+190:             ui.editor.resumeEditing();
+191:             return;
+192:         }else if(checkPlaytest()){
+193:             return;
+194:         }
+195: 
+196:         if(control.saves.getCurrent() == null || !control.saves.getCurrent().isAutosave() || wasClient || state.gameOver || disableSave){
+197:             logic.reset();
+198:             return;
+199:         }
+200: 
+201:         if(save){
+202:             ui.loadAnd("@saving", () -> {
+203:                 try{
+204:                     control.saves.getCurrent().save();
+205:                 }catch(Throwable e){
+206:                     Log.err(e);
+207:                     ui.showException("[accent]" + Core.bundle.get("savefail"), e);
+208:                 }
+209:                 logic.reset();
+210:             });
+211:         }
+212:     }
+213: }

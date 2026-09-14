@@ -1,0 +1,37 @@
+./core/assets/bundles/bundle_ko.properties:111:savegame = 게임 저장
+./core/assets/bundles/bundle_ca.properties:111:savegame = Desa la partida
+./core/assets/bundles/bundle_ja.properties:111:savegame = 保存
+./core/assets/bundles/bundle_fi.properties:111:savegame = Tallenna peli
+./core/assets/bundles/bundle_ro.properties:111:savegame = Salvează Jocul
+./core/assets/bundles/bundle_eu.properties:111:savegame = Gorde partida
+./core/assets/bundles/bundle_uk_UA.properties:111:savegame = Зберегти гру
+./core/assets/bundles/bundle_fr.properties:111:savegame = Sauvegarder la partie
+./core/assets/bundles/bundle_fil.properties:111:savegame = Ibago ang Laro
+./core/assets/bundles/bundle_be.properties:111:savegame = Захаваць Гульню
+./core/assets/bundles/bundle_th.properties:111:savegame = เซฟเกม
+./core/assets/bundles/bundle_pl.properties:111:savegame = Zapisz Grę
+./core/assets/bundles/bundle_id_ID.properties:111:savegame = Simpan Permainan
+./core/assets/bundles/bundle_sr.properties:111:savegame = Snimi Igru
+./core/assets/bundles/bundle_vi.properties:111:savegame = Lưu trò chơi
+./core/assets/bundles/bundle.properties:111:savegame = Save Game
+./core/assets/bundles/bundle_zh_CN.properties:111:savegame = 保存游戏
+./core/assets/bundles/bundle_nl.properties:111:savegame = Opslaan
+./core/assets/bundles/bundle_et.properties:111:savegame = Salvesta Mäng
+./core/assets/bundles/bundle_de.properties:111:savegame = Spiel speichern
+./core/assets/bundles/bundle_hu.properties:111:savegame = Játék mentése
+./core/assets/bundles/bundle_pt_BR.properties:111:savegame = Salvar Jogo
+./core/assets/bundles/bundle_bg.properties:111:savegame = Запази Игра
+./core/assets/bundles/bundle_lt.properties:111:savegame = Išsaugoti žaidimą
+./core/assets/bundles/bundle_it.properties:111:savegame = Salva
+./core/assets/bundles/bundle_ru.properties:111:savegame = Сохранить игру
+./core/assets/bundles/bundle_zh_TW.properties:111:savegame = 儲存遊戲
+./core/assets/bundles/bundle_tr.properties:111:savegame = Oyunu Kaydet
+./core/assets/bundles/bundle_cs.properties:111:savegame = Uložit hru
+./core/assets/bundles/bundle_sv.properties:111:savegame = Spara Spel
+./core/assets/bundles/bundle_tk.properties:111:savegame = Oyunu kaydet
+./core/assets/bundles/bundle_da.properties:111:savegame = Gem spil
+./core/assets/bundles/bundle_es.properties:111:savegame = Guardar partida
+./core/assets/bundles/bundle_pt_PT.properties:111:savegame = Salvar Jogo
+./core/assets/bundles/bundle_nl_BE.properties:111:savegame = Opslaan
+./core/src/mindustry/ui/dialogs/SaveDialog.java:14:        super("@savegame");
+./core/src/mindustry/ui/dialogs/PausedDialog.java:87:                cont.button("@savegame", Icon.save, save::show);

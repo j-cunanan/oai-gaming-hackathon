@@ -1,0 +1,180 @@
+1: package mindustry.world.blocks.defense;
+2: 
+3: import arc.*;
+4: import arc.graphics.g2d.*;
+5: import arc.math.*;
+6: import arc.scene.ui.TextField.*;
+7: import arc.scene.ui.layout.*;
+8: import arc.struct.*;
+9: import arc.util.*;
+10: import arc.util.io.*;
+11: import mindustry.annotations.Annotations.*;
+12: import mindustry.content.*;
+13: import mindustry.graphics.*;
+14: import mindustry.entities.units.*;
+15: import mindustry.game.*;
+16: import mindustry.gen.*;
+17: import mindustry.type.*;
+18: import mindustry.ui.*;
+19: import mindustry.world.*;
+20: import mindustry.world.blocks.*;
+21: import mindustry.world.meta.*;
+22: 
+23: import static mindustry.Vars.*;
+24: 
+25: public class TargetDummy extends Block{
+26:     public final int dpsUpdateTime = timers++;
+27:     public UnitType unitType = UnitTypes.dummy;
+28:     public float pullScale = 0.33f;
+29:     public String emptyStr = "---";
+30:     public @Load(value = "@-tether-end", fallback = "@") TextureRegion tetherEnd;
+31:     public @Load(value = "@-tether", fallback = "@") TextureRegion tether;
+32:     public @Load(value = "@-preview", fallback = "@") TextureRegion previewRegion;
+33: 
+34:     public TargetDummy(String name){
+35:         super(name);
+36: 
+37:         update = alwaysUpdateInUnits = true;
+38:         configurable = logicConfigurable = true;
+39:         underBullets = true;
+40:         targetable = false;
+41: 
+42:         saveConfig = true;
+43: 
+44:         config(FloatSeq.class, (TargetDummyBuild tile, FloatSeq config) -> {
+45:             if(config.size > 0){
+46:                 tile.unitTeam = tile.team;
+47:                 if(config.get(0) == 1) tile.unitTeam = Team.get(tile.dummyTeam());
+48:             }
+49:             if(config.size > 1) tile.boosting = config.get(1) == 1;
+50:             if(config.size > 2) tile.unitArmor = config.get(2);
+51:             if(config.size > 3) tile.resetTime = config.get(3);
+52:             if(config.size > 4) tile.dummySize = config.get(4);
+53:         });
+54:     }
+55: 
+56:     @Override
+57:     protected TextureRegion[] icons(){
+58:         return new TextureRegion[]{previewRegion};
+59:     }
+60: 
+61:     @Override
+62:     public void setBars(){
+63:         super.setBars();
+64:         removeBar("health");
+65: 
+66:         addBar("dps", (TargetDummyBuild entity) -> new Bar(
+67:             () -> entity.displayDPS(false),
+68:             () -> Pal.ammo,
+69:             () -> 1f - (entity.reset / entity.resetTime)
+70:         ));
+71:     }
+72: 
+73:     @Override
+74:     public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+75:         super.drawDefaultPlanRegion(plan, list);
+76: 
+77:         Draw.rect(unitType.fullIcon, plan.drawx(), plan.drawy());
+78:     }
+79: 
+80:     public class TargetDummyBuild extends Building implements UnitTetherBlock{
+81:         //needs to be "unboxed" after reading, since units are read after buildings.
+82:         public int readUnitId = -1;
+83:         public Unit unit;
+84:         public float resetTime = 120f;
+85:         public float total, reset = resetTime, time, dummySize = 12f;
+86:         public float dps, totalDisplay, timeDisplay;
+87:         public int hits;
+88:         public int hitsDisplay;
+89:         public boolean boosting;
+90:         public float unitArmor;
+91:         public Team unitTeam;
+92: 
+93:         @Override
+94:         public void updateTile(){
+95:             //unit was lost/destroyed somehow
+96:             if(unit != null && (unit.dead || !unit.isAdded())){
+97:                 unit = null;
+98:             }
+99: 
+100:             if(readUnitId != -1){
+101:                 unit = Groups.unit.getByID(readUnitId);
+102:                 if(unit != null || !net.client()){
+103:                     readUnitId = -1;
+104:                 }
+105:             }
+106: 
+107:             if(unitTeam == null) unitTeam = team;
+108: 
+109:             if(unit == null){
+110:                 if(!net.client()){
+111:                     unit = unitType.create(team);
+112:                     if(unit instanceof TargetDummyUnit td){
+113:                         td.building(this);
+114:                     }
+115:                     unit.set(x, y);
+116:                     unit.rotation = 90f;
+117:                     unit.add();
+118:                     Call.unitTetherBlockSpawned(tile, unit.id);
+119:                 }
+120:             }
+121: 
+122:             if(unit != null){
+123:                 unit.updateBoosting(boosting);
+124:                 unit.armor(unitArmor);
+125:                 unit.team(unitTeam);
+126:                 unit.hitSize = dummySize;
+127: 
+128:                 //similar to impulseNet but does not factor in mass
+129:                 Tmp.v1.set(this).sub(unit).limit(dst(unit) * pullScale * Time.delta);
+130:                 unit.vel.add(Tmp.v1);
+131: 
+132:                 //manually move units to simulate velocity for remote players
+133:                 if(unit.isRemote()) unit.move(Tmp.v1);
+134: 
+135:                 if(unit.moving()) unit.lookAt(unit.vel().angle());
+136:             }
+137: 
+138:             time += Time.delta;
+139:             reset += Time.delta;
+140: 
+141:             if(timer(dpsUpdateTime, 20)){
+142:                 dps = total / time * 60f;
+143:                 totalDisplay = total;
+144:                 timeDisplay = time / 60f;
+145:                 hitsDisplay = hits;
+146:             }
+147: 
+148:             if(reset >= resetTime){
+149:                 total = time = dps = hits = 0;
+150:             }
+151:         }
+152: 
+153:         public void spawned(int id){
+154:             Fx.spawn.at(x, y);
+155:             if(net.client()){
+156:                 readUnitId = id;
+157:             }
+158:         }
+159: 
+160:         @Override
+161:         public void draw(){
+162:             super.draw();
+163: 
+164:             if(tether.found() && unit != null){
+165:                 float z = unit.elevation > 0.5f ? unit.type.flyingLayer - 0.01f : unitType.groundLayer + Mathf.clamp(unitType.hitSize / 4000f, 0, 0.01f);
+166:                 Draw.z(z - 0.01f);
+167:                 Draw.color(team.color);
+168:                 Drawf.laser(tether, tetherEnd, x, y, unit.x, unit.y);
+169:                 Draw.color();
+170:             }
+171: 
+172:             Draw.z(Layer.overlayUI);
+173:             String text = displayDPS(true) + "\n" + "(" + displayTotal() + ")" + "\n" + displayHits();
+174:             Drawf.text(text, x, y + size / (2.5f*2f), team.color, size / 2.5f);
+175:         }
+176: 
+177:         @Override
+178:         public void drawSelect(){
+179:             Drawf.square(x, y, dummySize, 0f, team.color);
+180:         }

@@ -1,0 +1,4 @@
+./core/src/mindustry/world/Tile.java:209:    public void setTeam(Team team){
+./core/src/mindustry/world/Tile.java:802:    public static void setTeam(Building build, Team team){
+./core/src/mindustry/world/Tile.java:809:    public static void setTeams(int[] positions, Team team){
+./core/src/mindustry/editor/EditorTile.java:97:    public void setTeam(Team team){

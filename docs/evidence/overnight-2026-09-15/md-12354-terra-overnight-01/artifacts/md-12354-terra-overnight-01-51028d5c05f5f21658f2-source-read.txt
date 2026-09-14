@@ -1,0 +1,90 @@
+360: 
+361:         /** Make all buildings within this range derelict/explode. */
+362:         public void timeDestroy(float x, float y, float range){
+363:             var builds = new Seq<Building>();
+364:             if(buildingTree != null){
+365:                 buildingTree.intersect(x - range, y - range, range * 2f, range * 2f, builds);
+366:             }
+367: 
+368:             for(var build : builds){
+369:                 if(!build.block.privileged && build.within(x, y, range) && !cores.contains(c -> c.within(build, range))){
+370:                     scheduleDerelict(build);
+371:                 }
+372:             }
+373:             finishScheduleDerelict();
+374: 
+375:             //do block replacements in a radius
+376:             var sector = state.getSector();
+377:             if(sector != null){
+378:                 boolean any = false;
+379:                 for(var entry : sector.planet.sectorCaptureReplacements){
+380:                     if(indexer.isBlockPresent(entry.key)){
+381:                         any = true;
+382:                     }
+383:                 }
+384:                 if(any){
+385:                     Geometry.circle(World.toTile(x), World.toTile(y), world.width(), world.height(), Mathf.round(range / tilesize), (tx, ty) -> {
+386:                         Tile t = world.rawTile(tx, ty);
+387:                         Block result = sector.planet.sectorCaptureReplacements.get(t.floor());
+388:                         if(result != null && !cores.contains(c -> c.within(t, range))){
+389:                             t.setFloor(result.asFloor());
+390:                         }
+391:                     });
+392:                 }
+393:             }
+394:         }
+395: 
+396:         private void scheduleDerelict(Building build){
+397:             //queue block to be handled later, avoid packet spam
+398:             derelictBuffer.add(build.pos());
+399: 
+400:             if(build.getPayload() instanceof UnitPayload){
+401:                 Call.destroyPayload(build);
+402:             }
+403: 
+404:             if(Mathf.chance(0.2)){
+405:                 Time.run(Mathf.random(0f, 60f * 6f), build::kill);
+406:             }
+407:             //don't bother checking previous for performance reasons
+408:             build.addPlan(false, true);
+409:         }
+410: 
+411:         private void finishScheduleDerelict(){
+412:             derelictBuffer.chunked(1000, values -> Call.setTeams(values, Team.derelict));
+413:             derelictBuffer.clear();
+414:         }
+415: 
+416:         //this is just an alias for consistency
+417:         @Nullable
+418:         public Seq<Unit> getUnits(UnitType type){
+419:             return unitCache(type);
+420:         }
+421: 
+422:         @Nullable
+423:         public Seq<Unit> unitCache(UnitType type){
+424:             if(unitsByType == null || unitsByType.length <= type.id || unitsByType[type.id] == null) return null;
+425:             return unitsByType[type.id];
+426:         }
+427: 
+428:         public void updateCount(UnitType type, int amount){
+429:             if(type == null) return;
+430:             unitCount = Math.max(amount + unitCount, 0);
+431:             if(typeCounts == null || typeCounts.length <= type.id){
+432:                 typeCounts = typeCounts == null ? new int[Vars.content.units().size] : Arrays.copyOf(typeCounts, Vars.content.units().size);
+433:             }
+434:             typeCounts[type.id] = Math.max(amount + typeCounts[type.id], 0);
+435:         }
+436: 
+437:         public QuadTree<Unit> tree(){
+438:             if(unitTree == null) unitTree = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
+439:             return unitTree;
+440:         }
+441: 
+442:         public int countType(UnitType type){
+443:             return typeCounts == null || typeCounts.length <= type.id ? 0 : typeCounts[type.id];
+444:         }
+445: 
+446:         public boolean active(){
+447:             return (team == state.rules.waveTeam && state.rules.waves) || cores.size > 0 || buildings.size > 0 || (team == Team.neoplastic && units.size > 0);
+448:         }
+449: 

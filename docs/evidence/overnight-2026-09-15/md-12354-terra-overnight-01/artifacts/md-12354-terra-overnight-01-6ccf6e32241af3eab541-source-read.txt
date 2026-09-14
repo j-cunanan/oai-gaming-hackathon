@@ -1,0 +1,120 @@
+1: package mindustry.editor;
+2: 
+3: import arc.func.*;
+4: import mindustry.content.*;
+5: import mindustry.game.*;
+6: import mindustry.gen.*;
+7: import mindustry.graphics.*;
+8: import mindustry.world.*;
+9: import mindustry.world.blocks.environment.*;
+10: import mindustry.world.modules.*;
+11: 
+12: import static mindustry.Vars.*;
+13: 
+14: public class EditorTile extends Tile{
+15: 
+16:     public EditorTile(int x, int y, int floor, int overlay, int wall){
+17:         super(x, y, floor, overlay, wall);
+18:     }
+19: 
+20:     @Override
+21:     public void setFloor(Floor type){
+22:         if(skip()){
+23:             super.setFloor(type);
+24:             return;
+25:         }
+26: 
+27:         if(type instanceof OverlayFloor){
+28:             //don't place on liquids
+29:             if(floor.hasSurface() || !type.needsSurface){
+30:                 setOverlay(type);
+31:             }
+32:             return;
+33:         }
+34: 
+35:         if(floor == type) return;
+36: 
+37:         op(DrawOperation.opFloor, floor.id);
+38: 
+39:         world.floorChanges ++;
+40: 
+41:         this.floor = type;
+42:         type.floorChanged(this);
+43:     }
+44: 
+45:     @Override
+46:     public boolean isEditorTile(){
+47:         return true;
+48:     }
+49: 
+50:     @Override
+51:     public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
+52:         Block prev = this.block;
+53:         Tile prevCenter = (build == null ? this : build.tile);
+54: 
+55:         if(skip()){
+56:             super.setBlock(type, team, rotation, entityprov);
+57:             return;
+58:         }
+59: 
+60:         if(this.block == type && (build == null || build.rotation == rotation)){
+61:             return;
+62:         }
+63: 
+64:         if(!isCenter()){
+65:             EditorTile cen = (EditorTile)build.tile;
+66:             cen.op(DrawOperation.opRotation, (byte)build.rotation);
+67:             cen.op(DrawOperation.opTeam, (byte)build.team.id);
+68:             cen.op(DrawOperation.opBlock, block.id);
+69:             updateStatic();
+70:         }else{
+71:             if(build != null) op(DrawOperation.opRotation, (byte)build.rotation);
+72:             if(build != null) op(DrawOperation.opTeam, (byte)build.team.id);
+73:             op(DrawOperation.opBlock, block.id);
+74:         }
+75: 
+76:         super.setBlock(type, team, rotation, entityprov);
+77: 
+78:         if(requiresBlockUpdate(type) || requiresBlockUpdate(prev)){
+79:             if(prev.size > 1){
+80:                 prevCenter.getLinkedTilesAs(prev, tile -> editor.renderer.updateBlock(tile));
+81:             }
+82:             getLinkedTiles(tile -> editor.renderer.updateBlock(tile));
+83:         }else{
+84:             renderer.blocks.updateShadowTile(this);
+85:         }
+86: 
+87:         if(build != null){
+88:             build.wasVisible = true;
+89:         }
+90: 
+91:         world.tileChanges ++;
+92: 
+93:         type.blockChanged(this);
+94:     }
+95: 
+96:     @Override
+97:     public void setTeam(Team team){
+98:         if(skip()){
+99:             super.setTeam(team);
+100:             return;
+101:         }
+102: 
+103:         if(getTeamID() == team.id || !synthetic()) return;
+104:         op(DrawOperation.opTeam, (byte)getTeamID());
+105:         super.setTeam(team);
+106: 
+107:         getLinkedTiles(t -> editor.renderer.updateBlock(t.x, t.y));
+108:     }
+109: 
+110:     @Override
+111:     public void setOverlay(Block overlay){
+112:         if(skip()){
+113:             super.setOverlay(overlay);
+114:             return;
+115:         }
+116: 
+117:         if(!floor.hasSurface() && overlay.asFloor().needsSurface && (overlay instanceof OreBlock || !floor.supportsOverlay)) return;
+118:         if(this.overlay == overlay) return;
+119:         op(DrawOperation.opOverlay, this.overlay.id);
+120:         super.setOverlay(overlay);
