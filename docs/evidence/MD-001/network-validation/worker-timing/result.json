@@ -1,0 +1,218 @@
+{
+  "old_backend_revision": "9701f2c68508409db5f0d063f0f26499f1685156",
+  "baseline_sha256": "97d2866fc3d33d195bffd8aad20bc86a6eee9ad911e4916d6ac6a64f7674fa14",
+  "steps": [
+    {
+      "action": "click",
+      "x": 255,
+      "y": 336,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open Editor from main menu"
+    },
+    {
+      "action": "double_click",
+      "x": 430,
+      "y": 550,
+      "keys": [],
+      "text": "",
+      "seconds": 3.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open built-in Glacier map in editor"
+    },
+    {
+      "action": "click",
+      "x": 491,
+      "y": 501,
+      "keys": [],
+      "text": "",
+      "seconds": 4.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open selected map in editor"
+    },
+    {
+      "action": "click",
+      "x": 34,
+      "y": 52,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open editor menu"
+    },
+    {
+      "action": "click",
+      "x": 739,
+      "y": 185,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open map information and rules"
+    },
+    {
+      "action": "click",
+      "x": 530,
+      "y": 425,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open map rules"
+    },
+    {
+      "action": "click",
+      "x": 616,
+      "y": 92,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus custom-rules search"
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "weather",
+      "seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Filter custom rules to Weather"
+    }
+  ],
+  "method": "Three alternating old/new pairs; same baseline, resolution, limits, fresh profile, recorded waits and load-ready guard. Excludes model calls and recorder/database writes.",
+  "samples": [
+    {
+      "worker": "old",
+      "trial": 1,
+      "launch_seconds": 12.485221582988743,
+      "action_seconds": [
+        4.107101999979932,
+        6.702842875034548,
+        8.12109754094854,
+        3.7457733749761246,
+        4.134451959049329,
+        3.887012124992907,
+        2.0963839999749325,
+        4.091314500023145
+      ],
+      "total_seconds": 49.371261874970514,
+      "process_running": true,
+      "screenshot": "old-1.png",
+      "screenshot_sha256": "64a265841e738bc95d7c0fc62f03b6aff4a609146075db6fe2c1bfa6651b52dd"
+    },
+    {
+      "worker": "new",
+      "trial": 1,
+      "launch_seconds": 11.14533891697647,
+      "action_seconds": [
+        2.6214936249889433,
+        3.5034620839869604,
+        4.312815791985486,
+        1.2970797919551842,
+        2.3840178749524057,
+        2.38710795895895,
+        0.530556500016246,
+        2.491117709025275
+      ],
+      "total_seconds": 30.673011042003054,
+      "process_running": true,
+      "screenshot": "new-1.png",
+      "screenshot_sha256": "f257853aaa46671408686c01d7ff27ba06aa74bd644497af54b3d638e5cfb8da"
+    },
+    {
+      "worker": "old",
+      "trial": 2,
+      "launch_seconds": 12.444213333015796,
+      "action_seconds": [
+        4.181218334008008,
+        5.602952291024849,
+        6.022709625016432,
+        2.693931874993723,
+        3.8783627090160735,
+        3.9112559580244124,
+        1.9962607909692451,
+        4.001338624977507
+      ],
+      "total_seconds": 44.73228779103374,
+      "process_running": true,
+      "screenshot": "old-2.png",
+      "screenshot_sha256": "64a265841e738bc95d7c0fc62f03b6aff4a609146075db6fe2c1bfa6651b52dd"
+    },
+    {
+      "worker": "new",
+      "trial": 2,
+      "launch_seconds": 10.934547957964242,
+      "action_seconds": [
+        2.9025267499964684,
+        3.7888126249890774,
+        4.397021582990419,
+        1.334101999993436,
+        2.3766818329459056,
+        2.307901458989363,
+        0.5115622919984162,
+        2.3734498330159113
+      ],
+      "total_seconds": 30.926777541986667,
+      "process_running": true,
+      "screenshot": "new-2.png",
+      "screenshot_sha256": "f257853aaa46671408686c01d7ff27ba06aa74bd644497af54b3d638e5cfb8da"
+    },
+    {
+      "worker": "old",
+      "trial": 3,
+      "launch_seconds": 12.611554000002798,
+      "action_seconds": [
+        4.10470125003485,
+        5.993494833004661,
+        6.1261369999847375,
+        3.2740612080087885,
+        4.1051723749842495,
+        4.101636875013355,
+        2.495109124982264,
+        4.504092334012967
+      ],
+      "total_seconds": 47.31599479203578,
+      "process_running": true,
+      "screenshot": "old-3.png",
+      "screenshot_sha256": "b7f6a84a039ab31092e3dea925d46380a46ec02904af42d39ff6157a9cace36b"
+    },
+    {
+      "worker": "new",
+      "trial": 3,
+      "launch_seconds": 12.180610459006857,
+      "action_seconds": [
+        3.0351293749990873,
+        3.5175208750297315,
+        4.372881790972315,
+        1.3154903330141678,
+        2.328539500012994,
+        2.540560707973782,
+        0.5226017499808222,
+        2.4271174580208026
+      ],
+      "total_seconds": 32.24051470897393,
+      "process_running": true,
+      "screenshot": "new-3.png",
+      "screenshot_sha256": "f257853aaa46671408686c01d7ff27ba06aa74bd644497af54b3d638e5cfb8da"
+    }
+  ],
+  "median_seconds": {
+    "old": 47.31599479203578,
+    "new": 30.926777541986667
+  },
+  "median_reduction_percent": 34.63779494034382,
+  "visual_review": "All six final screenshots were visually inspected and show two Weather controls in the target Custom Rules view.",
+  "new_backend_revision": "c72f6c3"
+}

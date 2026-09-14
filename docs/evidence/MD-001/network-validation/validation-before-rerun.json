@@ -1,0 +1,247 @@
+{
+  "id": "md-weather-terra-001",
+  "report": {
+    "title": "Two Weather buttons in map rules",
+    "body": "In the map rules menu, the button to edit the weather appears twice. Open the map rules menu and scroll down. No mods. No save file required.",
+    "game": "mindustry",
+    "target_commit": "a5c178ae5abcc630613c233e0afbb361021d3828",
+    "platform": "Windows (reported); Linux (evaluation)",
+    "build_version": "bleeding-edge build 27828"
+  },
+  "state": "AWAITING_HUMAN",
+  "created_at": "2026-09-13T16:40:20.423032+00:00",
+  "updated_at": "2026-09-13T17:29:14.368483+00:00",
+  "summary": "Replay refinement finished. Inspect the recorded reduction and validation checks.",
+  "spec": {
+    "summary": "Reported duplicate Weather edit button in the map rules menu after scrolling down.",
+    "bug_class": "UI duplication / possible duplicate control rendering",
+    "observed_behavior": "The reporter states that the button used to edit weather appears twice in the map rules menu.",
+    "expected_behavior": "The Weather edit button should appear only once in the map rules menu.",
+    "known_preconditions": [
+      "Game: Mindustry.",
+      "Target commit: a5c178ae5abcc630613c233e0afbb361021d3828.",
+      "Build version: bleeding-edge build 27828.",
+      "Reported platform: Windows.",
+      "Reporter states no mods are installed.",
+      "Reporter states no save file is required."
+    ],
+    "uncertain_conditions": [
+      "Whether the issue occurs on Windows only or also on Linux; Linux is listed as the evaluation platform, not as a confirmed affected platform.",
+      "Whether a particular map, game mode, rules configuration, UI scale, resolution, language, or display setting is required.",
+      "Whether the duplicate is two separately functional buttons, a visual rendering artifact, or one button overlapping another.",
+      "Whether the duplicate persists after reopening the menu or restarting the game.",
+      "Whether scrolling is required to trigger the duplication or merely reveals it.",
+      "Whether the behavior is reproducible on the specified commit/build."
+    ],
+    "reproduction_hints": [
+      "Launch the specified bleeding-edge build/target commit.",
+      "Open the map rules menu.",
+      "Scroll down through the menu.",
+      "Inspect the Weather editing control for a second visible instance.",
+      "Perform the check without mods installed, as reported."
+    ],
+    "required_artifacts": [
+      "Screenshot or video of the map rules menu showing both Weather buttons.",
+      "Exact reproduction path from the main menu/editor/game session to the map rules menu.",
+      "Confirmation of the map/editor context and any selected map or game mode.",
+      "Runtime/build metadata confirming the executable corresponds to build 27828 and/or target commit a5c178ae5abcc630613c233e0afbb361021d3828.",
+      "Display resolution, UI scale, fullscreen/windowed state, and language setting.",
+      "Whether each visible Weather button can be clicked and the result of clicking each.",
+      "Logs from a reproduction attempt, if the game emits relevant UI errors or warnings."
+    ],
+    "severity": "unknown",
+    "confidence": 0.82
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "In the map editor's Custom Rules dialog, scrolling downward renders two visible Weather edit controls.",
+      "prediction": "After scrolling through Custom Rules to the Weather section, the viewport will display two buttons labelled Edit associated with Weather.",
+      "status": "supported",
+      "observation": "Filtering the already-scrolled Custom Rules dialog for “weather” visibly shows two separate Weather buttons: one under Environment and one under Lighting."
+    }
+  ],
+  "reproduction": {
+    "version": 1,
+    "game": "mindustry",
+    "commit": "a5c178ae5abcc630613c233e0afbb361021d3828",
+    "resolution": [
+      1280,
+      720
+    ],
+    "steps": [
+      {
+        "action": "click",
+        "x": 255,
+        "y": 336,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open Editor from main menu"
+      },
+      {
+        "action": "double_click",
+        "x": 430,
+        "y": 550,
+        "keys": [],
+        "text": "",
+        "seconds": 3.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open built-in Glacier map in editor"
+      },
+      {
+        "action": "click",
+        "x": 491,
+        "y": 501,
+        "keys": [],
+        "text": "",
+        "seconds": 4.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open selected map in editor"
+      },
+      {
+        "action": "click",
+        "x": 34,
+        "y": 52,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open editor menu"
+      },
+      {
+        "action": "click",
+        "x": 739,
+        "y": 185,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open map information and rules"
+      },
+      {
+        "action": "click",
+        "x": 530,
+        "y": 425,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open map rules"
+      },
+      {
+        "action": "click",
+        "x": 616,
+        "y": 92,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus custom-rules search"
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "weather",
+        "seconds": 2.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Filter custom rules to Weather"
+      }
+    ],
+    "oracle": {
+      "kind": "visual",
+      "description": "The reporter states that the button used to edit weather appears twice in the map rules menu.",
+      "log_pattern": null
+    },
+    "successful_runs": 5,
+    "total_runs": 5,
+    "original_actions": 23,
+    "deterministic": true,
+    "evidence": [
+      "md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png",
+      "md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png",
+      "md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png",
+      "md-weather-terra-001-b7f6a84a039ab31092e3-reduced-confirmation.png",
+      "md-weather-terra-001-64a265841e738bc95d7c-reduced-confirmation.png"
+    ]
+  },
+  "findings": {
+    "root_cause": "CustomRulesDialog.setupMain() explicitly creates the same `@rules.weather` button twice: once in the `environment` category and again in the subsequent `light` category. Both use the identical search predicate and invoke `weatherDialog`, so filtering with \"weather\" deterministically renders two Weather edit controls in separate category results. The replay's clicks on Environment then Lighting match these two construction sites.",
+    "subsystem": "Editor map-information Custom Rules UI (shared CustomRulesDialog rule-list construction)",
+    "candidates": [
+      {
+        "path": "core/src/mindustry/ui/dialogs/CustomRulesDialog.java",
+        "symbol": "CustomRulesDialog.setupMain()",
+        "score": 0.99,
+        "evidence": [
+          "Lines 236-238 add `current.button(\"@rules.weather\", this::weatherDialog)` when the localized Weather label matches `ruleSearch`; at that point `current` is the `environment` category created at line 221.",
+          "Lines 240-256 create the `light` category and then repeat the same predicate and the same `@rules.weather` / `this::weatherDialog` button construction at lines 254-256.",
+          "The common predicate is true for the replay's search text `weather`, which directly accounts for the Environment and Lighting Weather results described by the replay.",
+          "`setupMain()` clears `main` at line 143 before rebuilding categories, indicating this is not stale scroll-pane content; the duplicate is authored during one rebuild."
+        ],
+        "reasoning": "This is the direct render path for the reported map rules menu. Two independently added controls share the same label and handler, matching both the observed duplicate and the deterministic filtered replay."
+      }
+    ],
+    "limitations": [
+      "Source inspection establishes the duplicate construction path but does not independently execute the supplied replay or inspect its screenshots.",
+      "The supplied evidence does not establish whether the unfiltered scrolled presentation is visibly duplicated at every UI scale/language; however, both source sites are unconditional with respect to platform and are independently gated only by localized search matching.",
+      "This localization does not determine why the second placement was introduced or prescribe a future fix."
+    ]
+  },
+  "checks": [
+    {
+      "name": "Regression before patch",
+      "status": "pass",
+      "detail": "Reduced trigger observed in 5/5 clean baseline runs.",
+      "artifact": null
+    },
+    {
+      "name": "Candidate build",
+      "status": "pass",
+      "detail": "Build exit code 0",
+      "artifact": "md-weather-terra-001-d50a73e2452a8f3ed619-candidate-build.log"
+    },
+    {
+      "name": "Existing tests",
+      "status": "fail",
+      "detail": "Test exit code 1. The log contains UnknownHostException; this worker has networking disabled. Inspect the test log.",
+      "artifact": "md-weather-terra-001-23455606d28ce54e4855-candidate-tests.log"
+    },
+    {
+      "name": "Original replay after patch",
+      "status": "pass",
+      "detail": "5/5 reached expected state without the symptom; bug seen 0 times.",
+      "artifact": null
+    },
+    {
+      "name": "Smoke test",
+      "status": "pass",
+      "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+      "artifact": "md-weather-terra-001-d71e8897810c4143b5f3-smoke.png"
+    }
+  ],
+  "usage": {
+    "model_calls": 84,
+    "input_tokens": 1057809,
+    "output_tokens": 11504
+  },
+  "patch_artifact": "md-weather-terra-001-59859c8d443e1564f759-candidate.patch",
+  "latest_screenshot": "md-weather-terra-001-fbb36f8d9f23b125f43a-post-patch.png",
+  "first_reproduced_seconds": 174.22045891702874,
+  "elapsed_seconds": 2640.1223147929995,
+  "owner_evidence": [
+    "No CODEOWNERS found. Depth-one history is insufficient to infer ownership reliably."
+  ],
+  "benchmark_id": "MD-001"
+}

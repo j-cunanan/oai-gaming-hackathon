@@ -1,0 +1,53 @@
+{
+  "case_id": "md-weather-terra-001",
+  "state": "AWAITING_HUMAN",
+  "summary": "All validation gates passed. Ready for handoff review.",
+  "backend_revision": "c72f6c3",
+  "worker_image": "repro-worker:amd64-fast",
+  "validation_network": true,
+  "checks": [
+    {
+      "name": "Regression before patch",
+      "status": "pass",
+      "detail": "Trigger observed in 5/5 fresh baseline runs.",
+      "artifact": null
+    },
+    {
+      "name": "Candidate build",
+      "status": "pass",
+      "detail": "Build exit code 0",
+      "artifact": "md-weather-terra-001-27787054bd36856f0ca0-candidate-build.log"
+    },
+    {
+      "name": "Existing tests",
+      "status": "pass",
+      "detail": "Test exit code 0",
+      "artifact": "md-weather-terra-001-e770b3809cab3e6b6adb-candidate-tests.log"
+    },
+    {
+      "name": "Original replay after patch",
+      "status": "pass",
+      "detail": "5/5 reached expected state without the symptom; bug seen 0 times.",
+      "artifact": null
+    },
+    {
+      "name": "Smoke test",
+      "status": "pass",
+      "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+      "artifact": "md-weather-terra-001-abf947b178be33bfe36c-smoke.png"
+    }
+  ],
+  "fresh_baseline_successful_runs": 5,
+  "fresh_baseline_total_runs": 5,
+  "replay_actions": 8,
+  "elapsed_seconds_this_rerun": 472.3075206250069,
+  "model_calls_this_rerun": 15,
+  "input_tokens_this_rerun": 34347,
+  "output_tokens_this_rerun": 2381,
+  "patch_unchanged_sha256": "59859c8d443e1564f759f0b08ec36e17aa8aee4fa598b243671b42b6491b317b",
+  "event_count": 116,
+  "first_event_at": "2026-09-14T04:44:13.251249+00:00",
+  "last_event_at": "2026-09-14T04:52:05.416017+00:00",
+  "patch_validated": true,
+  "approved_by_user": false
+}

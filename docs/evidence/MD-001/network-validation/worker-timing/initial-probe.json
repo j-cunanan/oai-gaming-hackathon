@@ -1,0 +1,121 @@
+{
+  "note": "Preliminary fixed-eight-second-startup timing is excluded from the final speed comparison: both workers missed the target UI in one of three runs. This exposed the loading race fixed before the controlled comparison. No model calls were made in either timing experiment.",
+  "old": {
+    "worker": "original one-shot RPC",
+    "steps": 8,
+    "trials": [
+      {
+        "trial": 1,
+        "launch_seconds": 10.180905832967255,
+        "action_seconds": [
+          3.8065158329554833,
+          5.493099458981305,
+          6.592685707961209,
+          3.3844478750252165,
+          4.600965625024401,
+          4.313400084036402,
+          2.497455041971989,
+          4.776181375025772
+        ],
+        "total_seconds": 45.64577324996935,
+        "running": true
+      },
+      {
+        "trial": 2,
+        "launch_seconds": 10.046577667002566,
+        "action_seconds": [
+          3.757891417015344,
+          5.89712562499335,
+          6.542103875020985,
+          3.1701403749757446,
+          5.409093291964382,
+          5.111622292024549,
+          3.110242999973707,
+          5.385475834016688
+        ],
+        "total_seconds": 48.430298958031926,
+        "running": true
+      },
+      {
+        "trial": 3,
+        "launch_seconds": 10.802852042019367,
+        "action_seconds": [
+          4.002910582988989,
+          5.4141720840125345,
+          6.078254874970298,
+          2.803973665984813,
+          4.012616499967407,
+          3.877427333034575,
+          2.113043707970064,
+          4.10788412502734
+        ],
+        "total_seconds": 43.21315433399286,
+        "running": true
+      }
+    ]
+  },
+  "new": {
+    "worker": "persistent RPC",
+    "steps": 8,
+    "trials": [
+      {
+        "trial": 1,
+        "launch_seconds": 10.144914000004064,
+        "action_seconds": [
+          2.7037284579710104,
+          3.605175959004555,
+          4.311041499953717,
+          1.2900707919616252,
+          2.27946695900755,
+          2.2895451660151593,
+          0.5165970000089146,
+          2.416381500021089
+        ],
+        "total_seconds": 29.55696012498811,
+        "running": true
+      },
+      {
+        "trial": 2,
+        "launch_seconds": 10.06415312498575,
+        "action_seconds": [
+          2.6807417909731157,
+          3.418233708012849,
+          4.468793666979764,
+          1.2428850830183364,
+          2.3568861670210026,
+          2.3351451669586822,
+          0.5815735830110498,
+          2.4948387920157984
+        ],
+        "total_seconds": 29.643275542010088,
+        "running": true
+      },
+      {
+        "trial": 3,
+        "launch_seconds": 9.819512874993961,
+        "action_seconds": [
+          2.423363167035859,
+          3.591229874989949,
+          4.417635291989427,
+          1.2932814590167254,
+          2.413118249969557,
+          2.2941568329697475,
+          0.5876618750044145,
+          2.689759625005536
+        ],
+        "total_seconds": 29.529757416981738,
+        "running": true
+      }
+    ]
+  },
+  "old_final_view": [
+    "main menu",
+    "duplicate Weather controls",
+    "duplicate Weather controls"
+  ],
+  "new_final_view": [
+    "duplicate Weather controls",
+    "duplicate Weather controls",
+    "main menu"
+  ]
+}

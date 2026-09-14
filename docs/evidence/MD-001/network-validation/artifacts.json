@@ -1,0 +1,67 @@
+{
+  "before.png": {
+    "artifact_id": "md-weather-terra-001-f257853aaa4667140868-baseline-revalidation.png",
+    "sha256": "f257853aaa46671408686c01d7ff27ba06aa74bd644497af54b3d638e5cfb8da",
+    "media_type": "image/png"
+  },
+  "after.png": {
+    "artifact_id": "md-weather-terra-001-8499079219315120d609-post-patch.png",
+    "sha256": "8499079219315120d6096e49e626148356b59416578dced5e14b00cb59dd0998",
+    "media_type": "image/png"
+  },
+  "candidate-build.txt": {
+    "artifact_id": "md-weather-terra-001-27787054bd36856f0ca0-candidate-build.log",
+    "sha256": "27787054bd36856f0ca01f2276adfba56f3c555bef973afc6a4701975640cb24",
+    "media_type": "text/plain"
+  },
+  "candidate-tests.txt": {
+    "artifact_id": "md-weather-terra-001-e770b3809cab3e6b6adb-candidate-tests.log",
+    "sha256": "e770b3809cab3e6b6adb6c2b494d82fcdc7c6da459e0754db7b4b72cae93b7d2",
+    "media_type": "text/plain"
+  },
+  "smoke.png": {
+    "artifact_id": "md-weather-terra-001-abf947b178be33bfe36c-smoke.png",
+    "sha256": "abf947b178be33bfe36c3505d742f4a643f252afa2c0e58a2559078d7f05d51b",
+    "media_type": "image/png"
+  },
+  "report.md": {
+    "artifact_id": "md-weather-terra-001-73205fdcd39fda123d7d-report.md",
+    "sha256": "73205fdcd39fda123d7d87527bb4b8394acaff6d7826ab7e577b521cfbba0ec3",
+    "media_type": "text/markdown"
+  },
+  "repro.yaml": {
+    "artifact_id": "md-weather-terra-001-cd5a45bc0f2b91b7b88f-repro.yaml",
+    "sha256": "cd5a45bc0f2b91b7b88fb374e5efda46abeabc6f2cf2632f1372f5ce636d8602",
+    "media_type": "application/yaml"
+  },
+  "validation-before-rerun.json": {
+    "artifact_id": "md-weather-terra-001-4be6c76c6ce2b0e22777-validation-before-rerun.json",
+    "sha256": "4be6c76c6ce2b0e227774a073598839acb1f71eac6efef37e83489af78756a01",
+    "media_type": "application/json"
+  },
+  "candidate-replay-1.png": {
+    "artifact_id": "md-weather-terra-001-f925ec291a4b8ea0978d-post-patch.png",
+    "sha256": "f925ec291a4b8ea0978d5dc95eb8efb1555e4bb2d27ef4dff283d8b5bbe9fbf6",
+    "media_type": "image/png"
+  },
+  "candidate-replay-2.png": {
+    "artifact_id": "md-weather-terra-001-f925ec291a4b8ea0978d-post-patch.png",
+    "sha256": "f925ec291a4b8ea0978d5dc95eb8efb1555e4bb2d27ef4dff283d8b5bbe9fbf6",
+    "media_type": "image/png"
+  },
+  "candidate-replay-3.png": {
+    "artifact_id": "md-weather-terra-001-f925ec291a4b8ea0978d-post-patch.png",
+    "sha256": "f925ec291a4b8ea0978d5dc95eb8efb1555e4bb2d27ef4dff283d8b5bbe9fbf6",
+    "media_type": "image/png"
+  },
+  "candidate-replay-4.png": {
+    "artifact_id": "md-weather-terra-001-f925ec291a4b8ea0978d-post-patch.png",
+    "sha256": "f925ec291a4b8ea0978d5dc95eb8efb1555e4bb2d27ef4dff283d8b5bbe9fbf6",
+    "media_type": "image/png"
+  },
+  "candidate-replay-5.png": {
+    "artifact_id": "md-weather-terra-001-8499079219315120d609-post-patch.png",
+    "sha256": "8499079219315120d6096e49e626148356b59416578dced5e14b00cb59dd0998",
+    "media_type": "image/png"
+  }
+}

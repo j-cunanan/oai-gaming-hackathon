@@ -53,7 +53,9 @@ uv run repro report CASE_ID --output investigation.md
 
 The [MD-001 evidence package](docs/evidence/MD-001/README.md) contains a real historical run using Terra: the duplicate Weather-button bug reproduced in **5/5 clean runs**, the replay was reduced from **23 to 8 actions**, and **5/5 candidate replays** reached the correct menu with one Weather button. The first-ranked source file matched the later human-fix file. Screenshots, the generated patch, replay, raw logs and unsuccessful attempts are included.
 
-The candidate builds, but full approval remains blocked: 275/276 upstream tests pass, while a mod test that downloads from GitHub fails in the network-disabled worker. The same test fails on the untouched baseline. This selected development session includes runner improvements and refinement passes; it is not representative benchmark accuracy or one uninterrupted autonomous resolution.
+The [latest validation rerun](docs/evidence/MD-001/network-validation/README.md) passed **all five gates**, including **276/276 upstream tests with zero skips**, and enabled local handoff review. The initial offline run passed 275/276 tests; a mod test could not download its GitHub fixture. That failure and the later network-enabled result are preserved separately. This selected development session includes runner improvements and refinement passes; it is not representative benchmark accuracy or one uninterrupted autonomous resolution.
+
+A [controlled worker comparison](docs/evidence/MD-001/network-validation/worker-timing/README.md) measured the eight-action desktop replay at a median **47.3 → 30.9 seconds**, about **35% faster**, excluding model calls. Both workers used the same loading guard and recorded waits, and all six timing runs reached the target view. Dashboard updates now avoid repeatedly fetching event history and rendering the entire artifact list.
 
 ## Current limits
 
