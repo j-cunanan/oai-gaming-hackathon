@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import { Info } from "lucide-react";
 
 const explanations: Record<string, string> = {
+  "Case ID":
+    "The unique ID for this investigation. Reports can have the same title and benchmark label, but each case has its own ID, history, and results. The selected ID appears in the header, browser tab, and URL; reloading keeps that case selected.",
   Investigations:
     "An investigation is one bug case: a player report, attempts to reproduce it, evidence, a source diagnosis, and any proposed patch. A case can finish without finding a fix.",
   "New investigation":
