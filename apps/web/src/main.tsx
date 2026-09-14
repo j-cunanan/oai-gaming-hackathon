@@ -88,6 +88,7 @@ type Case = {
     target_commit: string;
     platform: string;
     build_version: string | null;
+    fixtures?: { filename: string; sha256: string }[];
   };
   spec: {
     severity: string;
@@ -126,7 +127,11 @@ type Case = {
       detail: string;
     }
   >;
-  usage: { model_calls: number; input_tokens: number; output_tokens: number } | null;
+  usage: {
+    model_calls: number;
+    input_tokens: number;
+    output_tokens: number;
+  } | null;
   first_reproduced_seconds: number | null;
   elapsed_seconds: number | null;
   benchmark_id: string | null;
@@ -238,9 +243,14 @@ function Badge({ state }: { state: string }) {
 function RecordingBadge({ c }: { c: Case }) {
   if (!c.imported_from) return null;
   return (
-    <span className="recording-badge" title={`Imported from ${c.imported_from.source_dir} at ${dateTime(c.imported_from.imported_at)}`}>
+    <span
+      className="recording-badge"
+      title={`Imported from ${c.imported_from.source_dir} at ${dateTime(c.imported_from.imported_at)}`}
+    >
       <strong>Imported recording</strong>
-      <small>{c.imported_from.original_case_id} · Recorded {dateTime(c.created_at)}</small>
+      <small>
+        {c.imported_from.original_case_id} · Recorded {dateTime(c.created_at)}
+      </small>
     </span>
   );
 }
@@ -299,7 +309,10 @@ function App() {
       setConnected(true);
       setError((previous) => (previous === "Failed to fetch" ? "" : previous));
       setSelected(
-        (id) => id || list.find((c) => c.id === requestedCase.current)?.id || preferredCase(list),
+        (id) =>
+          id ||
+          list.find((c) => c.id === requestedCase.current)?.id ||
+          preferredCase(list),
       );
     } catch (e) {
       setConnected(false);
@@ -746,7 +759,8 @@ function App() {
                         <td>{c.benchmark_id}</td>
                         <td>{c.report.title}</td>
                         <td>
-                          <Badge state={c.state} /><RecordingBadge c={c} />
+                          <Badge state={c.state} />
+                          <RecordingBadge c={c} />
                         </td>
                         <td>
                           {c.reproduction
@@ -983,7 +997,13 @@ function App() {
                                 )}
                               </span>
                               <span>
-                                <span>{failed ? "Checks failed" : preExisting ? "Pre-existing failure" : phase.label}</span>
+                                <span>
+                                  {failed
+                                    ? "Checks failed"
+                                    : preExisting
+                                      ? "Pre-existing failure"
+                                      : phase.label}
+                                </span>
                                 <small
                                   title={
                                     stageTime
@@ -1021,7 +1041,11 @@ function App() {
                               className={`live-tag ${running ? "live" : ""}`}
                             >
                               <span />
-                              {current.imported_from ? "RECORDED CAPTURE" : running ? "LIVE" : "LAST CAPTURE"}
+                              {current.imported_from
+                                ? "RECORDED CAPTURE"
+                                : running
+                                  ? "LIVE"
+                                  : "LAST CAPTURE"}
                             </span>
                           </div>
                           <span>1280 × 720</span>
@@ -1135,6 +1159,21 @@ function App() {
                           )}
                         </div>
                         <p>{current.report.body}</p>
+                        {!!current.report.fixtures?.length && (
+                          <div className="questions-block">
+                            <strong>
+                              Provided maps <HelpTip topic="Provided maps" />
+                            </strong>
+                            {current.report.fixtures.map((fixture) => (
+                              <p key={fixture.sha256 + fixture.filename}>
+                                {fixture.filename} ·{" "}
+                                <code title={fixture.sha256}>
+                                  {fixture.sha256.slice(0, 12)}
+                                </code>
+                              </p>
+                            ))}
+                          </div>
+                        )}
                         <div className="report-tags">
                           <span>{current.report.platform}</span>
                           <span>
@@ -1172,7 +1211,11 @@ function App() {
                             <HelpTip topic="Recorded replay" />
                             <button
                               className="button secondary small"
-                              disabled={busy || running || Boolean(current.imported_from)}
+                              disabled={
+                                busy ||
+                                running ||
+                                Boolean(current.imported_from)
+                              }
                               onClick={() => act("replay")}
                             >
                               <Play size={12} />
@@ -1192,7 +1235,9 @@ function App() {
                             ))}
                           </ol>
                           <p className="muted">
-                            {current.imported_from ? "Read-only recording. Create a new local case to run another investigation." : "Replay restores the retained pre-patch build."}
+                            {current.imported_from
+                              ? "Read-only recording. Create a new local case to run another investigation."
+                              : "Replay restores the retained pre-patch build."}
                           </p>
                           <button
                             className="button secondary small"
@@ -1288,10 +1333,12 @@ function App() {
                                 {current.usage?.model_calls ?? "—"} model calls
                               </span>
                               <span>
-                                {current.usage ? (
-                                  current.usage.input_tokens +
-                                  current.usage.output_tokens
-                                ).toLocaleString() : "—"}{" "}
+                                {current.usage
+                                  ? (
+                                      current.usage.input_tokens +
+                                      current.usage.output_tokens
+                                    ).toLocaleString()
+                                  : "—"}{" "}
                                 tokens
                               </span>
                               <HelpTip topic="Model usage" />
@@ -1415,7 +1462,9 @@ function App() {
                                 : null
                             }
                             rationale={current.patch_rationale ?? null}
-                            followupSteps={current.candidate_verification?.followup_steps}
+                            followupSteps={
+                              current.candidate_verification?.followup_steps
+                            }
                             checks={current.checks}
                           />
                         )}
@@ -1461,7 +1510,11 @@ function App() {
                             <button
                               className="icon-button"
                               title="Rerun validation"
-                              disabled={running || busy || Boolean(current.imported_from)}
+                              disabled={
+                                running ||
+                                busy ||
+                                Boolean(current.imported_from)
+                              }
                               onClick={() => act("validate")}
                             >
                               <RotateCcw size={14} />
@@ -1575,7 +1628,11 @@ function App() {
                           <div className="action-with-help">
                             <button
                               className="button secondary small"
-                              disabled={busy || running || Boolean(current.imported_from)}
+                              disabled={
+                                busy ||
+                                running ||
+                                Boolean(current.imported_from)
+                              }
                               onClick={() => act("reject")}
                             >
                               Reject patch
@@ -1586,7 +1643,7 @@ function App() {
                             <button
                               className="button primary small"
                               disabled={
-                              Boolean(current.imported_from) ||
+                                Boolean(current.imported_from) ||
                                 busy ||
                                 running ||
                                 !current.patch_artifact ||

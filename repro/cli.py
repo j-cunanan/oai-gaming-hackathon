@@ -8,6 +8,7 @@ from repro.config import Settings
 from repro.models import Case, CaseInput
 from repro.orchestration.manager import Manager
 from repro.reporting import render_report
+from repro.storage.fixtures import register_fixture
 from repro.storage.store import Store
 
 app = typer.Typer(no_args_is_help=True, help="REPRO: evidence-driven game bug investigation")
@@ -153,6 +154,17 @@ def import_case(manifest: Path):
     case = Case(benchmark_id=data["id"], report=CaseInput.model_validate(data["input"]))
     store.save(case, "received")
     typer.echo(case.id)
+
+
+@app.command("add-fixture")
+def add_fixture(source: Path):
+    """Register an original .msav map; print its identity for a case input manifest."""
+    _, store = context()
+    try:
+        fixture = register_fixture(store, source)
+    except (ValueError, OSError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    typer.echo(fixture.model_dump_json(indent=2))
 
 
 @app.command("import-evidence")

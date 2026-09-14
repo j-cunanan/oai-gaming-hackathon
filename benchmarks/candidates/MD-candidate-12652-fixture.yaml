@@ -1,0 +1,93 @@
+id: MD-candidate-12652-fixture
+input:
+  title: Crash in Data Patches & Assets UI
+  body: '### Platforms
+
+
+    Mac
+
+
+    ### Build
+
+
+    160.2
+
+
+    ### Issue
+
+
+    I randomly crashed while trying to reproduce what i thought was a patcheditor
+    mod issue when it was disabled.
+
+
+    ### Steps to reproduce
+
+
+    Open a map with datapatched content and new content
+
+    edit map in-game, Quit
+
+    open editor menu->data patches & assets
+
+    i then clicked on the different tabs
+
+    press escape
+
+
+    ### Mods used
+
+
+    ~~testing utils, schembrowser, floodcompat, claj when it happened; all multiplayer-compatible
+    mods uninvolved with datapatches and the crash''s source~~ none
+
+
+    ### Save file
+
+
+    [WotM.msav.zip](https://github.com/user-attachments/files/32153827/WotM.msav.zip)
+
+
+    ### (Crash) logs
+
+
+    modded; [crash-report-09_12_2026_22_19_04.txt](https://github.com/user-attachments/files/32153802/crash-report-09_12_2026_22_19_04.txt)
+
+    unmodded; [crash-report-09_12_2026_22_52_19.txt](https://github.com/user-attachments/files/32153925/crash-report-09_12_2026_22_52_19.txt)
+
+
+    Provided original player attachment: WotM.msav. The unmodified map is registered
+    as a fixture and available at /workspace/fixtures/WotM.msav for import through
+    the game UI. This supplies the original report attachment; it adds no fix or source
+    diagnosis.'
+  game: mindustry
+  target_commit: 89527f879b535b752376d9b935172be576320b59
+  platform: Mac (reported); Linux (planned evaluation)
+  fixtures:
+  - filename: WotM.msav
+    sha256: d51b10b4443a31f572969388483170f43044125f086a35af4202223ffbe3fc0c
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12652
+  reported_at: '2026-09-13T02:46:47Z'
+  fix_commit: 56348b3e311b44a5c5e193228948bafb809aa62c
+  fix_url: https://github.com/Anuken/Mindustry/commit/56348b3e311b44a5c5e193228948bafb809aa62c
+  changed_files:
+  - core/src/mindustry/world/modules/ItemModule.java
+  - core/src/mindustry/world/modules/LiquidModule.java
+  all_commit_files:
+  - core/src/mindustry/world/modules/ItemModule.java
+  - core/src/mindustry/world/modules/LiquidModule.java
+  positive_case: true
+  reproducibility: UNVERIFIED
+  priority: P3 - fixture required
+  suggested_tags: Crash / data patches / content lifecycle
+  proposed_trigger: Open the supplied patched-content map, edit in game, quit to editor,
+    open Data Patches & Assets, switch tabs, and press Escape.
+  selection_notes: Unmodified original reporter map provided with content identity.
+    The registration checks only the bounded save envelope, not compatibility or reproduction.
+    No human fix is included in the model-visible input.
+  evidence_notes: Issue and linked commit reviewed through GitHub API on 2026-09-14.
+    Report is the currently fetched body, excluding submission checklist; may include
+    later edits. No comments or fix information added to input. No baseline build
+    or runtime verification performed. Original attachment downloaded 2026-09-14;
+    ZIP and extracted map hashes retained in benchmarks/fixtures/MD-candidate-12652/manifest.json.
+    Runtime qualification pending.

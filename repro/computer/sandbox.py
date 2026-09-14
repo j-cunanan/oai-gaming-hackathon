@@ -9,6 +9,7 @@ from repro.config import Settings
 from repro.github.history import audit_history, isolate_snapshot
 from repro.models import Action, Case
 from repro.process import run
+from repro.storage.fixtures import read_fixture, stage_fixtures
 from repro.storage.store import Store
 
 
@@ -30,6 +31,8 @@ class DockerSandbox:
         (self.root / "gradle").mkdir(exist_ok=True)
 
     async def prepare(self):
+        for fixture in self.case.report.fixtures:
+            read_fixture(self.store, fixture)
         await run(["docker", "image", "inspect", self.settings.worker_image], timeout=20)
         if not self.repo.exists():
             await isolate_snapshot(self.adapter.upstream, self.case.report.target_commit, self.repo)
@@ -210,6 +213,23 @@ class DockerSandbox:
     async def reset(self):
         # Recreate the container, which reaps all game/Gradle child processes.
         await self.start(fresh_profile=True)
+        if self.case.report.fixtures:
+            staged = stage_fixtures(self.store, self.case.report.fixtures, self.root)
+            for fixture, item in zip(self.case.report.fixtures, staged, strict=True):
+                item["artifact"] = self.store.artifact(
+                    self.case.id,
+                    fixture.filename,
+                    read_fixture(self.store, fixture),
+                    "application/octet-stream",
+                )
+            self.store.save(
+                self.case,
+                "fixtures_staged",
+                {
+                    "summary": "Restored original provided maps before this fresh game launch.",
+                    "fixtures": staged,
+                },
+            )
         return await self.launch()
 
     async def observe(self):
