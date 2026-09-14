@@ -1,0 +1,531 @@
+{
+  "id": "md-12623-terra-replay-02",
+  "report": {
+    "title": "[Recorded AI trace + selected checkpoints] Color hex readback changes",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nv159.7\n\n### Issue\n\n'Colored Wall' & 'Colored Floor' tiles in editor do not accept every hex color code given to them in game. I tested this on both v159.7 and BE 27795 just to make sure it was not yet addressed.\n\nIn the save file below I did it for the following values: ff0000 to ff2000. Here is the table for the hex codes inputted vs accepted by the editor so you can copy paste: \nff0000 -> ff0000\nff0100 -> ff0100\nff0200 -> ff0200\nff0300 -> ff0200\nff0400 -> ff0300\nff0500 -> ff0500 \nff0600 -> ff0600\nff0700 -> ff0700\nff0800 -> ff0700\nff0900 -> ff0800\nff0a00 -> ff0a00\nff0b00 -> ff0b00\nff0c00 -> ff0b00\nff0d00 -> ff0c00\nff0e00 -> ff0e00\nff0f00 -> ff0f00\nff1000 -> ff1000\nff1100 -> ff1000\nff1200 -> ff1100\nff1300 -> ff1300\nff1400 -> ff1400\nff1500 -> ff1400\nff1600 -> ff1500\nff1700 -> ff1600\nff1800 -> ff1800\nff1900 -> ff1900\nff1a00 -> ff1900\nff1b00 -> ff1a00\nff1c00 -> ff1c00\nff1d00 -> ff1d00\nff1e00 -> ff1e00\nff1f00 -> ff1e00\nff2000 -> ff1f00\n\n### Steps to reproduce\n\n1. Open the map editor and go to edit any map\n2. Select the 'Colored Floor' or 'Colored Wall' tile in editor \n3. Paste in any hex color codes that differ by 1 in value and place each one down next to one another, eventually you'll see that the tiles no longer separate as the hex color code did not change its value properly\n\n<img width=\"1589\" height=\"354\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4108df1e-991f-4c17-8249-2a855d052525\" />\n\n### Mods used\n\nnone\n\n### Save file\n\n[Debris Field With Color Tiles For You To Look At.zip](https://github.com/user-attachments/files/32078489/Debris.Field.With.Color.Tiles.For.You.To.Look.At.zip)\n\n### (Crash) logs\n\n_No response_\n\n### Explicit REPRO assistance for this separate qualification job\n\nThe prior report-only Terra investigator executed a clean final 29-action sequence after a reset, but its final model response exceeded its output allowance before returning a complete proposal. This variant supplies those 29 unchanged actions (original event action indices 55–83), cached report triage, and six existing entered/confirmed/readback checkpoint labels selected by an operator. No historical developer fix or source diagnosis is supplied. The fresh verification scope is ff0300 readback for a placed-and-picked Colored Wall and for the Colored Floor picker after confirmation/reopening; it does not cover the entire reported value matrix or adjacent floor placement. Neither the old investigator hypothesis nor old screenshots count as fresh confirmations. Five new clean-profile confirmations are required before source diagnosis or patching. The new worker paces wheel inputs, but this selected final trace contains no scrolling.\n",
+    "game": "mindustry",
+    "target_commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": []
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T20:58:18.722707+00:00",
+  "updated_at": "2026-09-14T21:05:05.469700+00:00",
+  "summary": "Supplied color trigger confirmed in 0/1 completed fresh verdicts; 5/5 was required. Source analysis and patching did not start.",
+  "spec": {
+    "summary": "Unverified report that map-editor Colored Floor and Colored Wall tiles may not retain or report every entered six-character hexadecimal color string distinctly.",
+    "bug_class": "Unverified editor color-code input/readback discrepancy",
+    "observed_behavior": "The reporter states that, after entering listed color strings and placing tiles adjacent to one another, some inputs were reported as being accepted by the editor as a different value. Reported nonmatching input -> accepted mappings are: ff0300 -> ff0200; ff0400 -> ff0300; ff0800 -> ff0700; ff0900 -> ff0800; ff0c00 -> ff0b00; ff0d00 -> ff0c00; ff1100 -> ff1000; ff1200 -> ff1100; ff1500 -> ff1400; ff1600 -> ff1500; ff1700 -> ff1600; ff1a00 -> ff1900; ff1b00 -> ff1a00; ff1f00 -> ff1e00; ff2000 -> ff1f00. The other entries in the supplied ff0000, ff0100, …, ff2000 table were reported as unchanged. The report references a screenshot and a save archive, but their contents are not included in the supplied payload for independent verification.",
+    "expected_behavior": "Per the reporter's expectation, each supported six-character hexadecimal color value entered for a Colored Floor or Colored Wall tile should be retained/read back as that same value, so separately entered values remain distinct.",
+    "known_preconditions": [
+      "Reporter identifies Windows as the test platform.",
+      "Reporter states that no mods were used.",
+      "Reported workflow uses the map editor, an editable map, and either a Colored Floor or Colored Wall tile.",
+      "Reporter states that colors were entered or pasted and tiles were placed next to one another.",
+      "Reporter states that testing occurred on v159.7 and on an identifier written as \"BE 27795\".",
+      "The reported input sequence contains ff0000, ff0100, ff0200, and subsequent shown values through ff2000."
+    ],
+    "uncertain_conditions": [
+      "The report has not been independently reproduced or verified; it does not by itself establish that a defect exists.",
+      "It is unspecified how the reported \"accepted\" value was determined: editor-field readback, visible tile appearance, serialized save data, or another method.",
+      "No result matrix distinguishes Colored Floor from Colored Wall, so it is unclear whether every listed mapping was observed for both tile types.",
+      "No result matrix distinguishes v159.7 from \"BE 27795\", so it is unclear whether the same mappings occurred in each stated build.",
+      "The exact entry workflow is not provided, including the specific control used, whether the listed table was produced by paste or typing, whether a # prefix was used, required confirmation/focus changes, and when the value was inspected.",
+      "The map type, map settings, tile coordinates, and correspondence between placed tiles and table entries are not specified.",
+      "Build identity is unresolved: the report body names v159.7 and \"BE 27795\"; metadata names commit ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c; build_version is null. Their relationship is not supplied.",
+      "Linux is described only as planned evaluation in metadata; no Linux observation is reported.",
+      "Documentation or UI rules establishing that the listed syntax and exact value fidelity are supported are not provided."
+    ],
+    "reproduction_hints": [
+      "On a Windows installation with no mods, open an editable map in the map editor and test one tile type at a time: Colored Floor, then Colored Wall.",
+      "Enter the reported sequence ff0000, ff0100, …, ff2000 one value at a time, placing each result at a recorded adjacent coordinate.",
+      "For each input, record the exact editor-field value before placement and the value/readback method after placement; preserve the resulting save.",
+      "Repeat separately on each precisely identified build rather than combining results across builds.",
+      "Compare UI readback, rendered appearance, and serialized map/save values only after defining which of those is the claimed \"accepted\" value."
+    ],
+    "required_artifacts": [
+      "The referenced save archive as an actual file, including the original map/save contents and instructions identifying the tiles corresponding to each input. The report supplies only an external link in this payload.",
+      "The referenced screenshot as an actual image attachment or accessible original, rather than only its URL.",
+      "A minimal reproduction save with coordinates or labels tying each placed tile to its entered value.",
+      "Exact build evidence for each tested environment, such as version-screen capture, startup log, executable revision, branch/channel, and the relationship of \"BE 27795\" to the cited commit.",
+      "A capture of the complete entry and readback workflow, preferably showing the field, input syntax, confirmation action, placement, and resulting displayed or serialized value.",
+      "Editor/runtime logs from a reproduction session, if available. No crash log or other runtime log was supplied.",
+      "Relevant documentation or UI validation details defining accepted hexadecimal syntax and the intended persistence/readback behavior."
+    ],
+    "severity": "unknown",
+    "confidence": 0.45
+  },
+  "hypotheses": [],
+  "reproduction": {
+    "version": 2,
+    "game": "mindustry",
+    "commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+    "resolution": [
+      1280,
+      720
+    ],
+    "steps": [
+      {
+        "action": "click",
+        "x": 255,
+        "y": 336,
+        "keys": [],
+        "text": "",
+        "seconds": 1.5,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open the map editor from the clean-profile main menu.",
+        "checkpoint": "final-open-editor"
+      },
+      {
+        "action": "click",
+        "x": 638,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open the new-map dialog for an isolated color-input test.",
+        "checkpoint": "final-new-map-dialog"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 354,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the test-map name field.",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "Color Input Repro",
+        "seconds": 0.3,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Name the isolated test map.",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 704,
+        "y": 428,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Create the isolated editable map.",
+        "checkpoint": "final-map-created"
+      },
+      {
+        "action": "click",
+        "x": 1105,
+        "y": 43,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the editor tile search field.",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "Colored Wall",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Filter tile selection to Colored Wall.",
+        "checkpoint": "final-filter-colored-wall"
+      },
+      {
+        "action": "click",
+        "x": 1166,
+        "y": 133,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the filtered Colored Wall tile.",
+        "checkpoint": "final-select-colored-wall"
+      },
+      {
+        "action": "click",
+        "x": 1105,
+        "y": 140,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open the Colored Wall color picker.",
+        "checkpoint": "final-open-wall-picker"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 537,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the hexadecimal color field.",
+        "checkpoint": ""
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "ctrl",
+          "a"
+        ],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the existing color value.",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "ff0300",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Enter the reported six-character hexadecimal color ff0300.",
+        "checkpoint": "final-enter-wall-ff0300"
+      },
+      {
+        "action": "click",
+        "x": 747,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Confirm the entered ff0300 color.",
+        "checkpoint": "final-confirm-wall-ff0300"
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "b"
+        ],
+        "text": "",
+        "seconds": 0.4,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the editor pencil tool for placement.",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 600,
+        "y": 350,
+        "keys": [],
+        "text": "",
+        "seconds": 1.5,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Place a Colored Wall using the confirmed ff0300 input.",
+        "checkpoint": "final-place-wall-input"
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "i"
+        ],
+        "text": "",
+        "seconds": 0.4,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Switch to the editor pick tool.",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 600,
+        "y": 350,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Pick the placed Colored Wall so its stored configuration becomes the editor selection.",
+        "checkpoint": "final-pick-placed-wall"
+      },
+      {
+        "action": "click",
+        "x": 1105,
+        "y": 140,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open the placed wall's picked color value for readback.",
+        "checkpoint": "final-readback-wall-ff0200"
+      },
+      {
+        "action": "click",
+        "x": 530,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 0.7,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Close the wall readback dialog.",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 1110,
+        "y": 43,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the tile search field to switch tile type.",
+        "checkpoint": ""
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "ctrl",
+          "a"
+        ],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the existing tile search text.",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "Colored Floor",
+        "seconds": 0.8,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Filter the editor to Colored Floor.",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 1148,
+        "y": 198,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the filtered Colored Floor tile.",
+        "checkpoint": "final-select-colored-floor"
+      },
+      {
+        "action": "click",
+        "x": 1105,
+        "y": 140,
+        "keys": [],
+        "text": "",
+        "seconds": 0.8,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open the selected Colored Floor color picker.",
+        "checkpoint": "final-open-floor-picker"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 537,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the floor hexadecimal color field.",
+        "checkpoint": ""
+      },
+      {
+        "action": "keypress",
+        "x": null,
+        "y": null,
+        "keys": [
+          "ctrl",
+          "a"
+        ],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select the existing floor color value.",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "ff0300",
+        "seconds": 0.8,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Enter the same reported six-character hexadecimal color for Colored Floor.",
+        "checkpoint": "final-enter-floor-ff0300"
+      },
+      {
+        "action": "click",
+        "x": 747,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 0.8,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Confirm the Colored Floor color input.",
+        "checkpoint": "final-confirm-floor-ff0300"
+      },
+      {
+        "action": "click",
+        "x": 1105,
+        "y": 140,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Reopen the floor picker to read back its committed value.",
+        "checkpoint": "final-readback-floor-ff0200"
+      }
+    ],
+    "oracle": {
+      "kind": "sequence",
+      "description": "Required sequence: enter six-digit ff0300 in the Colored Wall picker, confirm it, place and pick the wall, then reopen its picker; also enter and confirm ff0300 for Colored Floor and reopen that picker. The reported bug is readback ff0200ff instead of the committed ff0300ff for both tile types. Establish actual input, commit and relevant picker identity from chronological evidence. Correct behavior is retaining ff0300ff in both readbacks. This scope does not test all reported values or adjacent floor placement.",
+      "log_pattern": null,
+      "checkpoints": [
+        "final-enter-wall-ff0300",
+        "final-confirm-wall-ff0300",
+        "final-readback-wall-ff0200",
+        "final-enter-floor-ff0300",
+        "final-confirm-floor-ff0300",
+        "final-readback-floor-ff0200"
+      ]
+    },
+    "successful_runs": 0,
+    "total_runs": 1,
+    "original_actions": 29,
+    "deterministic": false,
+    "evidence": [
+      "md-12623-terra-replay-02-cb69c08b432334bd7974-supplied-color-confirmation.png",
+      "md-12623-terra-replay-02-8e3c4dc14213c2c37a26-supplied-color-confirmation.png",
+      "md-12623-terra-replay-02-2948acd628121c723275-supplied-color-confirmation.png",
+      "md-12623-terra-replay-02-49e68d6f30406d392bfe-supplied-color-confirmation.png",
+      "md-12623-terra-replay-02-5670d24fcf9550465762-supplied-color-confirmation.png",
+      "md-12623-terra-replay-02-b0469bd001d943f79de5-supplied-color-confirmation.png"
+    ]
+  },
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c": {
+      "commit_sha": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+      "timestamp": "2026-09-14T20:58:23.258661+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12623-terra-replay-02-20e5dfcafe97eca6664e-baseline-tests.log",
+      "log_sha256": "20e5dfcafe97eca6664ec52346196f580a1108fbff2d31270ad0f016c4f236c4",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:63be22a3b69283ede936a1bb49c99df7109938a5c13c5c41123b6d0770024162",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 8848,
+    "output_tokens": 15447
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12623-terra-replay-02-b0469bd001d943f79de5-supplied-color-confirmation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 406.7570893749944,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12623-replay-guided",
+  "imported_from": null
+}

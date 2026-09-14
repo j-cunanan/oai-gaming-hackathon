@@ -1,0 +1,14 @@
+{
+  "case_id": "md-12623-terra-replay-02",
+  "case_updated_at": "2026-09-14T21:41:47.897700+00:00",
+  "pdf_sha256": "d30404963b1cb7860c8258ed96726068ab872750fe57bd10adc63d89a9240d04",
+  "renderer_path": "repro/reporting.py",
+  "renderer_sha256": "0f43fa67cbf6a6aa73626bcd61cdccecdd7f7e0802f933bb3241eba1af6a354b",
+  "saved_case_sources": {
+    "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final/result.json": "ef14c2a288cf359307170ac8eca0fa829d2ec796f97ab8998b43584433b189a6",
+    "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final/events.jsonl": "4b4475ecfecf3e33e2eb93ccdf2888d9c963442de5d12f3cf7bcc30d1a666f0c",
+    "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final/artifacts.json": "99a041c30eed5e71d6514a8b7736254168632d6e7fc2aeb6c4534458ad502f1d"
+  },
+  "method": "Generated from the finished local case without model calls. Outcome screenshots are selected from recorded baseline evidence and the current failed candidate validation attempt.",
+  "visual_review": "All eight rendered pages were visually reviewed. Text, validation failure table, stage timestamps and both wrong-readback outcome screenshots are readable, with no clipping."
+}

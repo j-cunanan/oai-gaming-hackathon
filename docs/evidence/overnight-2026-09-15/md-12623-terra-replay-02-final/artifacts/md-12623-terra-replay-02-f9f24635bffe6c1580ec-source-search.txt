@@ -1,0 +1,1 @@
+./core/src/mindustry/ui/dialogs/ColorPicker.java:12:public class ColorPicker extends BaseDialog{

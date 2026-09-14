@@ -1,0 +1,141 @@
+{
+  "scope": "Freeze existing color-candidate test outputs and build identities; do not run new tests.",
+  "captured_at": "2026-09-14T21:42:17.333678+00:00",
+  "source_case_id": "md-12623-terra-replay-02",
+  "target_commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+  "candidate_patch_sha256": "63636681ad83919cf0d9a740906327d5879018ba529d34a74e3a0903cc55debe",
+  "candidate_tests_log_artifact": "md-12623-terra-replay-02-a39564e45b4844e001cc-candidate-tests.log",
+  "candidate_tests_log_sha256": "a39564e45b4844e001cc11cbbf7f35b87dc2f9be1dbbdd36247bb89b6a6c5b58",
+  "driver_sha256": "fb7e04aaaa0285decd2450624d30f95b875d364009c7a7e163750d0d51f0c691",
+  "counts": {
+    "tests": 276,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "tests": 135,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "ApplicationTests",
+      "file": "TEST-ApplicationTests.xml",
+      "timestamp": "2026-09-14T21:28:30.256Z",
+      "mtime_utc": "2026-09-14T21:29:21.800097+00:00"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "DataAssetTests",
+      "file": "TEST-DataAssetTests.xml",
+      "timestamp": "2026-09-14T21:29:03.152Z",
+      "mtime_utc": "2026-09-14T21:29:21.812807+00:00"
+    },
+    {
+      "tests": 63,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "LogicTests",
+      "file": "TEST-LogicTests.xml",
+      "timestamp": "2026-09-14T21:29:07.005Z",
+      "mtime_utc": "2026-09-14T21:29:21.807693+00:00"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "ModTestAllure",
+      "file": "TEST-ModTestAllure.xml",
+      "timestamp": "2026-09-14T21:28:23.768Z",
+      "mtime_utc": "2026-09-14T21:29:21.807637+00:00"
+    },
+    {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "PatcherTests",
+      "file": "TEST-PatcherTests.xml",
+      "timestamp": "2026-09-14T21:29:09.795Z",
+      "mtime_utc": "2026-09-14T21:29:21.812981+00:00"
+    },
+    {
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "power.ConsumeGeneratorTests",
+      "file": "TEST-power.ConsumeGeneratorTests.xml",
+      "timestamp": "2026-09-14T21:29:13.646Z",
+      "mtime_utc": "2026-09-14T21:29:21.811946+00:00"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "power.DirectConsumerTests",
+      "file": "TEST-power.DirectConsumerTests.xml",
+      "timestamp": "2026-09-14T21:29:15.893Z",
+      "mtime_utc": "2026-09-14T21:29:21.813426+00:00"
+    },
+    {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "power.PowerTests$PowerGraphTests",
+      "file": "TEST-power.PowerTests$PowerGraphTests.xml",
+      "timestamp": "2026-09-14T21:29:21.351Z",
+      "mtime_utc": "2026-09-14T21:29:21.813489+00:00"
+    }
+  ],
+  "builds": {
+    "baseline": {
+      "jar_sha256": "f62b270a5dfdaa0206578d9bdf1abe4148492ff927677ce520fefe8999829de2",
+      "jar_bytes": 86905352,
+      "color_picker_classes": {
+        "mindustry/ui/dialogs/ColorPicker$1.class": "87a8dac38a5cce4a1346127e0c158c0a3132bc394c8c3778c85fc884a7d7d77b",
+        "mindustry/ui/dialogs/ColorPicker$2.class": "80c1392cab72364af354c57b9f793f55cd19b9bfddda0b46a9262ae1ab261bac",
+        "mindustry/ui/dialogs/ColorPicker$3.class": "41d55954ec6cad70a7f9510a40b831802886c2848a0e139c27d4902cb63f7859",
+        "mindustry/ui/dialogs/ColorPicker$4.class": "3bcb8e4b6fa152d00f2b830e73d7b6aa4f0744f873b61ecbfe68826d6716f392",
+        "mindustry/ui/dialogs/ColorPicker$5.class": "a68528bf79dcf575ae3497ed8f595b63fd13c4c53f327fd51e87cfa57b18cb1a",
+        "mindustry/ui/dialogs/ColorPicker$6.class": "5aa64511f47a207d5b9c59e100f21a2fc49fcc700578fe2a7259b6dbe9d2d228",
+        "mindustry/ui/dialogs/ColorPicker$7.class": "07259939824b52b3208c413e88bd149a7cb66e2ae1d86f629655fba4eaecd973",
+        "mindustry/ui/dialogs/ColorPicker$8.class": "ed9294810d0fdf8de67807aa1c4785f33a701f77e18a2cf714ff39a949b61c94",
+        "mindustry/ui/dialogs/ColorPicker.class": "c845fecdda6005603f6834bcad8a4da7a7213b70a1666a91c3a7111680fa36f1"
+      }
+    },
+    "candidate": {
+      "jar_sha256": "f26e64d285e8bba7a4283224993133c8e5f0bbd006c07d188aa963c7c9134b48",
+      "jar_bytes": 86905143,
+      "color_picker_classes": {
+        "mindustry/ui/dialogs/ColorPicker$1.class": "87a8dac38a5cce4a1346127e0c158c0a3132bc394c8c3778c85fc884a7d7d77b",
+        "mindustry/ui/dialogs/ColorPicker$2.class": "80c1392cab72364af354c57b9f793f55cd19b9bfddda0b46a9262ae1ab261bac",
+        "mindustry/ui/dialogs/ColorPicker$3.class": "41d55954ec6cad70a7f9510a40b831802886c2848a0e139c27d4902cb63f7859",
+        "mindustry/ui/dialogs/ColorPicker$4.class": "3bcb8e4b6fa152d00f2b830e73d7b6aa4f0744f873b61ecbfe68826d6716f392",
+        "mindustry/ui/dialogs/ColorPicker$5.class": "a68528bf79dcf575ae3497ed8f595b63fd13c4c53f327fd51e87cfa57b18cb1a",
+        "mindustry/ui/dialogs/ColorPicker$6.class": "5aa64511f47a207d5b9c59e100f21a2fc49fcc700578fe2a7259b6dbe9d2d228",
+        "mindustry/ui/dialogs/ColorPicker$7.class": "07259939824b52b3208c413e88bd149a7cb66e2ae1d86f629655fba4eaecd973",
+        "mindustry/ui/dialogs/ColorPicker$8.class": "ed9294810d0fdf8de67807aa1c4785f33a701f77e18a2cf714ff39a949b61c94",
+        "mindustry/ui/dialogs/ColorPicker.class": "aee0159a3a1672cc25fb7e6c845ae9a4c3cc99f39c92a60dbb48b471080a7f60"
+      }
+    }
+  },
+  "files": {
+    "TEST-ApplicationTests.xml": "8f9815ef9f03adce329ed21bdbabfa4775531dcb9cab3c192aea51bfaf611378",
+    "TEST-DataAssetTests.xml": "1f7c65d78dd894de30b1a47dcf579c7612e75a73daf5032aef809c54d322edd0",
+    "TEST-LogicTests.xml": "111289ddd93cd58524419b06179043b2e887a5b075d178b02fe1940476ed5b42",
+    "TEST-ModTestAllure.xml": "96a8241bfb8ec0562fdbf08849bc8e62b02b87677476d3890eb1e939930ec3ef",
+    "TEST-PatcherTests.xml": "238792e743df386c426c0ec1612f9026ad6eb6b0963d378f58501f8b92a5b299",
+    "TEST-power.ConsumeGeneratorTests.xml": "60aaf4129d40ae60de166458ef008ed4eadc8b4d4a2bd89731011bc46c506a94",
+    "TEST-power.DirectConsumerTests.xml": "345b05f6018cdc24be6177b2445ae9bda162a02c5a576c12dc11bfbde12c15b1",
+    "TEST-power.PowerTests$PowerGraphTests.xml": "6f22517bbf3447c642b94a5563aa46a91127970d45ab99fa4f0914d8f55affc8",
+    "audit_driver.py": "fb7e04aaaa0285decd2450624d30f95b875d364009c7a7e163750d0d51f0c691"
+  }
+}

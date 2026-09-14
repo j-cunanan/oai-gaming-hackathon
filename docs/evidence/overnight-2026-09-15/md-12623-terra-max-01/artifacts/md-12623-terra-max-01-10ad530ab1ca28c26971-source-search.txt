@@ -1,0 +1,1 @@
+./core/src/mindustry/ui/dialogs/MapListDialog.java:131:        searchField.setMessageText("@editor.search");

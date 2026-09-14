@@ -1,0 +1,31 @@
+175:     @Override
+176:     public void placeEnded(Tile tile, @Nullable Unit builder, int rotation, @Nullable Object config){
+177:         //config is assumed to be an integer RGBA color
+178:         if(config instanceof Integer i){
+179:             tile.extraData = i;
+180:         }
+181:     }
+182: 
+183:     @Override
+184:     public void editorPicked(Tile tile){
+185:         lastConfig = tile.extraData;
+186:     }
+187: 
+188:     @Override
+189:     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+190:         if(plan.config instanceof Integer i){
+191:             Draw.tint(Tmp.c1.set(i | 0xff));
+192:         }
+193:         drawDefaultPlanRegion(plan, list);
+194:     }
+195: 
+196:     @Override
+197:     public boolean checkAutotileSame(Tile tile, @Nullable Tile other){
+198:         return other != null && (this == tile.floor() ? other.floor() : other.overlay()).blendGroup == blendGroup && ((tile.extraData & 0xff) == flagIgnoreDifferentColor || tile.extraData == other.extraData);
+199:     }
+200: 
+201:     @Override
+202:     public int minimapColor(Tile tile){
+203:         return tile.extraData | 0xff;
+204:     }
+205: }

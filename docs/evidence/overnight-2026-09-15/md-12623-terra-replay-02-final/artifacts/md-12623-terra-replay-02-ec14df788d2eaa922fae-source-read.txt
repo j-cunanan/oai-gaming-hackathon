@@ -1,0 +1,180 @@
+100: 
+101:         for(int x = 0; x < width; x++){
+102:             for(int y = 0; y < height; y++){
+103:                 tiles.set(x, y, new EditorTile(x, y, Blocks.stone.id, (short)0, (short)0));
+104:             }
+105:         }
+106:     }
+107: 
+108:     public Map createMap(Fi file){
+109:         return new Map(file, width(), height(), new StringMap(tags), true);
+110:     }
+111: 
+112:     private void reset(){
+113:         clearOp();
+114:         brushSize = 1;
+115:         drawBlock = Blocks.stone;
+116:         tags = new StringMap();
+117:     }
+118: 
+119:     public Tiles tiles(){
+120:         return world.tiles;
+121:     }
+122: 
+123:     public Tile tile(int x, int y){
+124:         return world.rawTile(x, y);
+125:     }
+126: 
+127:     public int width(){
+128:         return world.width();
+129:     }
+130: 
+131:     public int height(){
+132:         return world.height();
+133:     }
+134: 
+135:     public void drawBlocksReplace(int x, int y){
+136:         drawBlocks(x, y, tile -> tile.block() != Blocks.air || drawBlock.isFloor());
+137:     }
+138: 
+139:     public void drawBlocks(int x, int y){
+140:         drawBlocks(x, y, false, false, tile -> true);
+141:     }
+142: 
+143:     public void drawBlocks(int x, int y, Boolf<Tile> tester){
+144:         drawBlocks(x, y, false, false, tester);
+145:     }
+146: 
+147:     public void drawBlocks(int x, int y, boolean square, boolean forceOverlay, Boolf<Tile> tester){
+148:         if(drawBlock.isMultiblock()){
+149:             x = Mathf.clamp(x, (drawBlock.size - 1) / 2, width() - drawBlock.size / 2 - 1);
+150:             y = Mathf.clamp(y, (drawBlock.size - 1) / 2, height() - drawBlock.size / 2 - 1);
+151:             if(!hasOverlap(x, y)){
+152:                 tile(x, y).setBlock(drawBlock, drawTeam, rotation);
+153:                 addTileOp(TileOp.get((short)x, (short)y, DrawOperation.opTeam, (byte)drawTeam.id));
+154:             }
+155:         }else{
+156:             boolean isFloor = drawBlock.isFloor() && drawBlock != Blocks.air;
+157: 
+158:             Cons<Tile> drawer = tile -> {
+159:                 if(!tester.get(tile)) return;
+160:                 boolean changed = false;
+161: 
+162:                 boolean didDataOp = false;
+163:                 int oldData1 = 0, oldData2 = 0;
+164: 
+165:                 if(drawBlock.saveData || tile.shouldSaveData()){
+166:                     addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opData, TileOpData.get(tile.data, tile.floorData, tile.overlayData)));
+167:                     addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opDataExtra, tile.extraData));
+168:                     oldData1 = TileOpData.get(tile.data, tile.floorData, tile.overlayData);
+169:                     oldData2 = tile.extraData;
+170:                     didDataOp = true;
+171:                 }
+172: 
+173:                 int preDataOps = ops();
+174: 
+175:                 if(isFloor){
+176:                     if(forceOverlay){
+177:                         tile.setOverlay(drawBlock.asFloor());
+178:                         changed = true;
+179:                     }else{
+180:                         if(!(drawBlock.asFloor().wallOre && !tile.block().solid)){
+181:                             tile.setFloor(drawBlock.asFloor());
+182:                             if(!(tile.overlay() instanceof OverlayFloor) && !drawBlock.asFloor().supportsOverlay){
+183:                                 tile.setOverlay(Blocks.air);
+184:                             }
+185:                             changed = true;
+186:                         }
+187:                     }
+188:                 }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
+189:                     if(drawBlock.rotate && tile.build != null && tile.build.rotation != rotation){
+190:                         addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opRotation, (byte)rotation));
+191:                     }
+192: 
+193:                     tile.setBlock(drawBlock, drawTeam, rotation);
+194:                     changed = !drawBlock.synthetic();
+195: 
+196:                     if(drawBlock.synthetic()){
+197:                         addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opTeam, (byte)drawTeam.id));
+198:                     }
+199:                 }
+200: 
+201:                 if(changed && drawBlock.saveConfig){
+202:                     drawBlock.placeEnded(tile, null, editor.rotation, drawBlock.lastConfig);
+203:                     renderer.updateStatic(tile.x, tile.y);
+204:                 }
+205: 
+206:                 //data and block did not change, undo the data ops
+207:                 if(didDataOp && ops() == preDataOps && oldData1 == TileOpData.get(tile.data, tile.floorData, tile.overlayData) && oldData2 == tile.extraData){
+208:                     removeLastOps(2);
+209:                 }
+210:             };
+211: 
+212:             if(square){
+213:                 drawSquare(x, y, drawer);
+214:             }else{
+215:                 drawCircle(x, y, drawer);
+216:             }
+217:         }
+218:     }
+219: 
+220:     boolean hasOverlap(int x, int y){
+221:         Tile tile = world.tile(x, y);
+222:         //allow direct replacement of blocks of the same size
+223:         if(tile != null && tile.isCenter() && tile.block() != drawBlock && tile.block().size == drawBlock.size && tile.x == x && tile.y == y){
+224:             return false;
+225:         }
+226: 
+227:         //else, check for overlap
+228:         int offsetx = -(drawBlock.size - 1) / 2;
+229:         int offsety = -(drawBlock.size - 1) / 2;
+230:         for(int dx = 0; dx < drawBlock.size; dx++){
+231:             for(int dy = 0; dy < drawBlock.size; dy++){
+232:                 int worldx = dx + offsetx + x;
+233:                 int worldy = dy + offsety + y;
+234:                 Tile other = world.tile(worldx, worldy);
+235: 
+236:                 if(other != null && other.block().isMultiblock()){
+237:                     return true;
+238:                 }
+239:             }
+240:         }
+241: 
+242:         return false;
+243:     }
+244: 
+245:     public void addCliffs(){
+246:         for(Tile tile : world.tiles){
+247:             if(!tile.block().isStatic() || tile.block() == Blocks.cliff) continue;
+248: 
+249:             int rotation = 0;
+250:             for(int i = 0; i < 8; i++){
+251:                 Tile other = world.tiles.get(tile.x + Geometry.d8[i].x, tile.y + Geometry.d8[i].y);
+252:                 if(other != null && !other.block().isStatic()){
+253:                     rotation |= (1 << i);
+254:                 }
+255:             }
+256: 
+257:             if(rotation != 0){
+258:                 tile.setBlock(Blocks.cliff);
+259:             }
+260: 
+261:             tile.data = (byte)rotation;
+262:         }
+263: 
+264:         for(Tile tile : world.tiles){
+265:             if(tile.block() != Blocks.cliff && tile.block().isStatic()){
+266:                 tile.setBlock(Blocks.air);
+267:             }
+268:         }
+269:         editor.flushOp();
+270:     }
+271: 
+272:     public void drawCircle(int x, int y, Cons<Tile> drawer){
+273:         int clamped = (int)brushSize;
+274:         for(int rx = -clamped; rx <= clamped; rx++){
+275:             for(int ry = -clamped; ry <= clamped; ry++){
+276:                 if(Mathf.within(rx, ry, brushSize - 0.5f + 0.0001f)){
+277:                     int wx = x + rx, wy = y + ry;
+278: 
+279:                     if(wx < 0 || wy < 0 || wx >= width() || wy >= height()){

@@ -1,0 +1,22 @@
+./core/src/mindustry/editor/data/MapAssetsDialog.java:44:    TextField searchField;
+./core/src/mindustry/editor/data/MapAssetsDialog.java:55:            searchField.setText("");
+./core/src/mindustry/editor/data/MapAssetsDialog.java:99:            searchField = search.field("", t -> {
+./core/src/mindustry/editor/data/MapAssetsDialog.java:103:            searchField.setMessageText("@search");
+./core/src/mindustry/ui/dialogs/MapListDialog.java:37:    private TextField searchField;
+./core/src/mindustry/ui/dialogs/MapListDialog.java:127:        searchField = search.field("", t -> {
+./core/src/mindustry/ui/dialogs/MapListDialog.java:131:        searchField.setMessageText("@editor.search");
+./core/src/mindustry/ui/dialogs/MapListDialog.java:367:        if(Core.app.isDesktop() && searchField != null){
+./core/src/mindustry/ui/dialogs/MapListDialog.java:368:            Core.scene.setKeyboardFocus(searchField);
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:35:    private TextField searchField;
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:46:        searchField = new TextField();
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:47:        searchField.changed(() -> {
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:48:            search = searchField.getText();
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:52:        searchField.setMessageText("@schematic.search");
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:53:        searchField.clicked(KeyCode.mouseRight, () -> {
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:56:                searchField.clearText();
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:66:            searchField.setText(search = "");
+./core/src/mindustry/ui/dialogs/LoadDialog.java:29:    TextField searchField;
+./core/src/mindustry/ui/dialogs/LoadDialog.java:61:        searchField = search.field("", t -> {
+./core/src/mindustry/ui/dialogs/LoadDialog.java:65:        searchField.setMessageText("@save.search");
+./core/src/mindustry/ui/dialogs/LoadDialog.java:277:        if(Core.app.isDesktop() && searchField != null){
+./core/src/mindustry/ui/dialogs/LoadDialog.java:278:            Core.scene.setKeyboardFocus(searchField);

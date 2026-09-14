@@ -16,7 +16,7 @@ Start with #12579 (editor save crash), #12620 (deleted patch returns), and #1262
 | [12565](https://github.com/Anuken/Mindustry/issues/12565) | P2 | Gameplay / payloads / unit state | Drive or command a unit into a payload conveyor in a fresh sandbox map. | Needs unit and conveyor setup. A unit becoming a payload is normal; verify unexpected loss by observing transport/output, not disappearance alone. Reported on Windows. |
 | [12598](https://github.com/Anuken/Mindustry/issues/12598) | P2 | UI / logic editor / layout | Open a processor, add a jump with a destination, and switch its condition to always. | Reported on Android; Linux 1280x720 layout may not exhibit the same offset. Establish visible geometry before admitting the case. |
 | [12640](https://github.com/Anuken/Mindustry/issues/12640) | P2 - runner extension | Persistence / controls / settings | Open Controls, rebind an action, choose Unbind, restart the game, and inspect that action. | Reported on Linux. Current reset deletes the profile; replay needs a restart action that preserves the profile within each run, while runs still start clean. |
-| [12652](https://github.com/Anuken/Mindustry/issues/12652) | P3 - fixture required | Crash / data patches / content lifecycle | Open the supplied patched-content map, edit in game, quit to editor, open Data Patches & Assets, switch tabs, and press Escape. | Reported on Mac with an unmodded crash log. Requires inspecting and installing supplied map assets; automatic fixture installation is not implemented. Timing and Linux reproduction unverified. |
+| [12652](https://github.com/Anuken/Mindustry/issues/12652) | P3 - original-map flow tested | Crash / data patches / content lifecycle | Open the supplied patched-content map, edit in game, quit to editor, open Data Patches & Assets, switch tabs, and press Escape. | Reported on Mac with an unmodded crash log. The unchanged original map is now installed by checksum and was imported through the game UI. One fresh MAX investigation completed the tested lifecycle flow without a crash; this is not five negative confirmations or proof that the Mac-reported bug is absent. See the overnight evidence. |
 | [12603](https://github.com/Anuken/Mindustry/issues/12603) | P3 - complex setup | Gameplay / payload lifecycle / destruction | Fuel a generator with Blast Compound, pick it up damaged, put it on a payload conveyor, let it explode, then try to retrieve and place it. | Requires reactor explosions enabled, controlled damage, resources and payload handling. Strong multi-file reasoning case but a long, timing-sensitive demo. Reported on Windows. |
 
 ## Qualification before scoring
@@ -52,3 +52,7 @@ uv run repro investigate CASE_ID
 ```
 
 Do not promote a candidate or claim success until its evidence exists. Importing a candidate does not establish reproduction. Existing upstream offline-network test failures must remain visible.
+
+## Later REPRO investigations
+
+The [September 15 overnight report](overnight-2026-09-15.md) records fresh AI attempts separately from the human-fixed qualification controls above. It includes the fully validated evidence-guided data-patch fix, complete Target Dummy save/reopen checks with an upstream test blocker, and the incomplete gameplay attempts. Candidate priority is a presentation judgment; it is not an aggregate model accuracy score.

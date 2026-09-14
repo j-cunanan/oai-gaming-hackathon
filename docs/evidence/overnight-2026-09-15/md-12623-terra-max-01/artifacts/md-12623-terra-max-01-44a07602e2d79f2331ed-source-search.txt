@@ -1,0 +1,4 @@
+./core/src/mindustry/editor/MapView.java:21:    EditorTool tool = EditorTool.zoom;
+./core/src/mindustry/editor/MapView.java:82:                    tool = EditorTool.zoom;
+./core/src/mindustry/editor/MapView.java:334:        && ui.editor.isShown() && tool == EditorTool.zoom &&
+./core/src/mindustry/editor/MapEditorDialog.java:634:                addTool.get(EditorTool.zoom);

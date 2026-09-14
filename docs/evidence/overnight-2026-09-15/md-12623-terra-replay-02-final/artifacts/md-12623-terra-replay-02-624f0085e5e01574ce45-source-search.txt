@@ -1,0 +1,34 @@
+./core/src/mindustry/editor/MapEditor.java:167:                    addTileOp(TileOp.get(tile.x, tile.y, DrawOperation.opDataExtra, tile.extraData));
+./core/src/mindustry/editor/MapEditor.java:169:                    oldData2 = tile.extraData;
+./core/src/mindustry/editor/MapEditor.java:207:                if(didDataOp && ops() == preDataOps && oldData1 == TileOpData.get(tile.data, tile.floorData, tile.overlayData) && oldData2 == tile.extraData){
+./core/src/mindustry/editor/DrawOperation.java:20:    opDataExtra = 6; //extraData
+./core/src/mindustry/editor/DrawOperation.java:66:            case opDataExtra -> tile.extraData;
+./core/src/mindustry/editor/DrawOperation.java:109:                case opDataExtra -> tile.extraData = to;
+./core/src/mindustry/editor/EditorTool.java:153:                        editor.addTileOp(TileOp.get(t.x, t.y, DrawOperation.opDataExtra, t.extraData));
+./core/src/mindustry/io/SaveVersion.java:257:                stream.writeInt(tile.extraData);
+./core/src/mindustry/io/SaveVersion.java:333:                int extraData = 0;
+./core/src/mindustry/io/SaveVersion.java:339:                    extraData = stream.readInt();
+./core/src/mindustry/io/SaveVersion.java:360:                    tile.extraData = extraData;
+./core/src/mindustry/world/Tile.java:41:    public int extraData;
+./core/src/mindustry/world/Tile.java:709:        return PackedTileData.get(extraData, data, floorData, overlayData);
+./core/src/mindustry/world/Tile.java:714:        extraData = PackedTileData.extraData(packed);
+./core/src/mindustry/world/Tile.java:939:        int extraData;
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:35:        return tile.extraData;
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:46:        Draw.color(tile.extraData | 0xff);
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:54:        if(tile.extraData == 0){
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:55:            tile.extraData = defaultColorRgba;
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:63:            tile.extraData = i;
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:69:        lastConfig = tile.extraData;
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:82:        return other != null && other.block() == this && ((tile.extraData == flagIgnoreDifferentColor) || tile.extraData == other.extraData);
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:87:        return (tile.extraData == flagApplyDarkness);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:67:        return tile.extraData;
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:73:        Draw.color(tile.extraData | 0xff);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:74:        if((tile.extraData & 0xff) == flagSmoothBlend && autotile){
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:131:            r += Color.ri(t1.extraData);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:132:            g += Color.gi(t1.extraData);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:133:            b += Color.bi(t1.extraData);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:138:            r += Color.ri(t2.extraData);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:139:            g += Color.gi(t2.extraData);
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:91:                int extraData = 0;
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:97:                    extraData = stream.readInt();
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:118:                    tile.extraData = extraData;

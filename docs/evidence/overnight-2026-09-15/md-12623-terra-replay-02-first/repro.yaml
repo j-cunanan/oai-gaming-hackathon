@@ -1,0 +1,363 @@
+version: 2
+game: mindustry
+commit: ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 255
+  y: 336
+  keys: []
+  text: ''
+  seconds: 1.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the map editor from the clean-profile main menu.
+  checkpoint: final-open-editor
+- action: click
+  x: 638
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the new-map dialog for an isolated color-input test.
+  checkpoint: final-new-map-dialog
+- action: click
+  x: 640
+  y: 354
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the test-map name field.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: Color Input Repro
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Name the isolated test map.
+  checkpoint: ''
+- action: click
+  x: 704
+  y: 428
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Create the isolated editable map.
+  checkpoint: final-map-created
+- action: click
+  x: 1105
+  y: 43
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the editor tile search field.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: Colored Wall
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Filter tile selection to Colored Wall.
+  checkpoint: final-filter-colored-wall
+- action: click
+  x: 1166
+  y: 133
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the filtered Colored Wall tile.
+  checkpoint: final-select-colored-wall
+- action: click
+  x: 1105
+  y: 140
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the Colored Wall color picker.
+  checkpoint: final-open-wall-picker
+- action: click
+  x: 640
+  y: 537
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the hexadecimal color field.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - ctrl
+  - a
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the existing color value.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: ff0300
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Enter the reported six-character hexadecimal color ff0300.
+  checkpoint: final-enter-wall-ff0300
+- action: click
+  x: 747
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm the entered ff0300 color.
+  checkpoint: final-confirm-wall-ff0300
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - b
+  text: ''
+  seconds: 0.4
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the editor pencil tool for placement.
+  checkpoint: ''
+- action: click
+  x: 600
+  y: 350
+  keys: []
+  text: ''
+  seconds: 1.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Place a Colored Wall using the confirmed ff0300 input.
+  checkpoint: final-place-wall-input
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - i
+  text: ''
+  seconds: 0.4
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Switch to the editor pick tool.
+  checkpoint: ''
+- action: click
+  x: 600
+  y: 350
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Pick the placed Colored Wall so its stored configuration becomes the editor
+    selection.
+  checkpoint: final-pick-placed-wall
+- action: click
+  x: 1105
+  y: 140
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the placed wall's picked color value for readback.
+  checkpoint: final-readback-wall-ff0200
+- action: click
+  x: 530
+  y: 680
+  keys: []
+  text: ''
+  seconds: 0.7
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Close the wall readback dialog.
+  checkpoint: ''
+- action: click
+  x: 1110
+  y: 43
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the tile search field to switch tile type.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - ctrl
+  - a
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the existing tile search text.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: Colored Floor
+  seconds: 0.8
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Filter the editor to Colored Floor.
+  checkpoint: ''
+- action: click
+  x: 1148
+  y: 198
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the filtered Colored Floor tile.
+  checkpoint: final-select-colored-floor
+- action: click
+  x: 1105
+  y: 140
+  keys: []
+  text: ''
+  seconds: 0.8
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the selected Colored Floor color picker.
+  checkpoint: final-open-floor-picker
+- action: click
+  x: 640
+  y: 537
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the floor hexadecimal color field.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - ctrl
+  - a
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Select the existing floor color value.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: ff0300
+  seconds: 0.8
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Enter the same reported six-character hexadecimal color for Colored Floor.
+  checkpoint: final-enter-floor-ff0300
+- action: click
+  x: 747
+  y: 680
+  keys: []
+  text: ''
+  seconds: 0.8
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm the Colored Floor color input.
+  checkpoint: final-confirm-floor-ff0300
+- action: click
+  x: 1105
+  y: 140
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Reopen the floor picker to read back its committed value.
+  checkpoint: final-readback-floor-ff0200
+oracle:
+  kind: sequence
+  description: 'Required sequence: enter six-digit ff0300 in the Colored Wall picker,
+    confirm it, place and pick the wall, then reopen its picker; also enter and confirm
+    ff0300 for Colored Floor and reopen that picker. The reported bug is readback
+    ff0200ff instead of the committed ff0300ff for both tile types. Establish actual
+    input, commit and relevant picker identity from chronological evidence. Correct
+    behavior is retaining ff0300ff in both readbacks. This scope does not test all
+    reported values or adjacent floor placement.'
+  log_pattern: null
+  checkpoints:
+  - final-enter-wall-ff0300
+  - final-confirm-wall-ff0300
+  - final-readback-wall-ff0200
+  - final-enter-floor-ff0300
+  - final-confirm-floor-ff0300
+  - final-readback-floor-ff0200
+successful_runs: 0
+total_runs: 1
+original_actions: 29
+deterministic: false
+evidence:
+- md-12623-terra-replay-02-cb69c08b432334bd7974-supplied-color-confirmation.png
+- md-12623-terra-replay-02-8e3c4dc14213c2c37a26-supplied-color-confirmation.png
+- md-12623-terra-replay-02-2948acd628121c723275-supplied-color-confirmation.png
+- md-12623-terra-replay-02-49e68d6f30406d392bfe-supplied-color-confirmation.png
+- md-12623-terra-replay-02-5670d24fcf9550465762-supplied-color-confirmation.png
+- md-12623-terra-replay-02-b0469bd001d943f79de5-supplied-color-confirmation.png

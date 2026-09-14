@@ -1,0 +1,205 @@
+1: package mindustry.world.blocks.environment;
+2: 
+3: import arc.graphics.*;
+4: import arc.graphics.g2d.*;
+5: import arc.math.geom.*;
+6: import arc.scene.ui.layout.*;
+7: import arc.util.*;
+8: import mindustry.*;
+9: import mindustry.entities.units.*;
+10: import mindustry.gen.*;
+11: import mindustry.ui.*;
+12: import mindustry.world.*;
+13: import mindustry.world.blocks.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class ColoredFloor extends Floor{
+18:     /** If the alpha value of the color is set to this value, different colors are ignored and no border is drawn. */
+19:     public static final int flagIgnoreDifferentColor = 1;
+20:     /** If the alpha value of the color is set to this value, colors are interpolated across corners. This is essentially linear filtering for the whole "image". */
+21:     public static final int flagSmoothBlend = 2;
+22: 
+23:     //4x (pos2 color uv2)
+24:     private static final float[] verts = new float[4 * 5];
+25: 
+26:     public Color defaultColor = Color.white;
+27:     protected int defaultColorRgba;
+28: 
+29:     public ColoredFloor(String name){
+30:         super(name);
+31:         saveData = true;
+32:         editorConfigurable = true;
+33:         saveConfig = true;
+34:     }
+35: 
+36:     @Override
+37:     public void init(){
+38:         super.init();
+39:         lastConfig = defaultColorRgba = defaultColor.rgba();
+40:     }
+41: 
+42:     @Override
+43:     public void buildEditorConfig(Table table){
+44:         showColorEdit(table, this);
+45:     }
+46: 
+47:     public static void showColorEdit(Table t, Block block){
+48:         t.button(b -> {
+49:             b.margin(4f);
+50:             b.left();
+51:             b.table(Tex.pane, in -> {
+52:                 in.image(Tex.whiteui).update(i -> {
+53:                     if(block.lastConfig instanceof Integer col){
+54:                         i.color.set(col | 0xff);
+55:                     }
+56:                 }).grow();
+57:             }).margin(4).size(50f).padRight(10);
+58:             b.add("@color");
+59:         }, Styles.cleart, () ->
+60:             ui.picker.show(
+61:                 block.lastConfig instanceof Integer col ? new Color(col | 0xff) : new Color(Color.white), false,
+62:                 col -> block.lastConfig = col.rgba8888())).left().width(250f).pad(3f).row();
+63:     }
+64: 
+65:     @Override
+66:     public Object getConfig(Tile tile){
+67:         return tile.extraData;
+68:     }
+69: 
+70:     @Override
+71:     public void drawBase(Tile tile){
+72:         //make sure to mask out the alpha channel - it's generally undesirable, and leads to invisible blocks when the data is not initialized
+73:         Draw.color(tile.extraData | 0xff);
+74:         if((tile.extraData & 0xff) == flagSmoothBlend && autotile){
+75:             //Only autotiling is supported right now for the sake of simplicity
+76:             int bits = 0;
+77: 
+78:             for(int i = 0; i < 8; i++){
+79:                 Tile other = tile.nearby(Geometry.d8[i]);
+80:                 //force flagIgnoreDifferentColor by bypassing checkAutotileSame
+81:                 if(other != null && other.floor().blendGroup == blendGroup){
+82:                     bits |= (1 << i);
+83:                 }
+84:             }
+85:             var region = autotileRegions[TileBitmask.values[bits]];
+86:             float s = Vars.tilesize/2f;
+87:             float x = tile.worldx(), y = tile.worldy();
+88: 
+89:             verts[0] = x - s;
+90:             verts[1] = y - s;
+91:             verts[2] = sample(this, tile.x, tile.y, tile.x - 1, tile.y - 1, tile.x, tile.y - 1, tile.x - 1, tile.y);
+92:             verts[3] = region.u;
+93:             verts[4] = region.v2;
+94: 
+95:             verts[5] = x + s;
+96:             verts[6] = y - s;
+97:             verts[7] = sample(this, tile.x, tile.y, tile.x, tile.y - 1, tile.x + 1, tile.y - 1, tile.x + 1, tile.y);
+98:             verts[8] = region.u2;
+99:             verts[9] = region.v2;
+100: 
+101:             verts[10] = x + s;
+102:             verts[11] = y + s;
+103:             verts[12] = sample(this, tile.x, tile.y, tile.x + 1, tile.y + 1, tile.x, tile.y + 1, tile.x + 1, tile.y);
+104:             verts[13] = region.u2;
+105:             verts[14] = region.v;
+106: 
+107:             verts[15] = x - s;
+108:             verts[16] = y + s;
+109:             verts[17] = sample(this, tile.x, tile.y, tile.x - 1, tile.y + 1, tile.x, tile.y + 1, tile.x - 1, tile.y);
+110:             verts[18] = region.u;
+111:             verts[19] = region.v;
+112: 
+113:             Draw.vert(region.texture, verts, 0, verts.length);
+114:         }else{
+115:             super.drawBase(tile);
+116:         }
+117:         Draw.color();
+118:     }
+119: 
+120:     static float sample(Block target, int tx1, int ty1, int tx2, int ty2, int tx3, int ty3, int tx4, int ty4){
+121:         int total = 0;
+122:         float r = 0f, g = 0f, b = 0f;
+123:         Tile t1 = Vars.world.tile(tx1, ty1);
+124:         Tile t2 = Vars.world.tile(tx2, ty2);
+125:         Tile t3 = Vars.world.tile(tx3, ty3);
+126:         Tile t4 = Vars.world.tile(tx4, ty4);
+127: 
+128:         //manually unrolled loops, hooray
+129:         if(t1 != null && t1.floor() == target){
+130:             total ++;
+131:             r += Color.ri(t1.extraData);
+132:             g += Color.gi(t1.extraData);
+133:             b += Color.bi(t1.extraData);
+134:         }
+135: 
+136:         if(t2 != null && t2.floor() == target){
+137:             total ++;
+138:             r += Color.ri(t2.extraData);
+139:             g += Color.gi(t2.extraData);
+140:             b += Color.bi(t2.extraData);
+141:         }
+142: 
+143:         if(t3 != null && t3.floor() == target){
+144:             total ++;
+145:             r += Color.ri(t3.extraData);
+146:             g += Color.gi(t3.extraData);
+147:             b += Color.bi(t3.extraData);
+148:         }
+149: 
+150:         if(t4 != null && t4.floor() == target){
+151:             total ++;
+152:             r += Color.ri(t4.extraData);
+153:             g += Color.gi(t4.extraData);
+154:             b += Color.bi(t4.extraData);
+155:         }
+156: 
+157:         return Color.toFloatBits((int)(r/total), (int)(g/total), (int)(b/total), 255);
+158:     }
+159: 
+160:     @Override
+161:     public void drawOverlay(Tile tile){
+162:         //make sure color doesn't carry over
+163:         Draw.color();
+164:         super.drawOverlay(tile);
+165:     }
+166: 
+167:     @Override
+168:     public void floorChanged(Tile tile){
+169:         //reset to white
+170:         if(tile.extraData == 0){
+171:             tile.extraData = defaultColorRgba;
+172:         }
+173:     }
+174: 
+175:     @Override
+176:     public void placeEnded(Tile tile, @Nullable Unit builder, int rotation, @Nullable Object config){
+177:         //config is assumed to be an integer RGBA color
+178:         if(config instanceof Integer i){
+179:             tile.extraData = i;
+180:         }
+181:     }
+182: 
+183:     @Override
+184:     public void editorPicked(Tile tile){
+185:         lastConfig = tile.extraData;
+186:     }
+187: 
+188:     @Override
+189:     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+190:         if(plan.config instanceof Integer i){
+191:             Draw.tint(Tmp.c1.set(i | 0xff));
+192:         }
+193:         drawDefaultPlanRegion(plan, list);
+194:     }
+195: 
+196:     @Override
+197:     public boolean checkAutotileSame(Tile tile, @Nullable Tile other){
+198:         return other != null && (this == tile.floor() ? other.floor() : other.overlay()).blendGroup == blendGroup && ((tile.extraData & 0xff) == flagIgnoreDifferentColor || tile.extraData == other.extraData);
+199:     }
+200: 
+201:     @Override
+202:     public int minimapColor(Tile tile){
+203:         return tile.extraData | 0xff;
+204:     }
+205: }

@@ -1,0 +1,4 @@
+./core/src/mindustry/ui/dialogs/ColorPicker.java:12:public class ColorPicker extends BaseDialog{
+./core/src/mindustry/world/ColorMapper.java:8:public class ColorMapper{
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:11:public class ColoredWall extends StaticWall{
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:17:public class ColoredFloor extends Floor{

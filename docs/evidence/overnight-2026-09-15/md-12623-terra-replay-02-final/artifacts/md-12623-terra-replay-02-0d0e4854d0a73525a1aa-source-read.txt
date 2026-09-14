@@ -1,0 +1,178 @@
+180:                     tester = t -> t.block() == dest;
+181:                     setter = t -> t.setBlock(Blocks.air);
+182:                 }else if(tile.overlay() != Blocks.air){
+183:                     Block dest = tile.overlay();
+184:                     tester = t -> t.overlay() == dest;
+185:                     setter = t -> t.setOverlay(Blocks.air);
+186:                 }else{
+187:                     //trying to erase floor (no)
+188:                     tester = null;
+189:                     setter = null;
+190:                 }
+191: 
+192:                 if(setter != null){
+193:                     fill(x, y, false, tester, setter);
+194:                 }
+195:             }else if(mode == 3){ //cliff fill
+196:                 if(!tile.block().isStatic() || tile.block() == Blocks.cliff) return;
+197:                 Bits wasStatic = new Bits(editor.width() * editor.height());
+198:                 fill(x, y, false, t -> t.block().isStatic() && t.block() != Blocks.cliff, t -> {
+199:                     int rotation = 0;
+200:                     for(int i = 0; i < 8; i++){
+201:                         Tile other = world.tiles.get(t.x + Geometry.d8[i].x, t.y + Geometry.d8[i].y);
+202:                         if(other != null && !other.block().isStatic() && !wasStatic.get(other.array())){
+203:                             rotation |= (1 << i);
+204:                         }
+205:                     }
+206: 
+207:                     if(rotation != 0){
+208:                         t.setBlock(Blocks.cliff);
+209:                     }else{
+210:                         t.setBlock(Blocks.air);
+211:                         wasStatic.set(t.array());
+212:                     }
+213: 
+214:                     t.data = (byte)rotation;
+215:                 });
+216:             }else if(mode == 4){ //fill under liquid
+217:                 if(editor.drawBlock instanceof Floor f && !f.isLiquid){
+218:                     if(!tile.floor().isLiquid) return;
+219: 
+220:                     Block dest = tile.floor(), destoverlay = tile.overlay();
+221: 
+222:                     Boolf<Tile> tester;
+223:                     Cons<Tile> setter;
+224:                     tester = t -> t.floor() == dest && t.overlay() == destoverlay;
+225:                     setter = t -> {
+226:                         if(t.overlay() != editor.drawBlock){
+227:                             t.setOverlay(editor.drawBlock.asFloor());
+228:                         }
+229:                     };
+230:                     
+231:                     fill(x, y, false, tester, setter);
+232:                 }
+233:             }
+234:         }
+235: 
+236:         void fill(int x, int y, boolean replace, Boolf<Tile> tester, Cons<Tile> filler){
+237:             int width = editor.width(), height = editor.height();
+238: 
+239:             if(replace){
+240:                 //just do it on everything
+241:                 for(int cx = 0; cx < width; cx++){
+242:                     for(int cy = 0; cy < height; cy++){
+243:                         Tile tile = editor.tile(cx, cy);
+244:                         if(tester.get(tile)){
+245:                             filler.get(tile);
+246:                         }
+247:                     }
+248:                 }
+249: 
+250:             }else{
+251:                 //perform flood fill
+252:                 int x1;
+253: 
+254:                 stack.clear();
+255:                 stack.add(Point2.pack(x, y));
+256: 
+257:                 try{
+258:                     while(stack.size > 0 && stack.size < width*height){
+259:                         int popped = stack.pop();
+260:                         x = Point2.x(popped);
+261:                         y = Point2.y(popped);
+262: 
+263:                         x1 = x;
+264:                         while(x1 >= 0 && tester.get(editor.tile(x1, y))) x1--;
+265:                         x1++;
+266:                         boolean spanAbove = false, spanBelow = false;
+267:                         while(x1 < width && tester.get(editor.tile(x1, y))){
+268:                             filler.get(editor.tile(x1, y));
+269: 
+270:                             if(!spanAbove && y > 0 && tester.get(editor.tile(x1, y - 1))){
+271:                                 stack.add(Point2.pack(x1, y - 1));
+272:                                 spanAbove = true;
+273:                             }else if(spanAbove && !tester.get(editor.tile(x1, y - 1))){
+274:                                 spanAbove = false;
+275:                             }
+276: 
+277:                             if(!spanBelow && y < height - 1 && tester.get(editor.tile(x1, y + 1))){
+278:                                 stack.add(Point2.pack(x1, y + 1));
+279:                                 spanBelow = true;
+280:                             }else if(spanBelow && y < height - 1 && !tester.get(editor.tile(x1, y + 1))){
+281:                                 spanBelow = false;
+282:                             }
+283:                             x1++;
+284:                         }
+285:                     }
+286:                     stack.clear();
+287:                 }catch(OutOfMemoryError e){
+288:                     //hack
+289:                     stack = null;
+290:                     System.gc();
+291:                     e.printStackTrace();
+292:                     stack = new IntSeq();
+293:                 }
+294:             }
+295:         }
+296:     },
+297:     spray(KeyCode.r, "replace"){
+298:         final double chance = 0.012;
+299: 
+300:         {
+301:             edit = true;
+302:             draggable = true;
+303:         }
+304: 
+305:         @Override
+306:         public void touched(int x, int y){
+307: 
+308:             //floor spray
+309:             if(editor.drawBlock.isFloor()){
+310:                 editor.drawCircle(x, y, tile -> {
+311:                     if(Mathf.chance(chance)){
+312:                         tile.setFloor(editor.drawBlock.asFloor());
+313:                     }
+314:                 });
+315:             }else if(mode == 0){ //replace-only mode, doesn't affect air
+316:                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
+317:             }else{
+318:                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance));
+319:             }
+320:         }
+321:     };
+322: 
+323:     public static final EditorTool[] all = values();
+324: 
+325:     /** All the internal alternate placement modes of this tool. */
+326:     public final String[] altModes;
+327:     /** Key to activate this tool. */
+328:     public KeyCode key = KeyCode.unset;
+329:     /** The current alternate placement mode. -1 is the standard mode, no changes.*/
+330:     public int mode = -1;
+331:     /** Whether this tool causes canvas changes when touched.*/
+332:     public boolean edit;
+333:     /** Whether this tool should be dragged across the canvas when the mouse moves.*/
+334:     public boolean draggable;
+335: 
+336:     EditorTool(){
+337:         this(new String[]{});
+338:     }
+339: 
+340:     EditorTool(KeyCode code){
+341:         this(new String[]{});
+342:         this.key = code;
+343:     }
+344: 
+345:     EditorTool(String... altModes){
+346:         this.altModes = altModes;
+347:     }
+348: 
+349:     EditorTool(KeyCode code, String... altModes){
+350:         this.altModes = altModes;
+351:         this.key = code;
+352:     }
+353: 
+354:     public void touched(int x, int y){}
+355: 
+356:     public void touchedLine(int x1, int y1, int x2, int y2){}
+357: }

@@ -1,0 +1,6 @@
+./core/src/mindustry/mod/ClassMap.java:267:        classes.put("ColoredFloor", mindustry.world.blocks.environment.ColoredFloor.class);
+./core/src/mindustry/content/Blocks.java:71:    coloredFloor, coloredWall,
+./core/src/mindustry/content/Blocks.java:945:        coloredFloor = new ColoredFloor("colored-floor"){{
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:40:        ColoredFloor.showColorEdit(table, this);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:17:public class ColoredFloor extends Floor{
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:29:    public ColoredFloor(String name){

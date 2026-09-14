@@ -1,0 +1,496 @@
+{
+  "version": 1,
+  "case_id": "md-12623-terra-max-01",
+  "status": "unverified_proposal",
+  "report": {
+    "title": "Colored tiles do not accept every valid hex code given, instead skipping over some or using the same value twice",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nv159.7\n\n### Issue\n\n'Colored Wall' & 'Colored Floor' tiles in editor do not accept every hex color code given to them in game. I tested this on both v159.7 and BE 27795 just to make sure it was not yet addressed.\n\nIn the save file below I did it for the following values: ff0000 to ff2000. Here is the table for the hex codes inputted vs accepted by the editor so you can copy paste: \nff0000 -> ff0000\nff0100 -> ff0100\nff0200 -> ff0200\nff0300 -> ff0200\nff0400 -> ff0300\nff0500 -> ff0500 \nff0600 -> ff0600\nff0700 -> ff0700\nff0800 -> ff0700\nff0900 -> ff0800\nff0a00 -> ff0a00\nff0b00 -> ff0b00\nff0c00 -> ff0b00\nff0d00 -> ff0c00\nff0e00 -> ff0e00\nff0f00 -> ff0f00\nff1000 -> ff1000\nff1100 -> ff1000\nff1200 -> ff1100\nff1300 -> ff1300\nff1400 -> ff1400\nff1500 -> ff1400\nff1600 -> ff1500\nff1700 -> ff1600\nff1800 -> ff1800\nff1900 -> ff1900\nff1a00 -> ff1900\nff1b00 -> ff1a00\nff1c00 -> ff1c00\nff1d00 -> ff1d00\nff1e00 -> ff1e00\nff1f00 -> ff1e00\nff2000 -> ff1f00\n\n### Steps to reproduce\n\n1. Open the map editor and go to edit any map\n2. Select the 'Colored Floor' or 'Colored Wall' tile in editor \n3. Paste in any hex color codes that differ by 1 in value and place each one down next to one another, eventually you'll see that the tiles no longer separate as the hex color code did not change its value properly\n\n<img width=\"1589\" height=\"354\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4108df1e-991f-4c17-8249-2a855d052525\" />\n\n### Mods used\n\nnone\n\n### Save file\n\n[Debris Field With Color Tiles For You To Look At.zip](https://github.com/user-attachments/files/32078489/Debris.Field.With.Color.Tiles.For.You.To.Look.At.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": []
+  },
+  "proposal": {
+    "outcome": "observed",
+    "summary": "Reproduced the input/readback discrepancy in a fresh editor map. For Colored Wall, the hex field visibly accepted `ff0300`; after OK, placing the wall, picking that placed wall, and reopening its picker, the field showed `ff0200ff` (RGB `ff0200` with opaque alpha). Repeating the enter/OK/reopen path for Colored Floor also changed `ff0300` to `ff0200ff`. Earlier UI checks also matched the selective pattern: Floor `ff0400` read back as `ff0300ff`, while control `ff0500` remained `ff0500ff`.",
+    "oracle": {
+      "kind": "sequence",
+      "description": "The reporter states that, after entering listed color strings and placing tiles adjacent to one another, some inputs were reported as being accepted by the editor as a different value. Reported nonmatching input -> accepted mappings are: ff0300 -> ff0200; ff0400 -> ff0300; ff0800 -> ff0700; ff0900 -> ff0800; ff0c00 -> ff0b00; ff0d00 -> ff0c00; ff1100 -> ff1000; ff1200 -> ff1100; ff1500 -> ff1400; ff1600 -> ff1500; ff1700 -> ff1600; ff1a00 -> ff1900; ff1b00 -> ff1a00; ff1f00 -> ff1e00; ff2000 -> ff1f00. The other entries in the supplied ff0000, ff0100, \u2026, ff2000 table were reported as unchanged. The report references a screenshot and a save archive, but their contents are not included in the supplied payload for independent verification.",
+      "log_pattern": null,
+      "checkpoints": [
+        "final-enter-wall-ff0300",
+        "final-confirm-wall-ff0300",
+        "final-place-wall-input",
+        "final-pick-placed-wall",
+        "final-readback-wall-ff0200",
+        "final-enter-floor-ff0300",
+        "final-confirm-floor-ff0300",
+        "final-readback-floor-ff0200"
+      ]
+    },
+    "limitations": [
+      "The running sandbox identified itself in its startup log as `Version: custom`; this was not a Windows v159.7 or BE 27795 verification.",
+      "The full ff0000\u2013ff2000 matrix was not repeated in the final clean run, and no supplied save archive or screenshot fixture was available.",
+      "Placed-tile pick/readback was verified for Colored Wall; Colored Floor was independently verified through immediate editor picker readback, not save/reload persistence."
+    ]
+  },
+  "steps": [
+    {
+      "action": "click",
+      "x": 255,
+      "y": 336,
+      "keys": [],
+      "text": "",
+      "seconds": 1.5,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open the map editor from the clean-profile main menu.",
+      "checkpoint": "final-open-editor"
+    },
+    {
+      "action": "click",
+      "x": 638,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open the new-map dialog for an isolated color-input test.",
+      "checkpoint": "final-new-map-dialog"
+    },
+    {
+      "action": "click",
+      "x": 640,
+      "y": 354,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus the test-map name field.",
+      "checkpoint": ""
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "Color Input Repro",
+      "seconds": 0.3,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Name the isolated test map.",
+      "checkpoint": ""
+    },
+    {
+      "action": "click",
+      "x": 704,
+      "y": 428,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Create the isolated editable map.",
+      "checkpoint": "final-map-created"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 43,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus the editor tile search field.",
+      "checkpoint": ""
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "Colored Wall",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Filter tile selection to Colored Wall.",
+      "checkpoint": "final-filter-colored-wall"
+    },
+    {
+      "action": "click",
+      "x": 1166,
+      "y": 133,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the filtered Colored Wall tile.",
+      "checkpoint": "final-select-colored-wall"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open the Colored Wall color picker.",
+      "checkpoint": "final-open-wall-picker"
+    },
+    {
+      "action": "click",
+      "x": 640,
+      "y": 537,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus the hexadecimal color field.",
+      "checkpoint": ""
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the existing color value.",
+      "checkpoint": ""
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "ff0300",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Enter the reported six-character hexadecimal color ff0300.",
+      "checkpoint": "final-enter-wall-ff0300"
+    },
+    {
+      "action": "click",
+      "x": 747,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm the entered ff0300 color.",
+      "checkpoint": "final-confirm-wall-ff0300"
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "b"
+      ],
+      "text": "",
+      "seconds": 0.4,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the editor pencil tool for placement.",
+      "checkpoint": ""
+    },
+    {
+      "action": "click",
+      "x": 600,
+      "y": 350,
+      "keys": [],
+      "text": "",
+      "seconds": 1.5,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Place a Colored Wall using the confirmed ff0300 input.",
+      "checkpoint": "final-place-wall-input"
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "i"
+      ],
+      "text": "",
+      "seconds": 0.4,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Switch to the editor pick tool.",
+      "checkpoint": ""
+    },
+    {
+      "action": "click",
+      "x": 600,
+      "y": 350,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Pick the placed Colored Wall so its stored configuration becomes the editor selection.",
+      "checkpoint": "final-pick-placed-wall"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open the placed wall's picked color value for readback.",
+      "checkpoint": "final-readback-wall-ff0200"
+    },
+    {
+      "action": "click",
+      "x": 530,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.7,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Close the wall readback dialog.",
+      "checkpoint": ""
+    },
+    {
+      "action": "click",
+      "x": 1110,
+      "y": 43,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus the tile search field to switch tile type.",
+      "checkpoint": ""
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the existing tile search text.",
+      "checkpoint": ""
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "Colored Floor",
+      "seconds": 0.8,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Filter the editor to Colored Floor.",
+      "checkpoint": ""
+    },
+    {
+      "action": "click",
+      "x": 1148,
+      "y": 198,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the filtered Colored Floor tile.",
+      "checkpoint": "final-select-colored-floor"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 0.8,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open the selected Colored Floor color picker.",
+      "checkpoint": "final-open-floor-picker"
+    },
+    {
+      "action": "click",
+      "x": 640,
+      "y": 537,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus the floor hexadecimal color field.",
+      "checkpoint": ""
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.2,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select the existing floor color value.",
+      "checkpoint": ""
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "ff0300",
+      "seconds": 0.8,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Enter the same reported six-character hexadecimal color for Colored Floor.",
+      "checkpoint": "final-enter-floor-ff0300"
+    },
+    {
+      "action": "click",
+      "x": 747,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.8,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm the Colored Floor color input.",
+      "checkpoint": "final-confirm-floor-ff0300"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 2.0,
+      "hold_seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reopen the floor picker to read back its committed value.",
+      "checkpoint": "final-readback-floor-ff0200"
+    }
+  ],
+  "checkpoints": {
+    "final-open-editor": {
+      "index": 1,
+      "screenshot_artifact": "md-12623-terra-max-01-8e40967bef360d0125dd-investigation.png"
+    },
+    "final-new-map-dialog": {
+      "index": 2,
+      "screenshot_artifact": "md-12623-terra-max-01-524d11e181152653f8ad-investigation.png"
+    },
+    "final-map-created": {
+      "index": 5,
+      "screenshot_artifact": "md-12623-terra-max-01-66f8c1781de575431924-investigation.png"
+    },
+    "final-filter-colored-wall": {
+      "index": 7,
+      "screenshot_artifact": "md-12623-terra-max-01-69263e63628decee825e-investigation.png"
+    },
+    "final-select-colored-wall": {
+      "index": 8,
+      "screenshot_artifact": "md-12623-terra-max-01-9d4304bfd2d92560be77-investigation.png"
+    },
+    "final-open-wall-picker": {
+      "index": 9,
+      "screenshot_artifact": "md-12623-terra-max-01-ba6d50b9c06df0b61559-investigation.png"
+    },
+    "final-enter-wall-ff0300": {
+      "index": 12,
+      "screenshot_artifact": "md-12623-terra-max-01-d7927fb44158c224045e-investigation.png"
+    },
+    "final-confirm-wall-ff0300": {
+      "index": 13,
+      "screenshot_artifact": "md-12623-terra-max-01-8e3c4dc14213c2c37a26-investigation.png"
+    },
+    "final-place-wall-input": {
+      "index": 15,
+      "screenshot_artifact": "md-12623-terra-max-01-d27c896a07fdc9af5e3f-investigation.png"
+    },
+    "final-pick-placed-wall": {
+      "index": 17,
+      "screenshot_artifact": "md-12623-terra-max-01-d467eb4a70c0a24458cd-investigation.png"
+    },
+    "final-readback-wall-ff0200": {
+      "index": 18,
+      "screenshot_artifact": "md-12623-terra-max-01-2948acd628121c723275-investigation.png"
+    },
+    "final-select-colored-floor": {
+      "index": 23,
+      "screenshot_artifact": "md-12623-terra-max-01-a25f34977ce6b8cd4568-investigation.png"
+    },
+    "final-open-floor-picker": {
+      "index": 24,
+      "screenshot_artifact": "md-12623-terra-max-01-3748a025c3f2faacb798-investigation.png"
+    },
+    "final-enter-floor-ff0300": {
+      "index": 27,
+      "screenshot_artifact": "md-12623-terra-max-01-49e68d6f30406d392bfe-investigation.png"
+    },
+    "final-confirm-floor-ff0300": {
+      "index": 28,
+      "screenshot_artifact": "md-12623-terra-max-01-5670d24fcf9550465762-investigation.png"
+    },
+    "final-readback-floor-ff0200": {
+      "index": 29,
+      "screenshot_artifact": "md-12623-terra-max-01-b0469bd001d943f79de5-investigation.png"
+    }
+  }
+}

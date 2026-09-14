@@ -1,0 +1,1 @@
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:17:public class ColoredFloor extends Floor{

@@ -1,0 +1,8 @@
+{
+  "explanation": "Remove the HSV-to-RGB reconstruction immediately after `Color.valueOf(current, value)` parses hex text. The parsed `current` color is already exact; the callback still updates the HSV state and slider positions for UI consistency. Consequently, pressing OK without changing a slider sends the parsed RGB value to the Colored Floor/Wall callback, which then packs and stores that value unchanged.",
+  "risks": [
+    "This changes hex-entry behavior for every caller of the shared ColorPicker, not only colored environment tiles. That scope is intentional because the lossy conversion is in the shared picker path.",
+    "After direct hex entry, subsequent slider interaction still intentionally derives a color from HSV and may quantize according to slider precision; this patch only preserves exact text input when no slider edit is made.",
+    "Validation should exercise six- and eight-digit input, alpha-enabled and alpha-disabled picker callers, invalid/intermediate text, direct OK, reopen/readback, and slider edits after text entry."
+  ]
+}

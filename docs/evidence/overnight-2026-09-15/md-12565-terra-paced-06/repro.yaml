@@ -1,0 +1,415 @@
+version: 2
+game: mindustry
+commit: 7e80948b58138a569e119857e0add95762d7e0bb
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 252
+  y: 197
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open Play menu to access Load Game and import the supplied prepared save.
+  checkpoint: ''
+- action: click
+  x: 475
+  y: 405
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open Load Game dialog.
+  checkpoint: ''
+- action: click
+  x: 748
+  y: 680
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Choose Import Save to load the operator-prepared fixture as saved gameplay
+    state.
+  checkpoint: ''
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Wait for save-file chooser after activating Import Save.
+  checkpoint: ''
+- action: click
+  x: 611
+  y: 459
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the save chooser filename field.
+  checkpoint: ''
+- action: type
+  x: null
+  y: null
+  keys: []
+  text: /workspace/fixtures/operator-unit-setup.msav
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Enter the supplied operator fixture path.
+  checkpoint: ''
+- action: click
+  x: 802
+  y: 458
+  keys: []
+  text: ''
+  seconds: 4.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Import the selected supplied save file.
+  checkpoint: ''
+- action: click
+  x: 614
+  y: 380
+  keys: []
+  text: ''
+  seconds: 8.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Load the imported operator-prepared sandbox save into gameplay.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - c
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Toggle menus off to inspect units and the transport route without the
+    build panel obscuring the view.
+  checkpoint: ''
+- action: scroll
+  x: 956
+  y: 369
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: -2
+  button: left
+  semantic: Zoom out around the units to locate the connected conveyor route and verify
+    initial scene geometry.
+  checkpoint: ''
+- action: scroll
+  x: 1145
+  y: 369
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: -1
+  button: left
+  semantic: Further zoom out centered on the conveyor intake so the full connected
+    route and clear output can be inspected.
+  checkpoint: ''
+- action: click
+  x: 855
+  y: 369
+  keys:
+  - shift
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.2
+  scroll_y: 0
+  button: left
+  semantic: Enter RTS command mode and select the middle Dagger, keeping the other
+    two units as visual controls.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - c
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Restore HUD to inspect RTS command controls and selection state.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - esc
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open pause menu to inspect command-mode control settings without altering
+    the scene.
+  checkpoint: ''
+- action: click
+  x: 754
+  y: 292
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open settings to inspect the RTS command-mode behavior.
+  checkpoint: ''
+- action: click
+  x: 648
+  y: 414
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open control settings to locate command mode configuration.
+  checkpoint: ''
+- action: click
+  x: 633
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return to settings categories.
+  checkpoint: ''
+- action: click
+  x: 640
+  y: 175
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open game settings to locate command-mode hold/toggle setting.
+  checkpoint: ''
+- action: click
+  x: 400
+  y: 625
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Toggle the Hold For Command Mode option to expose its current state and
+    enable a persistent command-mode test workflow if needed.
+  checkpoint: ''
+- action: click
+  x: 400
+  y: 625
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Set command mode back to toggle behavior so its UI can remain visible
+    after activating it.
+  checkpoint: ''
+- action: click
+  x: 555
+  y: 625
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Toggle Hold For Command Mode off using its row to retain a persistent
+    RTS mode for inspection.
+  checkpoint: ''
+- action: move
+  x: 1000
+  y: 100
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Move pointer away from the setting to distinguish hover highlighting from
+    its actual toggle state.
+  checkpoint: ''
+- action: click
+  x: 642
+  y: 679
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Exit game settings after enabling toggle-style RTS command mode.
+  checkpoint: ''
+- action: click
+  x: 640
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return to paused gameplay.
+  checkpoint: ''
+- action: click
+  x: 526
+  y: 291
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Resume the loaded sandbox scene for the RTS transport test.
+  checkpoint: ''
+- action: keypress
+  x: null
+  y: null
+  keys:
+  - shift
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.1
+  scroll_y: 0
+  button: left
+  semantic: Activate persistent RTS command mode using the configured Shift binding.
+  checkpoint: ''
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: 'Capture the pre-entry state: one outlined middle Dagger is selected in
+    Command Mode and the right-facing payload conveyor route is visibly empty.'
+  checkpoint: rts_pre_entry_subject_selected
+- action: click
+  x: 1028
+  y: 612
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Choose the selected Dagger's Enter Payload Block command in Command Mode.
+  checkpoint: rts_enter_payload_command_selected
+- action: click
+  x: 938
+  y: 369
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: right
+  semantic: Assign the selected Dagger's Enter Payload Block target to the leftmost
+    intake of the connected right-facing conveyor route.
+  checkpoint: rts_payload_intake_target_assigned
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 1.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Observe the selected Dagger as it reaches the commanded payload-conveyor
+    intake.
+  checkpoint: rts_unit_reaches_payload_intake
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Observe the route during expected payload transport after the walking
+    Dagger has entered.
+  checkpoint: rts_payload_transporting
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Allow sufficient time for a unit payload to traverse all three connected
+    conveyors and emerge at the clear output.
+  checkpoint: rts_payload_expected_output
+- action: wait
+  x: null
+  y: null
+  keys: []
+  text: ''
+  seconds: 8.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Continue observing well beyond the normal conveyor traversal interval
+    to distinguish a delayed output from a stuck or lost unit.
+  checkpoint: rts_no_visible_output_after_extended_wait
+oracle:
+  kind: sequence
+  description: The player reports that, on Windows build 27713 with no mods reported,
+    a unit disappears when entering a payload conveyor. The reported trigger is moving
+    a unit into the conveyor using either RTS control or manual control. No independently
+    observed reproduction, post-entry unit-state evidence, save from the player, video,
+    screenshot, or crash information was provided.
+  log_pattern: null
+  checkpoints:
+  - rts_pre_entry_subject_selected
+  - rts_enter_payload_command_selected
+  - rts_payload_intake_target_assigned
+  - rts_unit_reaches_payload_intake
+  - rts_no_visible_output_after_extended_wait
+successful_runs: 0
+total_runs: 1
+original_actions: 33
+deterministic: false
+evidence:
+- md-12565-terra-paced-06-9c108f89aca9fbbc3372-paced-trigger-confirmation.png
+- md-12565-terra-paced-06-46e044807f93c8694c84-paced-trigger-confirmation.png
+- md-12565-terra-paced-06-760feb8f042f5bf82476-paced-trigger-confirmation.png
+- md-12565-terra-paced-06-73c1e987c8c34ee453d1-paced-trigger-confirmation.png
+- md-12565-terra-paced-06-8ac9a9f55fc7cd1025e6-paced-trigger-confirmation.png
