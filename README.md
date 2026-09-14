@@ -31,6 +31,8 @@ On macOS, Docker may not have file-sharing access to a Documents folder. Set `RE
 
 Mindustry's pinned SDL desktop dependency does not ship a Linux ARM64 native library. Use the AMD64 image even on Apple Silicon (Docker emulates it); do not count an architecture-related launch failure as a reproduced game bug.
 
+For manual play on macOS, see the [verified Mindustry desktop setup](docs/macos-setup.md).
+
 ```bash
 uv run repro ingest report.txt --commit FULL_40_CHARACTER_SHA --title 'Player report'
 uv run repro prepare CASE_ID

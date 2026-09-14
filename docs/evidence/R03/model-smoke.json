@@ -1,0 +1,62 @@
+{
+  "requested_model": "gpt-6-astra",
+  "reasoning_effort": "low",
+  "call_budget": 3,
+  "time_budget_seconds": 120,
+  "scope": "R03 configuration smoke only; no bug reproduction, candidate or benchmark result.",
+  "case_id": "79479d344c79",
+  "structured_result": {
+    "game": "Mindustry (custom build)",
+    "screen": "Main menu",
+    "visible_buttons": [
+      "Play",
+      "Database",
+      "Editor",
+      "Mods",
+      "Settings",
+      "Quit",
+      "Discord (icon)"
+    ]
+  },
+  "status": "passed",
+  "elapsed_seconds": 10.81,
+  "usage": {
+    "model_calls": 3,
+    "input_tokens": 3034,
+    "output_tokens": 125
+  },
+  "model_calls": [
+    {
+      "purpose": "r03-structured-screenshot",
+      "model": "gpt-6-astra",
+      "input_tokens": 1236,
+      "output_tokens": 44
+    },
+    {
+      "purpose": "r03-tool-roundtrip",
+      "model": "gpt-6-astra",
+      "input_tokens": 312,
+      "output_tokens": 29
+    },
+    {
+      "purpose": "r03-tool-roundtrip",
+      "model": "gpt-6-astra",
+      "input_tokens": 1486,
+      "output_tokens": 52
+    }
+  ],
+  "tools": [
+    {
+      "tool": "inspect_screen",
+      "purpose": "Read the recorded screenshot and receipt for the configuration smoke check."
+    },
+    {
+      "tool": "finish",
+      "result": {
+        "receipt": "baa10dbfafe0ffef",
+        "game": "Mindustry",
+        "screen": "Main menu (custom build), showing Play, Database, Editor, Mods, Settings, and Quit."
+      }
+    }
+  ]
+}
