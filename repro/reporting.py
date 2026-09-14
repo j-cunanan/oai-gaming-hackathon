@@ -6,7 +6,6 @@ from io import BytesIO
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-import reportlab
 from PIL import Image as PillowImage
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -41,9 +40,9 @@ WIDTH = A4[0] - 100
 
 @lru_cache(maxsize=1)
 def register_fonts():
-    # These redistributable fonts ship with ReportLab; no host font dependency.
-    fonts = Path(reportlab.__file__).parent / "fonts"
-    for name, filename in (("Repro", "Vera.ttf"), ("Repro-Bold", "VeraBd.ttf")):
+    # Bundle Latin, Greek, and Cyrillic glyphs so reports are portable across hosts.
+    fonts = Path(__file__).parent / "assets" / "fonts"
+    for name, filename in (("Repro", "NotoSans-Regular.ttf"), ("Repro-Bold", "NotoSans-Bold.ttf")):
         pdfmetrics.registerFont(TTFont(name, fonts / filename))
     pdfmetrics.registerFontFamily("Repro", normal="Repro", bold="Repro-Bold")
 
