@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Clock3,
   Code2,
+  Copy,
   Crosshair,
   FileText,
   FlaskConical,
@@ -43,6 +44,7 @@ import { allChecksPass } from "./diff";
 import { preferredCase } from "./case-selection";
 import { StageActivity, useStageActivity } from "./stage-activity";
 import { clockTime, dateTime } from "./activity-model";
+import "./case-identity.css";
 
 type CheckResult = {
   name: string;
@@ -229,6 +231,10 @@ function App() {
   const [cases, setCases] = useState<Case[]>([]);
   const [selected, setSelected] = useState("");
   const [current, setCurrent] = useState<Case | null>(null);
+  const requestedCase = useRef(
+    new URLSearchParams(window.location.search).get("case"),
+  );
+  const [copiedCase, setCopiedCase] = useState<string | null>(null);
   const [health, setHealth] = useState<Health | null>(null);
   const [stageSelection, setStageSelection] = useState<{
     key: string;
@@ -275,7 +281,9 @@ function App() {
       setBenchmark(metrics);
       setConnected(true);
       setError((previous) => (previous === "Failed to fetch" ? "" : previous));
-      setSelected((id) => id || preferredCase(list));
+      setSelected(
+        (id) => id || list.find((c) => c.id === requestedCase.current)?.id || preferredCase(list),
+      );
     } catch (e) {
       setConnected(false);
       setError((e as Error).message);
@@ -315,6 +323,7 @@ function App() {
   }, [refreshList]);
   useEffect(() => {
     setCurrent(null);
+    setCopiedCase(null);
     setStageSelection(null);
     setArtifacts([]);
     setPatch("");
@@ -426,6 +435,22 @@ function App() {
     }
   }
   const running = Boolean(current && health?.active_jobs.includes(current.id));
+  const viewingCase =
+    current?.id === selected ? current : cases.find((c) => c.id === selected);
+  useEffect(() => {
+    document.title =
+      page === "benchmarks"
+        ? "REPRO · Benchmark"
+        : viewingCase
+          ? `${viewingCase.id} · ${viewingCase.report.title} | REPRO`
+          : "REPRO · Investigation workspace";
+    if (page !== "investigations" || !viewingCase) return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("case") !== viewingCase.id) {
+      url.searchParams.set("case", viewingCase.id);
+      window.history.replaceState(null, "", url);
+    }
+  }, [page, viewingCase?.id, viewingCase?.report.title]);
   const confirmed = cases.filter((c) => c.reproduction?.deterministic).length;
   const activePhase = current
     ? phases.findIndex((p) => p.states.includes(current.state))
@@ -488,6 +513,12 @@ function App() {
           {cases.slice(0, 8).map((c) => (
             <button
               key={c.id}
+              aria-current={
+                selected === c.id && page === "investigations"
+                  ? "page"
+                  : undefined
+              }
+              aria-label={`${c.report.title}, case ${c.id}, ${human(c.state)}`}
               className={
                 selected === c.id && page === "investigations"
                   ? "case-nav-item chosen"
@@ -502,7 +533,12 @@ function App() {
               <span
                 className={`tiny-dot ${c.reproduction?.deterministic ? "green" : "purple"}`}
               />
-              <span>{c.report.title}<RecordingBadge c={c} /></span>
+              <span className="case-nav-copy">
+                <strong>{c.report.title}</strong>
+                <code>{c.id}</code>
+                <small>{human(c.state)}</small>
+                <RecordingBadge c={c} />
+              </span>
             </button>
           ))}
           {cases.length === 0 && (
@@ -525,11 +561,22 @@ function App() {
       <div className="main-shell">
         <header className="topbar">
           <div className="breadcrumb">
-            Workspace
+            <span>Workspace</span>
             <ChevronRight size={13} />
             <strong>
               {page === "benchmarks" ? "Benchmark" : "Investigations"}
             </strong>
+            {page === "investigations" && viewingCase && (
+              <>
+                <ChevronRight size={13} />
+                <code
+                  className="case-breadcrumb"
+                  title={`Viewing case ${viewingCase.id}`}
+                >
+                  {viewingCase.id}
+                </code>
+              </>
+            )}
           </div>
           <div className="topbar-right">
             <span className="connection">
@@ -587,6 +634,22 @@ function App() {
               <HelpTip topic="New investigation" />
             </div>
           </div>
+          {page === "investigations" && viewingCase && (
+            <div
+              className="selected-case-banner"
+              role="status"
+              aria-live="polite"
+            >
+              <div>
+                <span className="selected-case-label">
+                  VIEWING CASE <HelpTip topic="Case ID" />
+                </span>
+                <code>{viewingCase.id}</code>
+                <strong>{viewingCase.report.title}</strong>
+              </div>
+              <Badge state={viewingCase.state} />
+            </div>
+          )}
           <div className="metrics-row">
             <Metric
               label="Total investigations"
@@ -741,7 +804,7 @@ function App() {
                   >
                     {cases.map((c) => (
                       <option key={c.id} value={c.id}>
-                        {c.report.title} · {c.id.slice(-8)}
+                        {c.id} · {c.report.title} · {human(c.state)}
                       </option>
                     ))}
                   </select>
@@ -750,19 +813,48 @@ function App() {
               {!current || current.id !== selected ? (
                 <div className="loading">
                   <LoaderCircle className="spin" />
-                  Loading investigation…
+                  Loading case {selected}…
                 </div>
               ) : (
                 <div className="case-workspace">
                   <div className="case-header">
-                    <div>
+                    <div className="case-heading-copy">
+                      <div className="case-identity">
+                        <span>CASE</span>
+                        <code>{current.id}</code>
+                        <button
+                          className="icon-button"
+                          title="Copy case ID"
+                          aria-label={
+                            copiedCase === current.id
+                              ? "Case ID copied"
+                              : "Copy case ID"
+                          }
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(current.id);
+                              setCopiedCase(current.id);
+                            } catch {
+                              setError(
+                                "Could not copy the case ID. You can select the visible ID and copy it.",
+                              );
+                            }
+                          }}
+                        >
+                          {copiedCase === current.id ? (
+                            <Check size={13} />
+                          ) : (
+                            <Copy size={13} />
+                          )}
+                        </button>
+                      </div>
                       <div className="case-meta">
-                        <span className="case-id">
-                          {current.benchmark_id ||
-                            current.id.slice(0, 8).toUpperCase()}
-                        </span>
-                        <span> / </span>
                         <span className="game-name">{current.report.game}</span>
+                        {current.benchmark_id && (
+                          <span className="benchmark-reference">
+                            Benchmark {current.benchmark_id}
+                          </span>
+                        )}
                         <span className="meta-dot">·</span>
                         <GitBranch size={12} />
                         <code>{current.report.target_commit.slice(0, 8)}</code>
