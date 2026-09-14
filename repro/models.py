@@ -45,6 +45,11 @@ ACTIVE_STATES = {
 }
 
 
+class FixtureSpec(BaseModel):
+    filename: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}\.msav$")
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
 class CaseInput(BaseModel):
     title: str = Field(min_length=3, max_length=250)
     body: str = Field(min_length=10, max_length=30000)
@@ -52,6 +57,16 @@ class CaseInput(BaseModel):
     target_commit: str = Field(pattern=r"^[0-9a-f]{40}$")
     platform: str = Field(default="Linux", max_length=100)
     build_version: str | None = Field(default=None, max_length=100)
+    fixtures: list[FixtureSpec] = Field(default_factory=list, max_length=4)
+
+    @model_validator(mode="after")
+    def supported_fixtures(self):
+        if self.fixtures and self.game != "mindustry":
+            raise ValueError("Provided map fixtures currently support Mindustry only")
+        names = [fixture.filename.casefold() for fixture in self.fixtures]
+        if len(names) != len(set(names)):
+            raise ValueError("Provided maps must have distinct filenames")
+        return self
 
 
 class BugSpec(BaseModel):

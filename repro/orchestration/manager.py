@@ -29,6 +29,7 @@ from repro.models import (
     patch_validated,
 )
 from repro.orchestration.postconditions import current_plan, plan_postconditions
+from repro.storage.fixtures import read_fixture
 from repro.storage.store import Store
 from repro.validation import (
     PARSER_VERSION,
@@ -484,6 +485,8 @@ class Manager:
             self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
 
     async def _investigate(self, case: Case, sandbox: DockerSandbox, model: Model, started):
+        for fixture in case.report.fixtures:
+            read_fixture(self.store, fixture)
         self.store.save(
             case, "stage_started", {"stage": "triage", "summary": "Starting report triage."}
         )
@@ -600,6 +603,10 @@ class Manager:
         await model.loop(
             "Investigate the following report in the running game. First handle any first-run dialogs. "
             "Use the UI to test hypotheses. Every action will be replayed from a clean profile, including startup dialogs. "
+            "If the original report lists fixtures, their exact original bytes are available at "
+            "/workspace/fixtures/<filename>. Import provided maps through the game UI; "
+            "the same originals are restored before every reset and replay. They are player "
+            "inputs, not proof that the reported bug occurs. "
             "You may search the code to understand navigation, but source matches alone never verify behavior. "
             "For a static visual bug, end with the symptom visible. For persistence, input/readback, "
             "payload transport, or another state change, tag 2–8 meaningful computer actions with "

@@ -174,6 +174,17 @@ def render_report(case: Case, store: Store) -> bytes:
         )
     )
     story += [stats, p("Player report", heading), p(case.report.body)]
+    if case.report.fixtures:
+        story += [
+            p("Provided maps", heading),
+            p(
+                "Original player files restored before each fresh run. Checksums identify inputs; "
+                "their presence does not establish a reproduced bug.",
+                small,
+            ),
+        ]
+        for fixture in case.report.fixtures:
+            story += [p(fixture.filename), p("SHA-256: " + fixture.sha256, small)]
     if case.spec:
         if case.spec.expected_behavior:
             story += [p("Expected behavior: " + case.spec.expected_behavior)]
