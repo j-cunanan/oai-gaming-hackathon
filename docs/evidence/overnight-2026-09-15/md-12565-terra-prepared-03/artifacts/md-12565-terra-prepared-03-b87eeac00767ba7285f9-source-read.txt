@@ -1,0 +1,54 @@
+65:     public ContentType getContentType(){
+66:         return ContentType.unitCommand;
+67:     }
+68: 
+69:     @Override
+70:     public String toString(){
+71:         return "UnitCommand:" + name;
+72:     }
+73: 
+74:     public static void loadAll(){
+75: 
+76:         moveCommand = new UnitCommand("move", "right", Binding.unitCommandMove, null){{
+77:             drawTarget = true;
+78:             resetTarget = false;
+79:         }};
+80:         repairCommand = new UnitCommand("repair", "modeSurvival", Binding.unitCommandRepair, u -> new RepairAI());
+81:         rebuildCommand = new UnitCommand("rebuild", "hammer", Binding.unitCommandRebuild, u -> new BuilderAI());
+82:         assistCommand = new UnitCommand("assist", "players", Binding.unitCommandAssist, u -> {
+83:             var ai = new BuilderAI();
+84:             ai.onlyAssist = true;
+85:             return ai;
+86:         });
+87:         mineCommand = new UnitCommand("mine", "production", Binding.unitCommandMine, u -> new MinerAI()){{
+88:             refreshOnSelect = true;
+89:         }};
+90:         enterPayloadCommand = new UnitCommand("enterPayload", "downOpen", Binding.unitCommandEnterPayload, null){{
+91:             switchToMove = false;
+92:             drawTarget = true;
+93:             resetTarget = false;
+94:             snapToBuilding = true;
+95:         }};
+96:         loadUnitsCommand = new UnitCommand("loadUnits", "upload", Binding.unitCommandLoadUnits, null){{
+97:             switchToMove = false;
+98:             drawTarget = true;
+99:             resetTarget = false;
+100:         }};
+101:         loadBlocksCommand = new UnitCommand("loadBlocks", "up", Binding.unitCommandLoadBlocks, null){{
+102:             switchToMove = false;
+103:             drawTarget = true;
+104:             resetTarget = false;
+105:             exactArrival = true;
+106:         }};
+107:         unloadPayloadCommand = new UnitCommand("unloadPayload", "download", Binding.unitCommandUnloadPayload, null){{
+108:             switchToMove = false;
+109:             drawTarget = true;
+110:             resetTarget = false;
+111:         }};
+112:         loopPayloadCommand = new UnitCommand("loopPayload", "resize", Binding.unitCommandLoopPayload, null){{
+113:             switchToMove = false;
+114:             drawTarget = true;
+115:             resetTarget = false;
+116:         }};
+117:     }
+118: }

@@ -1,0 +1,100 @@
+600:                 }
+601:             }else{
+602:                 Payload current = build.getPayload();
+603:                 if(current != null && pay.canPickupPayload(current)){
+604:                     Payload taken = build.takePayload();
+605:                     if(taken != null){
+606:                         Sounds.payloadPickup.at(unit, Mathf.random(0.9f, 1.1f));
+607:                         pay.addPayload(taken);
+608:                         Fx.unitPickup.at(build);
+609:                     }
+610:                 }
+611:             }
+612: 
+613:         }else if(build != null && onGround){
+614:             Sounds.payloadPickup.at(unit, Mathf.random(0.9f, 1.1f));
+615:             Fx.unitPickup.at(build);
+616:             build.tile.remove();
+617:         }
+618:     }
+619: 
+620:     @Remote(targets = Loc.both, called = Loc.server)
+621:     public static void requestDropPayload(Player player, float x, float y){
+622:         if(player == null || net.client() || player.dead()) return;
+623: 
+624:         Payloadc pay = (Payloadc)player.unit();
+625: 
+626:         if(pay.payloads().isEmpty()) return;
+627: 
+628:         if(net.server() && !netServer.admins.allowAction(player, ActionType.dropPayload, player.unit().tileOn(), action -> {
+629:             action.payload = pay.payloads().peek();
+630:         })){
+631:             throw new ValidateException(player, "Player cannot drop a payload.");
+632:         }
+633: 
+634:         //apply margin of error
+635:         Tmp.v1.set(x, y).sub(pay).limit(tilesize * 4f).add(pay);
+636:         float cx = Tmp.v1.x, cy = Tmp.v1.y;
+637: 
+638:         Call.payloadDropped(player.unit(), cx, cy);
+639:     }
+640: 
+641:     @Remote(called = Loc.server, targets = Loc.server)
+642:     public static void payloadDropped(Unit unit, float x, float y){
+643:         if(unit instanceof Payloadc pay){
+644:             float prevx = pay.x(), prevy = pay.y();
+645:             pay.set(x, y);
+646:             pay.dropLastPayload();
+647:             pay.set(prevx, prevy);
+648:         }
+649:     }
+650: 
+651:     @Remote(called = Loc.server)
+652:     public static void unitEnteredPayload(Unit unit, Building build){
+653:         if(unit == null || build == null || unit.team != build.team) return;
+654: 
+655:         unit.remove();
+656: 
+657:         //reset the enter command
+658:         if(unit.controller() instanceof CommandAI ai && ai.command == UnitCommand.enterPayloadCommand){
+659:             ai.clearCommands();
+660:             ai.command = UnitCommand.moveCommand;
+661:         }
+662: 
+663:         //clear removed state of unit so it can be synced
+664:         if(Vars.net.client()){
+665:             Vars.netClient.clearRemovedEntity(unit.id);
+666:         }
+667: 
+668:         UnitPayload unitPay = new UnitPayload(unit);
+669: 
+670:         if(build.acceptPayload(build, unitPay)){
+671:             Fx.unitDrop.at(build);
+672:             build.handlePayload(build, unitPay, unit);
+673:         }
+674:     }
+675: 
+676:     @Remote(targets = Loc.client, called = Loc.server)
+677:     public static void dropItem(Player player, float angle){
+678:         if(player == null || player.unit() == null) return;
+679: 
+680:         if(net.server() && player.unit().stack.amount <= 0){
+681:             throw new ValidateException(player, "Player cannot drop an item.");
+682:         }
+683: 
+684:         var unit = player.unit();
+685:         Fx.dropItem.at(unit.x, unit.y, angle, Color.white, unit.item());
+686:         unit.clearItem();
+687:     }
+688: 
+689:     @Remote(targets = Loc.both, called = Loc.server, forward = true, unreliable = true)
+690:     public static void rotateBlock(@Nullable Player player, Building build, boolean direction){
+691:         if(build == null) return;
+692: 
+693:         if(net.server() && (!Units.canInteract(player, build) ||
+694:         !netServer.admins.allowAction(player, ActionType.rotate, build.tile, action -> action.rotation = Mathf.mod(build.rotation + Mathf.sign(direction), 4)))){
+695:             throw new ValidateException(player, "Player cannot rotate a block.");
+696:         }
+697: 
+698:         if(player != null) build.updateLastAccess(player);
+699:         int previous = build.rotation;

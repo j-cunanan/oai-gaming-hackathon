@@ -53,7 +53,7 @@ def stage_for(kind: str, data: dict, previous: str) -> str:
         return STATE_STAGE.get(data.get("state"), previous)
     if kind in {"action", "action_sequence", "replay"}:
         return PHASE_STAGE.get(data.get("phase"), previous)
-    if kind in {"model_call", "tool_error"}:
+    if kind in {"model_call", "model_request_failed", "tool_error"}:
         return PURPOSE_STAGE.get(data.get("purpose"), previous)
     return {
         "localization": "localize",
@@ -151,7 +151,7 @@ def activity_snapshot(store: Store, case_id: str, after: int = 0) -> dict:
                     links.append({"id": artifact, "label": label})
             state = data.get("state", "")
             attention = (
-                kind == "error"
+                kind in {"error", "model_request_failed"}
                 or state
                 in {
                     "FAILED",

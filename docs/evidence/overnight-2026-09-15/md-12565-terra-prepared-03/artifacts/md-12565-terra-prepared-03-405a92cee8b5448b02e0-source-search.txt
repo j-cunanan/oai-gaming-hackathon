@@ -1,0 +1,8 @@
+./core/src/mindustry/ui/fragments/PlacementFragment.java:53:    Table blockTable, toggler, topTable, blockCatTable, commandTable;
+./core/src/mindustry/ui/fragments/PlacementFragment.java:443:                commandTable = new Table(Tex.pane2);
+./core/src/mindustry/ui/fragments/PlacementFragment.java:449:                        mainStack.addChild(control.input.commandMode ? commandTable : blockCatTable);
+./core/src/mindustry/ui/fragments/PlacementFragment.java:453:                            commandTable.getCells().peek().width(blockCatTable.getWidth() / Scl.scl(1f));
+./core/src/mindustry/ui/fragments/PlacementFragment.java:471:                //commandTable: commanded units
+./core/src/mindustry/ui/fragments/PlacementFragment.java:473:                    commandTable.touchable = Touchable.enabled;
+./core/src/mindustry/ui/fragments/PlacementFragment.java:474:                    commandTable.add(Core.bundle.get("commandmode.name")).fill().center().labelAlign(Align.center).row();
+./core/src/mindustry/ui/fragments/PlacementFragment.java:475:                    commandTable.image().color(Pal.accent).growX().pad(20f).padTop(0f).padBottom(4f).row();

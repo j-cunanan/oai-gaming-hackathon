@@ -1,0 +1,2 @@
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:737:        public void checkPref(String name, boolean def){
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:743:        public void checkPref(String name, boolean def, Boolc changed){

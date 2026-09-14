@@ -1,0 +1,1 @@
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:808:        public static class CheckSetting extends Setting{

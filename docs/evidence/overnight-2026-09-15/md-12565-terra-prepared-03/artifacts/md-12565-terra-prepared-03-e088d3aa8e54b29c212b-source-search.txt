@@ -1,0 +1,1 @@
+./core/src/mindustry/input/DesktopInput.java:871:            if(commandMode && selectedUnits.any()){

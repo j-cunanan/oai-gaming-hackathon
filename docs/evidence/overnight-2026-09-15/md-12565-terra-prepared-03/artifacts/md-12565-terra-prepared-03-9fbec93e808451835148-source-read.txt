@@ -1,0 +1,130 @@
+900:             }
+901:         }
+902:     }
+903: 
+904:     @Override
+905:     public boolean tap(float x, float y, int count, KeyCode button){
+906:         if(scene.hasMouse() || !commandMode) return false;
+907: 
+908:         tappedOne = true;
+909: 
+910:         //click: select a single unit
+911:         if(button == KeyCode.mouseLeft){
+912:             if(count >= 2){
+913:                 selectTypedUnits();
+914:             }else{
+915:                 tapCommandUnit();
+916:             }
+917: 
+918:         }
+919: 
+920:         return super.tap(x, y, count, button);
+921:     }
+922: 
+923:     @Override
+924:     public boolean touchDown(float x, float y, int pointer, KeyCode button){
+925:         if(scene.hasMouse() || !commandMode) return false;
+926: 
+927:         if(button == KeyCode.mouseRight){
+928:             commandTap(x, y);
+929:         }
+930: 
+931:         if(button == Binding.commandQueue.value.key){
+932:             commandTap(x, y, true);
+933:         }
+934: 
+935:         return super.touchDown(x, y, pointer, button);
+936:     }
+937: 
+938:     @Override
+939:     public boolean selectedBlock(){
+940:         return isPlacing() && mode != breaking;
+941:     }
+942: 
+943:     @Override
+944:     public float getMouseX(){
+945:         return Core.input.mouseX();
+946:     }
+947: 
+948:     @Override
+949:     public float getMouseY(){
+950:         return Core.input.mouseY();
+951:     }
+952: 
+953:     @Override
+954:     public void updateState(){
+955:         super.updateState();
+956: 
+957:         if(state.isMenu()){
+958:             lastSchematic = null;
+959:             droppingItem = false;
+960:             mode = none;
+961:             block = null;
+962:             splan = null;
+963:             selectPlans.clear();
+964:         }
+965:     }
+966: 
+967:     @Override
+968:     public void panCamera(Vec2 position){
+969:         if(!locked()){
+970:             panning = true;
+971:             camera.position.set(position);
+972:         }
+973:     }
+974: 
+975:     protected void updateMovement(Unit unit){
+976:         boolean omni = unit.type.omniMovement;
+977: 
+978:         float speed = unit.speed();
+979:         float xa = Core.input.axis(Binding.moveX);
+980:         float ya = Core.input.axis(Binding.moveY);
+981:         boolean boosted = (unit instanceof Mechc && unit.isFlying());
+982: 
+983:         if(settings.getBool("detach-camera")){
+984:             Vec2 targetPos = camera.position;
+985: 
+986:             movement.set(targetPos).sub(player).limit(speed);
+987: 
+988:             if(player.within(targetPos, 15f)){
+989:                 movement.setZero();
+990:                 unit.vel.approachDelta(Vec2.ZERO, unit.speed() * unit.type().accel / 2f);
+991:             }
+992:         }else{
+993:             movement.set(xa, ya).nor().scl(speed);
+994:             if(Core.input.keyDown(Binding.mouseMove)){
+995:                 movement.add(input.mouseWorld().sub(player).scl(1f / 25f * speed)).limit(speed);
+996:             }
+997:         }
+998: 
+999:         float mouseAngle = Angles.mouseAngle(unit.x, unit.y);
+1000:         boolean aimCursor = omni && player.shooting && unit.type.hasWeapons() && unit.type.faceTarget && !boosted;
+1001: 
+1002:         if(aimCursor){
+1003:             unit.lookAt(mouseAngle);
+1004:         }else{
+1005:             unit.lookAt(unit.prefRotation());
+1006:         }
+1007: 
+1008:         unit.movePref(movement);
+1009: 
+1010:         unit.aim(input.mouseWorldX(), input.mouseWorldY(), true);
+1011:         unit.controlWeapons(true, player.shooting && !boosted);
+1012: 
+1013:         player.boosting = Core.input.keyDown(Binding.boost);
+1014:         player.mouseX = unit.aimX();
+1015:         player.mouseY = unit.aimY();
+1016: 
+1017:         //update payload input
+1018:         if(unit instanceof Payloadc){
+1019:             if(Core.input.keyTap(Binding.pickupCargo)){
+1020:                 tryPickupPayload();
+1021:                 lastPayloadKeyTapMillis = Time.millis();
+1022:             }
+1023: 
+1024:             if(Core.input.keyDown(Binding.pickupCargo)
+1025:             && Time.timeSinceMillis(lastPayloadKeyHoldMillis) > 20
+1026:             && Time.timeSinceMillis(lastPayloadKeyTapMillis) > 200){
+1027:                 tryPickupPayload();
+1028:                 lastPayloadKeyHoldMillis = Time.millis();
+1029:             }

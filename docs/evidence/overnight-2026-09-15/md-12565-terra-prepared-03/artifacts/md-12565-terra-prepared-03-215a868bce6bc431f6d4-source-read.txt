@@ -1,0 +1,62 @@
+470:         return controller;
+471:     }
+472: 
+473:     public void resetController(){
+474:         controller(type.createController(self()));
+475:     }
+476: 
+477:     @Override
+478:     public void set(UnitType def, UnitController controller){
+479:         if(this.type != def){
+480:             setType(def);
+481:         }
+482:         controller(controller);
+483:     }
+484: 
+485:     /** @return the collision layer to use for unit physics. Returning anything outside of PhysicsProcess contents will crash the game. */
+486:     public int collisionLayer(){
+487:         return type.allowLegStep && type.legPhysicsLayer ? PhysicsProcess.layerLegs : isGrounded() ? PhysicsProcess.layerGround : PhysicsProcess.layerFlying;
+488:     }
+489: 
+490:     public void lookAt(float angle){
+491:         rotation = Angles.moveToward(rotation, angle, type.rotateSpeed * Time.delta * speedMultiplier());
+492:     }
+493: 
+494:     public void lookAt(Position pos){
+495:         lookAt(angleTo(pos));
+496:     }
+497: 
+498:     public void lookAt(float x, float y){
+499:         lookAt(angleTo(x, y));
+500:     }
+501: 
+502:     public boolean isAI(){
+503:         return controller instanceof AIController;
+504:     }
+505: 
+506:     /** @return whether the unit *can* be commanded, even if its controller is not currently CommandAI. */
+507:     public boolean allowCommand(){
+508:         return controller instanceof CommandAI;
+509:     }
+510: 
+511:     /** @return whether the unit has a CommandAI controller */
+512:     public boolean isCommandable(){
+513:         return controller instanceof CommandAI;
+514:     }
+515: 
+516:     public boolean canTarget(Teamc other){
+517:         return other != null && (other instanceof Unit u ? u.checkTarget(type.targetAir, type.targetGround) : (other instanceof Building b && type.targetGround));
+518:     }
+519: 
+520:     public CommandAI command(){
+521:         if(controller instanceof CommandAI ai){
+522:             return ai;
+523:         }else{
+524:             throw new IllegalArgumentException("Unit cannot be commanded - check isCommandable() first.");
+525:         }
+526:     }
+527: 
+528:     public boolean isMissile(){
+529:         return this instanceof TimedKillc;
+530:     }
+531: 

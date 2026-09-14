@@ -1,0 +1,1 @@
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:820:                Table box = Elems.check(title, () -> settings.getBool(name), value -> {

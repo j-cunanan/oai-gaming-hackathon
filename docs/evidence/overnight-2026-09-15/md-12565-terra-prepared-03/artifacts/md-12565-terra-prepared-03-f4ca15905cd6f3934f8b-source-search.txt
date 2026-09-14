@@ -1,0 +1,2 @@
+./core/src/mindustry/ai/UnitCommand.java:90:        enterPayloadCommand = new UnitCommand("enterPayload", "downOpen", Binding.unitCommandEnterPayload, null){{
+./core/src/mindustry/input/Binding.java:62:    unitCommandEnterPayload = KeyBind.add("unit_command_enter_payload", KeyCode.unset),

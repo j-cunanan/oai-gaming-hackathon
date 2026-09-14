@@ -1,0 +1,200 @@
+344:             }
+345: 
+346:             if(input.keyTap(Binding.selectAllUnitFactories)){
+347:                 selectedUnits.clear();
+348:                 commandBuildings.clear();
+349:                 for(var build : player.team().data().buildings){
+350:                     if(build.isCommandable()){
+351:                         commandBuildings.add(build);
+352:                     }
+353:                 }
+354:                 if(input.keyDown(Binding.selectAcrossScreen)){
+355:                     camera.bounds(Tmp.r1);
+356:                     commandBuildings.retainAll(b -> Tmp.r1.overlaps(b.x - (b.hitSize() /2), b.y - (b.hitSize() /2), b.hitSize(), b.hitSize()));
+357:                 }
+358:             }
+359: 
+360:             for(int i = 0; i < controlGroupBindings.length; i++){
+361:                 if(input.keyTap(controlGroupBindings[i])){
+362: 
+363:                     //create control group if it doesn't exist yet
+364:                     if(controlGroups[i] == null) controlGroups[i] = new IntSeq();
+365: 
+366:                     IntSeq group = controlGroups[i];
+367:                     boolean creating = input.keyDown(Binding.createControlGroup);
+368: 
+369:                     //clear existing if making a new control group
+370:                     //if any of the control group edit buttons are pressed take the current selection
+371:                     if(creating){
+372:                         group.clear();
+373: 
+374:                         IntSeq selectedUnitIds = selectedUnits.mapInt(u -> u.id);
+375:                         if(Core.settings.getBool("distinctcontrolgroups", true)){
+376:                             for(IntSeq cg : controlGroups){
+377:                                 if(cg != null){
+378:                                     cg.removeAll(selectedUnitIds);
+379:                                 }
+380:                             }
+381:                         }
+382:                         group.addAll(selectedUnitIds);
+383:                     }
+384: 
+385:                     //remove invalid units
+386:                     for(int j = 0; j < group.size; j++){
+387:                         Unit u = Groups.unit.getByID(group.get(j));
+388:                         if(u == null || !u.isCommandable() || !u.isValid()){
+389:                             group.removeIndex(j);
+390:                             j --;
+391:                         }
+392:                     }
+393: 
+394:                     //replace the selected units with the current control group
+395:                     if(!group.isEmpty() && !creating){
+396:                         selectedUnits.clear();
+397:                         commandBuildings.clear();
+398: 
+399:                         group.each(id -> {
+400:                             var unit = Groups.unit.getByID(id);
+401:                             if(unit != null){
+402:                                 selectedUnits.addAll(unit);
+403:                             }
+404:                         });
+405: 
+406:                         //double tap to center camera
+407:                         if(lastCtrlGroup == i && Time.timeSinceMillis(lastCtrlGroupSelectMillis) < 400){
+408:                             float totalX = 0, totalY = 0;
+409:                             for(Unit unit : selectedUnits){
+410:                                 totalX += unit.x;
+411:                                 totalY += unit.y;
+412:                             }
+413:                             panning = true;
+414:                             Core.camera.position.set(totalX / selectedUnits.size, totalY / selectedUnits.size);
+415:                         }
+416:                         lastCtrlGroup = i;
+417:                         lastCtrlGroupSelectMillis = Time.millis();
+418:                     }
+419:                 }
+420:             }
+421:         }
+422: 
+423:         if(!scene.hasMouse() && !locked && state.rules.possessionAllowed){
+424:             if(Core.input.keyDown(Binding.control) && Core.input.keyTap(Binding.select)){
+425:                 Unit on = selectedUnit();
+426:                 var build = selectedControlBuild();
+427:                 if(on != null){
+428:                     Call.unitControl(player, on);
+429:                     shouldShoot = false;
+430:                     recentRespawnTimer = 1f;
+431:                 }else if(build != null){
+432:                     Call.buildingControlSelect(player, build);
+433:                     recentRespawnTimer = 1f;
+434:                 }
+435:             }
+436:         }
+437: 
+438:         if(!player.dead() && !state.isPaused() && !scene.hasField() && !locked){
+439:             updateMovement(player.unit());
+440: 
+441:             if(Core.input.keyTap(Binding.respawn)){
+442:                 controlledType = null;
+443:                 recentRespawnTimer = 1f;
+444:                 droppingItem = false;
+445:                 Call.unitClear(player);
+446:             }
+447:         }
+448: 
+449:         if(state.isGame() && !scene.hasDialog() && !scene.hasField()){
+450:             if(Core.input.keyTap(Binding.minimap)) ui.minimapfrag.toggle();
+451:             if(Core.input.keyTap(Binding.planetMap) && state.isCampaign()) ui.planet.toggle();
+452:             if(Core.input.keyTap(Binding.research) && state.isCampaign()) ui.research.toggle();
+453:             if(Core.input.keyTap(Binding.schematicMenu)) ui.schematics.toggle();
+454: 
+455:             if(Core.input.keyTap(Binding.toggleBlockStatus)){
+456:                 Core.settings.put("blockstatus", !Core.settings.getBool("blockstatus"));
+457:             }
+458: 
+459:             if(Core.input.keyTap(Binding.togglePowerLines)){
+460:                 if(Core.settings.getInt("lasersopacity") == 0){
+461:                     Core.settings.put("lasersopacity", Core.settings.getInt("preferredlaseropacity", 100));
+462:                 }else{
+463:                     Core.settings.put("preferredlaseropacity", Core.settings.getInt("lasersopacity"));
+464:                     Core.settings.put("lasersopacity", 0);
+465:                 }
+466:             }
+467:         }
+468: 
+469:         if(state.isMenu() || Core.scene.hasDialog()){
+470:             if(!Core.input.keyDown(Binding.select)) player.shooting = false;
+471:             if(mode == breaking && !Core.input.keyDown(Binding.breakBlock)) mode = none;
+472:             if(mode == placing && !Core.input.keyDown(Binding.select)) mode = none;
+473: 
+474:             return;
+475:         }
+476: 
+477:         //zoom camera
+478:         if((!Core.scene.hasScroll() || Core.input.keyDown(Binding.diagonalPlacement)) && !ui.chatfrag.shown() && !ui.consolefrag.shown() && Math.abs(Core.input.axisTap(Binding.zoom)) > 0
+479:             && !Core.input.keyDown(Binding.rotatePlaced) && (Core.input.keyDown(Binding.diagonalPlacement) ||
+480:                 !Binding.zoom.value.equals(Binding.rotate.value) || ((!player.isBuilder() || !isPlacing() || !block.rotate) && selectPlans.isEmpty()))){
+481:             renderer.scaleCamera(Core.input.axisTap(Binding.zoom));
+482:         }
+483: 
+484:         if(Core.input.keyTap(Binding.select) && !Core.scene.hasMouse()){
+485:             Tile selected = world.tileWorld(input.mouseWorldX(), input.mouseWorldY());
+486:             if(selected != null){
+487:                 Call.tileTap(player, selected);
+488:             }
+489:         }
+490: 
+491:         if(input.keyTap(Binding.ping) && !Core.scene.hasMouse() && !scene.hasKeyboard()){
+492:             if(input.ctrl()){
+493:                 ui.showTextInput("", "@ping.text", Vars.maxPingTextLength, "", result -> Call.pingLocation(Vars.player, input.mouseWorldX(), input.mouseWorldY(), UI.formatIcons(result)));
+494:             }else{
+495:                 Call.pingLocation(Vars.player, input.mouseWorldX(), input.mouseWorldY(), null);
+496:             }
+497:         }
+498: 
+499:         if(Core.input.keyRelease(Binding.select) && commandRect){
+500:             selectUnitsRect();
+501:         }
+502: 
+503:         if(player.dead() || locked){
+504:             cursorType = SystemCursor.arrow;
+505:             if(!locked){
+506:                 pollInputNoPlayer();
+507:             }
+508:         }else{
+509:             pollInputPlayer();
+510:         }
+511: 
+512:         if(Core.input.keyRelease(Binding.select)){
+513:             player.shooting = false;
+514:         }
+515: 
+516:         if(!Core.scene.hasMouse() && !ui.minimapfrag.shown()){
+517:             Core.graphics.cursor(cursorType);
+518:             changedCursor = cursorType != SystemCursor.arrow;
+519:         }else{
+520:             cursorType = SystemCursor.arrow;
+521:             if(changedCursor){
+522:                 graphics.cursor(SystemCursor.arrow);
+523:                 changedCursor = false;
+524:             }
+525:         }
+526:     }
+527: 
+528:     @Override
+529:     public void useSchematic(Schematic schem, boolean checkHidden){
+530:         block = null;
+531:         schematicX = tileX(getMouseX());
+532:         schematicY = tileY(getMouseY());
+533: 
+534:         selectPlans.clear();
+535:         selectPlans.addAll(schematics.toPlans(schem, schematicX, schematicY, checkHidden));
+536:         mode = none;
+537:     }
+538: 
+539:     @Override
+540:     public boolean isBreaking(){
+541:         return mode == breaking;
+542:     }
+543: 

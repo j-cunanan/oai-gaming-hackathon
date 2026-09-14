@@ -1,0 +1,4 @@
+./core/src/mindustry/graphics/OverlayRenderer.java:127:        if(select == null) select = input.selectedControlBuild();
+./core/src/mindustry/input/InputHandler.java:2167:    public @Nullable Building selectedControlBuild(){
+./core/src/mindustry/input/DesktopInput.java:426:                var build = selectedControlBuild();
+./core/src/mindustry/input/MobileInput.java:731:            buildingTapped = selectedControlBuild();

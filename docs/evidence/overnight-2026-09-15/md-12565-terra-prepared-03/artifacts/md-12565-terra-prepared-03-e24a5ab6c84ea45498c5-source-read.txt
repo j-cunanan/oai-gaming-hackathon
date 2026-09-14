@@ -1,0 +1,130 @@
+1210: 
+1211:     public void drawCommanded(){
+1212:         Draw.draw(Layer.plans, () -> {
+1213:             drawCommanded(true);
+1214:         });
+1215: 
+1216:         Draw.draw(Layer.groundUnit - 1, () -> {
+1217:             drawCommanded(false);
+1218:         });
+1219: 
+1220:         Draw.draw(Layer.overlayUI, () -> {
+1221:             drawCommandedTargets();
+1222:         });
+1223:     }
+1224: 
+1225:     public void drawCommandedTargets(){
+1226:         if(commandMode){
+1227:             for(Unit unit : selectedUnits){
+1228:                 if(unit.controller() instanceof CommandAI ai){
+1229:                     var cmd =  ai.currentCommand();
+1230: 
+1231:                     if(ai.attackTarget != null && cmd.drawTarget){
+1232:                         Drawf.target(ai.attackTarget.getX(), ai.attackTarget.getY(), 6f, Pal.remove);
+1233:                     }
+1234:                 }
+1235:             }
+1236:         }
+1237:     }
+1238: 
+1239:     public void drawCommanded(boolean flying){
+1240:         float lineLimit = 6.5f;
+1241:         int sides = 6;
+1242:         float alpha = 0.5f;
+1243: 
+1244:         if(commandMode){
+1245:             //happens sometimes
+1246:             selectedUnits.removeAll(u -> !u.allowCommand());
+1247: 
+1248:             for(Unit unit : selectedUnits){
+1249: 
+1250:                 Color color = unit.controller() instanceof LogicAI ? Team.malis.color : Pal.accent;
+1251: 
+1252:                 Position lastPos = null;
+1253: 
+1254:                 if(unit.controller() instanceof CommandAI ai){
+1255:                     var cmd =  ai.currentCommand();
+1256:                     lastPos = ai.attackTarget != null ? ai.attackTarget : ai.targetPos;
+1257: 
+1258:                     if((unit.isFlying() || unit.type.allowLegStep) != flying) continue;
+1259: 
+1260:                     //draw target line
+1261:                     if(ai.targetPos != null && cmd.drawTarget){
+1262:                         Position lineDest = ai.attackTarget != null ? ai.attackTarget : ai.targetPos;
+1263:                         Drawf.limitLine(unit, lineDest, unit.hitSize / unitSelectRadScl + 1f, lineLimit, color.write(Tmp.c1).a(alpha));
+1264: 
+1265:                         if(ai.attackTarget == null){
+1266:                             Drawf.square(lineDest.getX(), lineDest.getY(), 3.5f, color.write(Tmp.c1).a(alpha));
+1267: 
+1268:                             if(cmd == UnitCommand.enterPayloadCommand){
+1269:                                 var build = world.buildWorld(lineDest.getX(), lineDest.getY());
+1270:                                 if(build != null && build.block.acceptsUnitPayloads && build.team == unit.team){
+1271:                                     Drawf.selected(build, color);
+1272:                                 }else{
+1273:                                     Drawf.cross(lineDest.getX(), lineDest.getY(), 7f, Pal.remove);
+1274:                                 }
+1275:                             }
+1276:                         }
+1277:                     }
+1278:                 }
+1279: 
+1280:                 float rad = unit.hitSize / unitSelectRadScl + 1f;
+1281: 
+1282:                 Fill.lightInner(unit.x, unit.y, sides,
+1283:                 Math.max(0f, rad * 0.8f),
+1284:                 rad,
+1285:                 0f,
+1286:                 Tmp.c3.set(color).a(0f),
+1287:                 Tmp.c2.set(color).a(0.7f)
+1288:                 );
+1289: 
+1290:                 Lines.stroke(1f);
+1291:                 Draw.color(color);
+1292:                 Lines.poly(unit.x, unit.y, sides, rad + 0.5f);
+1293:                 //uncomment for a dark border
+1294:                 //Draw.color(Pal.gray);
+1295:                 //Lines.poly(unit.x, unit.y, sides, rad + 1.5f);
+1296:                 Draw.reset();
+1297: 
+1298:                 if(lastPos == null){
+1299:                     lastPos = unit;
+1300:                 }
+1301: 
+1302:                 if(unit.controller() instanceof CommandAI ai){
+1303:                     //draw command queue
+1304:                     if(ai.currentCommand().drawTarget && ai.commandQueue.size > 0){
+1305:                         for(var next : ai.commandQueue){
+1306:                             Drawf.limitLine(lastPos, next, lineLimit, lineLimit, color.write(Tmp.c1).a(alpha));
+1307:                             lastPos = next;
+1308: 
+1309:                             if(next instanceof Vec2 vec){
+1310:                                 Drawf.square(vec.x, vec.y, 3.5f, color.write(Tmp.c1).a(alpha));
+1311:                             }else{
+1312:                                 Drawf.target(next.getX(), next.getY(), 6f, Pal.remove);
+1313:                             }
+1314:                         }
+1315:                     }
+1316: 
+1317:                     if(ai.targetPos != null && ai.currentCommand() == UnitCommand.loopPayloadCommand && unit instanceof Payloadc pay){
+1318:                         Draw.color(color, 0.4f + Mathf.absin(5f, 0.5f));
+1319:                         TextureRegion region = pay.hasPayload() ? Icon.download.getRegion() : Icon.upload.getRegion();
+1320:                         float offset = 11f;
+1321:                         float size = 8f;
+1322:                         Draw.rect(region, ai.targetPos.x, ai.targetPos.y + offset, size, size / region.ratio());
+1323: 
+1324:                         if(ai.commandQueue.size > 0){
+1325:                             region = !pay.hasPayload() ? Icon.download.getRegion() : Icon.upload.getRegion();
+1326:                             Draw.rect(region, ai.commandQueue.first().getX(), ai.commandQueue.first().getY() + offset, size, size / region.ratio());
+1327:                         }
+1328:                         Draw.color();
+1329:                     }
+1330:                 }
+1331:             }
+1332: 
+1333:             if(flying){
+1334:                 Color color = Pal.accent;
+1335:                 for(var commandBuild : commandBuildings){
+1336:                     if(commandBuild != null){
+1337:                         Drawf.square(commandBuild.x, commandBuild.y, commandBuild.hitSize() / 1.4f + 1f);
+1338:                         var cpos = commandBuild.getCommandPosition();
+1339: 

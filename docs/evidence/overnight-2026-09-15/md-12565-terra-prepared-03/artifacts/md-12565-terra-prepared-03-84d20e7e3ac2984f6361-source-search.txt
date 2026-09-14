@@ -1,0 +1,11 @@
+./core/src/mindustry/ai/UnitCommand.java:17:    public static UnitCommand moveCommand, repairCommand, rebuildCommand, assistCommand, mineCommand, enterPayloadCommand, loadUnitsCommand, loadBlocksCommand, unloadPayloadCommand, loopPayloadCommand;
+./core/src/mindustry/ai/UnitCommand.java:90:        enterPayloadCommand = new UnitCommand("enterPayload", "downOpen", Binding.unitCommandEnterPayload, null){{
+./core/src/mindustry/ai/UnitStance.java:92:            incompatibleCommands.addAll(UnitCommand.rebuildCommand, UnitCommand.repairCommand, UnitCommand.assistCommand, UnitCommand.enterPayloadCommand);
+./core/src/mindustry/ai/types/CommandAI.java:175:        return hasStance(UnitStance.boost) || command == UnitCommand.enterPayloadCommand;
+./core/src/mindustry/ai/types/CommandAI.java:231:        if(!net.client() && command == UnitCommand.enterPayloadCommand && unit.type.allowedInPayloads && (targetPos == null ? unit.buildOn() != null : targetBuild != null)){
+./core/src/mindustry/ai/types/CommandAI.java:294:            if(group != null && group.valid && groupIndex < group.units.size && command != UnitCommand.enterPayloadCommand){
+./core/src/mindustry/ai/types/CommandAI.java:302:                (command == UnitCommand.enterPayloadCommand && unit.within(movePos, 4f) || (targetBuild != null && !unit.type.circleTarget && unit.within(targetBuild, targetBuild.block.size * tilesize/2f * 0.9f))) ||
+./core/src/mindustry/ai/types/CommandAI.java:426:        if(command == UnitCommand.enterPayloadCommand && commandQueue.size == 0 && targetPos != null && world.buildWorld(targetPos.x, targetPos.y) != null && world.buildWorld(targetPos.x, targetPos.y).block.acceptsUnitPayloads){
+./core/src/mindustry/type/UnitType.java:1071:                commands.add(UnitCommand.enterPayloadCommand);
+./core/src/mindustry/input/InputHandler.java:658:        if(unit.controller() instanceof CommandAI ai && ai.command == UnitCommand.enterPayloadCommand){
+./core/src/mindustry/input/InputHandler.java:1268:                            if(cmd == UnitCommand.enterPayloadCommand){

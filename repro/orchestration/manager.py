@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import json
 import time
 from typing import Literal
 
@@ -552,6 +553,35 @@ class Manager:
             if args.outcome == "observed":
                 # The report defines the symptom. An investigator cannot redefine success.
                 args.oracle.description = case.spec.observed_behavior
+                proposal = {
+                    "version": 1,
+                    "case_id": case.id,
+                    "status": "unverified_proposal",
+                    "report": case.report.model_dump(mode="json"),
+                    "proposal": args.model_dump(mode="json"),
+                    "steps": [action.model_dump(mode="json") for action in discovery_actions],
+                    "checkpoints": {
+                        label: {
+                            "index": frame["index"],
+                            "screenshot_artifact": frame["observation"]["screenshot_artifact"],
+                        }
+                        for label, frame in recorder.checkpoints.items()
+                    },
+                }
+                artifact = self.store.artifact(
+                    case.id,
+                    "investigation-proposal.json",
+                    json.dumps(proposal, indent=2),
+                    "application/json",
+                )
+                self.store.save(
+                    case,
+                    "investigation_proposal",
+                    {
+                        "artifact": artifact,
+                        "summary": "Saved the proposed trigger before independent verification. This is not a verified reproduction.",
+                    },
+                )
                 observation = await recorder.observe()
                 proof = await verify(
                     model,

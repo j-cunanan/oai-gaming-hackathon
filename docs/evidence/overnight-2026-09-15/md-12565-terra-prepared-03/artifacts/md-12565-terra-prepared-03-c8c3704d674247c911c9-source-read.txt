@@ -1,0 +1,80 @@
+1035:         //add mirrored weapon variants
+1036:         Seq<Weapon> mapped = new Seq<>();
+1037:         for(Weapon w : weapons){
+1038:             if(w.recoilTime < 0) w.recoilTime = w.reload;
+1039:             mapped.add(w);
+1040: 
+1041:             //mirrors are copies with X values negated
+1042:             if(w.mirror){
+1043:                 Weapon copy = w.copy();
+1044:                 copy.flip();
+1045:                 mapped.add(copy);
+1046: 
+1047:                 //since there are now two weapons, the reload and recoil time must be doubled
+1048:                 w.recoilTime *= 2f;
+1049:                 copy.recoilTime *= 2f;
+1050:                 w.reload *= 2f;
+1051:                 copy.reload *= 2f;
+1052: 
+1053:                 w.otherSide = mapped.size - 1;
+1054:                 copy.otherSide = mapped.size - 2;
+1055:             }
+1056:         }
+1057:         this.weapons = mapped;
+1058: 
+1059:         weapons.each(Weapon::init);
+1060: 
+1061:         canHeal = weapons.contains(w -> w.bullet.heals());
+1062: 
+1063:         canAttack = weapons.contains(w -> !w.noAttack);
+1064: 
+1065:         //assign default commands.
+1066:         if(commands.size == 0){
+1067: 
+1068:             commands.add(UnitCommand.moveCommand);
+1069: 
+1070:             if(allowedInPayloads){
+1071:                 commands.add(UnitCommand.enterPayloadCommand);
+1072:             }
+1073: 
+1074:             if(canBoost){
+1075: 
+1076:                 if(buildSpeed > 0f){
+1077:                     commands.add(UnitCommand.rebuildCommand, UnitCommand.assistCommand);
+1078:                 }
+1079:                 if(mineTier > 0){
+1080:                     commands.add(UnitCommand.mineCommand);
+1081:                 }
+1082:             }
+1083: 
+1084:             //healing, mining and building is only supported for flying units; pathfinding to ambiguously reachable locations is hard.
+1085:             if(flying){
+1086:                 if(canHeal){
+1087:                     commands.add(UnitCommand.repairCommand);
+1088:                 }
+1089: 
+1090:                 if(buildSpeed > 0){
+1091:                     commands.add(UnitCommand.rebuildCommand, UnitCommand.assistCommand);
+1092:                 }
+1093: 
+1094:                 if(mineTier > 0){
+1095:                     commands.add(UnitCommand.mineCommand);
+1096:                 }
+1097:                 if(example instanceof Payloadc){
+1098:                     commands.addAll(UnitCommand.loadUnitsCommand, UnitCommand.loadBlocksCommand, UnitCommand.unloadPayloadCommand, UnitCommand.loopPayloadCommand);
+1099:                 }
+1100:             }
+1101:         }
+1102: 
+1103:         if(defaultCommand == null && commands.size > 0){
+1104:             defaultCommand = commands.first();
+1105:         }
+1106: 
+1107:         if(stances.size == 0){
+1108:             if(canAttack){
+1109:                 stances.addAll(UnitStance.stop, UnitStance.holdFire, UnitStance.pursueTarget, UnitStance.patrol);
+1110:                 if(!flying){
+1111:                     stances.add(UnitStance.ram);
+1112:                 }
+1113:                 if(canBoost){
+1114:                     stances.add(UnitStance.boost);

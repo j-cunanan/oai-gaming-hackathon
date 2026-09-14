@@ -1,0 +1,48 @@
+390:         //2) the SDL backend doesn't support multitouch
+391:         /*else{
+392:             game.checkPref("touchscreen", false, val -> control.setInput(!val ? new DesktopInput() : new MobileInput()));
+393:             if(Core.settings.getBool("touchscreen")){
+394:                 control.setInput(new MobileInput());
+395:             }
+396:         }*/
+397: 
+398:         game.checkPref("communityservers", true, val -> {
+399:             defaultServers.clear();
+400:             if(val){
+401:                 JoinDialog.fetchServers();
+402:             }
+403:         });
+404: 
+405:         game.checkPref("savecreate", true);
+406:         game.checkPref("blockreplace", true);
+407:         game.checkPref("conveyorpathfinding", true);
+408:         game.checkPref("hints", true);
+409: 
+410:         if(!mobile){
+411:             game.checkPref("backgroundpause", true);
+412:             game.checkPref("buildautopause", false);
+413:             game.checkPref("distinctcontrolgroups", true);
+414:         }
+415: 
+416:         game.checkPref("doubletapmine", false);
+417:         game.checkPref("commandmodehold", true);
+418: 
+419:         if(steam){
+420:             game.sliderPref("playerlimit", 16, 2, 32, i -> {
+421:                 platform.updateLobby();
+422:                 return i + "";
+423:             });
+424:         }
+425: 
+426:         graphics.sliderPref("uiEdgePadding", 0, 0, 100, s -> s + "px", s -> {
+427:             if(ui != null){
+428:                 ui.updateMargins();
+429:                 Core.scene.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+430:             }
+431:         });
+432: 
+433:         int[] lastUiScale = {settings.getInt("uiscale", 100)};
+434: 
+435:         graphics.sliderPref("uiscale", 100, 25, 300, 5, s -> {
+436:             //if the user changed their UI scale, but then put it back, don't consider it 'changed'
+437:             Core.settings.put("uiscalechanged", s != lastUiScale[0]);

@@ -1,0 +1,180 @@
+1: package mindustry.world.blocks.payloads;
+2: 
+3: import arc.*;
+4: import arc.graphics.*;
+5: import arc.graphics.g2d.*;
+6: import arc.math.*;
+7: import arc.scene.style.*;
+8: import arc.util.*;
+9: import arc.util.io.*;
+10: import mindustry.*;
+11: import mindustry.core.*;
+12: import mindustry.ctype.*;
+13: import mindustry.entities.EntityCollisions.*;
+14: import mindustry.entities.*;
+15: import mindustry.game.EventType.*;
+16: import mindustry.gen.*;
+17: import mindustry.graphics.*;
+18: import mindustry.type.*;
+19: 
+20: import static mindustry.Vars.*;
+21: 
+22: public class UnitPayload implements Payload{
+23:     public static final float overlayDuration = 40f;
+24: 
+25:     public Unit unit;
+26:     public float overlayTime = 0f;
+27:     public @Nullable TextureRegion overlayRegion;
+28: 
+29:     public UnitPayload(Unit unit){
+30:         this.unit = unit;
+31:     }
+32: 
+33:     /** Flashes a red overlay region. */
+34:     public void showOverlay(TextureRegion icon){
+35:         overlayRegion = icon;
+36:         overlayTime = 1f;
+37:     }
+38: 
+39:     /** Flashes a red overlay region. */
+40:     public void showOverlay(TextureRegionDrawable icon){
+41:         if(icon == null || headless) return;
+42:         showOverlay(icon.getRegion());
+43:     }
+44: 
+45:     @Override
+46:     public boolean contentEquals(Payload other){
+47:         return other instanceof UnitPayload up && up.unit.type == unit.type;
+48:     }
+49: 
+50:     @Override
+51:     public void update(@Nullable Unit unitHolder, @Nullable Building buildingHolder){
+52:         unit.type.updatePayload(unit, unitHolder, buildingHolder);
+53:     }
+54: 
+55:     @Override
+56:     public UnlockableContent content(){
+57:         return unit.type;
+58:     }
+59: 
+60:     @Override
+61:     public ItemStack[] requirements(){
+62:         return unit.type.getTotalRequirements();
+63:     }
+64: 
+65:     @Override
+66:     public float buildTime(){
+67:         return unit.type.getBuildTime();
+68:     }
+69: 
+70:     @Override
+71:     public void write(Writes write){
+72:         write.b(payloadUnit);
+73:         write.b(unit.classId());
+74:         unit.write(write);
+75:     }
+76: 
+77:     @Override
+78:     public void set(float x, float y, float rotation){
+79:         unit.set(x, y);
+80:         unit.rotation = rotation;
+81:     }
+82: 
+83:     @Override
+84:     public float x(){
+85:         return unit.x;
+86:     }
+87: 
+88:     @Override
+89:     public float y(){
+90:         return unit.y;
+91:     }
+92: 
+93:     @Override
+94:     public float rotation(){
+95:         return unit.rotation;
+96:     }
+97: 
+98:     @Override
+99:     public float size(){
+100:         return unit.hitSize;
+101:     }
+102: 
+103:     @Override
+104:     public boolean dump(){
+105:         //TODO should not happen
+106:         if(unit.type == null) return true;
+107: 
+108:         if(!Units.canCreate(unit.team, unit.type)){
+109:             overlayTime = 1f;
+110:             overlayRegion = null;
+111:             return false;
+112:         }
+113: 
+114:         //check if unit can be dumped here
+115:         SolidPred solid = unit.solidity();
+116:         if(solid != null){
+117:             Tmp.v1.trns(unit.rotation, 1f);
+118: 
+119:             int tx = World.toTile(unit.x + Tmp.v1.x), ty = World.toTile(unit.y + Tmp.v1.y);
+120: 
+121:             //cannot dump on solid blocks
+122:             if(solid.solid(tx, ty)) return false;
+123:         }
+124: 
+125:         //cannot dump when there's a lot of overlap going on
+126:         if(!unit.type.flying && Units.count(unit.x, unit.y, unit.physicSize() * 1.05f, o -> o.isGrounded() && (o.type.allowLegStep == unit.type.allowLegStep)) > 0){
+127:             return false;
+128:         }
+129: 
+130:         //no client dumping
+131:         if(Vars.net.client()) return true;
+132: 
+133:         //prevents stacking
+134:         unit.vel.add(Mathf.range(0.5f), Mathf.range(0.5f));
+135:         unit.add();
+136:         unit.unloaded();
+137:         Events.fire(new UnitUnloadEvent(unit));
+138:         Units.notifyUnitSpawn(unit);
+139: 
+140:         return true;
+141:     }
+142: 
+143:     @Override
+144:     public void drawShadow(float alpha){
+145:         //TODO should not happen
+146:         if(unit.type == null) return;
+147: 
+148:         unit.type.drawSoftShadow(unit, alpha);
+149:     }
+150: 
+151:     @Override
+152:     public void draw(){
+153:         //TODO should not happen
+154:         if(unit.type == null) return;
+155: 
+156:         float e = unit.elevation;
+157:         unit.elevation = 0f;
+158:         Draw.scl(1f, 1f);
+159:         unit.type.draw(unit);
+160:         unit.elevation = e;
+161: 
+162:         //draw warning
+163:         if(overlayTime > 0){
+164:             float z = Draw.z();
+165:             Draw.z(Layer.groundUnit + 1f);
+166:             var region = overlayRegion == null ? Icon.warning.getRegion() : overlayRegion;
+167:             Draw.color(Color.scarlet);
+168:             Draw.alpha(0.8f * Interp.exp5Out.apply(overlayTime));
+169: 
+170:             float size = 8f;
+171:             Draw.rect(region, unit.x, unit.y, size, size);
+172: 
+173:             Draw.reset();
+174: 
+175:             overlayTime = Math.max(overlayTime - Time.delta/overlayDuration, 0f);
+176:             Draw.z(z);
+177:         }
+178:     }
+179: 
+180:     @Override

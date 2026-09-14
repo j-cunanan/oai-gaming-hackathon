@@ -1,0 +1,70 @@
+2130:         return isPlacing();
+2131:     }
+2132: 
+2133:     public boolean isPlacing(){
+2134:         return block != null;
+2135:     }
+2136: 
+2137:     public boolean isBreaking(){
+2138:         return false;
+2139:     }
+2140: 
+2141:     public boolean isRebuildSelecting(){
+2142:         return input.keyDown(Binding.rebuildSelect);
+2143:     }
+2144: 
+2145:     public float mouseAngle(float x, float y){
+2146:         return Core.input.mouseWorld(getMouseX(), getMouseY()).sub(x, y).angle();
+2147:     }
+2148: 
+2149:     public @Nullable Unit selectedUnit(){
+2150:         Unit unit = Units.closest(player.team(), Core.input.mouseWorld().x, Core.input.mouseWorld().y, 40f, u -> u.isAI() && u.playerControllable());
+2151:         if(unit != null){
+2152:             unit.hitbox(Tmp.r1);
+2153:             Tmp.r1.grow(6f);
+2154:             if(Tmp.r1.contains(Core.input.mouseWorld())){
+2155:                 return unit;
+2156:             }
+2157:         }
+2158: 
+2159:         Building build = world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
+2160:         if(build instanceof ControlBlock cont && cont.canControl() && build.team == player.team() && cont.unit() != player.unit() && cont.unit().isAI()){
+2161:             return cont.unit();
+2162:         }
+2163: 
+2164:         return null;
+2165:     }
+2166: 
+2167:     public @Nullable Building selectedControlBuild(){
+2168:         Building build = world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
+2169:         if(build != null && !player.dead() && build.canControlSelect(player.unit()) && build.team == player.team()){
+2170:             return build;
+2171:         }
+2172:         return null;
+2173:     }
+2174: 
+2175:     public @Nullable Unit selectedCommandUnit(float x, float y){
+2176:         var tree = player.team().data().tree();
+2177:         tmpUnits.clear();
+2178:         float rad = 4f;
+2179:         tree.intersect(x - rad/2f, y - rad/2f, rad, rad, tmpUnits);
+2180:         return tmpUnits.min(u -> u.isCommandable(), u -> u.dst(x, y) - u.hitSize/2f);
+2181:     }
+2182: 
+2183:     public @Nullable Unit selectedEnemyUnit(float x, float y){
+2184:         tmpUnits.clear();
+2185:         float rad = 4f;
+2186: 
+2187:         Seq<TeamData> data = state.teams.present;
+2188:         for(int i = 0; i < data.size; i++){
+2189:             if(data.items[i].team != player.team()){
+2190:                 data.items[i].tree().intersect(x - rad / 2f, y - rad / 2f, rad, rad, tmpUnits);
+2191:             }
+2192:         }
+2193: 
+2194:         return tmpUnits.min(u -> !u.inFogTo(player.team()), u -> u.dst(x, y) - u.hitSize/2f);
+2195:     }
+2196: 
+2197:     public Seq<Building> selectedCommandBuildings(float x, float y, float w, float h){
+2198:         var tree = player.team().data().buildingTree;
+2199:         tmpBuildings.clear();
