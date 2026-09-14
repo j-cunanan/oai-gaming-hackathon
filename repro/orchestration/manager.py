@@ -312,6 +312,9 @@ class Manager:
             self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
 
     async def _investigate(self, case: Case, sandbox: DockerSandbox, model: Model, started):
+        self.store.save(
+            case, "stage_started", {"stage": "triage", "summary": "Starting report triage."}
+        )
         if not case.spec:
             case.spec = await model.structured(
                 BugSpec,

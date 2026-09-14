@@ -25,6 +25,8 @@ The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, r
 
 An **investigation** is one bug case, from the player report through reproduction, diagnosis, and review. Small info buttons explain the stats, stages, and actions on hover, keyboard focus, or click; Escape dismisses the explanation. **Proposed patch** shows the saved justification and risks above the exact source diff, with green additions, red deletions, and old/new line numbers. Validation evidence is shown separately from the proposed explanation.
 
+Click **Triage**, **Reproduce**, **Reduce**, **Localize**, **Validate**, or **Review** to open that stage's activity. Stage headers show the first and latest saved event times in your local time zone. The full history is searchable, including early stages and repeated attempts; model calls and observations can be included, and older entries load in batches of 40. Each entry has its own timestamp, record details, and relevant screenshot/log links. Validation exposes the latest build and test logs directly. First/latest intervals include pauses and are not active work durations.
+
 On macOS, Docker may not have file-sharing access to a Documents folder. Set `REPRO_SANDBOX_DIR=/tmp/repro-workspaces` in `.env` in that situation. Case records and evidence stay under `REPRO_DATA_DIR`; only disposable build workspaces use the alternate directory. Temporary builds may need preparation again after a reboot.
 
 Mindustry's pinned SDL desktop dependency does not ship a Linux ARM64 native library. Use the AMD64 image even on Apple Silicon (Docker emulates it); do not count an architecture-related launch failure as a reproduced game bug.
@@ -40,7 +42,7 @@ uv run repro validate CASE_ID
 uv run repro report CASE_ID --output output/pdf/repro-report.pdf
 ```
 
-**Export PDF** downloads a plain **REPRO Report** with the current saved report, reproduction steps, diagnosis, patch explanation and diff, validation results, and screenshots. Export makes no model calls. `GET /api/cases/CASE_ID/report` also returns PDF by default. For Markdown, add `?format=markdown`, use a `.md` CLI output path, or omit `--output` to print it to the terminal.
+**Export PDF** downloads a **REPRO Report** with the workspace's lavender/charcoal branding, the current saved report, reproduction steps, diagnosis, patch explanation and diff, validation results, screenshots, and a stage timeline with selected milestones in UTC. Export makes no model calls. `GET /api/cases/CASE_ID/report` also returns PDF by default. For Markdown, add `?format=markdown`, use a `.md` CLI output path, or omit `--output` to print it to the terminal.
 
 `replay` uses the retained pre-patch Mindustry build. `--candidate` uses the candidate build. A visual replay needs API access for its independent verifier. An explicit `validate` rerun repeats both baseline and candidate gates, retaining the previous result as an artifact. The validation workflow additionally checks that the expected game/UI state was reached; simply failing to observe the bug is insufficient to approve a patch.
 

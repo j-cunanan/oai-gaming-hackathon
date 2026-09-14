@@ -105,3 +105,26 @@ def test_long_report_paginates_without_reading_another_cases_artifact(tmp_path):
     assert "No saved explanation" in text
     for i, page in enumerate(reader.pages, 1):
         assert f"Page {i}" in page.extract_text()
+
+
+def test_pdf_includes_stage_times_and_branded_header(tmp_path):
+    store = Store(tmp_path)
+    case = Case(report=case_input())
+    store.save(case, "stage_started", {"stage": "reduce", "summary": "Starting a shorter replay"})
+    store.save(case, "minimization", {"original": 23, "reduced": 8})
+    with store.connect() as db:
+        db.execute(
+            "UPDATE events SET created_at='2026-09-13T17:23:01+00:00' WHERE case_id=?", (case.id,)
+        )
+    reader = PdfReader(BytesIO(render_report(case, store)))
+    text = "\n".join(page.extract_text() for page in reader.pages)
+    for expected in (
+        "REPRO LAB / ENGINEERING REPORT",
+        "Investigation timeline",
+        "13 Sep 2026 17:23:01",
+        "UTC",
+        "Starting a shorter replay",
+        "23 to 8",
+        "No recorded activity",
+    ):
+        assert expected in text

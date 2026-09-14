@@ -59,7 +59,7 @@ const explanations: Record<string, string> = {
     "Start the AI investigation for this case. It launches the game, records experiments, and continues toward source diagnosis and a proposed patch when evidence supports it.",
   Stop: "Cancel the active or queued job for this case. Completed events, screenshots, and partial results remain saved.",
   Activity:
-    "A timeline of recorded actions, hypotheses, checks, and state changes. It shows recent events; the evidence store retains the underlying artifacts.",
+    "The full recorded history grouped by investigation stage. Search across stages, include model calls, and open screenshots, game logs, or event details. Entries are loaded incrementally as the investigation runs.",
   Evidence:
     "Saved screenshots, logs, reports, replays, and patch files. A SHA-256 value identifies the exact file contents. Search covers the full artifact index.",
   Source:
@@ -94,6 +94,8 @@ const explanations: Record<string, string> = {
     "Record that you do not accept this proposed patch. The evidence remains saved and no upstream change is published.",
   "Approve for handoff":
     "Available only when all required checks pass and the case is idle. Records your approval locally; a reviewed upstream pull request is still a separate step.",
+  "Stage timestamps":
+    "First entry and Latest are exact saved event times, shown in your local time zone. They include repeated attempts and pauses, so the interval is not active work duration. Stage buttons show the latest event time and open that stage’s log. PDF timestamps use UTC.",
   "Model usage":
     "Calls and input/output tokens used across this case's jobs. These are measured usage counts, not a dollar estimate. Viewing or exporting saved evidence makes no model calls.",
 };

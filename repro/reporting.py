@@ -25,13 +25,18 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from repro.activity import activity_snapshot
 from repro.models import Case, patch_validated
 from repro.storage.store import Store
 
-INK = colors.HexColor("#20252C")
-MUTED = colors.HexColor("#626A73")
-RULE = colors.HexColor("#DADEE3")
-WIDTH = A4[0] - 88
+INK = colors.HexColor("#292532")
+MUTED = colors.HexColor("#726980")
+RULE = colors.HexColor("#DED6EA")
+ACCENT = colors.HexColor("#B9ABFC")
+PURPLE = colors.HexColor("#685091")
+DARK = colors.HexColor("#1A1A21")
+PALE = colors.HexColor("#F3EFFA")
+WIDTH = A4[0] - 100
 
 
 @lru_cache(maxsize=1)
@@ -62,9 +67,23 @@ def render_report(case: Case, store: Store) -> bytes:
         spaceBefore=15,
         spaceAfter=7,
         keepWithNext=True,
+        textColor=PURPLE,
     )
     title = ParagraphStyle(
-        "title", parent=heading, fontSize=24, leading=29, spaceBefore=0, spaceAfter=8
+        "title",
+        parent=heading,
+        fontSize=25,
+        leading=28,
+        spaceBefore=0,
+        spaceAfter=6,
+        textColor=ACCENT,
+    )
+    cover_subtitle = ParagraphStyle(
+        "cover-subtitle", parent=body, fontSize=12, leading=17, textColor=colors.white
+    )
+    table_heading = ParagraphStyle("table-heading", parent=small, textColor=colors.white)
+    stat_value = ParagraphStyle(
+        "stat-value", parent=heading, fontSize=14, leading=18, spaceBefore=0, spaceAfter=3
     )
     code_style = ParagraphStyle(
         "code",
@@ -72,7 +91,7 @@ def render_report(case: Case, store: Store) -> bytes:
         fontSize=7,
         leading=10,
         textColor=INK,
-        backColor=colors.HexColor("#F4F5F7"),
+        backColor=PALE,
         borderPadding=7,
         spaceAfter=8,
     )
@@ -81,7 +100,24 @@ def render_report(case: Case, store: Store) -> bytes:
         # Case text is data, never ReportLab markup or a link destination.
         return Paragraph(escape(plain(str(text))).replace("\n", "<br/>"), style)
 
-    story = [p("REPRO Report", title), p(case.report.title, heading)]
+    cover = Table(
+        [[p("REPRO Report", title)], [p(case.report.title, cover_subtitle)]],
+        colWidths=[WIDTH],
+        hAlign="LEFT",
+    )
+    cover.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), DARK),
+                ("LINEBEFORE", (0, 0), (0, -1), 4, ACCENT),
+                ("LEFTPADDING", (0, 0), (-1, -1), 17),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 17),
+                ("TOPPADDING", (0, 0), (-1, 0), 12),
+                ("BOTTOMPADDING", (0, -1), (-1, -1), 9),
+            ]
+        )
+    )
+    story = [cover, Spacer(1, 10)]
     generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
     state = case.state.replace("_", " ").capitalize()
     story += [
@@ -104,7 +140,7 @@ def render_report(case: Case, store: Store) -> bytes:
                 for label in ("Reproduction", "Time to first proof", "Replay actions")
             ],
             [
-                p(value)
+                p(value, stat_value)
                 for value in (
                     f"{rep.successful_runs}/{rep.total_runs} clean runs" if rep else "Not measured",
                     f"{int(proof) // 60}:{int(proof) % 60:02d}"
@@ -120,7 +156,7 @@ def render_report(case: Case, store: Store) -> bytes:
     stats.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F5F6F8")),
+                ("BACKGROUND", (0, 0), (-1, -1), PALE),
                 ("BOX", (0, 0), (-1, -1), 0.5, RULE),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 10),
@@ -148,13 +184,6 @@ def render_report(case: Case, store: Store) -> bytes:
         story += [p("Recorded reproduction", heading)]
         for i, action in enumerate(rep.steps, 1):
             story.append(p(f"{i}. {action.semantic or action.action}"))
-        story += [
-            p(
-                "Each replay starts with a fresh profile. Reproduction counts describe this case; "
-                "action reduction is bounded and is not proof of a globally minimal replay.",
-                small,
-            )
-        ]
 
     if case.findings:
         story += [p("Source diagnosis", heading), p(case.findings.root_cause)]
@@ -196,16 +225,24 @@ def render_report(case: Case, store: Store) -> bytes:
         )
     ]
     if case.checks:
-        rows = [[p("Check", small), p("Result", small), p("Recorded evidence", small)]]
+        rows = [
+            [
+                p("Check", table_heading),
+                p("Result", table_heading),
+                p("Recorded evidence", table_heading),
+            ]
+        ]
         rows += [
             [p(c.name), p(c.status.replace("_", " ").upper()), p(c.detail)] for c in case.checks
         ]
-        table = Table(rows, colWidths=[138, 59, WIDTH - 197], repeatRows=1, hAlign="LEFT")
+        table = Table(
+            rows, colWidths=[138, 59, WIDTH - 197], repeatRows=1, splitInRow=1, hAlign="LEFT"
+        )
         table.setStyle(
             TableStyle(
                 [
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F0F2F4")),
+                    ("BACKGROUND", (0, 0), (-1, 0), PURPLE),
                     ("LINEBELOW", (0, 0), (-1, -1), 0.5, RULE),
                     ("LEFTPADDING", (0, 0), (-1, -1), 7),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 7),
@@ -214,6 +251,17 @@ def render_report(case: Case, store: Store) -> bytes:
                 ]
             )
         )
+        for index, check in enumerate(case.checks, 1):
+            shade = (
+                "#E8F3ED"
+                if check.status == "pass"
+                else "#F9E9EC"
+                if check.status in {"fail", "error"}
+                else "#F7F0E2"
+            )
+            table.setStyle(
+                TableStyle([("BACKGROUND", (1, index), (1, index), colors.HexColor(shade))])
+            )
         validation.append(table)
     else:
         validation.append(p("No validation checks have been recorded yet."))
@@ -223,6 +271,11 @@ def render_report(case: Case, store: Store) -> bytes:
         story += [p("- " + limit) for limit in case.findings.limitations]
     story += [
         p("Usage and review", heading),
+        p(
+            "Each replay starts with a fresh profile. Reproduction counts describe this case; "
+            "action reduction is bounded and is not proof of a globally minimal replay.",
+            small,
+        ),
         p(
             f"{case.usage.model_calls:,} model calls; {case.usage.input_tokens:,} input tokens; "
             f"{case.usage.output_tokens:,} output tokens. Usage accumulates across jobs on this case. "
@@ -236,6 +289,63 @@ def render_report(case: Case, store: Store) -> bytes:
             small,
         ),
     ]
+
+    activity = activity_snapshot(store, case.id)
+    if activity["events"]:
+        story += [
+            PageBreak(),
+            p("Investigation timeline", heading),
+            p(
+                "All timestamps are UTC. First and latest entries are saved event times, not active work durations. "
+                "Repeated attempts and pauses are retained. Selected milestones appear below; the workspace has the full searchable log.",
+                small,
+            ),
+        ]
+        for stage in activity["stages"]:
+
+            def timestamp(value):
+                return (
+                    datetime.fromisoformat(value).astimezone(UTC).strftime("%d %b %Y %H:%M:%S")
+                    if value
+                    else "Not recorded"
+                )
+
+            items = [p(f"{stage['label']}  /  {stage['event_count']} records", heading)]
+            if stage["first_at"]:
+                items += [
+                    p(
+                        f"First entry: {timestamp(stage['first_at'])} UTC\nLatest entry: {timestamp(stage['last_at'])} UTC",
+                        small,
+                    )
+                ]
+                milestones = [
+                    e
+                    for e in activity["events"]
+                    if e["stage"] == stage["key"]
+                    and e["kind"] not in {"action", "model_call", "observation"}
+                ]
+                chosen = [milestones[0], milestones[-1]] if len(milestones) > 1 else milestones
+                for event in chosen:
+                    summary = event["summary"]
+                    if len(summary) > 235:
+                        summary = summary[:232].rsplit(" ", 1)[0] + "..."
+                    items.append(p(f"{timestamp(event['created_at'])}  |  {summary}", small))
+            else:
+                items.append(p("No recorded activity for this stage.", small))
+            card = Table([[items]], colWidths=[WIDTH], hAlign="LEFT")
+            card.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, -1), PALE),
+                        ("LINEBEFORE", (0, 0), (0, -1), 2, ACCENT),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 12),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                        ("TOPPADDING", (0, 0), (-1, -1), 8),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                    ]
+                )
+            )
+            story += [KeepTogether([card, Spacer(1, 9)])]
 
     screenshots = []
     if rep and rep.evidence:
@@ -275,14 +385,24 @@ def render_report(case: Case, store: Store) -> bytes:
 
     def footer(canvas, document):
         canvas.saveState()
-        canvas.setStrokeColor(RULE)
+        canvas.setStrokeColor(ACCENT)
         canvas.line(44, 33, A4[0] - 44, 33)
         canvas.setFont("Repro", 7)
         canvas.setFillColor(MUTED)
         canvas.drawString(44, 21, "REPRO Report | " + case.id[:40])
         canvas.drawRightString(A4[0] - 44, 21, f"Page {document.page}")
-        if document.page > 1:
-            canvas.drawString(44, A4[1] - 28, "REPRO Report")
+        # The same crosshair mark and lavender/charcoal palette as the workspace.
+        x, y = 50, A4[1] - 25
+        canvas.setStrokeColor(PURPLE)
+        canvas.setLineWidth(1.3)
+        canvas.circle(x, y, 5)
+        canvas.line(x - 7, y, x - 2, y)
+        canvas.line(x + 2, y, x + 7, y)
+        canvas.line(x, y - 7, x, y - 2)
+        canvas.line(x, y + 2, x, y + 7)
+        canvas.setFont("Repro-Bold", 7)
+        canvas.setFillColor(PURPLE)
+        canvas.drawString(64, y - 2, "REPRO LAB / ENGINEERING REPORT")
         canvas.restoreState()
 
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
