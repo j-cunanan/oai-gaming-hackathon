@@ -1,0 +1,124 @@
+id: MD-candidate-12620-guided
+input:
+  title: '[Evidence guided] Persistent Datapatch bug'
+  body: '### Platforms
+
+
+    Android
+
+
+    ### Build
+
+
+    BE 27790
+
+
+    ### Issue
+
+
+    When you save a datapatch in a map, suddenly, attempting to remove it does not work.
+
+    When you remove it, it gets temporarily removed, but gets added back when you open the map.
+
+    I tested this with or without mods and it still happened by the way.
+
+
+    ### Steps to reproduce
+
+
+    Make map
+
+    Add data-patch
+
+    Save map
+
+    Delete data-patch
+
+    Save map
+
+    Leave editor
+
+    Come back to map editor
+
+    See that the data-patch is back.
+
+
+    ### Mods used
+
+
+    I tested it in vanilla but here are the mods I usually use.
+
+
+    Auto Research (gone from in-game mod browser?)
+
+    Patch Editor (I think this mod doesn''t cause the issue)
+
+    Patch Viewer
+
+    CLaJ
+
+
+    ### Save file
+
+
+    I zipped the msav here
+
+
+    [persistent datapatch bug.zip](https://github.com/user-attachments/files/32028828/persistent.datapatch.bug.zip)
+
+
+    ### (Crash) logs
+
+
+    _No response_
+
+
+    ### REPRO recording guidance (not part of the upstream report)
+
+
+    A previous local attempt reached the reported sequence, but the final oracle omitted its recorded initial-save
+    screenshot. Two of five independent replay judgments were inconclusive because that prerequisite was not
+    visible in the selected evidence. This is a fresh attempt; those prior judgments do not establish the current
+    result.
+
+
+    Capture and select the important checkpoints in chronological order: the map identity and existing patch,
+    visible successful initial save, confirmed deletion with an empty list, visible successful save after deletion,
+    exit/reopen of the same map, and the patch list after reopening. Include both successful-save screenshots
+    in the final sequence oracle, within its eight-checkpoint limit. Use neutral labels for the resulting state;
+    inspect what is actually visible rather than assuming disappearance or reappearance. If prerequisites cannot
+    be demonstrated, report that limitation.
+
+    '
+  game: mindustry
+  target_commit: 63b2069e9685063c74abc41fae84a66f73e9e09b
+  platform: Android (reported); Linux (planned evaluation)
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12620
+  reported_at: '2026-09-09T22:05:59Z'
+  fix_commit: b3317f3d4d7c9b201d03a39be17bae2bbda90169
+  fix_url: https://github.com/Anuken/Mindustry/commit/b3317f3d4d7c9b201d03a39be17bae2bbda90169
+  changed_files:
+  - core/src/mindustry/editor/data/MapPatchesView.java
+  all_commit_files:
+  - core/src/mindustry/editor/data/MapPatchesView.java
+  positive_case: true
+  reproducibility: QUALIFIED_LINUX_AMD64
+  priority: P1
+  suggested_tags: Persistence / editor / data patches
+  proposed_trigger: Create a map, add and save a data patch, delete it, save, leave and reopen the map.
+  selection_notes: Reported on Android; confirm Linux behavior. Needs a valid harmless data patch created through
+    the UI. No process restart is required by the reported steps.
+  evidence_notes: Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently
+    fetched body, excluding submission checklist; may include later edits. No comments or fix information added
+    to input. Runtime qualification subsequently completed; see linked evidence and retained failed attempts.
+  qualification:
+    date: '2026-09-14'
+    baseline_runs: 5/5
+    human_fixed_control: passed once
+    evidence: docs/evidence/qualification/12620/
+    scope: Evaluator qualification only; not a new autonomous patch result.
+    limitation: Requires chronological screenshots; standard single-frame replay verification remains insufficient.
+  assistance: Evidence-selection guidance from a prior inconclusive local run. Fresh model context and new
+    game executions; no source diagnosis or fix information supplied.
+  distinct_issue: '12620'

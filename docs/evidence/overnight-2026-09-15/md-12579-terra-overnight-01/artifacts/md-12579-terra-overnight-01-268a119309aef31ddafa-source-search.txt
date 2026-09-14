@@ -1,0 +1,3 @@
+./core/src/mindustry/entities/comp/BuildingComp.java:284:    public void writeAll(Writes write){
+./core/src/mindustry/entities/comp/BuildingComp.java:295:        writeAll(write);
+./core/src/mindustry/world/blocks/payloads/BuildPayload.java:101:        build.writeAll(write);

@@ -1,0 +1,18 @@
+./core/src/mindustry/ai/BaseBuilderAI.java:216:            if(tile.block instanceof PayloadConveyor || tile.block instanceof PayloadBlock){
+./core/src/mindustry/mod/ClassMap.java:330:        classes.put("PayloadConveyor", mindustry.world.blocks.payloads.PayloadConveyor.class);
+./core/src/mindustry/mod/ClassMap.java:331:        classes.put("PayloadConveyorBuild", mindustry.world.blocks.payloads.PayloadConveyor.PayloadConveyorBuild.class);
+./core/src/mindustry/content/ErekirTechTree.java:104:                node(reinforcedPayloadConveyor, Seq.with(new OnSector(atlas)), () -> {
+./core/src/mindustry/content/ErekirTechTree.java:385:                            node(split, Seq.with(new SectorComplete(atlas), new Research(reinforcedPayloadConveyor), new Research(reinforcedContainer)), () -> {
+./core/src/mindustry/content/Blocks.java:175:    payloadConveyor, payloadRouter, reinforcedPayloadConveyor, reinforcedPayloadRouter, payloadMassDriver, largePayloadMassDriver, smallDeconstructor, deconstructor, constructor, largeConstructor, payloadLoader, payloadUnloader,
+./core/src/mindustry/content/Blocks.java:6606:        payloadConveyor = new PayloadConveyor("payload-conveyor"){{
+./core/src/mindustry/content/Blocks.java:6616:        reinforcedPayloadConveyor = new PayloadConveyor("reinforced-payload-conveyor"){{
+./core/src/mindustry/content/SerpuloTechTree.java:50:                                node(payloadConveyor, () -> {
+./core/src/mindustry/content/SerpuloTechTree.java:524:                                    new Research(payloadConveyor)
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:20:public class PayloadConveyor extends Block{
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:28:    public PayloadConveyor(String name){
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:76:    public class PayloadConveyorBuild extends Building{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:23:public class PayloadRouter extends PayloadConveyor{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:62:    public class PayloadRouterBuild extends PayloadConveyorBuild{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:93:                        if(next instanceof PayloadConveyorBuild && !(next instanceof PayloadRouterBuild)){
+./core/src/mindustry/maps/generators/BaseGenerator.java:109:                        if(o != null && (o.block() instanceof PayloadConveyor || o.block() instanceof PayloadBlock)){
+./tests/src/test/java/ApplicationTests.java:882:            tile.setBlock(Blocks.payloadConveyor, Team.sharded);

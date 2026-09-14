@@ -1,0 +1,247 @@
+{
+  "scope": "Reverification of five retained baseline recordings with the omitted initial-save checkpoint included; no fresh game executions and no change to original case outcome.",
+  "original_case": "md-12620-terra-overnight-01",
+  "original_result": "3/5 confirmed",
+  "original_oracle": {
+    "kind": "sequence",
+    "description": "The reporter states that after adding and saving a datapatch in a map, deleting the datapatch appears to remove it temporarily. After saving, leaving the editor, and reopening the map, the datapatch is present again. The reporter says the behavior was also observed without mods.",
+    "log_pattern": null,
+    "checkpoints": [
+      "patch_added",
+      "patch_delete_transition",
+      "patch_deleted",
+      "patch_deleted_save",
+      "editor_exit_after_delete",
+      "map_reopened",
+      "reopened_patch_absent"
+    ]
+  },
+  "reviewed_oracle": {
+    "kind": "sequence",
+    "description": "The reporter states that after adding and saving a datapatch in a map, deleting the datapatch appears to remove it temporarily. After saving, leaving the editor, and reopening the map, the datapatch is present again. The reporter says the behavior was also observed without mods.",
+    "log_pattern": null,
+    "checkpoints": [
+      "patch_added",
+      "patch_initial_save",
+      "patch_delete_transition",
+      "patch_deleted",
+      "patch_deleted_save",
+      "editor_exit_after_delete",
+      "map_reopened",
+      "reopened_patch_absent"
+    ]
+  },
+  "model": "gpt-5.6-terra",
+  "reasoning_effort": "medium",
+  "runs": [
+    {
+      "recorded_replay_event": 1653,
+      "original_verdict": {
+        "observed": false,
+        "confidence": 0.86,
+        "explanation": "Inconclusive. The patch list visibly changes from one unnamed patch to no patchsets after deletion, and the deletion-save checkpoint shows \u201cSaved!\u201d. After the map-info screen for \u201cdatapatch-repro,\u201d the reopened editor again visibly lists the unnamed patch. However, no checkpoint visibly confirms the required initial save after adding the patch; the recorded save action is only an attempted input. Therefore the full add-save-delete-save-reopen prerequisite sequence is not independently established.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-2cdc3591ea93baf41992-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      },
+      "reviewed_verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "The screenshots demonstrate the reported persistence defect: a patchset is present and saved, deletion is confirmed and the patch list becomes empty, the map is saved again and exited/reopened, but the patchset is present again after reopening.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-2cdc3591ea93baf41992-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "recorded_replay_event": 1689,
+      "original_verdict": {
+        "observed": false,
+        "confidence": 0.9,
+        "explanation": "Inconclusive. The screenshots show a patch entry, its confirmed temporary removal, and a later patch entry after a visible post-deletion save and navigation away/reopen attempt. However, they do not visibly establish that the initially added patch was saved before deletion or that the final patch view belongs to the same map as the initial/deletion views. Therefore the full reported sequence is not verified.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-cd34e70e2fedfbb8ea3a-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      },
+      "reviewed_verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "The screenshots demonstrate the reported persistence defect: a patchset is present after creation, disappears immediately after confirmed deletion, is saved and the editor is exited, then the same map is reopened and the patchset is present again.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-cd34e70e2fedfbb8ea3a-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "recorded_replay_event": 1725,
+      "original_verdict": {
+        "observed": true,
+        "confidence": 0.97,
+        "explanation": "The screenshots demonstrate the reported persistence defect: a datapatch is visibly deleted in the editor, the map is saved, then after exiting and reopening the custom map it is listed again.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-9d08d46493e550890892-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      },
+      "reviewed_verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "The defect is demonstrated: an existing patchset was saved, deleted so the list showed none, saved again, then the map was exited and reopened; the deleted patchset reappeared.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-9d08d46493e550890892-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "recorded_replay_event": 1761,
+      "original_verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "The deletion appeared to succeed locally and the editor displayed \u201cSaved!\u201d afterward, but the same datapatch entry reappeared after the map was exited and reopened. This matches the reported persistence defect.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-c7a74e91a0d389104361-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      },
+      "reviewed_verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "The screenshots demonstrate the reported persistence defect: a patchset is present and saved, is visibly removed after deletion and saved again, then reappears after the map is reopened.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-c7a74e91a0d389104361-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "recorded_replay_event": 1797,
+      "original_verdict": {
+        "observed": true,
+        "confidence": 0.97,
+        "explanation": "The screenshots demonstrate the reported persistence failure: a visible datapatch is deleted, the map shows a successful save, and after exit/reopen the datapatch is listed again.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-405bc343880307a1bee8-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      },
+      "reviewed_verdict": {
+        "observed": true,
+        "confidence": 0.94,
+        "explanation": "The screenshots show a patchset present after initial save, removed in the editor after deletion, then present again after the saved map is exited and reopened. This demonstrates the reported persistence failure for the reopened map.",
+        "evidence": [
+          "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png",
+          "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png",
+          "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png",
+          "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png",
+          "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png",
+          "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png",
+          "md-12620-terra-overnight-01-405bc343880307a1bee8-confirmation.png",
+          "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    }
+  ],
+  "source_sha256": {
+    "md-12620-terra-overnight-01-8bdaaf6a4f0a064780f8-confirmation.png": "8bdaaf6a4f0a064780f8ecd552bf3769b0efee1af6c22d384c1d39ce29db3498",
+    "md-12620-terra-overnight-01-9b003fb3fcf22e1d1b1d-confirmation.png": "9b003fb3fcf22e1d1b1df203dde9a048ac2194cdf96520951b8350cf320c8a49",
+    "md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png": "5953793d6f55a4d1b623c100da985cd91502195b9b907e8373ee216337a76d59",
+    "md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png": "2e8f95d03d6bb08f2733736851f366f7b4e49c822724365c4d98c76a53a9efaa",
+    "md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png": "79623b51484854e7e6a646c330ea1e79cc6f423416f13514fa304b68abfebb80",
+    "md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png": "77d35b543e27ef8f26f1d8546149f0b413664f4946d2ac1efe8cac9de0e6cfbe",
+    "md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png": "6dd9685c29a13060ee8563b61f5be6d65efba86e1eb0a7806873757a1daecc06",
+    "md-12620-terra-overnight-01-2cdc3591ea93baf41992-confirmation.png": "2cdc3591ea93baf41992892f650a179c6f2878c67529b0024bb6fedff2ba3f55",
+    "md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png": "6020ead1fd0b0e515c4f9e692ed53ae913b894327ec45c02241a48fdf9cd3ba7",
+    "md-12620-terra-overnight-01-0255c2a122344267ebf5-confirmation.png": "0255c2a122344267ebf560d7adf2df36ea3c9b1937bf03d6f2fe96d4fed4e7ef",
+    "md-12620-terra-overnight-01-224851ae43e7a6c64372-confirmation.png": "224851ae43e7a6c64372b4ac53f60ca6fa0a3c86752c0cf811d305d299839944",
+    "md-12620-terra-overnight-01-cd34e70e2fedfbb8ea3a-confirmation.png": "cd34e70e2fedfbb8ea3a99ba6756098c77e587340f3daf80a3481a2436bf47b0",
+    "md-12620-terra-overnight-01-31fa1a346f24ae519878-confirmation.png": "31fa1a346f24ae5198786b7d333a2ae8efbba08bd0e1fefcb6f8460496e4d9d9",
+    "md-12620-terra-overnight-01-3e0b182d21eec34d7260-confirmation.png": "3e0b182d21eec34d72605bd19788a0f7633ba5b865377c2e2b65f42c38a68829",
+    "md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png": "cab075e1376afbdd669eb0fc3aae984b2e7ca7e939dc1a6916374acc45a67827",
+    "md-12620-terra-overnight-01-9d08d46493e550890892-confirmation.png": "9d08d46493e550890892dbf2d5168e9be90ffbb2217d65fc40497cda3c766f44",
+    "md-12620-terra-overnight-01-8007df9ea8b44d4d9b9f-confirmation.png": "8007df9ea8b44d4d9b9f0004f1f008a95d4f87a4126200b11f01c6f629b948d0",
+    "md-12620-terra-overnight-01-10f221561f003beecaf2-confirmation.png": "10f221561f003beecaf27c3c7c60c368479a611d54ad8967e348c54b2220769e",
+    "md-12620-terra-overnight-01-c7a74e91a0d389104361-confirmation.png": "c7a74e91a0d389104361f17041159ad15abe01172341d1edf6efb7ff169789bd",
+    "md-12620-terra-overnight-01-c45c249954550e7a6573-confirmation.png": "c45c249954550e7a65739752b05385a1f76feb094dbc11e6e0cb7716b177b1a9",
+    "md-12620-terra-overnight-01-b85a4539bae85441194a-confirmation.png": "b85a4539bae85441194a62d8a769b456cdc3829d07f096cb0609d27057f9e968",
+    "md-12620-terra-overnight-01-405bc343880307a1bee8-confirmation.png": "405bc343880307a1bee821aadcbe53b7ca18e0988f1dc3515c0a063ababbaa90"
+  },
+  "usage": {
+    "model_calls": 5,
+    "input_tokens": 56293,
+    "output_tokens": 2634
+  }
+}
