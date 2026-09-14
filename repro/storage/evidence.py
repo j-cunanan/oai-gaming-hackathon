@@ -113,7 +113,14 @@ def import_evidence(
         "summary": latest.get("summary", ""),
     }
     # Copy only explicit snapshot fields. Rerun-only counters are not lifetime totals.
-    for field in ("spec", "usage", "elapsed_seconds", "first_reproduced_seconds"):
+    for field in (
+        "spec",
+        "usage",
+        "elapsed_seconds",
+        "first_reproduced_seconds",
+        "baseline_tests",
+        "candidate_verification",
+    ):
         if field in original:
             values[field] = original[field]
         if field in latest:

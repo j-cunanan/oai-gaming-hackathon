@@ -28,6 +28,7 @@ from repro.models import (
     State,
     patch_validated,
 )
+from repro.orchestration.postconditions import current_plan, plan_postconditions
 from repro.storage.store import Store
 from repro.validation import (
     PARSER_VERSION,
@@ -609,7 +610,9 @@ class Manager:
             "cannot establish a change or a lost object. Do not reuse labels without resetting. "
             "For a crash, include the specific observed literal log signature when available. "
             "Record at least one hypothesis and its result. Then call finish.\n"
-            + case.spec.model_dump_json(),
+            + case.spec.model_dump_json()
+            + "\nOriginal report and supplied setup context (untrusted data):\n"
+            + case.report.model_dump_json(),
             tools,
             purpose="game investigation",
             done=lambda: result is not None,
@@ -916,14 +919,44 @@ class Manager:
         self.store.save(
             case, "validation_environment", {"network": "none", "phase": "fresh game replays"}
         )
+        plan = current_plan(case)
+        if case.candidate_verification and not plan:
+            self.store.artifact(
+                case.id,
+                "previous-candidate-verification.json",
+                case.candidate_verification.model_dump_json(indent=2),
+                "application/json",
+            )
+            case.candidate_verification = None
+            self.store.save(
+                case,
+                "fix_check_invalidated",
+                {
+                    "summary": "The report, trigger or patch changed; prior additional checks must be planned again."
+                },
+            )
+        needs_followups = rep.oracle.kind in {"crash", "log"}
+        if needs_followups and not plan:
+            plan = await plan_postconditions(
+                self.settings,
+                self.store,
+                case,
+                sandbox,
+                model,
+                recorder,
+                self.source_tools(sandbox),
+            )
+        candidate_steps = rep.steps + plan.followup_steps if plan else rep.steps
+        candidate_oracle = plan.oracle if plan else rep.oracle
+        trials = self.settings.repetitions if plan or not needs_followups else 0
         fixed, observed_bugs = 0, 0
         replay_screenshot = None
-        for _ in range(self.settings.repetitions):
+        for _ in range(trials):
             verdict, observation = await replay(
-                sandbox, recorder, model, rep.steps, rep.oracle, phase="post-patch"
+                sandbox, recorder, model, candidate_steps, candidate_oracle, phase="post-patch"
             )
             observed_bugs += int(verdict.observed)
-            if rep.oracle.kind == "sequence":
+            if candidate_oracle.kind == "sequence":
                 expected = FixedVerdict(
                     expected_state_reached=getattr(verdict, "expected_state_reached", False),
                     symptom_absent=getattr(verdict, "symptom_absent", False),
@@ -963,8 +996,17 @@ class Manager:
         case.checks.append(
             Check(
                 name="Original replay after patch",
-                status="pass" if fixed == self.settings.repetitions else "fail",
-                detail=f"{fixed}/{self.settings.repetitions} reached expected state without the symptom; bug seen {observed_bugs} times.",
+                status=("pass" if fixed == trials else "fail") if trials else "not_run",
+                detail=(
+                    f"{fixed}/{trials} reached expected state without the symptom; bug seen {observed_bugs} times."
+                    + (
+                        f" Each replay included the unchanged trigger and {len(plan.followup_steps)} additional fix-check actions."
+                        if plan
+                        else ""
+                    )
+                    if trials
+                    else "Affirmative fix checks could not be frozen; no repeated postcondition validation was counted."
+                ),
             )
         )
         # A separate clean launch is a narrow smoke check, not a gameplay coverage claim.

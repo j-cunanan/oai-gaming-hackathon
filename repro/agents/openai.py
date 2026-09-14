@@ -76,6 +76,7 @@ class Model:
             {
                 "purpose": purpose,
                 "model": response.model,
+                "reasoning_effort": self.settings.reasoning_effort,
                 "input_tokens": usage.input_tokens if usage else 0,
                 "output_tokens": usage.output_tokens if usage else 0,
             },

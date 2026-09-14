@@ -30,6 +30,8 @@ PHASE_STAGE = {
     "post-patch": "validate",
     "baseline-revalidation": "validate",
     "resume-baseline": "reproduce",
+    "fix-check-setup": "validate",
+    "fix-check-exploration": "validate",
     "manual-candidate": "validate",
 }
 PURPOSE_STAGE = {
@@ -37,6 +39,7 @@ PURPOSE_STAGE = {
     "game investigation": "reproduce",
     "source localization": "localize",
     "candidate patch": "validate",
+    "candidate verification planning": "validate",
     "semantic replay reduction": "reduce",
 }
 QUIET_KINDS = {"model_call", "observation"}

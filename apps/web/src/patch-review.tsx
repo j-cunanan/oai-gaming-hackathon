@@ -14,6 +14,7 @@ type Props = {
   downloadUrl: string | null;
   rationale: { explanation: string; risks: string[] } | null;
   checks: { name: string; status: string; detail: string }[];
+  followupSteps?: { action: string; semantic?: string }[];
 };
 
 export function PatchReview({
@@ -22,6 +23,7 @@ export function PatchReview({
   downloadUrl,
   rationale,
   checks,
+  followupSteps = [],
 }: Props) {
   const files = useMemo(() => parseDiff(patch), [patch]);
   const passed = allChecksPass(checks);
@@ -84,6 +86,22 @@ export function PatchReview({
           </p>
         )}
       </div>
+      {followupSteps.length > 0 && (
+        <div className="patch-explanation">
+          <h4>
+            Additional fix checks <HelpTip topic="Additional fix checks" />
+          </h4>
+          <p>
+            Every candidate validation run executes the unchanged recorded trigger,
+            then these checks. Planning experiments do not count as validation runs.
+          </p>
+          <ol>
+            {followupSteps.map((step, i) => (
+              <li key={i}>{step.semantic || step.action}</li>
+            ))}
+          </ol>
+        </div>
+      )}
       <div className={`patch-proof ${passed ? "passed" : ""}`}>
         <strong>
           <CheckCheck size={15} />
