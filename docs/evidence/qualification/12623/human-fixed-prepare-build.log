@@ -1,0 +1,132 @@
+Downloading https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.3.1!
+
+Here are the highlights of this release:
+ - Test reporting improvements
+ - Error and warning improvements
+ - Build authoring improvements
+
+For more details see https://docs.gradle.org/9.3.1/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+No Android SDK found. Skipping Android module.
+Local Arc not found. Cloning https://github.com/Anuken/Arc to a directory next to Mindustry is highly recommended, as jitpack is unreliable.
+
+> Configure project :
+Compiling with build: 'custom build'
+
+> Configure project :desktop
+Scheduling sprite packing.
+
+> Task :annotations:clearCache
+Caught exception: Couldn't poll for events, error = 4
+Error while receiving file changes
+net.rubygrapefruit.platform.NativeException: Couldn't poll for events, error = 4
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop0(Native Method)
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop(AbstractNativeFileEventFunctions.java:32)
+	at org.gradle.fileevents.internal.AbstractFileEventFunctions$AbstractFileWatcher$1.run(AbstractFileEventFunctions.java:154)
+> Task :annotations:compileJava
+> Task :core:clearCache
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :annotations:processResources
+> Task :annotations:classes
+> Task :annotations:jar
+> Task :core:kaptGenerateStubsKotlin SKIPPED
+> Task :core:preGen UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :desktop:clearCache
+> Task :desktop:processResources NO-SOURCE
+> Task :tools:clearCache
+> Task :tools:processResources NO-SOURCE
+> Task :core:kaptKotlin
+> Task :core:compileKotlin SKIPPED
+> Task :core:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :core:classes
+> Task :core:jar
+> Task :desktop:compileJava
+
+> Task :tools:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tools:classes
+
+> Task :tools:pack
+[1m[93m[Generator][96m Time to generate [95mautotiles[96m: [92m125.72413[96mms[0m
+[1m[93m[Generator][96m Time to generate [95msplashes[96m: [92m45.576668[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mbubbles[96m: [92m74.97725[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mgas-frames[96m: [92m473.07245[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mcliffs[96m: [92m3344.5642[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mcracks[96m: [92m542.8125[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mblock-icons[96m: [92m2065.2578[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mshallows[96m: [92m20.196585[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mitem-icons[96m: [92m71.932[96mms[0m
+[1m[93m[Generator][96m Time to generate [95msector-icons[96m: [92m157.19096[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mteam-icons[96m: [92m12.723458[96mms[0m
+[1m[93m[Generator][96m Time to generate [95munit-icons[96m: [92m3081.2961[96mms[0m
+[1m[93m[Generator][96m Time to generate [95more-icons[96m: [92m387.88663[96mms[0m
+[1m[93m[Generator][96m Time to generate [95medges[96m: [92m289.04678[96mms[0m
+[1m[93m[Generator][96m Time to generate [95mscorches[96m: [92m1182.4784[96mms[0m
+[1m[93m[Generator][96m Total time to generate: [92m12903.44[96mms[0m
+Time taken for AA: 11.476 seconds
+
+
+Packing normal 4096 sprites...
+
+
+/workspace/repo/core/assets-raw/sprites_out
+| Packing................
+| Writing 4096x4096: /workspace/repo/core/assets/sprites/sprites.png
+/workspace/repo/core/assets-raw/sprites_out/blocks/environment
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/sprites2.png
+/workspace/repo/core/assets-raw/sprites_out/ui
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/sprites3.png
+/workspace/repo/core/assets-raw/sprites_out/rubble
+| Packing................
+| Writing 4096x2048: /workspace/repo/core/assets/sprites/sprites4.png
+
+
+Packing fallback 2048 sprites...
+
+
+/workspace/repo/core/assets-raw/sprites_out
+| Packing................
+| Packing................
+| Packing................
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites.png
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites2.png
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites3.png
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites4.png
+/workspace/repo/core/assets-raw/sprites_out/blocks/environment
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites5.png
+/workspace/repo/core/assets-raw/sprites_out/ui
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites6.png
+/workspace/repo/core/assets-raw/sprites_out/rubble
+| Packing................
+| Packing................
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites7.png
+| Writing 2048x2048: /workspace/repo/core/assets/sprites/fallback/sprites8.png
+
+> Task :desktop:dist
+
+[Incubating] Problems report is available at: file:///workspace/repo/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 7s
+14 actionable tasks: 14 executed
