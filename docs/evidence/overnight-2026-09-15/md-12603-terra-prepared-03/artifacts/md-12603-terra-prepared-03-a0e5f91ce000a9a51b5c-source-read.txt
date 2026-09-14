@@ -1,0 +1,55 @@
+395:     unitLand = new Effect(30, e -> {
+396:         color(Tmp.c1.set(e.color).mul(1.1f));
+397:         //TODO doesn't respect rotation / size
+398:         randLenVectors(e.id, 6, 17f * e.finpow(), (x, y) -> {
+399:             Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.3f);
+400:         });
+401:     }).layer(Layer.debris),
+402: 
+403:     unitDust = new Effect(30, e -> {
+404:         color(Tmp.c1.set(e.color).mul(1.3f));
+405:         randLenVectors(e.id, 3, 8f * e.finpow(), e.rotation, 30f, (x, y) -> {
+406:             Fill.circle(e.x + x, e.y + y, e.fout() * 3f + 0.3f);
+407:         });
+408:     }).layer(Layer.debris),
+409: 
+410:     unitLandSmall = new Effect(30, e -> {
+411:         color(Tmp.c1.set(e.color).mul(1.1f));
+412:         randLenVectors(e.id, (int)(6 * e.rotation), 12f * e.finpow() * e.rotation, (x, y) -> {
+413:             Fill.circle(e.x + x, e.y + y, e.fout() * 3f + 0.1f);
+414:         });
+415:     }).layer(Layer.debris),
+416: 
+417:     unitPickup = new Effect(18, e -> {
+418:         color(Pal.lightishGray);
+419:         stroke(e.fin() * 2f);
+420:         Lines.poly(e.x, e.y, 4, 13f * e.fout());
+421:     }).layer(Layer.debris),
+422: 
+423:     crawlDust = new Effect(35, e -> {
+424:         color(Tmp.c1.set(e.color).mul(1.6f));
+425:         randLenVectors(e.id, 2, 10f * e.finpow(), (x, y) -> {
+426:             Fill.circle(e.x + x, e.y + y, e.fslope() * 4f + 0.3f);
+427:         });
+428:     }).layer(Layer.debris),
+429: 
+430:     landShock = new Effect(12, e -> {
+431:         color(Pal.lancerLaser);
+432:         stroke(e.fout() * 3f);
+433:         Lines.poly(e.x, e.y, 12, 20f * e.fout());
+434:     }).layer(Layer.debris),
+435: 
+436:     pickup = new Effect(18, e -> {
+437:         color(Pal.lightishGray);
+438:         stroke(e.fout() * 2f);
+439:         Lines.spikes(e.x, e.y, 1f + e.fin() * 6f, e.fout() * 4f, 6);
+440:     }),
+441: 
+442:     sparkExplosion = new Effect(30f, 160f, e -> {
+443:         color(e.color);
+444:         stroke(e.fout() * 3f);
+445:         float circleRad = 6f + e.finpow() * e.rotation;
+446:         Lines.circle(e.x, e.y, circleRad);
+447: 
+448:         rand.setSeed(e.id);
+449:         for(int i = 0; i < 16; i++){

@@ -1,0 +1,60 @@
+215:             element.clicked(() -> {
+216:                 if(!content.isHidden()){
+217:                     Vars.ui.content.show(content);
+218:                 }
+219:             });
+220:         }
+221:         return element;
+222:     }
+223: 
+224:     public static <T extends Element> T withTooltip(T element, UnlockableContent content){
+225:         return withTooltip(element, content, false);
+226:     }
+227: 
+228:     /** Displays an item with a specified amount. */
+229:     private static Stack stack(TextureRegion region, int amount, @Nullable UnlockableContent content, boolean tooltip){
+230:         Stack stack = new Stack();
+231: 
+232:         stack.add(new Table(o -> {
+233:             o.left();
+234:             o.add(new Image(region)).size(32f).scaling(Scaling.fit);
+235:         }));
+236: 
+237:         if(amount != 0){
+238:             stack.add(new Table(t -> {
+239:                 t.left().bottom();
+240:                 t.add(amount >= 1000 ? UI.formatAmount(amount) : amount + "").name("stack amount").style(Styles.outlineLabel);
+241:                 t.pack();
+242:             }));
+243:         }
+244: 
+245:         withTooltip(stack, content, tooltip);
+246: 
+247:         return stack;
+248:     }
+249: 
+250:     /** Displays an item with a specified amount. */
+251:     private static Stack stack(TextureRegion region, int amount, @Nullable UnlockableContent content){
+252:         return stack(region, amount, content, true);
+253:     }
+254: 
+255:     public static Stack stack(ItemStack stack){
+256:         return stack(stack.item.uiIcon, stack.amount, stack.item);
+257:     }
+258: 
+259:     public static Stack stack(UnlockableContent item, int amount){
+260:         return stack(item.uiIcon, amount, item);
+261:     }
+262: 
+263:     public static Stack stack(UnlockableContent item, int amount, boolean tooltip){
+264:         return stack(item.uiIcon, amount, item, tooltip);
+265:     }
+266: 
+267:     public static Stack stack(Item item){
+268:         return stack(item.uiIcon, 0, item);
+269:     }
+270: 
+271:     public static Stack stack(PayloadStack stack){
+272:         return stack(stack.item.uiIcon, stack.amount, stack.item);
+273:     }
+274: 

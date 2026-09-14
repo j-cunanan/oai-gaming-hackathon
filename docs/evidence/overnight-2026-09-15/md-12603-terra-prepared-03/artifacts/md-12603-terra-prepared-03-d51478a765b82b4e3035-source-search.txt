@@ -1,0 +1,17 @@
+./core/src/mindustry/entities/Damage.java:457:    public static void damage(float x, float y, float radius, float damage){
+./core/src/mindustry/entities/Damage.java:656:    private static float calculateDamage(float dist, float radius, float damage){
+./core/src/mindustry/entities/comp/ShieldComp.java:28:    public void damage(float amount){
+./core/src/mindustry/entities/comp/ShieldComp.java:57:    protected void rawDamage(float amount){
+./core/src/mindustry/entities/comp/HealthComp.java:71:    void damage(float amount){
+./core/src/mindustry/entities/comp/HealthComp.java:81:    void damage(float amount, boolean withEffect){
+./core/src/mindustry/entities/comp/BlockUnitComp.java:59:    public void damage(float v, boolean b){
+./core/src/mindustry/entities/comp/TargetDummyComp.java:20:    public void rawDamage(float amount){
+./core/src/mindustry/entities/comp/BuildingComp.java:1743:    public float handleDamage(float amount){
+./core/src/mindustry/entities/comp/BuildingComp.java:2066:    public void damage(float damage){
+./core/src/mindustry/world/blocks/logic/SwitchBlock.java:42:        public void damage(float damage){
+./core/src/mindustry/world/blocks/logic/MemoryBlock.java:133:        public void damage(float damage){
+./core/src/mindustry/world/blocks/logic/MessageBlock.java:202:        public void damage(float damage){
+./core/src/mindustry/world/blocks/logic/LogicBlock.java:447:        public void damage(float damage){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:848:        public void damage(float amount){
+./core/src/mindustry/world/blocks/defense/TargetDummy.java:228:        public void damage(float damage){
+./core/src/mindustry/world/blocks/defense/ShieldWall.java:101:        public void damage(float damage){

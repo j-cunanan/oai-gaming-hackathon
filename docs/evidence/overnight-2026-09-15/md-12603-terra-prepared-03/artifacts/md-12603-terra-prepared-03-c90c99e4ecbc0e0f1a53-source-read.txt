@@ -1,0 +1,145 @@
+1690:     }
+1691: 
+1692:     /**
+1693:      * Called when another tile is tapped while this building is selected.
+1694:      * @return whether this block should be deselected.
+1695:      */
+1696:     public boolean onConfigureBuildTapped(Building other){
+1697:         if(block.clearOnDoubleTap){
+1698:             if(self() == other){
+1699:                 deselect();
+1700:                 configure(null);
+1701:                 return false;
+1702:             }
+1703:             return true;
+1704:         }
+1705:         return self() != other;
+1706:     }
+1707: 
+1708:     /**
+1709:      * Called when a position is tapped while this building is selected.
+1710:      *
+1711:      * @return whether the tap event is consumed - if true, the player will not start shooting or interact with things under the cursor.
+1712:      * */
+1713:     public boolean onConfigureTapped(float x, float y){
+1714:         return false;
+1715:     }
+1716: 
+1717:     /**
+1718:      * Called when this block's config menu is closed.
+1719:      */
+1720:     public void onConfigureClosed(){}
+1721: 
+1722:     /** Returns whether this config menu should show when the specified player taps it. */
+1723:     public boolean shouldShowConfigure(Player player){
+1724:         return true;
+1725:     }
+1726: 
+1727:     /** Whether this configuration should be hidden now. Called every frame the config is open. */
+1728:     public boolean shouldHideConfigure(Player player){
+1729:         return false;
+1730:     }
+1731: 
+1732:     public void drawConfigure(){
+1733:         Draw.color(Pal.accent);
+1734:         Lines.stroke(1f);
+1735:         Lines.square(x, y, block.size * tilesize / 2f + 1f);
+1736:         Draw.reset();
+1737:     }
+1738: 
+1739:     public boolean checkSolid(){
+1740:         return false;
+1741:     }
+1742: 
+1743:     public float handleDamage(float amount){
+1744:         return amount;
+1745:     }
+1746: 
+1747:     public boolean absorbLasers(){
+1748:         return block.absorbLasers;
+1749:     }
+1750: 
+1751:     public boolean isInsulated(){
+1752:         return block.insulated;
+1753:     }
+1754: 
+1755:     public boolean collide(Bullet other){
+1756:         return true;
+1757:     }
+1758: 
+1759:     /** Handle a bullet collision.
+1760:      * @return whether the bullet should be removed. */
+1761:     public boolean collision(Bullet other){
+1762:         boolean wasDead = health <= 0;
+1763:         BulletType t = other.type;
+1764: 
+1765:         float damage = other.type.buildingDamage(other);
+1766:         if(!t.pierceArmor){
+1767:             damage = Damage.applyArmor(damage, block.armor * t.armorMultiplier * t.blockArmorMultiplier);
+1768:         }
+1769: 
+1770:         damage(other, other.team, damage);
+1771: 
+1772:         if(health <= 0 && !wasDead){
+1773:             Events.fire(new BuildingBulletDestroyEvent(self(), other));
+1774:         }
+1775: 
+1776:         return true;
+1777:     }
+1778: 
+1779:     /** Used to handle damage from splash damage for certain types of blocks. */
+1780:     public void damage(@Nullable Team source, float damage){
+1781:         damage(damage);
+1782:     }
+1783: 
+1784:     /** Handles splash damage with a bullet source. */
+1785:     public void damage(Bullet bullet, Team source, float damage){
+1786:         damage(source, damage);
+1787:         Events.fire(bulletDamageEvent.set(self(), bullet));
+1788:     }
+1789: 
+1790:     /** Changes this building's team in a safe manner. */
+1791:     public void changeTeam(Team next){
+1792:         changeTeam(next, true);
+1793:     }
+1794: 
+1795:     /** Changes this building's team in a safe manner. */
+1796:     public void changeTeam(Team next, boolean updatePower){
+1797:         if(this.team == next) return;
+1798:         if(block.forceTeam != null) team = block.forceTeam;
+1799: 
+1800:         Team last = this.team;
+1801: 
+1802:         if(last == next) return;
+1803: 
+1804:         boolean was = isValid();
+1805: 
+1806:         if(was) indexer.removeIndex(tile);
+1807: 
+1808:         this.team = next;
+1809: 
+1810:         if(power != null && updatePower){
+1811:             var oldGraph = power.graph;
+1812:             for(var other : proximity){
+1813:                 if(other != null && other.team != team && other.power != null && other.power.graph == oldGraph){
+1814:                     new PowerGraph().reflow(other);
+1815:                 }
+1816:             }
+1817:             for(int i = 0; i < power.links.size; i++){
+1818:                 var other = world.build(power.links.items[i]);
+1819: 
+1820:                 //only reflow links that were connected to the old power graph; ones that have a new one were already covered.
+1821:                 if(other != null && other.team != team && other.power != null && other.power.graph == oldGraph){
+1822:                     power.links.removeIndex(i);
+1823:                     other.power.links.removeValue(pos());
+1824: 
+1825:                     new PowerGraph().reflow(other);
+1826: 
+1827:                     i --;
+1828:                 }
+1829:             }
+1830:             new PowerGraph().reflow(self());
+1831: 
+1832:             updatePowerGraph();
+1833:         }
+1834: 

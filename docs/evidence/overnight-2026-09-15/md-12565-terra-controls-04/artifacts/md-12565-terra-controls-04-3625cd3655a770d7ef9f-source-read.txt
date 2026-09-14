@@ -1,0 +1,75 @@
+774:     @Remote(targets = Loc.both, called = Loc.both, forward = true)
+775:     public static void unitControl(Player player, @Nullable Unit unit){
+776:         if(player == null) return;
+777: 
+778:         //make sure player is allowed to control the unit
+779:         if(net.server() && (!state.rules.possessionAllowed || !netServer.admins.allowAction(player, ActionType.control, action -> action.unit = unit))){
+780:             throw new ValidateException(player, "Player cannot control a unit.");
+781:         }
+782: 
+783:         //clear player unit when they possess a core
+784:         if(unit == null){ //just clear the unit (is this used?)
+785:             player.clearUnit();
+786:             //make sure it's AI controlled, so players can't overwrite each other
+787:         }else if(unit.isAI() && unit.team == player.team() && !unit.dead && unit.playerControllable()){
+788:             if(net.client() && player.isLocal()){
+789:                 player.justSwitchFrom = player.unit();
+790:                 player.justSwitchTo = unit;
+791:             }
+792: 
+793:             //TODO range check for docking?
+794:             var before = player.unit();
+795: 
+796:             player.unit(unit);
+797: 
+798:             if(before != null){
+799:                 if(before.spawnedByCore){
+800:                     unit.dockedType = before.type;
+801:                 }else if(before.dockedType != null && before.dockedType.coreUnitDock){
+802:                     //direct dock transfer???
+803:                     unit.dockedType = before.dockedType;
+804:                 }
+805: 
+806:                 if(before.spawnedByCore && !before.isPlayer()){
+807:                     Call.unitDespawn(before);
+808:                 }
+809:             }
+810: 
+811:             Time.run(Fx.unitSpirit.lifetime, () -> Fx.unitControl.at(unit.x, unit.y, 0f, unit));
+812:             if(!player.dead()){
+813:                 Fx.unitSpirit.at(player.x, player.y, 0f, unit);
+814:             }
+815:         }else if(net.server()){
+816:             //reject forwarding the packet if the unit was dead, AI or team
+817:             throw new ValidateException(player, "Player attempted to control invalid unit.");
+818:         }
+819: 
+820:         Events.fire(new UnitControlEvent(player, unit));
+821:     }
+822: 
+823:     @Remote(targets = Loc.both, called = Loc.server, forward = true)
+824:     public static void unitClear(Player player){
+825:         if(player == null) return;
+826: 
+827:         //make sure player is allowed to control the building
+828:         if(net.server() && !netServer.admins.allowAction(player, ActionType.respawn, action -> {})){
+829:             throw new ValidateException(player, "Player cannot respawn.");
+830:         }
+831: 
+832:         if(!player.dead() && !player.unit().spawnedByCore){
+833:             var docked = player.unit().dockedType;
+834: 
+835:             //get best core unit type as approximation
+836:             if(docked == null){
+837:                 var closest = player.bestCore();
+838:                 if(closest != null){
+839:                     docked = ((CoreBlock)closest.block).unitType;
+840:                 }
+841:             }
+842: 
+843:             //respawn if necessary
+844:             if(docked != null && docked.coreUnitDock){
+845:                 //TODO animation, etc
+846:                 Fx.spawn.at(player);
+847: 
+848:                 if(!net.client()){

@@ -1,0 +1,10 @@
+./core/src/mindustry/world/consumers/ConsumeItems.java:36:                c.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/consumers/ConsumeItemDynamic.java:46:            table.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/consumers/ConsumePayloadFilter.java:60:            block -> image.add(new ReqImage(StatValues.stack(block, 1),
+./core/src/mindustry/world/consumers/ConsumeItemFilter.java:38:        content.items().each(i -> filter.get(i) && i.unlockedNow() && !i.hidden, item -> image.add(new ReqImage(StatValues.stack(item, 1),
+./core/src/mindustry/world/consumers/ConsumePayloadDynamic.java:67:                c.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/consumers/ConsumePayloads.java:41:                t.add(StatValues.stack(stack));
+./core/src/mindustry/world/consumers/ConsumePayloads.java:54:                c.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:245:                                        solid.add(StatValues.stack(plan.itemReq[i])).pad(5);
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:254:                                    solid.add(StatValues.stack(plan.requirements.get(i))).pad(5);
+./core/src/mindustry/ui/fragments/PlacementFragment.java:530:                                        unitlist.add(StatValues.stack(type, counts[i])).pad(4).with(b -> {

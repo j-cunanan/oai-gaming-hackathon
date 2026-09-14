@@ -1,0 +1,5 @@
+./core/src/mindustry/type/UnitType.java:697:    public void killed(Unit unit){}
+./core/src/mindustry/entities/comp/HealthComp.java:29:    void killed(){
+./core/src/mindustry/entities/comp/BuildingComp.java:2250:    public void killed(){
+./core/src/mindustry/entities/comp/BlockUnitComp.java:54:    public void killed(){
+./core/src/mindustry/entities/comp/UnitComp.java:979:    public void killed(){

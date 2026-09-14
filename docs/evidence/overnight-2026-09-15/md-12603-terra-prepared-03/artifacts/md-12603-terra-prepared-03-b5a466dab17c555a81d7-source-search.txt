@@ -1,0 +1,7 @@
+./core/src/mindustry/content/UnitTypes.java:749:            health = 1000;
+./core/src/mindustry/content/UnitTypes.java:1352:            health = 100;
+./core/src/mindustry/content/Blocks.java:1788:            health = 100 * wallHealthMultiplier;
+./core/src/mindustry/content/Blocks.java:1795:            health = 100 * 4 * wallHealthMultiplier;
+./core/src/mindustry/content/Blocks.java:6994:            health = 100;
+./tests/src/test/java/power/PowerTestFixture.java:96:            block.health = 100000;
+./tests/src/test/java/power/PowerTestFixture.java:97:            tile.build.health = 100000.0f;

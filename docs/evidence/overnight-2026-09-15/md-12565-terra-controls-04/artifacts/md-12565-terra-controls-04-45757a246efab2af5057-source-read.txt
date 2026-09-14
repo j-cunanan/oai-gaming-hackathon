@@ -1,0 +1,85 @@
+710:         if(build == null && net.server()) throw new ValidateException(player, "building is null");
+711:         if(build == null) return;
+712: 
+713:         if(net.server() && (!Units.canInteract(player, build) ||
+714:         !netServer.admins.allowAction(player, ActionType.configure, build.tile, action -> action.config = value))){
+715: 
+716:             if(player.con != null){
+717:                 var packet = new TileConfigCallPacket(); //undo the config on the client
+718:                 packet.player = player;
+719:                 packet.build = build;
+720:                 packet.value = build.config();
+721:                 player.con.send(packet, true);
+722:             }
+723: 
+724:             if(!player.isLocal()){
+725:                 throw new ValidateException(player, "Player cannot configure a tile.");
+726:             }else{
+727:                 return;
+728:             }
+729:         }
+730:         if(player != null) build.updateLastAccess(player);
+731:         build.configured(player == null || player.dead() ? null : player.unit(), value);
+732:         Events.fire(new ConfigEvent(build, player, value));
+733:     }
+734: 
+735:     //only useful for servers or local mods, and is not replicated across clients
+736:     //uses unreliable packets due to high frequency
+737:     @Remote(targets = Loc.both, called = Loc.both, unreliable = true)
+738:     public static void tileTap(@Nullable Player player, Tile tile){
+739:         if(tile == null) return;
+740: 
+741:         Events.fire(new TapEvent(player, tile));
+742:     }
+743: 
+744:     @Remote(targets = Loc.both, called = Loc.server)
+745:     public static void buildingControlSelect(Player player, Building build){
+746:         if(player == null || build == null || player.dead()) return;
+747: 
+748:         //make sure player is allowed to control the building
+749:         if(net.server() && (!state.rules.possessionAllowed && player.bestCore() != build  || !netServer.admins.allowAction(player, ActionType.buildSelect, action -> action.tile = build.tile))){
+750:             throw new ValidateException(player, "Player cannot control a building.");
+751:         }
+752: 
+753:         if(player.team() == build.team && build.canControlSelect(player.unit())){
+754:             var before = player.unit();
+755: 
+756:             Call.unitBuildingControlSelect(player.unit(), build);
+757: 
+758:             if(!before.dead && before.spawnedByCore && !before.isPlayer()){
+759:                 Call.unitDespawn(before);
+760:             }
+761:         }
+762:     }
+763: 
+764:     @Remote(called = Loc.server)
+765:     public static void unitBuildingControlSelect(Unit unit, Building build){
+766:         if(unit == null || unit.dead()) return;
+767: 
+768:         //client skips checks to prevent ghost units
+769:         if(unit.team() == build.team && (net.client() || build.canControlSelect(unit))){
+770:             build.onControlSelect(unit);
+771:         }
+772:     }
+773: 
+774:     @Remote(targets = Loc.both, called = Loc.both, forward = true)
+775:     public static void unitControl(Player player, @Nullable Unit unit){
+776:         if(player == null) return;
+777: 
+778:         //make sure player is allowed to control the unit
+779:         if(net.server() && (!state.rules.possessionAllowed || !netServer.admins.allowAction(player, ActionType.control, action -> action.unit = unit))){
+780:             throw new ValidateException(player, "Player cannot control a unit.");
+781:         }
+782: 
+783:         //clear player unit when they possess a core
+784:         if(unit == null){ //just clear the unit (is this used?)
+785:             player.clearUnit();
+786:             //make sure it's AI controlled, so players can't overwrite each other
+787:         }else if(unit.isAI() && unit.team == player.team() && !unit.dead && unit.playerControllable()){
+788:             if(net.client() && player.isLocal()){
+789:                 player.justSwitchFrom = player.unit();
+790:                 player.justSwitchTo = unit;
+791:             }
+792: 
+793:             //TODO range check for docking?
+794:             var before = player.unit();

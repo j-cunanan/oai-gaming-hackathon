@@ -1,0 +1,37 @@
+./core/src/mindustry/editor/MapView.java:181:            float ax = Core.input.axis(Binding.moveX);
+./core/src/mindustry/entities/part/RegionPart.java:45:    public float moveX, moveY, growX, growY, moveRot;
+./core/src/mindustry/entities/part/RegionPart.java:76:        float mx = moveX * prog, my = moveY * prog, mr = moveRot * prog + rotation,
+./core/src/mindustry/entities/part/HaloPart.java:17:    public float moveX, moveY, shapeMoveRot;
+./core/src/mindustry/entities/part/HaloPart.java:50:            Tmp.v1.set((x + moveX * prog) * sign, y + moveY * prog).rotate(params.rotation - 90);
+./core/src/mindustry/entities/part/ShapePart.java:13:    public float moveX, moveY, moveRot;
+./core/src/mindustry/entities/part/ShapePart.java:42:            Tmp.v1.set((x + moveX * prog) * sign, y + moveY * prog).rotate(params.rotation - 90);
+./core/src/mindustry/content/Blocks.java:3827:                    moveX = 0.6f;
+./core/src/mindustry/content/Blocks.java:4604:                    moveX = 1f;
+./core/src/mindustry/content/Blocks.java:4612:                    moveX = 8f / 4f;
+./core/src/mindustry/content/Blocks.java:4853:                    moveX = 2f * 4f / 3f;
+./core/src/mindustry/content/Blocks.java:5012:                    moveX = 1.75f;
+./core/src/mindustry/content/Blocks.java:5028:                    moveX = 1.5f;
+./core/src/mindustry/content/Blocks.java:5137:                    moveX = 2f;
+./core/src/mindustry/content/Blocks.java:5148:                    moveX = 2f;
+./core/src/mindustry/content/UnitTypes.java:3016:                    moveX = 0.75f;
+./core/src/mindustry/content/UnitTypes.java:3027:                    moveX = 17f / 4f;
+./core/src/mindustry/content/UnitTypes.java:3039:                    moveX = 17f / 4f;
+./core/src/mindustry/content/UnitTypes.java:3055:                        moveX = 3f;
+./core/src/mindustry/content/UnitTypes.java:3271:                    moveX = 21f / 4f + Mathf.slope(fi / 4f) * 1.25f;
+./core/src/mindustry/content/UnitTypes.java:3386:                    moveX = 6f + i * 1.9f;
+./core/src/mindustry/content/UnitTypes.java:3688:                        moveX = fi * 0.3f;
+./core/src/mindustry/content/UnitTypes.java:3945:                moveX = -1f;
+./core/src/mindustry/logic/LExecutor.java:360:                        ai.moveX = x1;
+./core/src/mindustry/ai/ControlPathfinder.java:999:                    movex = moveDirs[relOffset * 2],
+./core/src/mindustry/ai/ControlPathfinder.java:1006:                        int x = otherx1 + movex * i, y = othery1 + movey * i;
+./core/src/mindustry/input/Binding.java:10:    moveX = KeyBind.add("move_x", new Axis(KeyCode.a, KeyCode.d), "general"),
+./core/src/mindustry/input/MobileInput.java:815:            Vec2 delta = Tmp.v1.setZero().add(Core.input.axis(Binding.moveX), Core.input.axis(Binding.moveY)).nor().scl(Time.delta * camSpeed);
+./core/src/mindustry/input/DesktopInput.java:267:            if((Math.abs(Core.input.axis(Binding.moveX)) > 0 || Math.abs(Core.input.axis(Binding.moveY)) > 0 || input.keyDown(Binding.mouseMove))){
+./core/src/mindustry/input/DesktopInput.java:282:                Core.camera.position.add(Tmp.v1.setZero().add(Core.input.axis(Binding.moveX), Core.input.axis(Binding.moveY)).nor().scl(camSpeed));
+./core/src/mindustry/input/DesktopInput.java:979:        float xa = Core.input.axis(Binding.moveX);
+./core/src/mindustry/ai/types/LogicAI.java:21:    public float moveX, moveY, moveRad;
+./core/src/mindustry/ai/types/LogicAI.java:68:                moveTo(Tmp.v1.set(moveX, moveY), 1f, 30f);
+./core/src/mindustry/ai/types/LogicAI.java:71:                moveTo(Tmp.v1.set(moveX, moveY), moveRad - 7f, 7, true, null);
+./core/src/mindustry/ai/types/LogicAI.java:75:                    moveTo(Tmp.v1.set(moveX, moveY), 1f, 30f);
+./core/src/mindustry/ai/types/LogicAI.java:77:                    var result = controlPath.getPathPosition(unit, Tmp.v2.set(moveX, moveY));
+./core/src/mindustry/ui/fragments/HintsFragment.java:170:        desktopMove(visibleDesktop, () -> Core.input.axis(Binding.moveX) != 0 || Core.input.axis(Binding.moveY) != 0),

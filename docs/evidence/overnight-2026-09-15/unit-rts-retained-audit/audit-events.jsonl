@@ -1,0 +1,1 @@
+{"seq": 1, "case_id": "audit-unit-rts-retained", "created_at": "2026-09-14T20:18:56.472383+00:00", "kind": "model_call", "data": {"purpose": "independent sequence verification", "model": "gpt-5.6-terra", "reasoning_effort": "max", "max_output_tokens": 16000, "request_timeout_seconds": 300.0, "input_tokens": 7682, "output_tokens": 10477}, "recorded_seq": null}

@@ -1,0 +1,3 @@
+./core/assets/bundles/bundle_fil.properties:2057:block.steam-generator.name = Steam Generator
+./core/assets/bundles/bundle_uk_UA.properties:2599:block.steam-generator.description = Англійська назва: Steam Generator\nВиробляє енергію, спалюючи легкозаймисті матеріали й перетворює воду в пару.
+./core/assets/bundles/bundle.properties:2062:block.steam-generator.name = Steam Generator

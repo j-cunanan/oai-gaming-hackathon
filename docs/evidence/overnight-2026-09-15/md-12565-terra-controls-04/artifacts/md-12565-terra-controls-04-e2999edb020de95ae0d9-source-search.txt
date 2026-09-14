@@ -1,0 +1,4 @@
+regex parse error:
+    Table stack(
+               ^
+error: unclosed group

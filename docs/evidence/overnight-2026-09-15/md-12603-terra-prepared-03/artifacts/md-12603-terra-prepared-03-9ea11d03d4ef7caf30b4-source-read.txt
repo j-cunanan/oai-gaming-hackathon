@@ -1,0 +1,100 @@
+150:     public boolean requiresWater = false;
+151:     /** whether this block can be placed on any liquids, anywhere */
+152:     public boolean placeableLiquid = false;
+153:     /** whether this block can be placed directly by the player via PlacementFragment */
+154:     public boolean placeablePlayer = true;
+155:     /** whether this floor can be placed on. */
+156:     public boolean placeableOn = true;
+157:     /** whether this block has insulating properties. */
+158:     public boolean insulated = false;
+159:     /** whether the sprite is a full square. */
+160:     public boolean squareSprite = true;
+161:     /** whether this block absorbs laser attacks. */
+162:     public boolean absorbLasers = false;
+163:     /** if false, the status is never drawn */
+164:     public boolean enableDrawStatus = true;
+165:     /** whether to draw disabled status */
+166:     public boolean drawDisabled = true;
+167:     /** whether to automatically reset enabled status after a logic block has not interacted for a while. */
+168:     public boolean autoResetEnabled = true;
+169:     /** if true, the block stops updating when disabled */
+170:     public boolean noUpdateDisabled = false;
+171:     /** if true, this block updates when it's a payload in a unit. */
+172:     public boolean updateInUnits = true;
+173:     /** if true, this block updates in payloads in units regardless of the experimental game rule */
+174:     public boolean alwaysUpdateInUnits = false;
+175:     /** if true, this block can be picked up in payloads */
+176:     public boolean canPickup = true;
+177:     /** if false, only incinerable liquids are dropped when deconstructing; otherwise, all liquids are dropped. */
+178:     public boolean deconstructDropAllLiquid = false;
+179:     /** Whether to use this block's color in the minimap. Only used for overlays. */
+180:     public boolean useColor = true;
+181:     /** item that drops from this block, used for drills */
+182:     public @Nullable Item itemDrop = null;
+183:     /** if true, this block cannot be mined by players. useful for annoying things like sand. */
+184:     public boolean playerUnmineable = false;
+185:     /** Affinities for floors. */
+186:     public Attributes attributes = new Attributes();
+187:     /** Health per square tile that this block occupies; essentially, this is multiplied by size * size. Overridden if health is > 0. If <0, the default is 40. */
+188:     public float scaledHealth = -1;
+189:     /** building health; -1 to use scaledHealth */
+190:     public int health = -1;
+191:     /** damage absorption, similar to unit armor */
+192:     public float armor = 0f;
+193:     /** base block explosiveness */
+194:     public float baseExplosiveness = 0f;
+195:     /** scaling of explosiveness based on items/liquids */
+196:     public float explosivenessScale = 1f;
+197:     /** scaling of explosion flammability based on items/liquids */
+198:     public float flammabilityScale = 1f;
+199:     /** base value for screen shake upon destruction */
+200:     public float baseShake = 3f;
+201:     /** bullet that this block spawns when destroyed */
+202:     public @Nullable BulletType destroyBullet = null;
+203:     /** if true, destroyBullet is spawned on the block's team instead of Derelict team */
+204:     public boolean destroyBulletSameTeam = false;
+205:     /** liquid used for lighting */
+206:     public @Nullable Liquid lightLiquid;
+207:     /** whether cracks are drawn when this block is damaged */
+208:     public boolean drawCracks = true;
+209:     /** whether rubble is created when this block is destroyed */
+210:     public boolean createRubble = true;
+211:     /** whether this block can be placed on edges of liquids. */
+212:     public boolean floating = false;
+213:     /** multiblock size */
+214:     @NoPatch //changing size often leads to catastrophic issues, so don't allow that
+215:     public int size = 1;
+216:     /** multiblock offset */
+217:     public float offset = 0f;
+218:     /** offset for iteration (internal use only) */
+219:     public int sizeOffset = 0;
+220:     /** Clipping size of this block. Should be as large as the block will draw. */
+221:     public float clipSize = -1f;
+222:     /** Clipping size for lights only. */
+223:     public float lightClipSize;
+224:     /** When placeRangeCheck is enabled, this is the range checked for enemy blocks. */
+225:     public float placeOverlapRange = 50f;
+226:     /** Multiplier of damage dealt to this block by tanks. Does not apply to crawlers. */
+227:     public float crushDamageMultiplier = 1f;
+228:     /** If true, this block is instantly destroyed by tanks with crushFragile set to true. */
+229:     public boolean crushFragile = false;
+230:     /** Max of timers used. */
+231:     public int timers = 0;
+232:     /** Cache layer. Only used for 'cached' rendering of blocks (not buildings). */
+233:     public CacheLayer cacheLayer = CacheLayer.normal;
+234:     /** If true, draw() will be called on the building. */
+235:     public boolean drawDynamic = true;
+236:     /** If enabled, drawCached() will be called on the building. */
+237:     public boolean drawCached = false;
+238:     /** */
+239:     public BuildingCacheLayer buildingCacheLayer = BuildingCacheLayer.normal;
+240:     /** Special flag; if false, floor will be drawn under this block even if it is cached. */
+241:     public boolean fillsTile = true;
+242:     /** If true, this block can be covered by darkness / fog even if synthetic. */
+243:     public boolean forceDark = false;
+244:     /** whether this block can be replaced in all cases */
+245:     public boolean alwaysReplace = false;
+246:     /** if false, this block can never be replaced. */
+247:     public boolean replaceable = true;
+248:     /** The block group. Unless {@link #canReplace} is overridden, blocks in the same group can replace each other. */
+249:     public BlockGroup group = BlockGroup.none;

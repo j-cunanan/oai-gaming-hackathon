@@ -1,0 +1,6 @@
+./core/src/mindustry/content/SerpuloTechTree.java:238:                        node(steamGenerator, Seq.with(new SectorComplete(crateredBattleground)), () -> {
+./core/src/mindustry/content/SerpuloTechTree.java:472:                            new Research(steamGenerator)
+./core/src/mindustry/content/SerpuloTechTree.java:573:                        new Research(steamGenerator),
+./core/src/mindustry/content/SerpuloTechTree.java:642:                                    new Research(steamGenerator),
+./core/src/mindustry/content/Blocks.java:136:    combustionGenerator, thermalGenerator, steamGenerator, differentialGenerator, rtgGenerator, solarPanel, largeSolarPanel, thoriumReactor,
+./core/src/mindustry/content/Blocks.java:2553:        steamGenerator = new ConsumeGenerator("steam-generator"){{

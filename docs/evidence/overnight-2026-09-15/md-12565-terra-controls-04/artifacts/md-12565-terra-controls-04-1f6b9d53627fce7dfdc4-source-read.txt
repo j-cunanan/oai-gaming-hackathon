@@ -1,0 +1,90 @@
+1040:         Unit unit = player.unit();
+1041:         if(!(unit instanceof Payloadc pay)) return;
+1042: 
+1043:         Unit target = Units.closest(player.team(), pay.x(), pay.y(), unit.type.hitSize * 2f, u -> u.isAI() && u.isGrounded() && pay.canPickup(u) && u.within(unit, u.hitSize + unit.hitSize));
+1044:         if(target != null){
+1045:             Call.requestUnitPayload(player, target);
+1046:         }else{
+1047:             Building build = world.buildWorld(pay.x(), pay.y());
+1048:             if(build == null) return;
+1049:             Payload current = build.getPayload();
+1050: 
+1051:             if(state.teams.canInteract(unit.team, build.team) &&
+1052:                 ((current != null && pay.canPickupPayload(current)) || (build.block.buildVisibility != BuildVisibility.hidden && build.canPickup() && pay.canPickup(build)))){
+1053:                 Call.requestBuildPayload(player, build);
+1054:             }
+1055:         }
+1056:     }
+1057: 
+1058:     public void tryDropPayload(){
+1059:         Unit unit = player.unit();
+1060:         if(!(unit instanceof Payloadc pay) || !pay.canDropPayload()) return;
+1061: 
+1062:         Call.requestDropPayload(player, player.x, player.y);
+1063:     }
+1064: 
+1065:     public float getMouseX(){
+1066:         return Core.input.mouseX();
+1067:     }
+1068: 
+1069:     public float getMouseY(){
+1070:         return Core.input.mouseY();
+1071:     }
+1072: 
+1073:     public void buildPlacementUI(Table table){
+1074: 
+1075:     }
+1076: 
+1077:     public void buildUI(Group group){
+1078: 
+1079:     }
+1080: 
+1081:     public void updateState(){
+1082:         if(state.isMenu()){
+1083:             controlledType = null;
+1084:             logicCutscene = false;
+1085:             config.forceHide();
+1086:             commandMode = commandRect = false;
+1087:         }
+1088:     }
+1089: 
+1090:     //TODO when shift is held? ctrl?
+1091:     public boolean multiUnitSelect(){
+1092:         return false;
+1093:     }
+1094: 
+1095:     public void selectUnitsRect(){
+1096:         if(commandMode && commandRect){
+1097:             if(!tappedOne){
+1098:                 var units = selectedCommandUnits(commandRectX, commandRectY, input.mouseWorldX() - commandRectX, input.mouseWorldY() - commandRectY);
+1099:                 if(multiUnitSelect()){
+1100:                     //tiny brain method of unique addition
+1101:                     selectedUnits.removeAll(units);
+1102:                 }else{
+1103:                     //nothing selected, clear units
+1104:                     selectedUnits.clear();
+1105:                 }
+1106:                 commandBuildings.clear();
+1107: 
+1108:                 selectedUnits.addAll(units);
+1109:                 if(selectedUnits.isEmpty()){
+1110:                     commandBuildings.addAll(selectedCommandBuildings(commandRectX, commandRectY, input.mouseWorldX() - commandRectX, input.mouseWorldY() - commandRectY));
+1111:                 }
+1112:                 Events.fire(Trigger.unitCommandChange);
+1113:             }
+1114:             commandRect = false;
+1115:         }
+1116:     }
+1117: 
+1118:     public void selectTypedUnits(){
+1119:         if(commandMode){
+1120:             Unit unit = selectedCommandUnit(input.mouseWorldX(), input.mouseWorldY());
+1121:             if(unit != null){
+1122:                 selectedUnits.clear();
+1123:                 camera.bounds(Tmp.r1);
+1124:                 selectedUnits.addAll(selectedCommandUnits(Tmp.r1.x, Tmp.r1.y, Tmp.r1.width, Tmp.r1.height, u -> u.type == unit.type));
+1125:                 Events.fire(Trigger.unitCommandChange);
+1126:             }
+1127:         }
+1128:     }
+1129: 

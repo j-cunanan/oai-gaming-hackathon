@@ -1,0 +1,38 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+No Android SDK found. Skipping Android module.
+Local Arc not found. Cloning https://github.com/Anuken/Arc to a directory next to Mindustry is highly recommended, as jitpack is unreliable.
+
+> Configure project :
+Compiling with build: 'custom build'
+
+> Task :annotations:clearCache
+> Task :annotations:compileJava UP-TO-DATE
+> Task :core:clearCache
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :annotations:processResources UP-TO-DATE
+> Task :annotations:classes UP-TO-DATE
+> Task :annotations:jar UP-TO-DATE
+> Task :core:kaptGenerateStubsKotlin SKIPPED
+> Task :core:kaptKotlin UP-TO-DATE
+> Task :core:compileKotlin SKIPPED
+> Task :core:preGen UP-TO-DATE
+> Task :core:compileJava UP-TO-DATE
+> Task :tests:clearCache
+> Task :tests:compileJava NO-SOURCE
+> Task :tests:processResources NO-SOURCE
+> Task :tests:classes UP-TO-DATE
+
+> Task :tests:compileTestJava
+Note: /workspace/repo/tests/src/test/java/DataAssetTests.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tests:processTestResources
+> Task :tests:testClasses
+> Task :reproResolveTestRuntime
+
+[Incubating] Problems report is available at: file:///workspace/repo/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 23s
+11 actionable tasks: 6 executed, 5 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.1/userguide/configuration_cache_enabling.html

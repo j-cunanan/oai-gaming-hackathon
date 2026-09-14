@@ -1,0 +1,165 @@
+645:         }
+646: 
+647:         if(!selectPlans.isEmpty()){
+648:             if(Core.input.keyTap(Binding.schematicFlipX)){
+649:                 flipPlans(selectPlans, true);
+650:             }
+651: 
+652:             if(Core.input.keyTap(Binding.schematicFlipY)){
+653:                 flipPlans(selectPlans, false);
+654:             }
+655:         }
+656: 
+657:         if(splan != null){
+658:             int x = Math.round((Core.input.mouseWorld().x + buildPlanMouseOffsetX) / tilesize);
+659:             int y = Math.round((Core.input.mouseWorld().y + buildPlanMouseOffsetY) / tilesize);
+660:             if(splan.x != x || splan.y != y){
+661:                 splan.x = x;
+662:                 splan.y = y;
+663:                 movedPlan = true;
+664:             }
+665:         }
+666: 
+667:         if(block == null || mode != placing){
+668:             linePlans.clear();
+669:         }
+670: 
+671:         if(Core.input.keyTap(Binding.pauseBuilding)){
+672:             isBuilding = !isBuilding;
+673:             buildWasAutoPaused = false;
+674: 
+675:             if(isBuilding){
+676:                 player.shooting = false;
+677:             }
+678:         }
+679: 
+680:         if(isPlacing() && mode == placing && (cursorX != lastLineX || cursorY != lastLineY || Core.input.keyTap(Binding.diagonalPlacement) || Core.input.keyRelease(Binding.diagonalPlacement))){
+681:             updateLine(selectX, selectY);
+682:             lastLineX = cursorX;
+683:             lastLineY = cursorY;
+684:         }
+685: 
+686:         if(Core.input.keyRelease(Binding.select) && !Core.scene.hasMouse()){
+687:             BuildPlan plan = getPlan(cursorX, cursorY);
+688: 
+689:             if(plan != null && !movedPlan){
+690:                 //move selected to front
+691:                 int index = player.unit().plans.indexOf(plan, true);
+692:                 if(index != -1){
+693:                     player.unit().plans.removeIndex(index);
+694:                     player.unit().plans.addFirst(plan);
+695:                 }
+696:             }
+697:         }
+698: 
+699:         if(Core.input.keyTap(Binding.select) && !Core.scene.hasMouse()){
+700:             tappedOne = false;
+701:             BuildPlan plan = getPlan(cursorX, cursorY);
+702: 
+703:             if(Core.input.keyDown(Binding.breakBlock)){
+704:                 mode = none;
+705:             }else if(!selectPlans.isEmpty()){
+706:                 flushPlans(selectPlans);
+707:                 movedPlan = true;
+708:             }else if(isPlacing()){
+709:                 selectX = cursorX;
+710:                 selectY = cursorY;
+711:                 lastLineX = cursorX;
+712:                 lastLineY = cursorY;
+713:                 mode = placing;
+714:                 updateLine(selectX, selectY);
+715:             }else if(plan != null && !plan.breaking && mode == none && !plan.initialized && plan.progress <= 0f){
+716:                 splan = plan;
+717:                 movedPlan = false;
+718:                 buildPlanMouseOffsetX = splan.x * tilesize - Core.input.mouseWorld().x;
+719:                 buildPlanMouseOffsetY = splan.y * tilesize - Core.input.mouseWorld().y;
+720:             }else if(plan != null && plan.breaking){
+721:                 deleting = true;
+722:             }else if(commandMode){
+723:                 commandRect = true;
+724:                 commandRectX = input.mouseWorldX();
+725:                 commandRectY = input.mouseWorldY();
+726:             }else if(!checkConfigTap() && selected != null && !tryRepairDerelict(selected)){
+727:                 //only begin shooting if there's no cursor event
+728:                 if(!tryTapPlayer(Core.input.mouseWorld().x, Core.input.mouseWorld().y) && !tileTapped(selected.build) && !player.unit().activelyBuilding() && !droppingItem
+729:                     && !(tryStopMine(selected) || (!settings.getBool("doubletapmine") || selected == prevSelected && Time.timeSinceMillis(selectMillis) < 500) && tryBeginMine(selected)) && !Core.scene.hasKeyboard()){
+730:                     player.shooting = shouldShoot;
+731:                 }
+732:             }else if(!Core.scene.hasKeyboard()){ //if it's out of bounds, shooting is just fine
+733:                 player.shooting = shouldShoot;
+734:             }
+735:             selectMillis = Time.millis();
+736:             prevSelected = selected;
+737:         }else if(Core.input.keyTap(Binding.deselect) && isPlacing()){
+738:             block = null;
+739:             mode = none;
+740:         }else if(Core.input.keyTap(Binding.deselect) && !selectPlans.isEmpty()){
+741:             selectPlans.clear();
+742:             lastSchematic = null;
+743:         }else if(Core.input.keyTap(Binding.breakBlock) && !Core.scene.hasMouse() && player.isBuilder() && !commandMode){
+744:             //is recalculated because setting the mode to breaking removes potential multiblock cursor offset
+745:             deleting = false;
+746:             mode = breaking;
+747:             selectX = tileX(Core.input.mouseX());
+748:             selectY = tileY(Core.input.mouseY());
+749:             schemX = rawCursorX;
+750:             schemY = rawCursorY;
+751:         }
+752: 
+753:         if(Core.input.keyDown(Binding.select) && mode == none && !isPlacing() && deleting){
+754:             var plan = getPlan(cursorX, cursorY);
+755:             if(plan != null && plan.breaking){
+756:                 player.unit().plans().remove(plan);
+757:             }
+758:         }else{
+759:             deleting = false;
+760:         }
+761: 
+762:         if(mode == placing && block != null){
+763:             if(!overrideLineRotation && !Core.input.keyDown(Binding.diagonalPlacement) && (selectX != cursorX || selectY != cursorY) && ((int)Core.input.axisTap(Binding.rotate) != 0)){
+764:                 rotation = ((int)((Angles.angle(selectX, selectY, cursorX, cursorY) + 45) / 90f)) % 4;
+765:                 overrideLineRotation = true;
+766:             }
+767:         }else{
+768:             overrideLineRotation = false;
+769:         }
+770: 
+771:         if(Core.input.keyRelease(Binding.breakBlock) && Core.input.keyDown(Binding.schematicSelect) && mode == breaking){
+772:             lastSchematic = schematics.create(schemX, schemY, rawCursorX, rawCursorY);
+773:             schemX = -1;
+774:             schemY = -1;
+775:         }
+776: 
+777:         if(Core.input.keyRelease(Binding.breakBlock) || Core.input.keyRelease(Binding.select)){
+778: 
+779:             if(mode == placing && block != null){ //touch up while placing, place everything in selection
+780:                 if(input.keyDown(Binding.boost)){
+781:                     flushPlansReverse(linePlans);
+782:                 }else{
+783:                     flushPlans(linePlans);
+784:                 }
+785: 
+786:                 linePlans.clear();
+787:                 Events.fire(new LineConfirmEvent());
+788:             }else if(mode == breaking){ //touch up while breaking, break everything in selection
+789:                 removeSelection(selectX, selectY, cursorX, cursorY, !Core.input.keyDown(Binding.schematicSelect) ? maxLength : Vars.maxSchematicSize);
+790:                 if(lastSchematic != null){
+791:                     useSchematic(lastSchematic);
+792:                     lastSchematic = null;
+793:                 }
+794:             }
+795:             selectX = -1;
+796:             selectY = -1;
+797: 
+798:             tryDropItems(selected == null ? null : selected.build, Core.input.mouseWorld().x, Core.input.mouseWorld().y);
+799: 
+800:             if(splan != null){
+801:                 if(getPlan(splan.x, splan.y, splan.block.size, splan) != null){
+802:                     player.unit().plans().remove(splan, true);
+803:                 }
+804: 
+805:                 if(input.ctrl()){
+806:                     inv.hide();
+807:                     config.hideConfig();
+808:                     planConfig.showConfig(splan);
+809:                 }else{

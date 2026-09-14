@@ -1,0 +1,5 @@
+./core/src/mindustry/input/DesktopInput.java:567:            tappedOne = false;
+./core/src/mindustry/input/DesktopInput.java:700:            tappedOne = false;
+./core/src/mindustry/input/DesktopInput.java:908:        tappedOne = true;
+./core/src/mindustry/input/InputHandler.java:114:    public boolean tappedOne = false;
+./core/src/mindustry/input/InputHandler.java:1097:            if(!tappedOne){

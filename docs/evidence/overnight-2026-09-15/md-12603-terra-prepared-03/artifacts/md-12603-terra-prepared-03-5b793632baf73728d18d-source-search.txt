@@ -1,0 +1,151 @@
+./annotations/src/main/resources/classids.properties:32:mindustry.world.blocks.campaign.LaunchPad.LaunchPayloadComp=15
+./annotations/src/main/resources/classids.properties:33:mindustry.world.blocks.campaign.PayloadLaunchPad.LargeLaunchPayloadComp=34
+./tests/src/test/java/ApplicationTests.java:861:            tile.setBlock(Blocks.payloadConveyor, Team.sharded);
+./core/assets/bundles/bundle_ca.properties:1225:stat.payloadcapacity = Capacitat de les cintes de blocs
+./core/assets/bundles/bundle_ca.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_ca.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_ko.properties:1225:stat.payloadcapacity = 화물 용량
+./core/assets/bundles/bundle_ko.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_ko.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_uk_UA.properties:1225:stat.payloadcapacity = Вантажність
+./core/assets/bundles/bundle_uk_UA.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_uk_UA.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_ro.properties:1225:stat.payloadcapacity = Capacitate Încărcătură
+./core/assets/bundles/bundle_ro.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_ro.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_ja.properties:1225:stat.payloadcapacity = 積載容量
+./core/assets/bundles/bundle_ja.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_ja.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_fil.properties:1225:stat.payloadcapacity = Kapasidad ng Payload
+./core/assets/bundles/bundle_fil.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_fil.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_fi.properties:1225:stat.payloadcapacity = Lastikapasiteetti
+./core/assets/bundles/bundle_fi.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_fi.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/src/mindustry/entities/comp/PayloadComp.java:24:abstract class PayloadComp implements Posc, Rotc, Hitboxc, Unitc{
+./core/src/mindustry/entities/comp/PayloadComp.java:81:        return type.pickupUnits && payloadUsed() + unit.hitSize * unit.hitSize <= type.payloadCapacity + 0.001f && unit.team == team() && unit.isAI() && unit.type.allowedInPayloads;
+./core/src/mindustry/entities/comp/PayloadComp.java:85:        return payloadUsed() + build.block.size * build.block.size * Vars.tilesize * Vars.tilesize <= type.payloadCapacity + 0.001f && build.canPickup() && build.team == team;
+./core/src/mindustry/entities/comp/PayloadComp.java:89:        return payloadUsed() + pay.size()*pay.size() <= type.payloadCapacity + 0.001f && (type.pickupUnits || !(pay instanceof UnitPayload));
+./core/src/mindustry/entities/units/AIController.java:311:        if(unit instanceof Payloadc pay && pay.hasPayload() && target instanceof Building && pay.payloads().peek() instanceof UnitPayload){
+./core/src/mindustry/entities/comp/BuildingComp.java:735:    public boolean payloadCheck(int conveyorRotation){
+./core/src/mindustry/entities/comp/BuildingComp.java:2128:            case payloadCount -> (getPayloads() != null ? getPayloads().total() : 0) + (getPayload() != null ? 1 : 0);
+./core/src/mindustry/entities/comp/UnitComp.java:303:            case payloadCount -> ((Object)this) instanceof Payloadc pay ? pay.payloads().size : 0;
+./core/src/mindustry/entities/comp/UnitComp.java:304:            case totalPayload -> ((Object)this) instanceof Payloadc pay ? pay.payloadUsed() / (tilesize * tilesize) : 0;
+./core/src/mindustry/entities/comp/UnitComp.java:305:            case payloadCapacity -> type.payloadCapacity / tilePayload;
+./core/src/mindustry/entities/comp/UnitComp.java:322:            case payloadType -> ((Object)this) instanceof Payloadc pay ?
+./core/src/mindustry/entities/comp/UnitComp.java:338:            return ((Object)this) instanceof Payloadc pay ?
+./core/src/mindustry/entities/comp/UnitComp.java:343:            return ((Object)this) instanceof Payloadc pay ?
+./core/src/mindustry/entities/comp/UnitComp.java:400:                if(((Object)this) instanceof Payloadc pay && !net.client()){
+./core/assets/bundles/bundle_eu.properties:1225:stat.payloadcapacity = Karga gaitasun erabilgarria
+./core/assets/bundles/bundle_eu.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_eu.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle.properties:1230:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle.properties:3292:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle.properties:3295:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_fr.properties:1225:stat.payloadcapacity = Capacité de chargement
+./core/assets/bundles/bundle_fr.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_fr.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_be.properties:1225:stat.payloadcapacity = Ёмістасць Нагрузкі
+./core/assets/bundles/bundle_be.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_be.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_sr.properties:1225:stat.payloadcapacity = Tovarni kapacitet
+./core/assets/bundles/bundle_sr.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_sr.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_id_ID.properties:1225:stat.payloadcapacity = Kapasitas Muatan
+./core/assets/bundles/bundle_id_ID.properties:3287:laccess.label.payloadcount = jumlah muatan
+./core/assets/bundles/bundle_id_ID.properties:3290:laccess.label.payloadcapacity = kapasitas muatan
+./core/assets/bundles/bundle_th.properties:1225:stat.payloadcapacity = ความจุสิ่งบรรทุก
+./core/assets/bundles/bundle_th.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_th.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_vi.properties:1225:stat.payloadcapacity = Tải trọng
+./core/assets/bundles/bundle_vi.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_vi.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_pl.properties:1225:stat.payloadcapacity = Ładowność
+./core/assets/bundles/bundle_pl.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_pl.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_de.properties:1225:stat.payloadcapacity = Einheitenkapazität
+./core/assets/bundles/bundle_de.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_de.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_bg.properties:1225:stat.payloadcapacity = Товарен капацитет
+./core/assets/bundles/bundle_bg.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_bg.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_ru.properties:1225:stat.payloadcapacity = Грузоподъёмность
+./core/assets/bundles/bundle_ru.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_ru.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_nl.properties:1225:stat.payloadcapacity = Ladingscapaciteit
+./core/assets/bundles/bundle_nl.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_nl.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_it.properties:1225:stat.payloadcapacity = Capacità di Carico
+./core/assets/bundles/bundle_it.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_it.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_et.properties:1225:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle_et.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_et.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_pt_BR.properties:1225:stat.payloadcapacity = Capacidade de Carga
+./core/assets/bundles/bundle_pt_BR.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_pt_BR.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_zh_CN.properties:1225:stat.payloadcapacity = 载荷容量
+./core/assets/bundles/bundle_zh_CN.properties:3287:laccess.label.payloadcount = 载荷数量
+./core/assets/bundles/bundle_zh_CN.properties:3290:laccess.label.payloadcapacity = 载荷容量
+./core/assets/bundles/bundle_lt.properties:1225:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle_lt.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_lt.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_hu.properties:1225:stat.payloadcapacity = Raktérkapacitás
+./core/assets/bundles/bundle_hu.properties:3287:laccess.label.payloadcount = rakomány száma
+./core/assets/bundles/bundle_hu.properties:3290:laccess.label.payloadcapacity = rakománykapacitás
+./core/assets/bundles/bundle_tr.properties:1225:stat.payloadcapacity = Yük Kapasitesi
+./core/assets/bundles/bundle_tr.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_tr.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_zh_TW.properties:1225:stat.payloadcapacity = 負荷量
+./core/assets/bundles/bundle_zh_TW.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_zh_TW.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_sv.properties:1225:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle_sv.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_sv.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_tk.properties:1225:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle_tk.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_tk.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_es.properties:1225:stat.payloadcapacity = Capacidad de transporte
+./core/assets/bundles/bundle_es.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_es.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_nl_BE.properties:1225:stat.payloadcapacity = Payload Capacity
+./core/assets/bundles/bundle_nl_BE.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_nl_BE.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_da.properties:1225:stat.payloadcapacity = Last-kapacitet
+./core/assets/bundles/bundle_da.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_da.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_pt_PT.properties:1225:stat.payloadcapacity = Capacidade da Carga
+./core/assets/bundles/bundle_pt_PT.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_pt_PT.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/assets/bundles/bundle_cs.properties:1225:stat.payloadcapacity = Kapacita pro náklad
+./core/assets/bundles/bundle_cs.properties:3287:laccess.label.payloadcount = payload count
+./core/assets/bundles/bundle_cs.properties:3290:laccess.label.payloadcapacity = payload capacity
+./core/src/mindustry/ai/UnitStance.java:92:            incompatibleCommands.addAll(UnitCommand.rebuildCommand, UnitCommand.repairCommand, UnitCommand.assistCommand, UnitCommand.enterPayloadCommand);
+./core/src/mindustry/content/ErekirTechTree.java:104:                node(reinforcedPayloadConveyor, Seq.with(new OnSector(atlas)), () -> {
+./core/src/mindustry/content/ErekirTechTree.java:385:                            node(split, Seq.with(new SectorComplete(atlas), new Research(reinforcedPayloadConveyor), new Research(reinforcedContainer)), () -> {
+./core/src/mindustry/logic/LAccess.java:69:    payloadCount,
+./core/src/mindustry/logic/LAccess.java:72:    payloadCapacity,
+./core/src/mindustry/logic/LExecutor.java:406:                        if(unit instanceof Payloadc pay && pay.hasPayload()){
+./core/src/mindustry/logic/LExecutor.java:414:                        if(unit instanceof Payloadc pay){
+./core/src/mindustry/world/meta/Stat.java:33:    payloadCapacity = new Stat("payloadCapacity"),
+./core/src/mindustry/content/Blocks.java:175:    payloadConveyor, payloadRouter, reinforcedPayloadConveyor, reinforcedPayloadRouter, payloadMassDriver, largePayloadMassDriver, smallDeconstructor, deconstructor, constructor, largeConstructor, payloadLoader, payloadUnloader,
+./core/src/mindustry/content/Blocks.java:6626:        payloadConveyor = new PayloadConveyor("payload-conveyor"){{
+./core/src/mindustry/content/Blocks.java:6636:        reinforcedPayloadConveyor = new PayloadConveyor("reinforced-payload-conveyor"){{
+./core/src/mindustry/content/UnitTypes.java:61:    public static @EntityDef({Unitc.class, Payloadc.class}) UnitType mega,
+./core/src/mindustry/content/UnitTypes.java:65:    public static @EntityDef(value = {Unitc.class, Payloadc.class}, legacy = true) UnitType quad;
+./core/src/mindustry/content/UnitTypes.java:68:    public static @EntityDef(value = {Unitc.class, Payloadc.class}, legacy = true) UnitType oct;
+./core/src/mindustry/content/UnitTypes.java:80:    public static @EntityDef({Unitc.class, BuildingTetherc.class, Payloadc.class}) UnitType manifold, assemblyDrone;
+./core/src/mindustry/content/UnitTypes.java:1438:            payloadCapacity = (2 * 2) * tilePayload;
+./core/src/mindustry/content/UnitTypes.java:1488:            payloadCapacity = (3 * 3) * tilePayload;
+./core/src/mindustry/content/UnitTypes.java:1561:            payloadCapacity = (5.5f * 5.5f) * tilePayload;
+./core/src/mindustry/content/UnitTypes.java:4057:            payloadCapacity = Mathf.sqr(4f) * tilePayload;
+./core/src/mindustry/content/SerpuloTechTree.java:50:                                node(payloadConveyor, () -> {
+./core/src/mindustry/content/SerpuloTechTree.java:524:                                    new Research(payloadConveyor)
+./core/src/mindustry/world/blocks/campaign/LaunchPad.java:225:    @EntityDef(LaunchPayloadc.class)
+./core/src/mindustry/world/blocks/campaign/LaunchPad.java:227:    static abstract class LaunchPayloadComp implements Drawc, Timedc, Teamc{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:23:public class PayloadRouter extends PayloadConveyor{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:62:    public class PayloadRouterBuild extends PayloadConveyorBuild{
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:93:                        if(next instanceof PayloadConveyorBuild && !(next instanceof PayloadRouterBuild)){
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:20:public class PayloadConveyor extends Block{
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:28:    public PayloadConveyor(String name){
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:65:        stats.add(Stat.payloadCapacit

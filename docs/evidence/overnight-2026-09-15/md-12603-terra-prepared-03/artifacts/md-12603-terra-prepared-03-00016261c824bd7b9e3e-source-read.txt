@@ -1,0 +1,150 @@
+1: package mindustry.content;
+2: 
+3: import arc.graphics.*;
+4: import arc.struct.*;
+5: import mindustry.type.*;
+6: 
+7: public class Items{
+8:     public static Item
+9:     scrap, copper, lead, graphite, coal, titanium, thorium, silicon, plastanium,
+10:     phaseFabric, surgeAlloy, sporePod, sand, blastCompound, pyratite, metaglass,
+11:     beryllium, tungsten, oxide, carbide, fissileMatter, dormantCyst;
+12: 
+13:     public static final Seq<Item> serpuloItems = new Seq<>(), erekirItems = new Seq<>(), erekirOnlyItems = new Seq<>();
+14: 
+15:     public static void load(){
+16:         copper = new Item("copper", Color.valueOf("d99d73")){{
+17:             hardness = 1;
+18:             cost = 0.5f;
+19:             alwaysUnlocked = true;
+20:         }};
+21: 
+22:         lead = new Item("lead", Color.valueOf("8c7fa9")){{
+23:             hardness = 1;
+24:             cost = 0.7f;
+25:         }};
+26: 
+27:         metaglass = new Item("metaglass", Color.valueOf("ebeef5")){{
+28:             cost = 1.5f;
+29:         }};
+30: 
+31:         graphite = new Item("graphite", Color.valueOf("b2c6d2")){{
+32:             cost = 1f;
+33:         }};
+34: 
+35:         sand = new Item("sand", Color.valueOf("f7cba4")){{
+36:             lowPriority = true;
+37:             buildable = false;
+38:             //needed to show up as requirement
+39:             alwaysUnlocked = true;
+40:         }};
+41: 
+42:         coal = new Item("coal", Color.valueOf("272727")){{
+43:             explosiveness = 0.2f;
+44:             flammability = 1f;
+45:             hardness = 2;
+46:             buildable = false;
+47:         }};
+48: 
+49:         titanium = new Item("titanium", Color.valueOf("8da1e3")){{
+50:             hardness = 3;
+51:             cost = 1f;
+52:         }};
+53: 
+54:         thorium = new Item("thorium", Color.valueOf("f9a3c7")){{
+55:             explosiveness = 0.2f;
+56:             hardness = 4;
+57:             radioactivity = 1f;
+58:             cost = 1.1f;
+59:             healthScaling = 0.2f;
+60:         }};
+61: 
+62:         scrap = new Item("scrap", Color.valueOf("777777")){{
+63:             cost = 0.5f;
+64:         }};
+65: 
+66:         silicon = new Item("silicon", Color.valueOf("53565c")){{
+67:             cost = 0.8f;
+68:         }};
+69: 
+70:         plastanium = new Item("plastanium", Color.valueOf("cbd97f")){{
+71:             flammability = 0.1f;
+72:             explosiveness = 0.2f;
+73:             cost = 1.3f;
+74:             healthScaling = 0.1f;
+75:         }};
+76: 
+77:         phaseFabric = new Item("phase-fabric", Color.valueOf("f4ba6e")){{
+78:             cost = 1.3f;
+79:             radioactivity = 0.6f;
+80:             healthScaling = 0.25f;
+81:         }};
+82: 
+83:         surgeAlloy = new Item("surge-alloy", Color.valueOf("f3e979")){{
+84:             cost = 1.2f;
+85:             charge = 0.75f;
+86:             healthScaling = 0.25f;
+87:         }};
+88: 
+89:         sporePod = new Item("spore-pod", Color.valueOf("7457ce")){{
+90:             flammability = 1.15f;
+91:             buildable = false;
+92:         }};
+93: 
+94:         blastCompound = new Item("blast-compound", Color.valueOf("ff795e")){{
+95:             flammability = 0.4f;
+96:             explosiveness = 1.2f;
+97:             buildable = false;
+98:         }};
+99: 
+100:         pyratite = new Item("pyratite", Color.valueOf("ffaa5f")){{
+101:             flammability = 1.4f;
+102:             explosiveness = 0.4f;
+103:             buildable = false;
+104:         }};
+105: 
+106:         beryllium = new Item("beryllium", Color.valueOf("3a8f64")){{
+107:             hardness = 3;
+108:             cost = 1.2f;
+109:             healthScaling = 0.6f;
+110:         }};
+111: 
+112:         tungsten = new Item("tungsten", Color.valueOf("768a9a")){{
+113:             hardness = 5;
+114:             cost = 1.5f;
+115:             healthScaling = 0.8f;
+116:         }};
+117: 
+118:         oxide = new Item("oxide", Color.valueOf("e4ffd6")){{
+119:             cost = 1.2f;
+120:             healthScaling = 0.5f;
+121:         }};
+122: 
+123:         carbide = new Item("carbide", Color.valueOf("89769a")){{
+124:             cost = 1.4f;
+125:             healthScaling = 1.1f;
+126:         }};
+127: 
+128:         fissileMatter = new Item("fissile-matter", Color.valueOf("5e988d")){{
+129:             radioactivity = 1.5f;
+130:             hidden = true;
+131:         }};
+132: 
+133:         dormantCyst = new Item("dormant-cyst", Color.valueOf("df824d")){{
+134:             flammability = 0.1f;
+135:             hidden = true;
+136:         }};
+137: 
+138:         serpuloItems.addAll(
+139:         scrap, copper, lead, graphite, coal, titanium, thorium, silicon, plastanium,
+140:         phaseFabric, surgeAlloy, sporePod, sand, blastCompound, pyratite, metaglass
+141:         );
+142: 
+143:         erekirItems.addAll(
+144:         graphite, thorium, silicon, phaseFabric, surgeAlloy, sand,
+145:         beryllium, tungsten, oxide, carbide, fissileMatter, dormantCyst
+146:         );
+147: 
+148:         erekirOnlyItems.addAll(erekirItems).removeAll(serpuloItems);
+149: 
+150:     }

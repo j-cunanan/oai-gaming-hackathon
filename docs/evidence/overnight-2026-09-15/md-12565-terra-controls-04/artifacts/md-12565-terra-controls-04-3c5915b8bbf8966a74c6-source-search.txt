@@ -1,0 +1,11 @@
+./core/assets/bundles/bundle_ro.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle.properties:412:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_sr.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_fi.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_et.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_nl.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_lt.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_da.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_nl_BE.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_tk.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_sv.properties:407:command.enterPayload = Enter Payload Block
