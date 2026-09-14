@@ -1,0 +1,37 @@
+{
+  "scope": "Exercise bounded sequences against real X11 events; no game or model calls.",
+  "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+  "sequence_actions": 4,
+  "model_calls": 0,
+  "normal_replay_matches_x11_events": true,
+  "sequence": {
+    "ctrl_at_click": true,
+    "held_w_ms": 433,
+    "typed_text": "repro"
+  },
+  "ordinary_replay": {
+    "ctrl_at_click": true,
+    "held_w_ms": 424,
+    "typed_text": "repro"
+  },
+  "stopped_after_exit_executed": 1,
+  "already_exited_executed": 0,
+  "sequence_elapsed_seconds": [
+    1.6700832499773242,
+    0.6668087920406833,
+    0.01561587501782924
+  ],
+  "source_sha256": {
+    "repro/orchestration/computer_tools.py": "c0b96bab2da908ac15e6aa89cc2db083e83cbbbb75ae2a46ac782263481214da",
+    "repro/computer/recorder.py": "eb9b9b3669991553c3559e911e0d37672c11a4a6561174c861917a7538420af7",
+    "/Users/ujwal/Documents/ChatGPT/openai hackathon/.repro/overnight-2026-09-15/probe_action_sequences.py": "77c9673e22ac1c548f78bf12f9be371d500d0aa43b5a2a0d8c44cf43424d6d35"
+  },
+  "artifact_sha256": {
+    "sequence-driver-probe-2ab861941ebf8d998cb3-screen.png": "2ab861941ebf8d998cb3cb4791d4819aa7579521a65ff2eb1de244bfb5aad879",
+    "sequence-driver-probe-2ab861941ebf8d998cb3-driver-sequence.png": "2ab861941ebf8d998cb3cb4791d4819aa7579521a65ff2eb1de244bfb5aad879",
+    "sequence-driver-probe-5b5befbabd989f02edb9-ordinary-replay.png": "5b5befbabd989f02edb9ca39126726226100a7d8355f41b45d548c6200ac02b9",
+    "sequence-driver-probe-5b5befbabd989f02edb9-driver-sequence.png": "5b5befbabd989f02edb9ca39126726226100a7d8355f41b45d548c6200ac02b9",
+    "sequence-driver-probe-5b5befbabd989f02edb9-screen.png": "5b5befbabd989f02edb9ca39126726226100a7d8355f41b45d548c6200ac02b9",
+    "sequence-driver-probe-5b5befbabd989f02edb9-probe-initial.png": "5b5befbabd989f02edb9ca39126726226100a7d8355f41b45d548c6200ac02b9"
+  }
+}

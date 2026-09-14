@@ -51,7 +51,7 @@ def stage_for(kind: str, data: dict, previous: str) -> str:
     if kind in {"state", "received"}:
         # Failure/cancellation belongs to the stage that encountered it.
         return STATE_STAGE.get(data.get("state"), previous)
-    if kind in {"action", "replay"}:
+    if kind in {"action", "action_sequence", "replay"}:
         return PHASE_STAGE.get(data.get("phase"), previous)
     if kind in {"model_call", "tool_error"}:
         return PURPOSE_STAGE.get(data.get("purpose"), previous)
