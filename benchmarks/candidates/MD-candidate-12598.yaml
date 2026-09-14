@@ -1,0 +1,23 @@
+id: "MD-candidate-12598"
+input:
+  title: "Visual bug: Arrow from \"jump\" instruction is offset with the \"always\" configuration."
+  body: "### Platforms\n\nAndroid\n\n### Build\n\nRelease Build 159.7\n\n### Issue\n\nIn a processor, the \"always\" configuration of the \"jump\" instruction offsets the origin point of the visual arrow, leading to spaghetti and unreadable jumps.\n\nArrow normal:\n<img width=\"686\" height=\"693\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/7d469cf3-a7fc-4104-830c-b5123cf4cf5e\" />\nArrow offset:\n<img width=\"719\" height=\"760\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/47b2af09-e771-4624-8a96-e768726abbeb\" />\n\n### Steps to reproduce\n\nIn any processor, use the \"always\" configuration of the \"jump' instruction. The arrow will be offset like is the example images.\n\n### Mods used\n\nnone\n\n### Save file\n\n[Fortress Sep 05 6_19.zip](https://github.com/user-attachments/files/31867447/Fortress.Sep.05.6_19.zip)\n\n### (Crash) logs\n\n_No response_"
+  game: "mindustry"
+  target_commit: "0c44604a0fa94a84768744d6a4fc711ba23b8e42"
+  platform: "Android (reported); Linux (planned evaluation)"
+evaluator:
+  issue_url: "https://github.com/Anuken/Mindustry/issues/12598"
+  reported_at: "2026-09-05T16:32:58Z"
+  fix_commit: "788ead37fb6bcbd43d5e54bf9ce0438c144ad52a"
+  fix_url: "https://github.com/Anuken/Mindustry/commit/788ead37fb6bcbd43d5e54bf9ce0438c144ad52a"
+  changed_files:
+    - "core/src/mindustry/logic/LStatements.java"
+  all_commit_files:
+    - "core/src/mindustry/logic/LStatements.java"
+  positive_case: true
+  reproducibility: "UNVERIFIED"
+  priority: "P2"
+  suggested_tags: "UI / logic editor / layout"
+  proposed_trigger: "Open a processor, add a jump with a destination, and switch its condition to always."
+  selection_notes: "Reported on Android; Linux 1280x720 layout may not exhibit the same offset. Establish visible geometry before admitting the case."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."

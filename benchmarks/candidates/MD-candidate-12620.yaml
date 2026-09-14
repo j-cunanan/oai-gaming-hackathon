@@ -1,0 +1,23 @@
+id: "MD-candidate-12620"
+input:
+  title: "Persistent Datapatch bug"
+  body: "### Platforms\n\nAndroid\n\n### Build\n\nBE 27790\n\n### Issue\n\nWhen you save a datapatch in a map, suddenly, attempting to remove it does not work.\nWhen you remove it, it gets temporarily removed, but gets added back when you open the map.\nI tested this with or without mods and it still happened by the way.\n\n### Steps to reproduce\n\nMake map\nAdd data-patch\nSave map\nDelete data-patch\nSave map\nLeave editor\nCome back to map editor\nSee that the data-patch is back.\n\n### Mods used\n\nI tested it in vanilla but here are the mods I usually use.\n\nAuto Research (gone from in-game mod browser?)\nPatch Editor (I think this mod doesn't cause the issue)\nPatch Viewer\nCLaJ\n\n### Save file\n\nI zipped the msav here\n\n[persistent datapatch bug.zip](https://github.com/user-attachments/files/32028828/persistent.datapatch.bug.zip)\n\n### (Crash) logs\n\n_No response_"
+  game: "mindustry"
+  target_commit: "63b2069e9685063c74abc41fae84a66f73e9e09b"
+  platform: "Android (reported); Linux (planned evaluation)"
+evaluator:
+  issue_url: "https://github.com/Anuken/Mindustry/issues/12620"
+  reported_at: "2026-09-09T22:05:59Z"
+  fix_commit: "b3317f3d4d7c9b201d03a39be17bae2bbda90169"
+  fix_url: "https://github.com/Anuken/Mindustry/commit/b3317f3d4d7c9b201d03a39be17bae2bbda90169"
+  changed_files:
+    - "core/src/mindustry/editor/data/MapPatchesView.java"
+  all_commit_files:
+    - "core/src/mindustry/editor/data/MapPatchesView.java"
+  positive_case: true
+  reproducibility: "UNVERIFIED"
+  priority: "P1"
+  suggested_tags: "Persistence / editor / data patches"
+  proposed_trigger: "Create a map, add and save a data patch, delete it, save, leave and reopen the map."
+  selection_notes: "Reported on Android; confirm Linux behavior. Needs a valid harmless data patch created through the UI. No process restart is required by the reported steps."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."

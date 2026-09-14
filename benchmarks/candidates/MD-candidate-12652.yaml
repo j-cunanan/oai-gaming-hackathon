@@ -1,0 +1,25 @@
+id: "MD-candidate-12652"
+input:
+  title: "Crash in Data Patches & Assets UI"
+  body: "### Platforms\n\nMac\n\n### Build\n\n160.2\n\n### Issue\n\nI randomly crashed while trying to reproduce what i thought was a patcheditor mod issue when it was disabled.\n\n### Steps to reproduce\n\nOpen a map with datapatched content and new content\nedit map in-game, Quit\nopen editor menu->data patches & assets\ni then clicked on the different tabs\npress escape\n\n### Mods used\n\n~~testing utils, schembrowser, floodcompat, claj when it happened; all multiplayer-compatible mods uninvolved with datapatches and the crash's source~~ none\n\n### Save file\n\n[WotM.msav.zip](https://github.com/user-attachments/files/32153827/WotM.msav.zip)\n\n### (Crash) logs\n\nmodded; [crash-report-09_12_2026_22_19_04.txt](https://github.com/user-attachments/files/32153802/crash-report-09_12_2026_22_19_04.txt)\nunmodded; [crash-report-09_12_2026_22_52_19.txt](https://github.com/user-attachments/files/32153925/crash-report-09_12_2026_22_52_19.txt)"
+  game: "mindustry"
+  target_commit: "89527f879b535b752376d9b935172be576320b59"
+  platform: "Mac (reported); Linux (planned evaluation)"
+evaluator:
+  issue_url: "https://github.com/Anuken/Mindustry/issues/12652"
+  reported_at: "2026-09-13T02:46:47Z"
+  fix_commit: "56348b3e311b44a5c5e193228948bafb809aa62c"
+  fix_url: "https://github.com/Anuken/Mindustry/commit/56348b3e311b44a5c5e193228948bafb809aa62c"
+  changed_files:
+    - "core/src/mindustry/world/modules/ItemModule.java"
+    - "core/src/mindustry/world/modules/LiquidModule.java"
+  all_commit_files:
+    - "core/src/mindustry/world/modules/ItemModule.java"
+    - "core/src/mindustry/world/modules/LiquidModule.java"
+  positive_case: true
+  reproducibility: "UNVERIFIED"
+  priority: "P3 - fixture required"
+  suggested_tags: "Crash / data patches / content lifecycle"
+  proposed_trigger: "Open the supplied patched-content map, edit in game, quit to editor, open Data Patches & Assets, switch tabs, and press Escape."
+  selection_notes: "Reported on Mac with an unmodded crash log. Requires inspecting and installing supplied map assets; automatic fixture installation is not implemented. Timing and Linux reproduction unverified."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."

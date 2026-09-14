@@ -1,0 +1,27 @@
+id: "MD-candidate-12565"
+input:
+  title: "Unit disappears when entering payload conveyor"
+  body: "### Platforms\n\nWindows\n\n### Build\n\n27713\n\n### Issue\n\nUnit disappears when entering payload conveyor\n\n### Steps to reproduce\n\nUsing RTS or manually control a unit entering a payload conveyor.\n\n### Mods used\n\nnone\n\n### Save file\n\nAny save\n\n### (Crash) logs\n\n_No response_"
+  game: "mindustry"
+  target_commit: "7e80948b58138a569e119857e0add95762d7e0bb"
+  platform: "Windows (reported); Linux (planned evaluation)"
+evaluator:
+  issue_url: "https://github.com/Anuken/Mindustry/issues/12565"
+  reported_at: "2026-09-01T02:52:33Z"
+  fix_commit: "ae291be0a1ab1aebce7690863e53878667582e6a"
+  fix_url: "https://github.com/Anuken/Mindustry/commit/ae291be0a1ab1aebce7690863e53878667582e6a"
+  changed_files:
+    - "core/src/mindustry/entities/comp/BuildingComp.java"
+    - "core/src/mindustry/input/InputHandler.java"
+    - "core/src/mindustry/world/blocks/payloads/PayloadBlock.java"
+  all_commit_files:
+    - "core/src/mindustry/entities/comp/BuildingComp.java"
+    - "core/src/mindustry/input/InputHandler.java"
+    - "core/src/mindustry/world/blocks/payloads/PayloadBlock.java"
+  positive_case: true
+  reproducibility: "UNVERIFIED"
+  priority: "P2"
+  suggested_tags: "Gameplay / payloads / unit state"
+  proposed_trigger: "Drive or command a unit into a payload conveyor in a fresh sandbox map."
+  selection_notes: "Needs unit and conveyor setup. A unit becoming a payload is normal; verify unexpected loss by observing transport/output, not disappearance alone. Reported on Windows."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."

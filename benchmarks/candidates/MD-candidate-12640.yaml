@@ -1,0 +1,23 @@
+id: "MD-candidate-12640"
+input:
+  title: "Keybinding reset to default after unbinding and restarting game"
+  body: "### Platforms\n\nLinux\n\n### Build\n\n160.1\n\n### Issue\n\nIf you click the new Unbind button, the binding is properly unset. However, if you restart the game, the keybinding comes back as the default key.\n\n### Steps to reproduce\n\n1. Open Controls menu\n2. Click Rebind on an action, like Pan View\n3. Click Unbind\n4. Restart game\n5. Observe action is now set to default, e.g. \"Mouse Forward\"\n\nTested with Arch Linux on Steam and Mindustry.jar version\n\n### Mods used\n\nnone\n\n### Save file\n\n[mindustry-data-export.zip](https://github.com/user-attachments/files/32125315/mindustry-data-export.zip)\n\n### (Crash) logs\n\n_No response_"
+  game: "mindustry"
+  target_commit: "e751e240dba46793959a4479d795f0eca47becb6"
+  platform: "Linux (reported); Linux (planned evaluation)"
+evaluator:
+  issue_url: "https://github.com/Anuken/Mindustry/issues/12640"
+  reported_at: "2026-09-11T17:25:47Z"
+  fix_commit: "ab51304dd656009834091af3169a5dcd7ac6876d"
+  fix_url: "https://github.com/Anuken/Mindustry/commit/ab51304dd656009834091af3169a5dcd7ac6876d"
+  changed_files:
+    - "core/src/mindustry/ui/dialogs/KeybindDialog.java"
+  all_commit_files:
+    - "core/src/mindustry/ui/dialogs/KeybindDialog.java"
+  positive_case: true
+  reproducibility: "UNVERIFIED"
+  priority: "P2 - runner extension"
+  suggested_tags: "Persistence / controls / settings"
+  proposed_trigger: "Open Controls, rebind an action, choose Unbind, restart the game, and inspect that action."
+  selection_notes: "Reported on Linux. Current reset deletes the profile; replay needs a restart action that preserves the profile within each run, while runs still start clean."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."
