@@ -1,0 +1,130 @@
+150:                     return;
+151:                 }
+152: 
+153:                 Map map = save();
+154: 
+155:                 if(editor.tags.containsKey("steamid") && map != null){
+156:                     platform.viewListing(map);
+157:                     return;
+158:                 }
+159: 
+160:                 if(map == null) return;
+161: 
+162:                 if(map.tags.get("description", "").length() < 4){
+163:                     ui.showErrorMessage("@editor.nodescription");
+164:                     return;
+165:                 }
+166: 
+167:                 if(!Structs.contains(Gamemode.all, g -> g.valid(map))){
+168:                     ui.showErrorMessage("@map.nospawn");
+169:                     return;
+170:                 }
+171: 
+172:                 platform.publish(map);
+173:             }).padTop(-3).size(swidth * 2f + 10, 60f).update(b ->
+174:                 b.setText(editor.tags.containsKey("steamid") ?
+175:                     editor.tags.get("author", "").equals(steamPlayerName) ? "@workshop.listing" : "@view.workshop" :
+176:                 "@editor.publish.workshop"));
+177: 
+178:             menu.cont.row();
+179:         }
+180: 
+181:         menu.cont.button("@editor.sectorgenerate", Icon.terrain, () -> {
+182:             menu.hide();
+183:             sectorGenDialog.show();
+184:         }).padTop(!steam ? -3 : 1).size(swidth * 2f + 10, 60f);
+185: 
+186:         menu.cont.row();
+187: 
+188:         //this is gated behind a property, because it's (1) not useful to most people, (2) confusing and (3) may crash or otherwise bug out
+189:         if(OS.hasProp("mindustry.editor.simulate.button")){
+190: 
+191:             menu.cont.button("Simulate", Icon.logic, () -> {
+192:                 menu.hide();
+193: 
+194:                 BaseDialog dialog = new BaseDialog("Simulate");
+195: 
+196:                 int[] seconds = {60 * 1};
+197: 
+198:                 dialog.cont.add("Seconds: ");
+199:                 dialog.cont.field(seconds[0] + "", text -> seconds[0] = Strings.parseInt(text, 1)).valid(s -> Strings.parseInt(s, 9999999) < 10f * 60f);
+200: 
+201:                 dialog.addCloseButton();
+202: 
+203:                 dialog.buttons.button("@ok", Icon.ok, () -> {
+204:                     ui.loadAnd(() -> {
+205: 
+206:                         float deltaScl = 2f;
+207:                         int steps = Mathf.ceil(seconds[0] * 60f / deltaScl);
+208:                         float oldDelta = Time.delta;
+209:                         Time.delta = deltaScl;
+210: 
+211:                         Seq<Building> builds = new Seq<>();
+212:                         Time.clear();
+213: 
+214:                         world.tiles.eachTile(t -> {
+215:                             if(t.build != null && t.isCenter() && t.block().update && t.build.allowUpdate()){
+216:                                 builds.add(t.build);
+217:                                 t.build.updateProximity();
+218:                             }
+219:                         });
+220: 
+221:                         for(int i = 0; i < steps; i++){
+222:                             for(TeamData data : state.teams.getActive()){
+223:                                 if(data.team.rules().fillItems && data.cores.size > 0){
+224:                                     var core = data.cores.first();
+225:                                     content.items().each(it -> {
+226:                                         if(it.isOnPlanet(Vars.state.getPlanet()) && !it.isHidden()){
+227:                                             core.items.set(it, core.getMaximumAccepted(it));
+228:                                         }
+229:                                     });
+230:                                 }
+231:                             }
+232:                             Time.update();
+233:                             for(var build : builds){
+234:                                 build.update();
+235:                             }
+236:                             Groups.powerGraph.update();
+237:                             Groups.bullet.update(); //needed for mass drivers...
+238:                         }
+239: 
+240:                         //spawned units will cause havoc, so clear them
+241:                         Groups.unit.clear();
+242: 
+243:                         Time.clear();
+244:                         Time.delta = oldDelta;
+245:                     });
+246: 
+247:                     dialog.hide();
+248:                 }).size(210f, 64f);
+249: 
+250:                 dialog.show();
+251: 
+252:             }).size(swidth * 2f + 10, 60f);
+253: 
+254:             menu.cont.row();
+255:         }
+256: 
+257:         menu.cont.button("@quit", Icon.exit, () -> {
+258:             tryExit();
+259:             menu.hide();
+260:         }).padTop(1).size(swidth * 2f + 10, 60f);
+261: 
+262:         resizeDialog = new MapResizeDialog((width, height, shiftX, shiftY) -> {
+263:             if(!(editor.width() == width && editor.height() == height && shiftX == 0 && shiftY == 0)){
+264:                 ui.loadAnd(() -> {
+265:                     editor.resize(width, height, shiftX, shiftY);
+266:                 });
+267:             }
+268:         });
+269: 
+270:         loadDialog = new MapLoadDialog(map -> ui.loadAnd(() -> {
+271:             try{
+272:                 editor.beginEdit(map);
+273:             }catch(Exception e){
+274:                 ui.showException("@editor.errorload", e);
+275:                 Log.err(e);
+276:             }
+277:         }));
+278: 
+279:         setFillParent(true);

@@ -1,0 +1,105 @@
+40: import mindustry.world.blocks.heat.HeatConductor.*;
+41: import mindustry.world.blocks.logic.LogicBlock.*;
+42: import mindustry.world.blocks.payloads.*;
+43: import mindustry.world.blocks.power.*;
+44: import mindustry.world.consumers.*;
+45: import mindustry.world.meta.*;
+46: import mindustry.world.modules.*;
+47: 
+48: import java.util.*;
+49: 
+50: import static mindustry.Vars.*;
+51: 
+52: @EntityDef(value = {Buildingc.class}, excludeGroups = {"all"}, isFinal = false, genio = false, serialize = false)
+53: @Component(base = true, genInterface = false)
+54: abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, QuadTreeObject, Displayable, Sized, Senseable, Controllable, Settable, AmbientSource{
+55:     //region vars and initialization
+56:     static final float timeToSleep = 60f * 1, recentDamageTime = 60f * 5f;
+57:     static final ObjectSet<Building> tmpTiles = new ObjectSet<>();
+58:     static final Seq<Building> tempBuilds = new Seq<>();
+59:     static final BuildTeamChangeEvent teamChangeEvent = new BuildTeamChangeEvent();
+60:     static final BuildDamageEvent bulletDamageEvent = new BuildDamageEvent();
+61:     static int sleepingEntities = 0;
+62: 
+63:     @Import float x, y, health, maxHealth;
+64:     @Import Team team;
+65:     @Import boolean dead;
+66: 
+67:     transient Tile tile;
+68:     transient Block block;
+69:     transient Seq<Building> proximity = new Seq<>(true, 6, Building.class);
+70:     transient int cdump;
+71:     transient int rotation;
+72:     transient String lastAccessed;
+73:     transient float visualLiquid;
+74: 
+75:     /** TODO Each bit corresponds to a team ID. Only 64 are supported. Does not work on servers. */
+76:     transient long visibleFlags;
+77:     transient boolean wasVisible; //used only by the block renderer when fog is on (TODO replace with discovered check?)
+78: 
+79:     transient boolean enabled = true;
+80:     transient @Nullable Building lastDisabler;
+81: 
+82:     @Nullable PowerModule power;
+83:     @Nullable ItemModule items;
+84:     @Nullable LiquidModule liquids;
+85: 
+86:     /** Base efficiency. Takes the minimum value of all consumers. */
+87:     transient float efficiency;
+88:     /** Same as efficiency, but for optional consumers only. */
+89:     transient float optionalEfficiency;
+90:     /** The efficiency this block *would* have if shouldConsume() returned true. */
+91:     transient float potentialEfficiency;
+92:     /** Whether there are any consumers (aside from power) that have efficiency > 0. */
+93:     transient boolean shouldConsumePower;
+94: 
+95:     transient float healSuppressionTime = -1f;
+96:     transient float lastHealTime = -120f * 10f;
+97:     transient Color suppressColor = Pal.sapBullet;
+98: 
+99:     private transient float lastDamageTime = -recentDamageTime;
+100:     private transient float timeScale = 1f, timeScaleDuration;
+101:     private transient float dumpAccum;
+102: 
+103:     private transient boolean sleeping;
+104:     private transient float sleepTime;
+105:     private transient boolean initialized;
+106: 
+107:     //used only by the indexer
+108:     transient boolean wasDamaged;
+109:     transient short indexerBuildIndex, indexerBuildTypeIndex;
+110: 
+111:     /** Sets this tile entity data to this and adds it if necessary. */
+112:     public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+113:         if(!initialized){
+114:             create(tile.block(), team);
+115:         }else{
+116:             if(block.hasPower){
+117:                 power.init = false;
+118:                 //reinit power graph
+119:                 new PowerGraph().add(self());
+120:             }
+121:         }
+122:         proximity.clear();
+123:         this.rotation = rotation;
+124:         this.tile = tile;
+125: 
+126:         set(tile.drawx(), tile.drawy());
+127: 
+128:         if(shouldAdd){
+129:             add();
+130: 
+131:             if(block.ambientSound != Sounds.none && !headless){
+132:                 control.sound.addAmbientSource(this);
+133:             }
+134:         }
+135: 
+136:         checkAllowUpdate();
+137:         created();
+138: 
+139:         return self();
+140:     }
+141: 
+142:     /** Sets up all the necessary variables, but does not add this entity anywhere. */
+143:     public Building create(Block block, Team team){
+144:         this.block = block;

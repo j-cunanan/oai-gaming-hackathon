@@ -1,0 +1,119 @@
+{
+  "id": "md-12652-terra-max-01",
+  "report": {
+    "title": "Crash in Data Patches & Assets UI",
+    "body": "### Platforms\n\nMac\n\n### Build\n\n160.2\n\n### Issue\n\nI randomly crashed while trying to reproduce what i thought was a patcheditor mod issue when it was disabled.\n\n### Steps to reproduce\n\nOpen a map with datapatched content and new content\nedit map in-game, Quit\nopen editor menu->data patches & assets\ni then clicked on the different tabs\npress escape\n\n### Mods used\n\n~~testing utils, schembrowser, floodcompat, claj when it happened; all multiplayer-compatible mods uninvolved with datapatches and the crash's source~~ none\n\n### Save file\n\n[WotM.msav.zip](https://github.com/user-attachments/files/32153827/WotM.msav.zip)\n\n### (Crash) logs\n\nmodded; [crash-report-09_12_2026_22_19_04.txt](https://github.com/user-attachments/files/32153802/crash-report-09_12_2026_22_19_04.txt)\nunmodded; [crash-report-09_12_2026_22_52_19.txt](https://github.com/user-attachments/files/32153925/crash-report-09_12_2026_22_52_19.txt)\n\nProvided original player attachment: WotM.msav. The unmodified map is registered as a fixture and available at /workspace/fixtures/WotM.msav for import through the game UI. This supplies the original report attachment; it adds no fix or source diagnosis.",
+    "game": "mindustry",
+    "target_commit": "89527f879b535b752376d9b935172be576320b59",
+    "platform": "Mac (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": [
+      {
+        "filename": "WotM.msav",
+        "sha256": "d51b10b4443a31f572969388483170f43044125f086a35af4202223ffbe3fc0c"
+      }
+    ]
+  },
+  "state": "NOT_REPRODUCED",
+  "created_at": "2026-09-14T17:43:09.447826+00:00",
+  "updated_at": "2026-09-14T18:14:03.357339+00:00",
+  "summary": "Imported the supplied WotM.msav through the game UI, opened it in the editor, entered in-game editor mode, made a tile edit, quit back to the editor, opened Map Info > Data Patches & Assets, visited Patches, Content, Locale Bundles, Images, Sounds, and Music, then pressed Escape. The game remained running with no visible error and an empty captured log. A second immediate Content-tab-to-Escape close also remained stable.",
+  "spec": {
+    "summary": "Unverified report of a Mindustry crash during or after navigation in the Editor > Data Patches & Assets UI, with Escape as the final stated input.",
+    "bug_class": "Reported crash / stability issue",
+    "observed_behavior": "The reporter states that the game crashed while attempting to reproduce a suspected Patch Editor mod issue while that mod was disabled. The reported sequence is: open a map containing data-patched and unspecified \u201cnew\u201d content; edit the map in-game; quit; open Editor > Data Patches & Assets; click different, unspecified tabs; press Escape. The exact action at which the crash occurred is not stated. The report references one modded and one unmodded crash report, but their contents are not available in the supplied materials.",
+    "expected_behavior": null,
+    "known_preconditions": [
+      "Supplied metadata identifies the game as Mindustry and provides evaluation target commit 89527f879b535b752376d9b935172be576320b59.",
+      "The reporter identifies the affected platform as Mac and the build as 160.2.",
+      "The original map attachment is available as fixture WotM.msav at /workspace/fixtures/WotM.msav, with SHA-256 d51b10b4443a31f572969388483170f43044125f086a35af4202223ffbe3fc0c.",
+      "The reported scenario involves a map with data-patched content and unspecified \u201cnew content.\u201d",
+      "The reported UI route includes Editor > Data Patches & Assets."
+    ],
+    "uncertain_conditions": [
+      "The reported crash has not been independently verified from the currently available fixture or logs.",
+      "It is unclear whether the crash happened while selecting a tab, after selecting a tab, when pressing Escape, or after an additional unstated action.",
+      "The specific tabs clicked, their order, and the meaning of \u201cQuit\u201d in the sequence are unspecified.",
+      "The identity, version, source, and required dependencies of the data-patched and \u201cnew\u201d content are unspecified; the map fixture alone may not recreate the reported content state.",
+      "The mod state is ambiguous: the final Mods Used field says \u201cnone,\u201d while struck-through text names testing utils, schembrowser, floodcompat, and claj; separately referenced logs are labeled modded and unmodded.",
+      "It is unknown whether the supplied target commit corresponds to the reporter\u2019s stated build 160.2.",
+      "It is unknown whether the behavior is specific to macOS or can occur in the planned Linux evaluation environment.",
+      "No causal relationship between the Data Patches & Assets UI, the map, mods, or any content type is established by the report."
+    ],
+    "reproduction_hints": [
+      "Treat the following as an unverified attempt rather than an established reproduction: import WotM.msav through the game UI, with the map's required content dependencies available if they can be identified.",
+      "On a macOS environment matching the stated build if possible, open the map, edit it in-game, perform the reporter's unspecified Quit action, then open Editor > Data Patches & Assets.",
+      "Record each tab name and click order before pressing Escape, and record the exact point at which any failure occurs.",
+      "Keep no-mod and mod-enabled attempts separate and record the complete enabled-mod state for each attempt rather than relying on the conflicting report text.",
+      "Preserve the game log and any native crash artifacts immediately after each attempt, whether or not a crash occurs."
+    ],
+    "required_artifacts": [
+      "Available but insufficient: WotM.msav fixture at /workspace/fixtures/WotM.msav (SHA-256 d51b10b4443a31f572969388483170f43044125f086a35af4202223ffbe3fc0c).",
+      "Missing: the actual contents/files for crash-report-09_12_2026_22_19_04.txt, labeled modded, and crash-report-09_12_2026_22_52_19.txt, labeled unmodded. The report supplies references only.",
+      "Missing: full game/runtime logs and any macOS native crash report, stack trace, or operating-system diagnostic corresponding to each reported crash.",
+      "Missing: exact executable version, build hash/channel, and evidence connecting build 160.2 to the supplied target commit.",
+      "Missing: macOS version, CPU architecture, Java/runtime details, and graphics/runtime environment; equivalent environment details are also needed for Linux evaluation.",
+      "Missing: complete mod inventories, versions, enabled/disabled state, load order, and configuration for both the modded and allegedly unmodded runs.",
+      "Missing: the data-patch definitions, content packages, and dependency versions needed to reproduce the map's reported data-patched and \u201cnew content\u201d state.",
+      "Missing: exact tab names, click order, definition of the Quit action, and a screen recording or detailed interaction trace showing the failure point."
+    ],
+    "severity": "unknown",
+    "confidence": 0.4
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Opening the supplied WotM map in the editor, visiting Data Patches & Assets tabs, then pressing Escape causes a crash.",
+      "prediction": "The game window/process will terminate or show a crash/error immediately after one of the tab selections or Escape.",
+      "status": "rejected",
+      "observation": "After importing WotM.msav, entering in-game editor mode, making a tile edit, quitting back, visiting Patches, Content, Locale Bundles, Images, Sounds, and Music, then pressing Escape, the process remained running and no logs/errors appeared."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "89527f879b535b752376d9b935172be576320b59": {
+      "commit_sha": "89527f879b535b752376d9b935172be576320b59",
+      "timestamp": "2026-09-14T18:03:59.206040+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12652-terra-max-01-d19c9acb8d06f6a30504-baseline-tests.log",
+      "log_sha256": "d19c9acb8d06f6a3050451a59b93312e0cbba3d2acf8fde8e2ea44a745e9ec75",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 69,
+    "input_tokens": 1828088,
+    "output_tokens": 15301
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12652-terra-max-01-680962ba43f77128a5c0-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 874.9174806660158,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12652-fixture",
+  "imported_from": null,
+  "case_id": "md-12652-terra-max-01"
+}

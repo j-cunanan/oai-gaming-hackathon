@@ -1,0 +1,48 @@
+./core/assets/bundles/bundle_ko.properties:2780:lst.setrule = 게임 규칙을 설정합니다.
+./core/assets/bundles/bundle_ca.properties:2780:lst.setrule = Estableix una regla de la partida.
+./core/assets/bundles/bundle_fil.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_ro.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_eu.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_be.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_fi.properties:2780:lst.setrule = Aseta pelisääntö.
+./core/assets/bundles/bundle_uk_UA.properties:2780:lst.setrule = Установлює ігрове правило.
+./core/assets/bundles/bundle_th.properties:2780:lst.setrule = ตั้งค่ากฎของเกม
+./core/assets/bundles/bundle_ja.properties:2780:lst.setrule = ゲームルールを設定します。
+./core/assets/bundles/bundle.properties:2785:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_id_ID.properties:2780:lst.setrule = Menentukan suatu peraturan permainan.
+./core/assets/bundles/bundle_pl.properties:2780:lst.setrule = Ustaw zasady gry.
+./core/assets/bundles/bundle_fr.properties:2780:lst.setrule = Change une règle du jeu.
+./core/assets/bundles/bundle_vi.properties:2780:lst.setrule = Thiết đặt một quy tắc trò chơi.
+./core/assets/bundles/bundle_sr.properties:2780:lst.setrule = Postavi pravilo igre.
+./core/assets/bundles/bundle_de.properties:2780:lst.setrule = Setze eine Spielregel.
+./core/assets/bundles/bundle_zh_CN.properties:2780:lst.setrule = 设置地图规则。
+./core/assets/bundles/bundle_et.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_pt_BR.properties:2780:lst.setrule = Defina uma regra do jogo.
+./core/assets/bundles/bundle_it.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_ru.properties:2780:lst.setrule = Устанавливает игровое правило.
+./core/assets/bundles/bundle_lt.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_nl.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_hu.properties:2780:lst.setrule = Játékszabály beállítása.
+./core/assets/bundles/bundle_bg.properties:2780:lst.setrule = Поставяне на правило за игра.
+./core/assets/bundles/bundle_cs.properties:2780:lst.setrule = Nastaví pravidlo hry.
+./core/assets/bundles/bundle_zh_TW.properties:2780:lst.setrule = 設置遊戲規則
+./core/assets/bundles/bundle_tr.properties:2780:lst.setrule = Bir Oyun Kuralı Ata.
+./core/assets/bundles/bundle_tk.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_da.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_sv.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_es.properties:2780:lst.setrule = Establece una regla de la partida.
+./core/assets/bundles/bundle_nl_BE.properties:2780:lst.setrule = Set a game rule.
+./core/assets/bundles/bundle_pt_PT.properties:2780:lst.setrule = Defina uma regra do jogo.
+./server/src/mindustry/server/ServerControl.java:739:                Call.setRules(state.rules);
+./core/src/mindustry/game/Universe.java:247:                                        Call.setRules(state.rules);
+./core/src/mindustry/logic/LExecutor.java:1753:    public static class SetRuleI implements LInstruction{
+./core/src/mindustry/logic/LExecutor.java:1757:        public SetRuleI(LogicRule rule, LVar value, LVar p1, LVar p2, LVar p3, LVar p4){
+./core/src/mindustry/logic/LExecutor.java:1766:        public SetRuleI(){
+./core/src/mindustry/logic/LStatements.java:1768:    @RegisterStatement("setrule")
+./core/src/mindustry/logic/LStatements.java:1769:    public static class SetRuleStatement extends LStatement{
+./core/src/mindustry/logic/LStatements.java:1831:            return new SetRuleI(rule, builder.var(value), builder.var(p1), builder.var(p2), builder.var(p3), builder.var(p4));
+./core/src/mindustry/core/Logic.java:350:                    Call.setRules(state.rules);
+./core/src/mindustry/core/NetClient.java:429:    public static void setRules(Rules rules){
+./core/src/mindustry/core/NetClient.java:434:    public static void setRule(String rule, String jsonData){
+./core/src/mindustry/ui/dialogs/CampaignRulesDialog.java:28:                    Call.setRules(Vars.state.rules);
+./core/src/mindustry/ui/dialogs/PausedDialog.java:35:                    Call.setRules(toEdit);

@@ -1,0 +1,220 @@
+1: package mindustry.mod;
+2: 
+3: import arc.files.*;
+4: import arc.func.*;
+5: import arc.struct.*;
+6: import arc.util.*;
+7: import arc.util.serialization.Json.*;
+8: import arc.util.serialization.*;
+9: import arc.util.serialization.Jval.*;
+10: import mindustry.*;
+11: import mindustry.content.*;
+12: import mindustry.core.*;
+13: import mindustry.ctype.*;
+14: import mindustry.entities.part.*;
+15: import mindustry.entities.units.*;
+16: import mindustry.gen.*;
+17: import mindustry.logic.*;
+18: import mindustry.mod.Mods.*;
+19: import mindustry.mod.data.*;
+20: import mindustry.type.*;
+21: import mindustry.world.*;
+22: import mindustry.world.blocks.*;
+23: import mindustry.world.consumers.*;
+24: import mindustry.world.draw.*;
+25: import mindustry.world.meta.*;
+26: import mindustry.world.modules.*;
+27: 
+28: import java.lang.reflect.*;
+29: import java.util.*;
+30: 
+31: /** The current implementation is awful. Consider it a proof of concept. */
+32: @SuppressWarnings("unchecked")
+33: public class DataPatcher{
+34:     private static ModMeta dpModMeta = new ModMeta(){{
+35:         name = internalName = "dp";
+36:     }};
+37: 
+38:     public static final LoadedMod dpMod = new LoadedMod(new Fi("dp"), new Fi(""), null, null, dpModMeta);
+39: 
+40:     public static final int maxImageSize = 2000;
+41:     public static final int patchFormatVersion = 2;
+42: 
+43:     private static boolean needsArrayFix = false;
+44:     private static final Object root = new Object();
+45:     private static final ObjectMap<String, ContentType> nameToType = new ObjectMap<>();
+46:     private static DataPatcher currentDataPatcher;
+47:     private static ContentParser parser = createParser();
+48: 
+49:     private boolean applied;
+50:     private ContentLoader contentLoader;
+51:     private ObjectSet<Object> usedpatches = new ObjectSet<>();
+52:     private Seq<Runnable> resetters = new Seq<>();
+53:     private Seq<Runnable> afterCallbacks = new Seq<>();
+54:     private Seq<Object> visitStack = new Seq<>();
+55:     private Seq<Content> addedContent = new Seq<>();
+56:     private @Nullable PatchAsset currentlyApplyingPatch;
+57:     private @Nullable ContentAsset currentlyApplyingContent;
+58:     private Seq<LVar> addedVars = new Seq<>();
+59: 
+60:     static{
+61:         for(var type : ContentType.all){
+62:             if(type.name().indexOf('_') == -1) nameToType.put(type.toString().toLowerCase(Locale.ROOT), type);
+63:         }
+64:     }
+65: 
+66:     static ContentParser createParser(){
+67:         ContentParser cont = new ContentParser(){
+68:             @Override
+69:             void warnContext(@Nullable Content currentContent, @Nullable Fi currentFile, String string, Object... format){
+70:                 //forward warnings to the current patcher - this is a bit hacky, but I do not want to re-initialize the parser every time
+71:                 if(currentDataPatcher!= null){
+72:                     currentDataPatcher.warnContext(currentContent, currentFile, string, format);
+73:                 }
+74:             }
+75:         };
+76:         cont.allowClassResolution = false;
+77:         cont.allowAssetLoading = false;
+78:         cont.allowPatching = false;
+79: 
+80:         return cont;
+81:     }
+82: 
+83:     public boolean isPatched(Object object){
+84:         return usedpatches.contains(object);
+85:     }
+86: 
+87:     /** Applies the specified patches. If patches were already applied, the previous ones are un-applied - they do not stack! */
+88:     public void apply(Seq<PatchAsset> patches, Seq<ContentAsset> content){
+89:         apply(patches, content, true);
+90:     }
+91: 
+92:     /** Applies the specified patches. If patches were already applied, the previous ones are un-applied - they do not stack! */
+93:     public void apply(Seq<PatchAsset> patches, Seq<ContentAsset> content, boolean reloadContentWorld){
+94:         //if you're un-applying data patches, and it throws an error, just crash. this is not recoverable.
+95:         if(applied){
+96:             unapply(reloadContentWorld);
+97:             applied = false;
+98:         }
+99: 
+100:         if(patches.isEmpty() && content.isEmpty()) return;
+101: 
+102:         currentDataPatcher = this;
+103:         applied = true;
+104:         contentLoader = Vars.content.copy();
+105: 
+106:         Attribute[] oldAttributes = Attribute.all.clone();
+107:         var oldAttributeMap = Attribute.map.copy();
+108:         reset(() -> {
+109:             Attribute.all = oldAttributes;
+110:             Attribute.map = oldAttributeMap;
+111:         });
+112: 
+113:         if(!content.isEmpty()){
+114:             content.sort();
+115: 
+116:             dpMod.erroredContent.clear();
+117: 
+118:             for(var asset : content){
+119:                 asset.errored = false;
+120:                 asset.content = null;
+121:                 asset.warnings.clear();
+122: 
+123:                 currentlyApplyingContent = asset;
+124: 
+125:                 if(!Structs.contains(ContentAsset.loadableContent, asset.type)){
+126:                     warn("Content @ is of type '@', which is not supported. Skipping.", asset.path, asset.type);
+127:                     continue;
+128:                 }
+129: 
+130:                 Content current = Vars.content.getLastAdded();
+131:                 Fi file = new Fi(asset.path);
+132: 
+133:                 //this is very important for resizing various arrays used in the game
+134:                 //checking for blocks is also important, as those can be added/removed, and corresponding blocks need to be updated
+135:                 if(asset.type == ContentType.item || asset.type == ContentType.liquid || asset.type == ContentType.block){
+136:                     needsArrayFix = true;
+137:                 }
+138: 
+139:                 try{
+140:                     //this binds the content but does not load it entirely
+141:                     asset.content = parser.parse(dpMod, asset.name, asset.data, file, asset.type);
+142:                     asset.content.minfo.asset = asset;
+143:                 }catch(Throwable e){
+144:                     asset.warnings.add(Strings.getFinalMessage(e));
+145:                     asset.errored = true;
+146: 
+147:                     var lastAdded = Vars.content.getLastAdded();
+148:                     if(current != lastAdded && lastAdded != null){
+149:                         Vars.content.remove(lastAdded);
+150:                         //markError should log it already
+151:                         parser.markError(lastAdded, dpMod, file, e);
+152:                     }else{
+153:                         Log.err("Error loading content: " + asset.path, e);
+154:                     }
+155:                 }
+156:             }
+157: 
+158:             currentlyApplyingContent = null;
+159: 
+160:             parser.finishParsing();
+161: 
+162:             addedContent.clear();
+163:             Seq<Content> all = addedContent;
+164: 
+165:             for(var arr : Vars.content.getContentMap()){
+166:                 all.addAll(arr.select(c -> c.minfo.mod == dpMod));
+167:             }
+168: 
+169:             for(var errored : dpMod.erroredContent){
+170:                 if(errored.minfo.error != null && errored.minfo.asset != null){
+171:                     errored.minfo.asset.warnings.add(errored.minfo.error);
+172:                 }
+173:                 Vars.content.remove(errored);
+174:             }
+175: 
+176:             for(var cont : all){
+177:                 try{
+178:                     cont.init();
+179:                 }catch(Throwable t){
+180:                     Vars.content.remove(cont);
+181:                     if(cont.minfo.asset != null) cont.minfo.asset.errored = true;
+182:                     parser.markError(cont, dpMod, cont.minfo.sourceFile, t);
+183:                 }
+184:             }
+185: 
+186:             for(var cont : all){
+187:                 try{
+188:                     cont.postInit();
+189:                 }catch(Throwable t){
+190:                     Vars.content.remove(cont);
+191:                     if(cont.minfo.asset != null) cont.minfo.asset.errored = true;
+192:                     parser.markError(cont, dpMod, cont.minfo.sourceFile, t);
+193:                 }
+194:             }
+195: 
+196:             //register global variables
+197:             for(var cont : all){
+198:                 if(!cont.hasErrored() && cont instanceof UnlockableContent u && Vars.logicVars.get("@" + u.name) == null){
+199:                     addedVars.add(Vars.logicVars.put("@" + u.name, u, false));
+200:                 }
+201:             }
+202: 
+203:             if(!Vars.headless){
+204:                 for(var cont : all){
+205:                     try{
+206:                         cont.loadIcon();
+207:                         cont.load();
+208:                         if(cont.minfo.asset != null && cont instanceof UnlockableContent u){
+209:                             if(!u.uiIcon.found() && u.getContentType() != ContentType.planet && u.getContentType() != ContentType.weather){
+210:                                 cont.minfo.asset.warnings.add("[" + u.name.substring(u.minfo.mod.name.length() + 1) + "] Could not find an icon. Ensure that you have an image named '" + u.name + "' loaded. Remember that imported images always have the 'dp-' prefix automatically applied.");
+211:                             }
+212:                         }
+213:                     }catch(Throwable t){
+214:                         //not removed here, as this code is only called clientside, and removing it would cause a desync
+215:                         if(cont.minfo.asset != null) cont.minfo.asset.errored = true;
+216:                         parser.markError(cont, dpMod, cont.minfo.sourceFile, t);
+217:                     }
+218:                 }
+219:             }
+220: 

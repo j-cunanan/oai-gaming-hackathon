@@ -1,0 +1,48 @@
+600: 
+601:     public boolean interactable(Team team){
+602:         return state.teams.canInteract(team, team());
+603:     }
+604: 
+605:     public float timeScale(){
+606:         return timeScale;
+607:     }
+608: 
+609:     /**
+610:      * @return the building's 'warmup', a smooth value from 0 to 1.
+611:      * usually used for crafters and things that need to spin up before reaching full efficiency.
+612:      * many blocks will just return 0.
+613:      * */
+614:     public float warmup(){
+615:         return 0f;
+616:     }
+617: 
+618:     /** @return total time this block has been producing something; non-crafter blocks usually return Time.time. */
+619:     public float totalProgress(){
+620:         return Time.time;
+621:     }
+622: 
+623:     public float progress(){
+624:         return 0f;
+625:     }
+626: 
+627:     /** @return whether this block is allowed to update based on team/environment */
+628:     public boolean allowUpdate(){
+629:         return team != Team.derelict && block.supportsEnv(state.rules.env) &&
+630:             //check if outside map limit (privileged blocks are exempt)
+631:             (tile instanceof EditorTile || block.privileged || !state.rules.limitMapArea || !state.rules.disableOutsideArea || Rect.contains(state.rules.limitX, state.rules.limitY, state.rules.limitWidth, state.rules.limitHeight, tile.x, tile.y));
+632:     }
+633: 
+634:     public boolean inMapArea(){
+635:         return !state.rules.limitMapArea || Rect.contains(state.rules.limitX * tilesize, state.rules.limitY * tilesize, state.rules.limitWidth * tilesize, state.rules.limitHeight * tilesize, x, y);
+636:     }
+637: 
+638:     public BlockStatus status(){
+639:         if(!enabled){
+640:             return BlockStatus.logicDisable;
+641:         }
+642: 
+643:         if(!shouldConsume()){
+644:             return BlockStatus.noOutput;
+645:         }
+646: 
+647:         if(efficiency <= 0 || !productionValid()){

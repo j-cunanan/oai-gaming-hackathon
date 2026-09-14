@@ -1,0 +1,7 @@
+./core/src/mindustry/editor/data/MapAssetsDialog.java:119:            state.data.regenerateContentSprites(false);
+./core/src/mindustry/editor/data/MapAssetsDialog.java:217:                                    state.data.regenerateContentSprites(false);
+./core/src/mindustry/editor/data/MapImagesView.java:67:                state.data.regenerateContentSprites(true);
+./core/src/mindustry/editor/data/MapImagesView.java:160:                                state.data.regenerateContentSprites(true);
+./core/src/mindustry/editor/data/MapContentView.java:107:                        state.data.regenerateContentSprites(false);
+./core/src/mindustry/editor/data/MapContentView.java:188:            state.data.regenerateContentSprites(false);
+./core/src/mindustry/mod/DataManager.java:36:    public void regenerateContentSprites(boolean forcePack){

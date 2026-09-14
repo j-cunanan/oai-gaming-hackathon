@@ -1,0 +1,200 @@
+190: 
+191:             menu.cont.button("Simulate", Icon.logic, () -> {
+192:                 menu.hide();
+193: 
+194:                 BaseDialog dialog = new BaseDialog("Simulate");
+195: 
+196:                 int[] seconds = {60 * 1};
+197: 
+198:                 dialog.cont.add("Seconds: ");
+199:                 dialog.cont.field(seconds[0] + "", text -> seconds[0] = Strings.parseInt(text, 1)).valid(s -> Strings.parseInt(s, 9999999) < 10f * 60f);
+200: 
+201:                 dialog.addCloseButton();
+202: 
+203:                 dialog.buttons.button("@ok", Icon.ok, () -> {
+204:                     ui.loadAnd(() -> {
+205: 
+206:                         float deltaScl = 2f;
+207:                         int steps = Mathf.ceil(seconds[0] * 60f / deltaScl);
+208:                         float oldDelta = Time.delta;
+209:                         Time.delta = deltaScl;
+210: 
+211:                         Seq<Building> builds = new Seq<>();
+212:                         Time.clear();
+213: 
+214:                         world.tiles.eachTile(t -> {
+215:                             if(t.build != null && t.isCenter() && t.block().update && t.build.allowUpdate()){
+216:                                 builds.add(t.build);
+217:                                 t.build.updateProximity();
+218:                             }
+219:                         });
+220: 
+221:                         for(int i = 0; i < steps; i++){
+222:                             for(TeamData data : state.teams.getActive()){
+223:                                 if(data.team.rules().fillItems && data.cores.size > 0){
+224:                                     var core = data.cores.first();
+225:                                     content.items().each(it -> {
+226:                                         if(it.isOnPlanet(Vars.state.getPlanet()) && !it.isHidden()){
+227:                                             core.items.set(it, core.getMaximumAccepted(it));
+228:                                         }
+229:                                     });
+230:                                 }
+231:                             }
+232:                             Time.update();
+233:                             for(var build : builds){
+234:                                 build.update();
+235:                             }
+236:                             Groups.powerGraph.update();
+237:                             Groups.bullet.update(); //needed for mass drivers...
+238:                         }
+239: 
+240:                         //spawned units will cause havoc, so clear them
+241:                         Groups.unit.clear();
+242: 
+243:                         Time.clear();
+244:                         Time.delta = oldDelta;
+245:                     });
+246: 
+247:                     dialog.hide();
+248:                 }).size(210f, 64f);
+249: 
+250:                 dialog.show();
+251: 
+252:             }).size(swidth * 2f + 10, 60f);
+253: 
+254:             menu.cont.row();
+255:         }
+256: 
+257:         menu.cont.button("@quit", Icon.exit, () -> {
+258:             tryExit();
+259:             menu.hide();
+260:         }).padTop(1).size(swidth * 2f + 10, 60f);
+261: 
+262:         resizeDialog = new MapResizeDialog((width, height, shiftX, shiftY) -> {
+263:             if(!(editor.width() == width && editor.height() == height && shiftX == 0 && shiftY == 0)){
+264:                 ui.loadAnd(() -> {
+265:                     editor.resize(width, height, shiftX, shiftY);
+266:                 });
+267:             }
+268:         });
+269: 
+270:         loadDialog = new MapLoadDialog(map -> ui.loadAnd(() -> {
+271:             try{
+272:                 editor.beginEdit(map);
+273:             }catch(Exception e){
+274:                 ui.showException("@editor.errorload", e);
+275:                 Log.err(e);
+276:             }
+277:         }));
+278: 
+279:         setFillParent(true);
+280: 
+281:         clearChildren();
+282:         margin(0);
+283: 
+284:         update(() -> {
+285:             if(hasKeyboard()){
+286:                 doInput();
+287:             }
+288:         });
+289: 
+290:         shown(() -> {
+291: 
+292:             saved = true;
+293:             if(!Core.settings.getBool("landscape")) platform.beginForceLandscape();
+294:             editor.clearOp();
+295:             Core.scene.setScrollFocus(view);
+296:             if(!shownWithMap){
+297:                 //clear units, rules and other unnecessary stuff
+298:                 logic.reset();
+299:                 state.rules = new Rules();
+300:                 editor.beginEdit(200, 200);
+301:             }
+302:             shownWithMap = false;
+303: 
+304:             Time.runTask(10f, platform::updateRPC);
+305:         });
+306: 
+307:         hidden(() -> {
+308:             editor.clearOp();
+309:             platform.updateRPC();
+310:             if(!Core.settings.getBool("landscape")) platform.endForceLandscape();
+311:         });
+312: 
+313:         shown(this::build);
+314:     }
+315: 
+316:     public void resumeEditing(){
+317:         state.set(State.menu);
+318:         shownWithMap = true;
+319:         show();
+320:         state.rules = (lastSavedRules == null ? new Rules() : lastSavedRules);
+321:         lastSavedRules = null;
+322:         saved = false;
+323:         editor.renderer.recache();
+324:     }
+325: 
+326:     private void editInGame(){
+327:         menu.hide();
+328:         ui.loadAnd(() -> {
+329:             lastSavedRules = state.rules;
+330:             hide();
+331:             //only reset the player; logic.reset() will clear entities, which we do not want
+332:             state.teams = new Teams();
+333:             player.reset();
+334:             state.rules = Gamemode.editor.apply(lastSavedRules.copy());
+335:             state.rules.limitMapArea = false;
+336:             state.rules.sector = null;
+337:             state.rules.fog = false;
+338:             state.map = new Map(StringMap.of(
+339:                 "name", "Editor Playtesting",
+340:                 "width", editor.width(),
+341:                 "height", editor.height()
+342:             ));
+343:             state.set(State.playing);
+344:             world.endMapLoad();
+345:             player.clearUnit();
+346: 
+347:             for(var unit : Groups.unit){
+348:                 if(unit.spawnedByCore){
+349:                     unit.remove();
+350:                 }
+351:             }
+352: 
+353:             Groups.weather.clear();
+354:             logic.play();
+355: 
+356:             Point2 center = view.project(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f);
+357: 
+358:             CoreBuild best = player.bestCore();
+359: 
+360:             player.set(center.x * tilesize, center.y * tilesize);
+361:             var unit = (best != null ? ((CoreBlock)best.block).unitType : (state.rules.hasEnv(Env.scorching) ? UnitTypes.evoke : UnitTypes.alpha)).spawn(editor.drawTeam, player.x, player.y);
+362:             unit.spawnedByCore = true;
+363:             player.unit(unit);
+364:             player.set(unit);
+365: 
+366:             Core.camera.position.set(unit.x, unit.y);
+367:         });
+368:     }
+369: 
+370:     public void resumeAfterPlaytest(Map map){
+371:         beginEditMap(map.file);
+372:     }
+373: 
+374:     private void playtest(){
+375:         menu.hide();
+376:         Map map = save();
+377: 
+378:         if(map != null){
+379:             //skip dialog, play immediately when shift clicked
+380:             if(Core.input.shift()){
+381:                 hide();
+382:                 //auto pick best fit
+383:                 control.playMap(map, map.applyRules(
+384:                     Gamemode.survival.valid(map) ? Gamemode.survival :
+385:                     Gamemode.attack.valid(map) ? Gamemode.attack :
+386:                     Gamemode.sandbox), true
+387:                 );
+388:             }else{
+389:                 playtestDialog.playListener = this::hide;

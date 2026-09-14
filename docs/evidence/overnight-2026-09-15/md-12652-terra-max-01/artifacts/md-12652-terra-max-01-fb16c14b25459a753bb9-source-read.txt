@@ -1,0 +1,240 @@
+1: package mindustry.editor.data;
+2: 
+3: import arc.*;
+4: import arc.files.*;
+5: import arc.scene.style.*;
+6: import arc.scene.ui.TextButton.*;
+7: import arc.scene.ui.*;
+8: import arc.scene.ui.layout.*;
+9: import arc.struct.*;
+10: import arc.util.*;
+11: import mindustry.ctype.*;
+12: import mindustry.gen.*;
+13: import mindustry.graphics.*;
+14: import mindustry.mod.*;
+15: import mindustry.mod.data.*;
+16: import mindustry.ui.*;
+17: import mindustry.ui.dialogs.*;
+18: 
+19: import java.io.*;
+20: import java.util.*;
+21: import java.util.zip.*;
+22: 
+23: import static mindustry.Vars.*;
+24: 
+25: public class MapAssetsDialog extends BaseDialog{
+26:     private static final TextureRegionDrawable[] typeIcons = {
+27:         Icon.fileCode,
+28:         Icon.box,
+29:         Icon.fileText,
+30:         Icon.image,
+31:         Icon.volumeUp,
+32:         Icon.music
+33:     };
+34: 
+35:     private AssetView[] views = {
+36:         new MapPatchesView(),
+37:         new MapContentView(),
+38:         new MapBundlesView(),
+39:         new MapImagesView(),
+40:         new MapAudioView(DataAssetType.sound),
+41:         new MapAudioView(DataAssetType.music),
+42:     };
+43: 
+44:     TextField searchField;
+45:     @Nullable String searchString;
+46: 
+47:     private Table list;
+48:     private DataAssetType currentType = DataAssetType.music;
+49: 
+50:     public MapAssetsDialog(){
+51:         super(""); //title is not displayed
+52: 
+53:         shown(() -> {
+54:             searchString = null;
+55:             searchField.setText("");
+56:             changeType(DataAssetType.patch);
+57:         });
+58: 
+59:         hidden(() -> {
+60:             list.clearChildren();
+61:             //in case items are added
+62:             DataPatcher.fixContentArrays();
+63:             //show new blocks
+64:             ui.editor.rebuildBlockSelection();
+65:         });
+66: 
+67:         makeButtonOverlay();
+68:         titleTable.remove();
+69: 
+70:         Table types = new Table();
+71:         types.defaults().size(50f).pad(4f);
+72: 
+73:         types.button(Icon.menu, Styles.graySquarei, this::showEditMenu);
+74: 
+75:         types.image(Tex.whiteui, Pal.accent).size(4f, 50f);
+76: 
+77:         for(DataAssetType type : DataAssetType.all){
+78:             types.button(typeIcons[type.ordinal()], Styles.grayTogglei, () -> changeType(type))
+79:             .checked(b -> currentType == type).tooltip(type.localized());
+80:         }
+81:         types.image(Tex.whiteui, Pal.accent).size(4f, 50f);
+82: 
+83:         types.table(Styles.grayPanel, t -> {
+84:             t.margin(8f);
+85:             t.label(() -> currentType.localized());
+86:         }).height(50f).width(Float.NEGATIVE_INFINITY);
+87: 
+88:         types.add().growX();
+89: 
+90:         types.button("@asset.guide", Icon.link, Styles.grayt, () -> Core.app.openURI(patchesGuideURL)).marginLeft(10f).size(200f, 50f).pad(4f);
+91: 
+92:         cont.top().left();
+93: 
+94:         cont.add(types).growX().left().row();
+95: 
+96:         cont.table(search -> {
+97:             search.image(Icon.zoom);
+98: 
+99:             searchField = search.field("", t -> {
+100:                 searchString = t.length() > 0 ? t.toLowerCase() : null;
+101:                 rebuild();
+102:             }).growX().get();
+103:             searchField.setMessageText("@search");
+104:         }).growX().row();
+105: 
+106:         cont.pane(t -> list = t).grow().top();
+107:     }
+108: 
+109:     void changeType(DataAssetType type){
+110:         currentType = type;
+111: 
+112:         buttons.clearChildren();
+113:         addCloseButton();
+114:         views[currentType.ordinal()].buildButtons(this, buttons);
+115: 
+116:         //make sure new assets appear correctly when switching to the content view
+117:         if(type == DataAssetType.content){
+118:             state.data.reloadContent(false);
+119:             state.data.regenerateContentSprites(false);
+120:         }
+121: 
+122:         rebuild();
+123:     }
+124: 
+125:     void rebuild(){
+126:         list.center().top();
+127:         list.clearChildren();
+128:         list.marginBottom(70f);
+129: 
+130:         views[currentType.ordinal()].build(this, list);
+131:     }
+132: 
+133:     void showEditMenu(){
+134:         BaseDialog dialog = new BaseDialog("@edit.menu");
+135:         dialog.cont.pane(p -> {
+136:             p.margin(10f);
+137:             p.table(Tex.button, t -> {
+138:                 TextButtonStyle style = Styles.flatt;
+139:                 t.defaults().size(280f, 60f).left();
+140:                 t.button("@asset.importzip", Icon.download, style, () -> FileChooser.open("zip").submit(file -> {
+141: 
+142:                     //Android doesn't allow accessing the file contents outside the callback; other platforms either copy it already, or don't have dumb permission issues
+143:                     Fi targetFile;
+144:                     if(OS.isAndroid){
+145:                         targetFile = tmpDirectory.child(file.name());
+146:                         file.copyTo(targetFile);
+147:                     }else{
+148:                         targetFile = file;
+149:                     }
+150: 
+151:                     dialog.hide();
+152:                     ui.loadAnd(() -> {
+153:                         try{
+154:                             Seq<DataAsset> results = new Seq<>();
+155:                             Fi zipped = new ZipFi(targetFile);
+156:                             Seq<String> errors = new Seq<>();
+157:                             //force regen
+158:                             state.data.clearGeneratedImages();
+159: 
+160:                             for(var type : DataAssetType.all){
+161:                                 Fi folder = zipped.child(type.folder);
+162: 
+163:                                 //content has sub-dirs based on type, which need to be passed as context to the reader
+164:                                 if(type == DataAssetType.content){
+165:                                     for(ContentType ctype : ContentAsset.loadableContent){
+166:                                         Fi subfolder = folder.child(ctype.folderName);
+167: 
+168:                                         Seq<Fi> files = subfolder.findAll(f -> type.extensions.contains(f.extension().toLowerCase(Locale.ROOT)));
+169: 
+170:                                         for(Fi cfile : files){
+171:                                             String path = cfile.absolutePath().substring(subfolder.absolutePath().length() + 1);
+172:                                             if(state.data.hasAssetNameOrPath(type, Strings.getFileNameWithoutExtension(path), path)){
+173:                                                 errors.add("Asset of type '" + type + "' with name/path '" + path + "' already exists.");
+174:                                                 continue;
+175:                                             }
+176: 
+177:                                             try{
+178:                                                 ContentAsset asset = new ContentAsset(cfile.absolutePath().substring(subfolder.absolutePath().length() + 1), ctype, cfile.readString());
+179:                                                 results.add(asset);
+180:                                             }catch(Throwable e){
+181:                                                 Log.err(e);
+182:                                                 errors.add("Error loading content asset: " + cfile + ": " + Strings.getSimpleMessage( e));
+183:                                             }
+184:                                         }
+185:                                     }
+186:                                 }else{
+187:                                     Seq<Fi> files = folder.findAll(f -> type.extensions.contains(f.extension().toLowerCase(Locale.ROOT)));
+188: 
+189:                                     for(Fi cfile : files){
+190:                                         String path = cfile.absolutePath().substring(folder.absolutePath().length() + 1);
+191:                                         if(state.data.hasAssetNameOrPath(type, Strings.getFileNameWithoutExtension(path), path)){
+192:                                             errors.add("Asset of type '" + type + "' with name/path '" + path + "' already exists.");
+193:                                             continue;
+194:                                         }
+195:                                         try{
+196:                                             var asset = type.create();
+197:                                             asset.readFromZip(path, cfile);
+198:                                             results.add(asset);
+199:                                         }catch(Throwable e){
+200:                                             Log.err(e);
+201:                                             errors.add("Error loading data asset: " + cfile + ": " + Strings.getSimpleMessage(e));
+202:                                         }
+203:                                     }
+204:                                 }
+205:                             }
+206: 
+207:                             //close zip file contents
+208:                             zipped.delete();
+209: 
+210:                             if(results.size > 0){
+211:                                 var prev = state.data.getAllAssets().copy();
+212:                                 prev.addAll(results);
+213:                                 prev.sort();
+214:                                 state.data.load(prev);
+215:                                 if(state.data.getContent().size > 0){
+216:                                     //TODO: packs twice (bad)
+217:                                     state.data.regenerateContentSprites(false);
+218:                                 }
+219:                                 rebuild();
+220:                             }
+221: 
+222:                             var idiag = new BaseDialog("@asset.image.imports");
+223:                             if(results.size > 0) idiag.cont.add(Core.bundle.format("asset.imported", results.size)).row();
+224:                             if(!errors.isEmpty()){
+225:                                 idiag.cont.add("@asset.image.error").padBottom(10f).row();
+226:                                 idiag.cont.pane(ep -> {
+227:                                     ep.add(Seq.with(errors).toString("\n", s -> "[gray]- []" + s)).labelAlign(Align.left, Align.left).grow();
+228:                                 });
+229:                             }else if(results.size == 0){
+230:                                 idiag.cont.add("@asset.import.none");
+231:                             }
+232:                             idiag.buttons.button("@ok", Icon.ok, idiag::hide).size(200f, 64f);
+233:                             idiag.show();
+234: 
+235:                         }catch(Throwable e){
+236:                             ui.showException(e);
+237:                         }
+238:                     });
+239:                 })).marginLeft(12f).row();
+240:                 t.button("@asset.exportzip", Icon.upload, style, () -> FileChooser.export("assets", "zip", file -> {

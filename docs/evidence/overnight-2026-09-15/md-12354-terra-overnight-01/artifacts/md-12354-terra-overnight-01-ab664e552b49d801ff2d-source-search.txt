@@ -1,0 +1,3 @@
+./core/src/mindustry/core/Logic.java:136:                state.rules.waveTeam.data().destroyToDerelict();
+./core/src/mindustry/core/Logic.java:183:                e.core.team.data().destroyToDerelict();
+./core/src/mindustry/game/Teams.java:328:        public void destroyToDerelict(){

@@ -1,0 +1,20 @@
+./core/src/mindustry/entities/bullet/MassDriverBolt.java:69:            data.to.handlePayload(b, data);
+./core/src/mindustry/entities/comp/BuildingComp.java:815:    public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/entities/comp/BuildingComp.java:830:            next.build.handlePayload(self(), todump);
+./core/src/mindustry/entities/comp/BuildingComp.java:851:                other.handlePayload(self(), todump);
+./core/src/mindustry/entities/comp/PayloadComp.java:146:            on.build.handlePayload(on.build, payload);
+./core/src/mindustry/world/blocks/distribution/MassDriver.java:319:        public void handlePayload(Bullet bullet, DriverBulletData data){
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:558:                targetBuild.handlePayload(targetBuild, payload);
+./core/src/mindustry/world/blocks/defense/turrets/PayloadAmmoTurret.java:112:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadMassDriver.java:307:                                other.handlePayload(this, pay);
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:128:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadRouter.java:129:            super.handlePayload(source, payload);
+./core/src/mindustry/world/blocks/payloads/PayloadDeconstructor.java:98:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadDeconstructor.java:99:            super.handlePayload(source, payload);
+./core/src/mindustry/world/blocks/payloads/PayloadBlock.java:121:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:171:                            next.handlePayload(this, item);
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:286:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadLoader.java:104:        public void handlePayload(Building source, Payload payload){
+./core/src/mindustry/world/blocks/payloads/PayloadLoader.java:105:            super.handlePayload(source, payload);
+./core/src/mindustry/input/InputHandler.java:669:            build.handlePayload(build, unitPay);
+./tests/src/test/java/ApplicationTests.java:884:            build.handlePayload(build, new BuildPayload(blocks.get(i), Team.sharded));

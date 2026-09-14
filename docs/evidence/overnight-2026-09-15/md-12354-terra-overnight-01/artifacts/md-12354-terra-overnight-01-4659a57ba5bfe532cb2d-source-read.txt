@@ -1,0 +1,90 @@
+2210:             int amount = (int)value;
+2211:             if(items.get(item) != amount){
+2212:                 if(items.get(item) < amount){
+2213:                     handleStack(item, acceptStack(item, amount - items.get(item), null), null);
+2214:                 }else if(amount >= 0){
+2215:                     removeStack(item, items.get(item) - amount);
+2216:                 }
+2217:             }
+2218:         }else if(content instanceof Liquid liquid && liquids != null){
+2219:             float amount = Mathf.clamp((float)value, 0f, block.liquidCapacity);
+2220:             //decreasing amount is always allowed
+2221:             if(amount < liquids.get(liquid) || (acceptLiquid(self(), liquid) && (liquids.current() == liquid || liquids.currentAmount() <= 0.1f || block.consumesLiquid(liquid)))){
+2222:                 liquids.set(liquid, amount);
+2223:             }
+2224:         }
+2225:     }
+2226: 
+2227:     @Replace
+2228:     @Override
+2229:     public boolean inFogTo(Team viewer){
+2230:         if(team == viewer || !state.rules.fog) return false;
+2231: 
+2232:         int size = block.size, of = block.sizeOffset, tx = tile.x, ty = tile.y;
+2233: 
+2234:         if(!isDiscovered(viewer)) return true;
+2235: 
+2236:         for(int x = 0; x < size; x++){
+2237:             for(int y = 0; y < size; y++){
+2238:                 if(fogControl.isVisibleTile(viewer, tx + x + of, ty + y + of)){
+2239:                     return false;
+2240:                 }
+2241:             }
+2242:         }
+2243: 
+2244:         return true;
+2245:     }
+2246: 
+2247:     @Override
+2248:     public void killed(){
+2249:         dead = true;
+2250:         Events.fire(new BlockDestroyEvent(tile));
+2251:         onDestroyed();
+2252:         if(tile != emptyTile){
+2253:             tile.remove();
+2254:         }
+2255:         remove();
+2256:         afterDestroyed();
+2257:     }
+2258: 
+2259:     public void checkAllowUpdate(){
+2260:         if(!allowUpdate()){
+2261:             enabled = false;
+2262:         }
+2263:     }
+2264: 
+2265:     @Final
+2266:     @Replace
+2267:     @Override
+2268:     public void update(){
+2269: 
+2270:         //TODO refactor to separate loop?
+2271:         if((timeScaleDuration -= Time.delta) <= 0f){
+2272:             timeScale = 1f;
+2273:         }
+2274: 
+2275:         updateConsumption();
+2276: 
+2277:         if(enabled || !block.noUpdateDisabled){
+2278:             updateTile();
+2279:         }
+2280:     }
+2281: 
+2282:     /** When a block is newly revealed outside of camera view range, it is updated on the minimap. */
+2283:     public void updateFogVisibility(){
+2284:         if(!wasVisible && !inFogTo(player.team())){
+2285:             visibleFlags |= (1L << player.team().id);
+2286:             wasVisible = true;
+2287:             renderer.blocks.updateShadow(self());
+2288:             renderer.minimap.update(tile);
+2289:             if(block.drawCached) recache();
+2290:         }
+2291:     }
+2292: 
+2293:     @Override
+2294:     public float getAmbientVolume(){
+2295:         return block.ambientSoundVolume * ambientVolume();
+2296:     }
+2297: 
+2298:     @Override
+2299:     public Sound getAmbientSound(){

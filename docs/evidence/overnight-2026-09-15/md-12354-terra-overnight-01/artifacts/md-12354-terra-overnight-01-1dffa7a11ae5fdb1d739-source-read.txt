@@ -1,0 +1,80 @@
+300:             }
+301:         }
+302:     }
+303: 
+304:     public void resize(int width, int height, int shiftX, int shiftY){
+305:         clearOp();
+306: 
+307:         Tiles previous = world.tiles;
+308:         int offsetX = (width() - width) / 2 - shiftX, offsetY = (height() - height) / 2 - shiftY;
+309:         loading = true;
+310: 
+311:         world.clearBuildings();
+312: 
+313:         Tiles tiles = world.tiles = new Tiles(width, height);
+314: 
+315:         for(int x = 0; x < width; x++){
+316:             for(int y = 0; y < height; y++){
+317:                 int px = offsetX + x, py = offsetY + y;
+318:                 if(previous.in(px, py)){
+319:                     tiles.set(x, y, previous.getn(px, py));
+320:                     Tile tile = tiles.getn(x, y);
+321: 
+322:                     Object config = null;
+323: 
+324:                     //fetch the old config first, configs can be relative to block position (tileX/tileY) before those are reassigned
+325:                     if(tile.build != null && tile.isCenter()){
+326:                         config = tile.build.config();
+327:                     }
+328: 
+329:                     tile.x = (short)x;
+330:                     tile.y = (short)y;
+331: 
+332:                     if(tile.build != null && tile.isCenter()){
+333:                         tile.build.x = x * tilesize + tile.block().offset;
+334:                         tile.build.y = y * tilesize + tile.block().offset;
+335: 
+336:                         //shift links to account for map resize
+337:                         if(config != null){
+338:                             Object out = BuildPlan.pointConfig(tile.block(), config, p -> {
+339:                                 if(!tile.build.block.ignoreResizeConfig){
+340:                                     p.sub(offsetX, offsetY);
+341:                                 }
+342:                             });
+343:                             if(out != config){
+344:                                 boolean prev = state.rules.editor;
+345:                                 state.rules.editor = true;
+346:                                 tile.build.configureAny(out);
+347:                                 state.rules.editor = prev;
+348:                             }
+349:                         }
+350:                     }
+351: 
+352:                 }else{
+353:                     tiles.set(x, y, new EditorTile(x, y, Blocks.stone.id, (short)0, (short)0));
+354:                 }
+355:             }
+356:         }
+357: 
+358:         renderer.resize(width, height);
+359:         loading = false;
+360:     }
+361: 
+362:     public void clearOp(){
+363:         stack.clear();
+364:     }
+365: 
+366:     public void undo(){
+367:         if(stack.canUndo()){
+368:             stack.undo();
+369:         }
+370:     }
+371: 
+372:     public void redo(){
+373:         if(stack.canRedo()){
+374:             stack.redo();
+375:         }
+376:     }
+377: 
+378:     public boolean canUndo(){
+379:         return stack.canUndo();

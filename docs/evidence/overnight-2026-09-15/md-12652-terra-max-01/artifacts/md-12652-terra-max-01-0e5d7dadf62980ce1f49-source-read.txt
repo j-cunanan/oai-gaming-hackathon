@@ -1,0 +1,240 @@
+220: 
+221:             if(reloadContentWorld) fixContentArrays();
+222:         }
+223: 
+224:         var patchIt = patches.iterator();
+225:         while(patchIt.hasNext()){
+226:             PatchAsset set = patchIt.next();
+227: 
+228:             set.warnings.clear();
+229:             set.error = false;
+230: 
+231:             try{
+232:                 Object someValue = parser.getJson().fromJson(null, Jval.read(set.patch).toString(Jformat.plain));
+233:                 if(!(someValue instanceof JsonValue value)) throw new SerializationException("Patch must be a JSON object.");
+234: 
+235:                 if(Vars.state.rules.planet != null && value.has("requiredPlanets")){
+236:                     JsonValue req = value.get("requiredPlanets");
+237:                     value.remove("requiredPlanets");
+238: 
+239:                     //this should be ignored unless this instance is a dedicated server
+240:                     if(Vars.headless){
+241:                         String[] planets = req.isArray() ? req.asStringArray() : new String[]{req.asString()};
+242:                         if(!Structs.contains(planets, Vars.state.rules.planet.name)){
+243:                             patchIt.remove();
+244:                             continue;
+245:                         }
+246:                     }
+247:                 }
+248: 
+249:                 set.json = value;
+250:                 currentlyApplyingPatch = set;
+251:                 visitStack.clear();
+252: 
+253:                 set.name = value.getString("name", "");
+254:                 value.remove("name"); //patchsets can have a name, ignore it if present
+255:                 for(var child : value){
+256:                     assign(root, child.name, child, null, null, null);
+257:                 }
+258:                 currentlyApplyingPatch = null;
+259: 
+260:             }catch(Exception e){
+261:                 set.error = true;
+262:                 set.name = "";
+263:                 set.warnings.add(Strings.getSimpleMessage(e));
+264:                 currentlyApplyingPatch = null;
+265: 
+266:                 Log.err("Failed to apply patch: " + set.patch, e);
+267:             }
+268:         }
+269: 
+270:         afterCallbacks.each(Runnable::run);
+271:     }
+272: 
+273:     public void unapply(){
+274:         unapply(true);
+275:     }
+276: 
+277:     public void unapply(boolean reloadContentWorld){
+278:         if(!applied) return;
+279: 
+280:         callContentRemove();
+281:         Vars.content = contentLoader;
+282:         applied = false;
+283: 
+284:         resetters.reverse();
+285:         for(var reset : resetters){
+286:             try{
+287:                 reset.run();
+288:             }catch(Throwable e){
+289:                 Log.err("Failed to un-apply patch!", e);
+290:             }
+291:         }
+292:         resetters.clear();
+293:         for(var lvar : addedVars){
+294:             Vars.logicVars.remove(lvar);
+295:         }
+296: 
+297:         //this should never throw an exception
+298:         afterCallbacks.each(Runnable::run);
+299:         afterCallbacks.clear();
+300:         usedpatches.clear();
+301:         addedContent.clear();
+302: 
+303:         if(reloadContentWorld) fixContentArrays();
+304:     }
+305: 
+306:     public Seq<Content> getAddedContent(){
+307:         return addedContent;
+308:     }
+309: 
+310:     void callContentRemove(){
+311:         for(var arr : Vars.content.getContentMap()){
+312:             for(var value : arr){
+313:                 if(value.isModded() && value.minfo.mod == dpMod){
+314:                     value.removed = true;
+315:                     value.removeContent();
+316:                 }
+317:             }
+318:         }
+319:     }
+320: 
+321:     public static void fixContentArrays(){
+322:         if(!needsArrayFix) return;
+323:         int items = Vars.content.items().size, liquids = Vars.content.liquids().size;
+324:         ItemModule.empty.checkArrayCapacity(items);
+325: 
+326:         //block item/liquid filter
+327:         for(var block : Vars.content.blocks()){
+328:             //don't waste time resizing arrays for blocks that can't use them
+329:             if(!block.synthetic()) continue;
+330:             if(block.lastConfig instanceof Content c && c.removed){
+331:                 block.lastConfig = null;
+332:             }
+333: 
+334:             block.checkContentArrayCapacity(items, liquids);
+335:         }
+336: 
+337:         //resize capacities in the world (editor). this SHOULD be the only time when fixing arrays is necessary
+338:         if(!Vars.headless && Vars.ui != null && Vars.ui.editor != null && Vars.ui.editor.isShown()){
+339:             int wh = Vars.world.width() * Vars.world.height();
+340:             for(int i = 0; i < wh; i++){
+341:                 Tile tile = Vars.world.tiles.geti(i);
+342: 
+343:                 //stale checks for floor/overlay
+344:                 if(tile.floor().removed) tile.setFloor(getReplacementBlock(tile.floor()).asFloor());
+345:                 if(tile.overlay().removed) tile.setOverlay(getReplacementBlock(tile.overlay()).asFloor());
+346: 
+347:                 if(tile.block().removed){
+348:                     Block mapped = getReplacementBlock(tile.block());
+349:                     //tile refers to stale content; get rid of it.
+350:                     if(mapped == Blocks.air){
+351:                         tile.remove();
+352:                     }else{
+353:                         //update internal reference of block to point to the new one with correct ID
+354:                         tile.updateBlockReference(mapped);
+355:                     }
+356:                 }
+357: 
+358:                 var b = tile.build;
+359:                 if(b == null || !tile.isCenter()) continue;
+360:                 if(b.items != null) b.items.checkArrayCapacity(items);
+361:                 if(b.liquids != null) b.liquids.checkArrayCapacity(items);
+362:             }
+363:         }
+364: 
+365:         //TODO: this doesn't do anything about extensive ItemSeq usage across the codebase, which is limited to the campaign
+366:         //TODO: this also doesn't change sectors
+367:         needsArrayFix = false;
+368:     }
+369: 
+370:     private static Block getReplacementBlock(Block existing){
+371:         Block other = Vars.content.block(existing.name);
+372:         if(other == null) return Blocks.air;
+373:         //make sure they are type compatible
+374:         if(other.getClass() == existing.getClass()){
+375:             return other;
+376:         }
+377:         //could not find an equivalent, clear it
+378:         return Blocks.air;
+379:     }
+380: 
+381:     void visit(Object object){
+382:         visitStack.add(object);
+383:         if(object instanceof Content c && usedpatches.add(c)){
+384:             after(c::afterPatch);
+385:         }
+386:     }
+387: 
+388:     void created(Object object){
+389:         if(object instanceof Weapon weapon){
+390:             weapon.init();
+391:         }else if(object instanceof Content cont){
+392:             cont.init();
+393:             cont.postInit();
+394:         }
+395: 
+396:         if(!Vars.headless){
+397:             Object parent = null;
+398:             //find last item on the stack that can be mapped to this part or weapon
+399:             for(int i = visitStack.size - 1; i >= 0; i --){
+400:                 Object o = visitStack.items[i];
+401:                 if(o != object && (o instanceof Content || o instanceof Weapon)){
+402:                     parent = o;
+403:                     break;
+404:                 }
+405:             }
+406:             if(object instanceof DrawPart part && parent instanceof MappableContent cont){
+407:                 part.load(cont.name);
+408:             }else if(object instanceof DrawPart part && parent instanceof Weapon w){
+409:                 part.load(w.name);
+410:             }else if(object instanceof DrawBlock draw && parent instanceof Block block){
+411:                 draw.load(block);
+412:             }else if(object instanceof Weapon weapon){
+413:                 weapon.load();
+414:             }else if(object instanceof Content cont){
+415:                 cont.load();
+416:             }
+417:         }
+418:     }
+419: 
+420:     void assign(Object object, String field, Object value, @Nullable FieldData metadata, @Nullable Object parentObject, @Nullable String parentField) throws Exception{
+421:         if(field == null || field.isEmpty()) return;
+422: 
+423:         int oldLength = visitStack.size;
+424:         try{
+425: 
+426:             //field.field2.field3 nested syntax
+427:             if(field.indexOf('.') != -1){
+428:                 //resolve the field chain until the final field is reached
+429:                 String[] path = field.split("\\.");
+430:                 for(int i = 0; i < path.length - 1; i++){
+431:                     parentObject = object;
+432:                     parentField = path[i];
+433:                     Object[] result = resolve(object, path[i], metadata);
+434:                     if(result == null){
+435:                         warn("Failed to resolve @.@", object, path[i]);
+436:                         return;
+437:                     }
+438:                     object = result[0];
+439:                     metadata = (FieldData)result[1];
+440: 
+441:                     if(i < path.length - 2){
+442:                         visit(object);
+443:                     }
+444:                 }
+445:                 field = path[path.length - 1];
+446:             }
+447: 
+448:             visit(object);
+449: 
+450:             if(object == root){
+451:                 if(value instanceof JsonValue jval && jval.isObject()){
+452:                     for(var child : jval){
+453:                         assign(root, field + "." + child.name, child, null, null, null);
+454:                     }
+455:                 }else{
+456:                     warn("Content '@' cannot be assigned.", field);
+457:                 }
+458:             }else if(object instanceof Seq<?> || object.getClass().isArray()){
+459: 

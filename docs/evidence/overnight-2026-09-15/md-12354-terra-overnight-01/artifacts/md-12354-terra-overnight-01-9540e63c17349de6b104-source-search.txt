@@ -1,0 +1,120 @@
+./core/assets/bundles/bundle_ca.properties:2768:lst.setblock = Estableix les dades d’un bloc en qualsevol posició.
+./core/assets/bundles/bundle_ro.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_uk_UA.properties:2768:lst.setblock = Установлює дані плитки в будь-якому місці.
+./core/assets/bundles/bundle_ja.properties:2768:lst.setblock = 任意の座標のタイルの情報を変更します。
+./core/assets/bundles/bundle_fi.properties:2768:lst.setblock = Aseta laattadata missä tahansa sijainnissa.
+./core/assets/bundles/bundle_th.properties:2768:lst.setblock = ปรับแต่งข้อมูลของช่องที่ตำแหน่งใดๆ
+./core/assets/bundles/bundle_eu.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_fr.properties:2768:lst.setblock = Définit les données d'une tuile à n'importe quel emplacement.
+./core/assets/bundles/bundle_be.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_pl.properties:2768:lst.setblock = Ustaw dane dla dowolnej lokalizacji.
+./core/assets/bundles/bundle_id_ID.properties:2768:lst.setblock = Menentukan data ubin di lokasi manapun.
+./core/assets/bundles/bundle_sr.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_de.properties:2768:lst.setblock = Setze Tile-Daten an jedem Standort.
+./core/assets/bundles/bundle_fil.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_zh_CN.properties:2768:lst.setblock = 设置任意位置的地块数据。
+./core/assets/bundles/bundle_ko.properties:2768:lst.setblock = 특정 위치의 타일 정보 설정합니다.
+./core/assets/bundles/bundle_et.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_bg.properties:2768:lst.setblock = Задаване на данни за повърхност от всяка локация.
+./core/assets/bundles/bundle_nl.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_vi.properties:2768:lst.setblock = Chỉnh sửa dữ liệu của ô tại vị trí bất kỳ.
+./core/assets/bundles/bundle_ru.properties:2768:lst.setblock = Устанавливает плитку в любом месте.
+./core/assets/bundles/bundle_lt.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle.properties:2773:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_tr.properties:2768:lst.setblock = Herhangi bir yerdeki blok bilgisini değiştir.
+./core/assets/bundles/bundle_pt_BR.properties:2768:lst.setblock = Defina os dados do bloco em qualquer local.
+./core/assets/bundles/bundle_it.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_zh_TW.properties:2768:lst.setblock = 由位置設置方塊數據
+./core/assets/bundles/bundle_hu.properties:2768:lst.setblock = Mezőadatok beállítása tetszőleges helyen.
+./core/assets/bundles/bundle_cs.properties:2768:lst.setblock = Nastaví data dlaždice na libovolném místě.
+./core/assets/bundles/bundle_tk.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_nl_BE.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_sv.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_da.properties:2768:lst.setblock = Set tile data at any location.
+./core/assets/bundles/bundle_es.properties:2768:lst.setblock = Cambia los datos de un bloque en cualquier lugar.
+./core/assets/bundles/bundle_pt_PT.properties:2768:lst.setblock = Defina os dados do bloco em qualquer local.
+./core/src/mindustry/game/Schematics.java:491:            tile.setBlock(st.block, team, st.rotation);
+./core/src/mindustry/game/Schematics.java:514:            tile.setBlock(st.block, team, st.rotation);
+./core/src/mindustry/world/Tile.java:231:    public void setBlock(Block type, Team team, int rotation){
+./core/src/mindustry/world/Tile.java:232:        setBlock(type, team, rotation, type::newBuilding);
+./core/src/mindustry/world/Tile.java:235:    public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
+./core/src/mindustry/world/Tile.java:273:                                    other.setBlock(Blocks.air);
+./core/src/mindustry/world/Tile.java:296:    public void setBlock(Block type, Team team){
+./core/src/mindustry/world/Tile.java:297:        setBlock(type, team, 0);
+./core/src/mindustry/world/Tile.java:300:    public void setBlock(Block type){
+./core/src/mindustry/world/Tile.java:301:        setBlock(type, Team.derelict, 0);
+./core/src/mindustry/world/Build.java:56:        tile.setBlock(sub, team, rotation);
+./core/src/mindustry/world/Build.java:149:        tile.setBlock(sub, team, rotation);
+./core/src/mindustry/world/blocks/ConstructBlock.java:86:            tile.setBlock(block, team, rotation);
+./core/src/mindustry/world/blocks/legacy/LegacyUnitFactory.java:22:        tile.setBlock(replacement, tile.team(), rot);
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:207:            tile.setBlock(this, tile.team());
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:674:                    tile.setBlock(block, lastDamage);
+./core/src/mindustry/world/blocks/environment/RemoveWall.java:47:        tile.setBlock(Blocks.air);
+./core/src/mindustry/world/blocks/payloads/BuildPayload.java:37:        tile.setBlock(build.block, build.team, rotation, () -> build);
+./core/src/mindustry/graphics/MenuRenderer.java:161:                tile.setBlock(wall);
+./core/src/mindustry/editor/EditorTile.java:51:    public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
+./core/src/mindustry/editor/EditorTile.java:56:            super.setBlock(type, team, rotation, entityprov);
+./core/src/mindustry/editor/EditorTile.java:76:        super.setBlock(type, team, rotation, entityprov);
+./core/src/mindustry/editor/MapEditor.java:85:            tiles.get(build.tileX(), build.tileY()).setBlock(build.block, build.team, build.rotation, () -> build);
+./core/src/mindustry/editor/MapEditor.java:152:                tile(x, y).setBlock(drawBlock, drawTeam, rotation);
+./core/src/mindustry/editor/MapEditor.java:193:                    tile.setBlock(drawBlock, drawTeam, rotation);
+./core/src/mindustry/editor/MapEditor.java:258:                tile.setBlock(Blocks.cliff);
+./core/src/mindustry/editor/MapEditor.java:266:                tile.setBlock(Blocks.air);
+./core/src/mindustry/editor/MapGenerateDialog.java:53:        public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
+./core/src/mindustry/editor/MapGenerateDialog.java:179:                        tile.setBlock(block);
+./core/src/mindustry/editor/MapGenerateDialog.java:381:        ctile.setBlock(content.block(PackTile.block(tile)));
+./core/src/mindustry/editor/DrawOperation.java:95:                    tile.setBlock(block, tile.team(), tile.build == null ? 0 : tile.build.rotation);
+./core/src/mindustry/editor/EditorTool.java:146:                    setter = t -> t.setBlock(editor.drawBlock, editor.drawTeam);
+./core/src/mindustry/editor/EditorTool.java:181:                    setter = t -> t.setBlock(Blocks.air);
+./core/src/mindustry/editor/EditorTool.java:208:                        t.setBlock(Blocks.cliff);
+./core/src/mindustry/editor/EditorTool.java:210:                        t.setBlock(Blocks.air);
+./core/src/mindustry/core/Control.java:321:        build.tile.setBlock(build.block, build.team, build.rotation, () -> build);
+./core/src/mindustry/core/Control.java:478:                            spawn.setBlock(sector.planet.defaultCore, state.rules.defaultTeam);
+./core/src/mindustry/core/Control.java:505:                                        tile.setBlock(build.block, Team.derelict, build.rotation, () -> build);
+./core/src/mindustry/core/Control.java:522:                                        tile.setBlock(build.block, state.rules.defaultTeam, build.rotation, () -> build);
+./core/src/mindustry/logic/LExecutor.java:1539:    public static class SetBlockI implements LInstruction{
+./core/src/mindustry/logic/LExecutor.java:1545:        public SetBlockI(LVar x, LVar y, LVar block, LVar team, LVar rotation, TileLayer layer){
+./core/src/mindustry/logic/LExecutor.java:1554:        public SetBlockI(){
+./core/src/mindustry/logic/LStatements.java:1400:    @RegisterStatement("setblock")
+./core/src/mindustry/logic/LStatements.java:1401:    public static class SetBlockStatement extends LStatement{
+./core/src/mindustry/logic/LStatements.java:1454:            return new SetBlockI(builder.var(x), builder.var(y), builder.var(block), builder.var(team), builder.var(rotation), layer);
+./core/src/mindustry/io/MapIO.java:96:                public void setBlock(Block type){
+./core/src/mindustry/io/MapIO.java:97:                    super.setBlock(type);
+./core/src/mindustry/io/MapIO.java:239:                tile.setBlock(block, Team.derelict, 0);
+./core/src/mindustry/io/MapIO.java:241:                tile.setBlock(block);
+./core/src/mindustry/io/SaveVersion.java:347:                    tile.setBlock(block);
+./core/src/mindustry/io/SaveVersion.java:351:                //must be assigned after setBlock, because that can reset data
+./core/src/mindustry/io/SaveVersion.java:382:                        context.tile(j).setBlock(block);
+./core/src/mindustry/io/versions/LegacySaveVersion.java:58:                    tile.setBlock(block);
+./core/src/mindustry/io/versions/LegacySaveVersion.java:95:                            context.tile(j).setBlock(block);
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:105:                    tile.setBlock(block);
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:109:                //must be assigned after setBlock, because that can reset data
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:138:                        tile.setBlock(block);
+./core/src/mindustry/io/versions/ShortChunkSaveVersion.java:146:                        context.tile(j).setBlock(block);
+./core/src/mindustry/maps/planet/ErekirPlanetGenerator.java:404:                                        dest.setBlock(floor.asFloor().wall);
+./core/src/mindustry/maps/filters/SpawnPathFilter.java:58:                                    other.setBlock(block);
+./core/src/mindustry/maps/generators/BasicGenerator.java:168:                tile.setBlock(Blocks.cliff);
+./core/src/mindustry/maps/generators/BasicGenerator.java:176:                tile.setBlock(Blocks.air);
+./core/src/mindustry/maps/generators/BasicGenerator.java:259:            tile.setBlock(Vars.content.block(blocks[i]));
+./core/src/mindustry/maps/generators/BasicGenerator.java:317:            t.setBlock(!read.get(t.x, t.y) ? Blocks.air : t.floor().wall);
+./core/src/mindustry/maps/generators/BasicGenerator.java:338:            if(block != tile.block()) tile.setBlock(block);
+./core/src/mindustry/maps/generators/BasicGenerator.java:370:                        other.setBlock(Blocks.air);
+./core/src/mindustry/maps/generators/BasicGenerator.java:441:                    other.setBlock(Blocks.air);
+./core/src/mindustry/maps/generators/BasicGenerator.java:459:                tile.setBlock(tile.floor().wall);
+./core/src/mindustry/maps/generators/FileMapGenerator.java:119:                        tile.setBlock(coreTypeToUse, state.rules.defaultTeam, 0);
+./core/src/mindustry/maps/planet/SerpuloPlanetGenerator.java:299:                                other.setBlock(Blocks.air);
+./core/src/mindustry/maps/generators/BaseGenerator.java:93:                tile.setBlock(tile.block().size == 2 ? wallLarge : wall, team);
+./core/src/mindustry/maps/generators/BaseGenerator.java:127:                        tile.setBlock(wall, team);
+./core/src/mindustry/maps/generators/BaseGenerator.java:147:                    curr.setBlock(wallLarge, team);
+./core/src/mindustry/maps/generators/BaseGenerator.java:160:                        t.setBlock(Blocks.air);
+./core/src/mindustry/maps/generators/BaseGenerator.java:166:                            other.setBlock(Blocks.air);
+./core/src/mindustry/maps/filters/GenerateFilter.java:46:                    tile.setBlock(block);
+./core/src/mindustry/maps/filters/GenerateFilter.java:60:                    tile.setBlock(in.block);
+./tests/src/test/java/ApplicationTests.java:284:        world.tile(bx, by).setBlock(Blocks.coreShard, Team.sharded, 0);
+./tests/src/test/java/ApplicationTests.java:401:        world.tile(0, 0).setBlock(Blocks.liquidSource, Team.sharded);
+./tests/src/test/java/ApplicationTests.java:404:        world.tile(2, 1).setBlock(Blocks.liquidTank, Team.sharded);
+./tests/src/test/java/ApplicationTests.java:420:        source.setBlock(Blocks.liquidSource, Team.sharded);
+./tests/src/test/java/ApplicationTests.java:423:        junction.setBlock(Blocks.liquidJunction, Team.sharded);
+./tests/src/test/java/ApplicationTests.java:425:        conduit.setBlock(Blocks.conduit, Team.sharded, 1);
+./tests/src/test/java/ApplicationTests.java:427:        tank.setBlock(Blocks.liquidTank, Team.sharded);
+./tests/src/test/java/ApplicationTests.java:444:        source.setBlock(Blocks.liquidSource, Team.sharded);

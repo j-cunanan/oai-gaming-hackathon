@@ -1,0 +1,4 @@
+regex parse error:
+    .writeAll(
+             ^
+error: unclosed group

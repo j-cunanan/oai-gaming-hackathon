@@ -11,14 +11,19 @@ traced the cause, generated a one-line patch and passed **all five validation
 gates**, including 276/276 upstream tests and five fresh correct candidate replays.
 The original report-only attempt and its incomplete evidence remain separate.
 
+Open the [recorded before/after walkthrough](demos/datapatch-2026-09-15/index.html)
+or the [eight-page REPRO PDF](demos/datapatch-2026-09-15/repro-report.pdf).
+The walkthrough selects eight real checkpoints from one baseline and one
+candidate replay; its playback is an excerpt, not live video or a new execution.
+
 | Candidate | Recorded result so far | Presentation value and limit |
 | --- | --- | --- |
-| [Target Dummy save crash](evidence/overnight-2026-09-15/md-12579-terra-overnight-01/result.json) | 15 actions reproduced 5/5; reduced 12-action trigger reproduced 5/5, then reconfirmed 5/5 on the upgraded worker. Fresh Terra source diagnosis and patch retained. | Clear creation → save → crash story. Three gates pass. The original candidate replay avoided the crash 5/5, but only 1/5 visual judgments established the full expected state; reopening was not recorded. One upstream fixture download also returns 404. |
+| [Target Dummy save crash](evidence/overnight-2026-09-15/md-12579-terra-overnight-01/result.json) | 15 actions reproduced 5/5; reduced 12-action trigger reproduced 5/5, then reconfirmed 5/5 on the upgraded worker. Fresh Terra source diagnosis and patch retained. A later MAX save/reopen planner exhausted its 24-turn limit before freezing a plan. | Clear creation → save → crash story. The original candidate replay avoided the crash 5/5, but only 1/5 visual judgments established the full expected state. The later planner attempt supplies no repeated candidate verdict. One upstream fixture download also returns 404. |
 | [Deleted data patch returns](evidence/overnight-2026-09-15/md-12620-terra-overnight-02/README.md) | Fresh evidence-guided run: 31 actions reproduced 5/5; reduced 30 actions reproduced 5/5. AI patch passed all five gates, 276/276 tests with no skips, and 5/5 correct candidate replays. | Recommended current demo: delete → save → reopen → unwanted content returns. The first report-only attempt remains at 3/5; assistance selected the necessary save evidence and supplied no fix. |
 | [Unit loss on payload conveyor](evidence/overnight-2026-09-15/md-12565-terra-overnight-01/result.json) | Initial probe and fresh retry could not obtain the required unit. A later setup-guided attempt also stopped before entry/transport was tested. | Potentially stronger gameplay demo, currently inconclusive. Normal transformation into a payload is not evidence of loss. |
 | [Ghost generator after explosion](evidence/overnight-2026-09-15/md-12603-terra-overnight-01/result.json) | The fueled-generator/explosion setup was not reached. | Visually interesting report, but no runtime qualification from these attempts. |
-| [Derelict conveyor loses cargo on reload](../benchmarks/candidates/MD-candidate-12354.yaml) | First preparation failed because JitPack lacked the pinned Arc dependency. The exact required Arc revision has now been prepared from source for a retry. | A clear cargo-loss story if reproduced. No runtime result yet. |
-| [Data Patches & Assets lifecycle crash](../benchmarks/candidates/MD-candidate-12652-fixture.yaml) | The original reporter map is retained, hashed and registered for identical restoration on each fresh run. MAX investigation queued. | A more involved original-map scenario. File inspection is not runtime qualification. |
+| [Derelict conveyor loses cargo on reload](evidence/overnight-2026-09-15/md-12354-terra-overnight-01/README.md) | Preparing the exact missing Arc source enabled the build. MAX created an editor scene but did not load a payload, establish Derelict ownership, or save/reload. | A clear cargo-loss story if reproduced, currently insufficient evidence. The reporter's original data-export attachment was retrieved afterward for separate analysis. |
+| [Data Patches & Assets lifecycle crash](evidence/overnight-2026-09-15/md-12652-terra-max-01/README.md) | MAX imported the unchanged reporter map, entered in-game editing, changed a tile, returned to the editor and visited the asset tabs before closing. No crash was observed. | Original-map input is runtime-qualified, but this tested flow did not reproduce the reported bug. This is not five negative confirmations or proof the bug is absent. |
 
 The earlier Weather case remains available as a simpler reference with all five
 recorded gates passing. It predates this overnight run and is not counted as a
@@ -57,6 +62,14 @@ These checks do not alter the live case's gates or replace the missing map-reope
 UI evidence. They test serialization, not an entire saved-map load. Logs, test
 source, exact patch hash, environment and the original execution driver are retained.
 
+The [later MAX postcondition attempt](evidence/overnight-2026-09-15/md-12579-terra-postconditions-01/README.md)
+freshly reconfirmed the crash 5/5 and built the candidate. Its separate planner
+reopened a map and inspected the dummy, but reached its 24-turn limit before
+returning a complete, frozen verification plan. No five candidate repetitions or
+independent postcondition verdict were produced. The failed snapshot is retained;
+PR23 raises the planner limit within the existing job budgets and reports an
+unfinished plan as an unavailable check.
+
 ## Runner and usability work
 
 Each change has a PR and passing repository CI:
@@ -73,10 +86,13 @@ Each change has a PR and passing repository CI:
 - [#19](https://github.com/j-cunanan/oai-gaming-hackathon/pull/19): retain the first crash candidate, incomplete data-patch run, setup-guided unit attempt and supplemental controls. All referenced logs are committed; imports were checked from a fresh Git archive.
 - [#20](https://github.com/j-cunanan/oai-gaming-hackathon/pull/20): configurable bounded model outputs and early skips for reduction proposals that drop or reorder required checkpoints.
 - [#21](https://github.com/j-cunanan/oai-gaming-hackathon/pull/21): original `.msav` fixtures restored before each fresh run, with UI/PDF input provenance and the unchanged reporter attachment for #12652.
+- [#22](https://github.com/j-cunanan/oai-gaming-hackathon/pull/22): freeze the fully validated fresh data-patch investigation and its 276-test suite evidence.
+- [#23](https://github.com/j-cunanan/oai-gaming-hackathon/pull/23): identify source-review notes by their scope, allow a longer bounded postcondition planner and retain an unavailable check when planning exhausts its budget.
 
-Current checks: **167 Python tests, 8 frontend tests, and a production build pass**.
-The new postcondition workflow is loaded. A Target Dummy validation rerun started
-through the dashboard; the original blocked result is frozen separately.
+Current checks: **168 Python tests, 8 frontend tests, and a production build pass**.
+The original blocked Target Dummy result and later failed planner snapshot are
+frozen separately. The longer planner is loaded and a new validation attempt is
+active after the cargo job ended.
 
 ## Local handoff
 
@@ -84,10 +100,13 @@ REPRO is at [127.0.0.1:8001](http://127.0.0.1:8001/). Port 8000 belongs to anoth
 local project and was left alone. Existing case data and credentials are retained
 locally; no credentials are in the committed evidence.
 
-Completed API investigations so far used `gpt-5.6-terra` at medium reasoning.
+The fresh completed data-patch fix used `gpt-5.6-terra` at medium reasoning.
 After the data-patch run finished, the server switched to **max reasoning** and a
 16,000-token response allowance. Jobs remain bounded by 120 model calls, 200
 actions and 3,600 seconds. Counts accumulate across continuations on the same
-case. Target Dummy revalidation, the original-map investigation and the cargo
-retry are queued in that order. Final outcomes will be recorded when they finish.
+case. The first Target Dummy MAX revalidation and original-map investigation have
+finished; cargo also ended without reaching the necessary setup. A second Target
+Dummy MAX validation is active. The generator report's original video has
+been retrieved for setup analysis, which is separate from a fresh game execution.
+Final outcomes will be recorded when they finish.
 No game patch has been published upstream and no teammate was messaged.

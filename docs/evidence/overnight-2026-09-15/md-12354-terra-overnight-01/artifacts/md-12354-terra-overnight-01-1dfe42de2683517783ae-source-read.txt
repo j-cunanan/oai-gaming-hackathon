@@ -1,0 +1,155 @@
+1: package mindustry.ui.dialogs;
+2: 
+3: import arc.*;
+4: import arc.scene.ui.*;
+5: import arc.scene.ui.layout.*;
+6: import arc.util.*;
+7: import mindustry.*;
+8: import mindustry.editor.*;
+9: import mindustry.game.*;
+10: import mindustry.gen.*;
+11: 
+12: import static mindustry.Vars.*;
+13: 
+14: public class PausedDialog extends BaseDialog{
+15:     private MapProcessorsDialog processors = new MapProcessorsDialog();
+16:     private SaveDialog save = new SaveDialog();
+17:     private LoadDialog load = new LoadDialog();
+18:     private CustomRulesDialog rulesDialog = new CustomRulesDialog();
+19: 
+20:     public PausedDialog(){
+21:         super("@menu");
+22:         shouldPause = true;
+23: 
+24:         clearChildren();
+25:         add(titleTable).growX().row();
+26: 
+27:         stack(cont, new Table(t -> {
+28:             t.bottom().left();
+29:             t.button(Icon.book, () -> {
+30:                 Rules toEdit = Vars.state.rules.copy();
+31:                 rulesDialog.show(toEdit, () -> state.rules.copy());
+32:                 rulesDialog.hidden(() -> {
+33:                     //apply rule changes only once it is hidden
+34:                     Vars.state.rules = toEdit;
+35:                     Call.setRules(toEdit);
+36:                 });
+37:             }).size(70f).tooltip("@customize").visible(() -> state.rules.allowEditRules && (net.server() || !net.active()));
+38:         })).grow().row();
+39: 
+40:         shown(() -> {
+41:             rebuild();
+42: 
+43:             if(state.isCampaign()){
+44:                 state.getPlanet().saveStats();
+45:             }
+46:         });
+47: 
+48:         addCloseListener();
+49:     }
+50: 
+51:     void rebuild(){
+52:         cont.clear();
+53: 
+54:         update(() -> {
+55:             if(state.isMenu() && isShown()){
+56:                 hide();
+57:             }
+58:         });
+59: 
+60:         if(!mobile){
+61:             if(steam){
+62:                 cont.check("@steam.friendsonly", !Core.settings.getBool("steampublichost2"), val -> {
+63:                     Core.settings.put("steampublichost2", !val);
+64:                     platform.updateLobby();
+65:                 }).colspan(2).left().with(c -> ui.addDescTooltip(c, "@steam.friendsonly.tooltip")).width(440f)
+66:                     .visible(() -> net.server()).center().colspan(2).fillX().padBottom(10f).row();
+67:             }
+68: 
+69:             float dw = 220f;
+70:             cont.defaults().width(dw).height(55).pad(5f);
+71: 
+72:             boolean showObjective = state.rules.sector != null && state.rules.sector.preset != null && state.rules.sector.preset.description != null;
+73: 
+74:             if(showObjective){
+75:                 cont.button("@objective", Icon.info, () -> ui.fullText.show("@objective", state.rules.sector != null && state.rules.sector.preset != null ? state.rules.sector.preset.description : "oh dear")).padTop(-60f);
+76:             }
+77: 
+78:             cont.button("@abandon", Icon.cancel, () -> ui.planet.abandonSectorConfirm(state.rules.sector, this::hide)).padTop(-60f)
+79:             .colspan(showObjective ? 1 : 2).width(showObjective ? dw : dw * 2 + 10f)
+80:             .disabled(b -> net.client() || state.gameOver).visible(() -> state.rules.sector != null).row();
+81: 
+82:             cont.button("@back", Icon.left, this::hide).name("back");
+83:             cont.button("@settings", Icon.settings, ui.settings::show).name("settings");
+84: 
+85:             if(!state.isCampaign() && !state.isEditor()){
+86:                 cont.row();
+87:                 cont.button("@savegame", Icon.save, save::show);
+88:                 cont.button("@loadgame", Icon.upload, load::show).disabled(b -> net.active());
+89:             }
+90: 
+91:             cont.row();
+92: 
+93:             //the button runs out of space when the editor button is added, so use the mobile text
+94:             cont.button(state.isEditor() ? "@hostserver.mobile" : "@hostserver", Icon.host, () -> {
+95:                 if(net.server() && steam){
+96:                     platform.inviteFriends();
+97:                 }else{
+98:                     ui.host.show();
+99:                 }
+100:             }).disabled(b -> !((steam && net.server()) || !net.active())).colspan(state.isEditor() ? 1 : 2).width(state.isEditor() ? dw : dw * 2 + 10f)
+101:                 .update(e -> e.setText(net.server() && steam ? "@invitefriends" : state.isEditor() ? "@hostserver.mobile" : "@hostserver"));
+102: 
+103:             if(state.isEditor()){
+104:                 cont.button("@editor.worldprocessors", Icon.logic, () -> {
+105:                     hide();
+106:                     processors.show();
+107:                 });
+108:             }
+109: 
+110:             cont.row();
+111: 
+112:             cont.button("@quit", Icon.exit, this::showQuitConfirm).colspan(2).width(dw + 10f).update(s -> s.setText(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave() ? "@save.quit" : "@quit"));
+113: 
+114:         }else{
+115:             cont.defaults().size(130f).pad(5);
+116:             cont.buttonRow("@back", Icon.play, this::hide);
+117:             cont.buttonRow("@settings", Icon.settings, ui.settings::show);
+118: 
+119:             if(!state.isCampaign() && !state.isEditor()){
+120:                 cont.buttonRow("@save", Icon.save, save::show);
+121: 
+122:                 cont.row();
+123: 
+124:                 cont.buttonRow("@load", Icon.download, () -> {
+125:                     if(net.active()){
+126:                         ui.database.show();
+127:                     }else{
+128:                         load.show();
+129:                     }
+130:                 }).update(t -> {
+131:                     Image image = (Image)t.getChildren().first();
+132:                     image.setDrawable(net.active() ? Icon.book : Icon.download);
+133:                     t.setText(net.active() ? "@database" : "@load");
+134:                 });
+135:             }else if(state.isCampaign()){
+136:                 cont.buttonRow("@research", Icon.tree, ui.research::show);
+137: 
+138:                 cont.row();
+139: 
+140:                 cont.buttonRow("@planetmap", Icon.map, () -> {
+141:                     hide();
+142:                     ui.planet.show();
+143:                 });
+144:             }else{
+145:                 cont.row();
+146:             }
+147: 
+148:             cont.buttonRow("@hostserver.mobile", Icon.host, ui.host::show).disabled(b -> net.active());
+149: 
+150:             cont.buttonRow("@quit", Icon.exit, this::showQuitConfirm).update(s -> {
+151:                 s.setText(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave() ? "@save.quit" : "@quit");
+152:                 s.getLabelCell().growX().wrap();
+153:             });
+154:         }
+155:     }

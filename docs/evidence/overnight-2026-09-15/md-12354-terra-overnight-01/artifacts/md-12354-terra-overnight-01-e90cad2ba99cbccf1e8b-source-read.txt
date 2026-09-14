@@ -1,0 +1,105 @@
+174:         public void updatePayload(){
+175:             if(payload != null){
+176:                 payload.set(x + payVector.x, y + payVector.y, payRotation);
+177:             }
+178:         }
+179: 
+180:         /** @return true if the payload is in position. */
+181:         public boolean moveInPayload(){
+182:             return moveInPayload(true);
+183:         }
+184: 
+185:         /** @return true if the payload is in position. */
+186:         public boolean moveInPayload(boolean rotate){
+187:             if(payload == null) return false;
+188: 
+189:             updatePayload();
+190: 
+191:             if(rotate){
+192:                 payRotation = Angles.moveToward(payRotation, block.rotate ? rotdeg() : 90f, payloadRotateSpeed * delta());
+193:             }
+194:             payVector.approach(Vec2.ZERO, payloadSpeed * delta());
+195: 
+196:             return hasArrived();
+197:         }
+198: 
+199:         public void moveOutPayload(){
+200:             if(payload == null) return;
+201: 
+202:             updatePayload();
+203: 
+204:             Vec2 dest = Tmp.v1.trns(rotdeg(), size * tilesize/2f);
+205: 
+206:             payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed * delta());
+207:             payVector.approach(dest, payloadSpeed * delta());
+208: 
+209:             Building front = front();
+210:             boolean canDump = front == null || !front.tile.solid();
+211:             boolean canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
+212: 
+213:             if(canDump && !canMove){
+214:                 pushOutput(payload, 1f - (payVector.dst(dest) / (size * tilesize / 2f)));
+215:             }
+216: 
+217:             if(payVector.within(dest, 0.001f)){
+218:                 payVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+219: 
+220:                 if(canMove){
+221:                     if(movePayload(payload)){
+222:                         payload = null;
+223:                     }
+224:                 }else if(canDump){
+225:                     dumpPayload();
+226:                 }
+227:             }
+228:         }
+229: 
+230:         public void dumpPayload(){
+231:             //translate payload forward slightly
+232:             float tx = Angles.trnsx(payload.rotation(), 0.1f), ty = Angles.trnsy(payload.rotation(), 0.1f);
+233:             payload.set(payload.x() + tx, payload.y() + ty, payload.rotation());
+234: 
+235:             if(payload.dump()){
+236:                 payload = null;
+237:             }else{
+238:                 payload.set(payload.x() - tx, payload.y() - ty, payload.rotation());
+239:             }
+240:         }
+241: 
+242:         public boolean hasArrived(){
+243:             return payVector.isZero(0.01f);
+244:         }
+245: 
+246:         public void drawPayload(){
+247:             if(payload != null){
+248:                 updatePayload();
+249: 
+250:                 Draw.z(Layer.blockOver);
+251:                 payload.draw();
+252:             }
+253:         }
+254: 
+255:         @Override
+256:         public double sense(Content content){
+257:             if(payload instanceof UnitPayload up && up.unit.type == content) return 1;
+258:             if(payload instanceof BuildPayload bp && bp.build.block == content) return 1;
+259:             return super.sense(content);
+260:         }
+261: 
+262:         @Override
+263:         public void write(Writes write){
+264:             super.write(write);
+265: 
+266:             write.f(payVector.x);
+267:             write.f(payVector.y);
+268:             write.f(payRotation);
+269:             Payload.write(payload, write);
+270:         }
+271: 
+272:         @Override
+273:         public void read(Reads read, byte revision){
+274:             super.read(read, revision);
+275: 
+276:             payVector.set(read.f(), read.f());
+277:             payRotation = read.f();
+278:             payload = Payload.read(read);

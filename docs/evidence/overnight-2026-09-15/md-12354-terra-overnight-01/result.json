@@ -1,0 +1,119 @@
+{
+  "id": "md-12354-terra-overnight-01",
+  "report": {
+    "title": "Derelict Payload conveyors do not save current payload",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nrelease build 159.3\n\n### Issue\n\nderelict payload conveyors lose their current payload (blocks) after restarting the map or reloading the save\n\n(originally this was a suggestion to rework payload conveyors, but I decided to issue this as a bug instead)\n\n### Steps to reproduce\n\n1.) Place block on payload conveyor and make sure it's derelict\n2.) Save game\n3.) Load game\n4.) See results\n\n### Mods used\n\n_No response_\n\n### Save file\n\n[mindustry-data-export.zip](https://github.com/user-attachments/files/29970021/mindustry-data-export.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "2c066e9c8c7e153e4eb91d730ead02e9011edd75",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": "159.3",
+    "fixtures": []
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T16:38:57.245779+00:00",
+  "updated_at": "2026-09-14T18:27:21.539986+00:00",
+  "summary": "Could not complete a save/load reproduction. A new controlled editor map was created with a Sharded core, Payload Source, and Payload Conveyor, but no block payload was configured or observed on the conveyor, no Derelict conversion was completed, and no save/load transition was performed.",
+  "spec": {
+    "summary": "Reported loss of the current block payload from derelict payload conveyors after saving and then loading/restarting a map in Mindustry build 159.3.",
+    "bug_class": "Save/load state persistence",
+    "observed_behavior": "The reporter states that derelict payload conveyors lose their current payload (blocks) after restarting the map or reloading a save.",
+    "expected_behavior": "A block currently carried by a derelict payload conveyor should remain present after the relevant map restart or save reload, if that state is intended to persist.",
+    "known_preconditions": [
+      "Game: Mindustry.",
+      "Reported platform: Windows.",
+      "Reported build version: release build 159.3.",
+      "Target commit supplied: 2c066e9c8c7e153e4eb91d730ead02e9011edd75.",
+      "A payload conveyor is in a derelict state.",
+      "A block payload is placed on that conveyor.",
+      "A save/load action is performed.",
+      "Reporter supplied a linked archive named mindustry-data-export.zip."
+    ],
+    "uncertain_conditions": [
+      "Whether the behavior occurs specifically after loading a saved game, restarting a map, or both; the report groups these scenarios together.",
+      "Whether the conveyor must be naturally generated derelict terrain content versus a player-placed conveyor made derelict.",
+      "How the conveyor is made or confirmed to be derelict.",
+      "Which payload block types are affected and whether all block payloads reproduce the result.",
+      "Whether payload position, payload contents, conveyor configuration, nearby blocks, or map type affect reproduction.",
+      "Whether the issue reproduces without mods; the Mods used field received no response rather than an explicit no-mod confirmation.",
+      "Whether the supplied archive contains the affected save, map, configuration, and/or other relevant data.",
+      "Whether the target commit exactly corresponds to the reported release build 159.3.",
+      "Whether the behavior reproduces on Linux; Linux is only listed as planned evaluation, not as a reported affected platform.",
+      "Whether payload persistence for derelict conveyors is intended behavior; no authoritative expected behavior or specification was provided."
+    ],
+    "reproduction_hints": [
+      "On Windows using the reported build, create or open a map containing a derelict payload conveyor.",
+      "Place a block payload onto the conveyor and verify that it is currently carrying the payload before saving.",
+      "Save the game, then load that save and inspect the conveyor's payload.",
+      "Separately test a map restart/reload workflow, since the report does not distinguish it clearly from save loading.",
+      "If the supplied archive is available, inspect it for a save or map that preserves the reporter's setup."
+    ],
+    "required_artifacts": [
+      "The linked mindustry-data-export.zip archive, including confirmation of its contents and extraction status.",
+      "The exact affected save file and, if separate, the map file.",
+      "A minimal reproduction map or precise setup details for creating a derelict payload conveyor.",
+      "Game logs from the save and load session, if available.",
+      "Confirmation of the installed build identifier/version and whether it matches target commit 2c066e9c8c7e153e4eb91d730ead02e9011edd75.",
+      "A mod list or explicit confirmation that no mods were enabled.",
+      "Before/after screenshots or a video showing the payload on the conveyor before saving and absent after load.",
+      "Details of the exact reload path used: load save, restart map, return to menu and reload, or another workflow."
+    ],
+    "severity": "unknown",
+    "confidence": 0.84
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "A block payload carried by a derelict payload conveyor is not retained across a local save/load cycle.",
+      "prediction": "After visibly loading a payload onto a conveyor assigned to the Derelict team, saving, and loading that save, the same conveyor will be empty.",
+      "status": "inconclusive",
+      "observation": "I created a controlled editor map and placed a Sharded core, Payload Source, and Payload Conveyor, but the session time limit arrived before I could configure the source, visibly load a block payload, switch the conveyor to Derelict, and execute a save/load cycle."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "2c066e9c8c7e153e4eb91d730ead02e9011edd75": {
+      "commit_sha": "2c066e9c8c7e153e4eb91d730ead02e9011edd75",
+      "timestamp": "2026-09-14T18:17:37.773078+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12354-terra-overnight-01-a64d2c12918544ad5968-baseline-tests.log",
+      "log_sha256": "a64d2c12918544ad5968b3a76f5c0af74e5981731510bd82df7be55fc073f2dc",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 91,
+    "input_tokens": 5771192,
+    "output_tokens": 13457
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12354-terra-overnight-01-bec74275cd69c1d14d47-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 846.635062374,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12354",
+  "imported_from": null,
+  "case_id": "md-12354-terra-overnight-01"
+}

@@ -1,3 +1,5 @@
 # Preserve captured test output and patch context exactly as recorded.
 docs/evidence/**/*.txt -whitespace
 docs/evidence/**/*.patch -whitespace
+docs/evidence/**/*.log -whitespace
+*.pdf binary

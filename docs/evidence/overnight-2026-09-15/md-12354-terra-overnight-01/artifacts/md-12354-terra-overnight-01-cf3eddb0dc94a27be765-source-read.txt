@@ -1,0 +1,90 @@
+530: 
+531:         Call.transferItemTo(unit, item, accepted, unit.x, unit.y, build);
+532: 
+533:         Events.fire(new DepositEvent(build, player, item, accepted));
+534:     }
+535: 
+536:     @Remote(variants = Variant.one)
+537:     public static void removeQueueBlock(int x, int y, boolean breaking){
+538:         if(!player.dead()){
+539:             player.unit().removeBuild(x, y, breaking);
+540:         }
+541:     }
+542: 
+543:     @Remote(targets = Loc.both, called = Loc.server)
+544:     public static void requestUnitPayload(Player player, Unit target){
+545:         if(player == null || !(player.unit() instanceof Payloadc pay) || target == null) return;
+546: 
+547:         Unit unit = player.unit();
+548: 
+549:         if(target.isAI() && target.isGrounded() && pay.canPickup(target)
+550:         && target.within(unit, unit.type.hitSize * 2f + target.type.hitSize * 2f)){
+551:             Call.pickedUnitPayload(unit, target);
+552:         }
+553:     }
+554: 
+555:     @Remote(targets = Loc.both, called = Loc.server)
+556:     public static void requestBuildPayload(Player player, Building build){
+557:         if(player == null || !(player.unit() instanceof Payloadc pay) || build == null) return;
+558: 
+559:         Unit unit = player.unit();
+560: 
+561:         if(!unit.within(build, tilesize * build.block.size * 1.2f + tilesize * 5f)) return;
+562: 
+563:         if(net.server() && !netServer.admins.allowAction(player, ActionType.pickupBlock, build.tile, action -> {
+564:             action.unit = unit;
+565:         })){
+566:             throw new ValidateException(player, "Player cannot pick up a block.");
+567:         }
+568: 
+569:         if(state.teams.canInteract(unit.team, build.team)){
+570:             //pick up block's payload
+571:             Payload current = build.getPayload();
+572:             if(current != null && pay.canPickupPayload(current)){
+573:                 Call.pickedBuildPayload(unit, build, false);
+574:                 //pick up whole building directly
+575:             }else if(build.block.buildVisibility != BuildVisibility.hidden && build.canPickup() && pay.canPickup(build)){
+576:                 Call.pickedBuildPayload(unit, build, true);
+577:             }
+578:         }
+579:     }
+580: 
+581:     @Remote(targets = Loc.server, called = Loc.server)
+582:     public static void pickedUnitPayload(Unit unit, Unit target){
+583:         if(target != null && unit instanceof Payloadc pay){
+584:             pay.pickup(target);
+585:         }else if(target != null){
+586:             target.remove();
+587:         }
+588:     }
+589: 
+590:     @Remote(targets = Loc.server, called = Loc.server)
+591:     public static void pickedBuildPayload(Unit unit, Building build, boolean onGround){
+592:         if(build != null && unit instanceof Payloadc pay){
+593:             if(onGround){
+594:                 if(build.block.buildVisibility != BuildVisibility.hidden && build.canPickup() && pay.canPickup(build)){
+595:                     pay.pickup(build);
+596:                 }else{
+597:                     Fx.unitPickup.at(build);
+598:                     build.tile.remove();
+599:                 }
+600:             }else{
+601:                 Payload current = build.getPayload();
+602:                 if(current != null && pay.canPickupPayload(current)){
+603:                     Payload taken = build.takePayload();
+604:                     if(taken != null){
+605:                         pay.addPayload(taken);
+606:                         Fx.unitPickup.at(build);
+607:                     }
+608:                 }
+609:             }
+610: 
+611:         }else if(build != null && onGround){
+612:             Fx.unitPickup.at(build);
+613:             build.tile.remove();
+614:         }
+615:     }
+616: 
+617:     @Remote(targets = Loc.both, called = Loc.server)
+618:     public static void requestDropPayload(Player player, float x, float y){
+619:         if(player == null || net.client() || player.dead()) return;

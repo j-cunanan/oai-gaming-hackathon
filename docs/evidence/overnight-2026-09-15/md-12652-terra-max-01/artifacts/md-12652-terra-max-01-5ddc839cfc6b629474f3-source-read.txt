@@ -1,0 +1,240 @@
+390:                 playtestDialog.show(map, true);
+391:             }
+392:         }
+393:     }
+394: 
+395:     public @Nullable Map save(){
+396:         boolean isEditor = state.rules.editor;
+397:         state.rules.editor = false;
+398:         state.rules.allowEditRules = false;
+399:         state.rules.objectiveFlags.clear();
+400:         state.rules.objectives.each(MapObjective::reset);
+401:         state.stats = new GameStats();
+402:         String name = editor.tags.get("name", "").trim();
+403:         editor.tags.put("rules", JsonIO.write(state.rules));
+404:         editor.tags.remove("width");
+405:         editor.tags.remove("height");
+406: 
+407:         player.clearUnit();
+408: 
+409:         //remove player unit
+410:         Unit unit = Groups.unit.find(u -> u.spawnedByCore);
+411:         if(unit != null){
+412:             unit.remove();
+413:         }
+414: 
+415:         Map returned = null;
+416: 
+417:         if(name.isEmpty()){
+418:             infoDialog.show();
+419:             Core.app.post(() -> ui.showErrorMessage("@editor.save.noname"));
+420:         }else{
+421:             Map map = maps.all().find(m -> m.name().equalsIgnoreCase(name));
+422:             if(map != null && !map.custom && !map.workshop){
+423:                 handleSaveBuiltin(map);
+424:             }else{
+425:                 boolean workshop = false;
+426:                 //try to preserve Steam ID
+427:                 if(map != null && map.tags.containsKey("steamid")){
+428:                     editor.tags.put("steamid", map.tags.get("steamid"));
+429:                     workshop = true;
+430:                 }
+431:                 returned = maps.saveMap(editor.tags, false);
+432:                 if(workshop){
+433:                     returned.workshop = workshop;
+434:                 }
+435:                 ui.showInfoFade("@editor.saved");
+436:             }
+437:         }
+438: 
+439:         menu.hide();
+440:         saved = true;
+441:         state.rules.editor = isEditor;
+442:         return returned;
+443:     }
+444: 
+445:     /** Called when a built-in map save is attempted.*/
+446:     protected void handleSaveBuiltin(Map map){
+447:         ui.showErrorMessage("@editor.save.overwrite");
+448:     }
+449: 
+450:     /**
+451:      * Argument format:
+452:      * 0) button name
+453:      * 1) description
+454:      * 2) icon name
+455:      * 3) listener
+456:      */
+457:     private void createDialog(String title, Object... arguments){
+458:         BaseDialog dialog = new BaseDialog(title);
+459: 
+460:         float h = 90f;
+461: 
+462:         dialog.cont.defaults().size(360f, h).padBottom(5).padRight(5).padLeft(5);
+463: 
+464:         for(int i = 0; i < arguments.length; i += 4){
+465:             String name = (String)arguments[i];
+466:             String description = (String)arguments[i + 1];
+467:             Drawable iconname = (Drawable)arguments[i + 2];
+468:             Runnable listenable = (Runnable)arguments[i + 3];
+469: 
+470:             TextButton button = dialog.cont.button(name, () -> {
+471:                 listenable.run();
+472:                 dialog.hide();
+473:                 menu.hide();
+474:             }).left().margin(0).get();
+475: 
+476:             button.clearChildren();
+477:             button.image(iconname).padLeft(10);
+478:             button.table(t -> {
+479:                 t.add(name).growX().wrap();
+480:                 t.row();
+481:                 t.add(description).color(Color.gray).growX().wrap();
+482:             }).growX().pad(10f).padLeft(5);
+483: 
+484:             button.row();
+485: 
+486:             dialog.cont.row();
+487:         }
+488: 
+489:         dialog.addCloseButton();
+490:         dialog.show();
+491:     }
+492: 
+493:     @Override
+494:     public Dialog show(){
+495:         return super.show(Core.scene, Actions.sequence(Actions.alpha(1f)));
+496:     }
+497: 
+498:     @Override
+499:     public void hide(){
+500:         super.hide(Actions.sequence(Actions.alpha(0f)));
+501:     }
+502: 
+503:     @Override
+504:     public void dispose(){
+505:         editor.renderer.dispose();
+506:     }
+507: 
+508:     public void beginEditMap(Fi file){
+509:         ui.loadAnd(() -> {
+510:             try{
+511:                 shownWithMap = true;
+512:                 editor.beginEdit(MapIO.createMap(file, true));
+513:                 show();
+514:             }catch(Exception e){
+515:                 Log.err(e);
+516:                 ui.showException("@editor.errorload", e);
+517:             }
+518:         });
+519:     }
+520: 
+521:     public MapView getView(){
+522:         return view;
+523:     }
+524: 
+525:     public MapGenerateDialog getGenerateDialog(){
+526:         return generateDialog;
+527:     }
+528: 
+529:     public void resetSaved(){
+530:         saved = false;
+531:     }
+532: 
+533:     public boolean hasPane(){
+534:         return Core.scene.getScrollFocus() == pane || Core.scene.getKeyboardFocus() != this;
+535:     }
+536: 
+537:     public void build(){
+538:         float size = mobile ? 50f : 58f;
+539: 
+540:         clearChildren();
+541:         table(cont -> {
+542:             cont.left();
+543: 
+544:             cont.table(mid -> {
+545:                 mid.top();
+546: 
+547:                 Table tools = new Table().top();
+548: 
+549:                 ButtonGroup<ImageButton> group = new ButtonGroup<>();
+550:                 Table[] lastTable = {null};
+551: 
+552:                 Cons<EditorTool> addTool = tool -> {
+553: 
+554:                     ImageButton button = new ImageButton(ui.getIcon(tool.name()), Styles.squareTogglei);
+555:                     button.clicked(() -> {
+556:                         view.setTool(tool);
+557:                         if(lastTable[0] != null){
+558:                             lastTable[0].remove();
+559:                         }
+560:                     });
+561:                     button.update(() -> button.setChecked(view.getTool() == tool));
+562:                     group.add(button);
+563: 
+564:                     if(tool.altModes.length > 0){
+565:                         button.clicked(l -> {
+566:                             if(!mobile){
+567:                                 //desktop: rightclick
+568:                                 l.setButton(KeyCode.mouseRight);
+569:                             }
+570:                         }, e -> {
+571:                             //need to double tap
+572:                             if(mobile && e.getTapCount() < 2){
+573:                                 return;
+574:                             }
+575: 
+576:                             if(lastTable[0] != null){
+577:                                 lastTable[0].remove();
+578:                             }
+579: 
+580:                             Table table = new Table(Styles.black9);
+581:                             table.defaults().size(300f, 70f);
+582: 
+583:                             for(int i = 0; i < tool.altModes.length; i++){
+584:                                 int mode = i;
+585:                                 String name = tool.altModes[i];
+586: 
+587:                                 table.button(b -> {
+588:                                     b.left();
+589:                                     b.marginLeft(6);
+590:                                     b.setStyle(Styles.flatTogglet);
+591:                                     b.add(Core.bundle.get("toolmode." + name)).left();
+592:                                     b.row();
+593:                                     b.add(Core.bundle.get("toolmode." + name + ".description")).color(Color.lightGray).left();
+594:                                 }, () -> {
+595:                                     tool.mode = (tool.mode == mode ? -1 : mode);
+596:                                     table.remove();
+597:                                 }).update(b -> b.setChecked(tool.mode == mode));
+598:                                 table.row();
+599:                             }
+600: 
+601:                             table.update(() -> {
+602:                                 Vec2 v = button.localToStageCoordinates(Tmp.v1.setZero());
+603:                                 table.setPosition(v.x, v.y, Align.topLeft);
+604:                                 if(!isShown()){
+605:                                     table.remove();
+606:                                     lastTable[0] = null;
+607:                                 }
+608:                             });
+609: 
+610:                             table.pack();
+611:                             table.act(Core.graphics.getDeltaTime());
+612: 
+613:                             addChild(table);
+614:                             lastTable[0] = table;
+615:                         });
+616:                     }
+617: 
+618: 
+619:                     Label mode = new Label("");
+620:                     mode.setColor(Pal.remove);
+621:                     mode.update(() -> mode.setText(tool.mode == -1 ? "" : "M" + (tool.mode + 1) + " "));
+622:                     mode.setAlignment(Align.bottomRight, Align.bottomRight);
+623:                     mode.touchable = Touchable.disabled;
+624: 
+625:                     tools.stack(button, mode);
+626:                 };
+627: 
+628:                 tools.defaults().size(size, size);
+629: 

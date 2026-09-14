@@ -1,0 +1,190 @@
+1: package mindustry.editor;
+2: 
+3: import arc.*;
+4: import arc.files.*;
+5: import arc.func.*;
+6: import arc.graphics.*;
+7: import arc.graphics.g2d.*;
+8: import arc.input.*;
+9: import arc.math.*;
+10: import arc.math.geom.*;
+11: import arc.scene.actions.*;
+12: import arc.scene.event.*;
+13: import arc.scene.style.*;
+14: import arc.scene.ui.*;
+15: import arc.scene.ui.layout.*;
+16: import arc.struct.*;
+17: import arc.util.*;
+18: import mindustry.*;
+19: import mindustry.content.*;
+20: import mindustry.core.GameState.*;
+21: import mindustry.game.*;
+22: import mindustry.game.MapObjectives.*;
+23: import mindustry.game.Teams.*;
+24: import mindustry.gen.*;
+25: import mindustry.graphics.*;
+26: import mindustry.io.*;
+27: import mindustry.maps.*;
+28: import mindustry.ui.*;
+29: import mindustry.ui.dialogs.*;
+30: import mindustry.world.*;
+31: import mindustry.world.blocks.environment.*;
+32: import mindustry.world.blocks.storage.*;
+33: import mindustry.world.blocks.storage.CoreBlock.*;
+34: import mindustry.world.meta.*;
+35: 
+36: import static mindustry.Vars.*;
+37: 
+38: public class MapEditorDialog extends Dialog implements Disposable{
+39:     private MapView view;
+40:     private MapInfoDialog infoDialog;
+41:     private MapLoadDialog loadDialog;
+42:     private MapResizeDialog resizeDialog;
+43:     private MapGenerateDialog generateDialog;
+44:     private SectorGenerateDialog sectorGenDialog;
+45:     private MapPlayDialog playtestDialog;
+46:     private ScrollPane pane;
+47:     private BaseDialog menu;
+48:     private Table blockSelection;
+49:     private Rules lastSavedRules;
+50:     private boolean saved = false; //currently never read
+51:     private boolean shownWithMap = false;
+52:     private Seq<Block> blocksOut = new Seq<>();
+53: 
+54:     public MapEditorDialog(){
+55:         super("");
+56: 
+57:         background(Styles.black);
+58: 
+59:         view = new MapView();
+60:         infoDialog = new MapInfoDialog();
+61:         generateDialog = new MapGenerateDialog(true);
+62:         sectorGenDialog = new SectorGenerateDialog();
+63:         playtestDialog = new MapPlayDialog();
+64: 
+65:         menu = new BaseDialog("@menu");
+66:         menu.addCloseButton();
+67: 
+68:         float swidth = 180f;
+69: 
+70:         menu.cont.table(t -> {
+71:             t.defaults().size(swidth, 60f).padBottom(5).padRight(5).padLeft(5);
+72: 
+73:             t.button("@editor.savemap", Icon.save, this::save);
+74: 
+75:             t.button("@editor.mapinfo", Icon.pencil, () -> {
+76:                 infoDialog.show();
+77:                 menu.hide();
+78:             });
+79: 
+80:             t.row();
+81: 
+82:             t.button("@editor.generate", Icon.terrain, () -> {
+83:                 generateDialog.show(generateDialog::applyToEditor);
+84:                 menu.hide();
+85:             });
+86: 
+87:             t.button("@editor.resize", Icon.resize, () -> {
+88:                 resizeDialog.show();
+89:                 menu.hide();
+90:             });
+91: 
+92:             t.row();
+93: 
+94:             t.button("@editor.import", Icon.download, () -> createDialog("@editor.import",
+95:                 "@editor.importmap", "@editor.importmap.description", Icon.download, (Runnable)loadDialog::show,
+96:                 "@editor.importfile", "@editor.importfile.description", Icon.file, (Runnable)() ->
+97:                 FileChooser.open(mapExtension).submit(file -> ui.loadAnd(() -> {
+98:                     maps.tryCatchMapError(() -> {
+99:                         if(MapIO.isImage(file)){
+100:                             ui.showInfo("@editor.errorimage");
+101:                         }else{
+102:                             editor.beginEdit(MapIO.createMap(file, true));
+103:                         }
+104:                     });
+105:                 })),
+106: 
+107:                 "@editor.importimage", "@editor.importimage.description", Icon.fileImage, (Runnable)() ->
+108:                 FileChooser.open("png").submit(file ->
+109:                 ui.loadAnd(() -> {
+110:                     try{
+111:                         Pixmap pixmap = new Pixmap(file);
+112:                         //if you want to bypass the limit, use mods or the console; larger maps are not supported
+113:                         if(pixmap.width > MapResizeDialog.maxSize || pixmap.height > MapResizeDialog.maxSize){
+114:                             throw new Exception("Image is too large (maximum size is " + MapResizeDialog.maxSize + "x" + MapResizeDialog.maxSize + ")");
+115:                         }
+116:                         editor.beginEdit(pixmap);
+117:                         pixmap.dispose();
+118:                     }catch(Exception e){
+119:                         ui.showException("@editor.errorload", e);
+120:                         Log.err(e);
+121:                     }
+122:                 })))
+123:             );
+124: 
+125:             t.button("@editor.export", Icon.upload, () -> createDialog("@editor.export",
+126:             "@editor.exportfile", "@editor.exportfile.description", Icon.file,
+127:                 (Runnable)() -> FileChooser.export(editor.tags.get("name", "unknown"), mapExtension, file -> MapIO.writeMap(file, editor.createMap(file))),
+128:             "@editor.exportimage", "@editor.exportimage.description", Icon.fileImage,
+129:                 (Runnable)() -> FileChooser.export(editor.tags.get("name", "unknown"), "png", file -> {
+130:                     Pixmap out = MapIO.writeImage(editor.tiles());
+131:                     file.writePng(out);
+132:                     out.dispose();
+133:                 })));
+134: 
+135:             t.row();
+136: 
+137:             t.button("@editor.ingame", Icon.right, this::editInGame);
+138: 
+139:             t.button("@editor.playtest", Icon.play, this::playtest);
+140:         });
+141: 
+142:         menu.cont.row();
+143: 
+144:         if(steam){
+145:             menu.cont.button("@editor.publish.workshop", Icon.link, () -> {
+146:                 Map builtin = maps.all().find(m -> m.name().equals(editor.tags.get("name", "").trim()));
+147: 
+148:                 if(editor.tags.containsKey("steamid") && builtin != null && !builtin.custom){
+149:                     platform.viewListingID(editor.tags.get("steamid"));
+150:                     return;
+151:                 }
+152: 
+153:                 Map map = save();
+154: 
+155:                 if(editor.tags.containsKey("steamid") && map != null){
+156:                     platform.viewListing(map);
+157:                     return;
+158:                 }
+159: 
+160:                 if(map == null) return;
+161: 
+162:                 if(map.tags.get("description", "").length() < 4){
+163:                     ui.showErrorMessage("@editor.nodescription");
+164:                     return;
+165:                 }
+166: 
+167:                 if(!Structs.contains(Gamemode.all, g -> g.valid(map))){
+168:                     ui.showErrorMessage("@map.nospawn");
+169:                     return;
+170:                 }
+171: 
+172:                 platform.publish(map);
+173:             }).padTop(-3).size(swidth * 2f + 10, 60f).update(b ->
+174:                 b.setText(editor.tags.containsKey("steamid") ?
+175:                     editor.tags.get("author", "").equals(steamPlayerName) ? "@workshop.listing" : "@view.workshop" :
+176:                 "@editor.publish.workshop"));
+177: 
+178:             menu.cont.row();
+179:         }
+180: 
+181:         menu.cont.button("@editor.sectorgenerate", Icon.terrain, () -> {
+182:             menu.hide();
+183:             sectorGenDialog.show();
+184:         }).padTop(!steam ? -3 : 1).size(swidth * 2f + 10, 60f);
+185: 
+186:         menu.cont.row();
+187: 
+188:         //this is gated behind a property, because it's (1) not useful to most people, (2) confusing and (3) may crash or otherwise bug out
+189:         if(OS.hasProp("mindustry.editor.simulate.button")){
+190: 

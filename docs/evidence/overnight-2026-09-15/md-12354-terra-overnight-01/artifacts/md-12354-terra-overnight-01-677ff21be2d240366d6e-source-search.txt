@@ -1,0 +1,11 @@
+./core/src/mindustry/entities/comp/BuildingComp.java:136:        checkAllowUpdate();
+./core/src/mindustry/entities/comp/BuildingComp.java:628:    public boolean allowUpdate(){
+./core/src/mindustry/entities/comp/BuildingComp.java:1841:        checkAllowUpdate();
+./core/src/mindustry/entities/comp/BuildingComp.java:2259:    public void checkAllowUpdate(){
+./core/src/mindustry/entities/comp/BuildingComp.java:2260:        if(!allowUpdate()){
+./core/src/mindustry/editor/MapEditorDialog.java:215:                            if(t.build != null && t.isCenter() && t.block().update && t.build.allowUpdate()){
+./core/src/mindustry/core/World.java:50:                build.checkAllowUpdate();
+./core/src/mindustry/core/World.java:473:                build.checkAllowUpdate();
+./core/src/mindustry/world/Build.java:103:            tile.build.checkAllowUpdate();
+./core/src/mindustry/world/blocks/sandbox/PowerSource.java:23:            if(!allowUpdate()){
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:463:            if(!allowUpdate()){

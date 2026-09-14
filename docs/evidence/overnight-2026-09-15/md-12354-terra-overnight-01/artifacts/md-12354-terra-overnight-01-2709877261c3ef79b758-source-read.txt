@@ -1,0 +1,100 @@
+245:         }
+246: 
+247:         if((moduleBits & 1) != 0) (items == null ? new ItemModule() : items).read(read, legacy);
+248:         if((moduleBits & (1 << 1)) != 0) (power == null ? new PowerModule() : power).read(read, legacy);
+249:         if((moduleBits & (1 << 2)) != 0) (liquids == null ? new LiquidModule() : liquids).read(read, legacy);
+250:         //1 << 3 is skipped (old consume module)
+251:         if((moduleBits & (1 << 4)) != 0){
+252:             timeScale = read.f();
+253:             timeScaleDuration = read.f();
+254:         }
+255:         if((moduleBits & (1 << 5)) != 0){
+256:             lastDisabler = world.build(read.i());
+257:         }
+258: 
+259:         //unnecessary consume module read in version 2 and below
+260:         if(version <= 2) read.bool();
+261: 
+262:         //version 3 has efficiency numbers instead of bools
+263:         if(version >= 3){
+264:             efficiency = potentialEfficiency = read.ub() / 255f;
+265:             optionalEfficiency = read.ub() / 255f;
+266:         }
+267: 
+268:         //version 4 has visibility flags
+269:         if(version == 4){
+270:             visibleFlags = read.l();
+271:         }
+272:     }
+273: 
+274:     public int moduleBitmask(){
+275:         return
+276:         (items != null ? 1 : 0) |
+277:         (power != null ? 1 << 1 : 0) |
+278:         (liquids != null ? 1 << 2 : 0) |
+279:         1 << 3 | //old consume module
+280:         (timeScale != 1f ? 1 << 4 : 0) |
+281:         (lastDisabler != null && lastDisabler.isValid() ? 1 << 5 : 0);
+282:     }
+283: 
+284:     public void writeAll(Writes write){
+285:         writeBase(write);
+286:         write(write);
+287:     }
+288: 
+289:     public void readAll(Reads read, byte revision){
+290:         readBase(read);
+291:         read(read, revision);
+292:     }
+293: 
+294:     public void writeSync(Writes write){
+295:         writeAll(write);
+296:     }
+297: 
+298:     public void readSync(Reads read, byte revision){
+299:         readAll(read, revision);
+300:     }
+301: 
+302:     @CallSuper
+303:     public void write(Writes write){
+304:         //overriden by subclasses!
+305:     }
+306: 
+307:     @CallSuper
+308:     public void read(Reads read, byte revision){
+309:         //overriden by subclasses!
+310:     }
+311: 
+312:     //endregion
+313:     //region utility methods
+314: 
+315:     public boolean isDiscovered(Team viewer){
+316:         if(state.rules.limitMapArea && world.getDarkness(tile.x, tile.y) >= 3){
+317:             return false;
+318:         }
+319: 
+320:         if(viewer == null || !state.rules.staticFog || !state.rules.fog){
+321:             return true;
+322:         }
+323:         if(block.size <= 2){
+324:             return fogControl.isDiscovered(viewer, tile.x, tile.y);
+325:         }else{
+326:             int s = block.size / 2;
+327:             return fogControl.isDiscovered(viewer, tile.x, tile.y) ||
+328:                 fogControl.isDiscovered(viewer, tile.x - s, tile.y - s) ||
+329:                 fogControl.isDiscovered(viewer, tile.x - s, tile.y + s) ||
+330:                 fogControl.isDiscovered(viewer, tile.x + s, tile.y + s) ||
+331:                 fogControl.isDiscovered(viewer, tile.x + s, tile.y - s);
+332:         }
+333:     }
+334: 
+335:     public void addPlan(boolean checkPrevious){
+336:         addPlan(checkPrevious, false);
+337:     }
+338: 
+339:     public void addPlan(boolean checkPrevious, boolean ignoreConditions){
+340:         if(!ignoreConditions && (!block.rebuildable || (team == state.rules.defaultTeam && state.isCampaign() && !block.isVisible()))) return;
+341: 
+342:         Object overrideConfig = null;
+343:         Block toAdd = this.block;
+344: 

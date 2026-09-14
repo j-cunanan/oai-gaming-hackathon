@@ -1,0 +1,110 @@
+620:         }
+621: 
+622:         @Override
+623:         public boolean canPickup(){
+624:             //cores can never be picked up
+625:             return false;
+626:         }
+627: 
+628:         @Override
+629:         public void onDestroyed(){
+630:             if(state.rules.coreCapture){
+631:                 //just create an explosion, no fire. this prevents immediate recapture
+632:                 Damage.dynamicExplosion(x, y, 0, 0, 0, tilesize * block.size / 2f, state.rules.damageExplosions);
+633:                 Fx.commandSend.at(x, y, 140f);
+634: 
+635:                 //make sure the sound still plays
+636:                 if(!headless){
+637:                     playDestroySound();
+638:                 }
+639:             }else{
+640:                 super.onDestroyed();
+641:             }
+642: 
+643:             Effect.shockwaveDust(x, y, 40f + block.size * tilesize, 0.5f);
+644:             Fx.coreExplosion.at(x, y, team.color);
+645: 
+646:             //add a spawn to the map for future reference - waves should be disabled, so it shouldn't matter
+647:             if(state.isCampaign() && team == state.rules.waveTeam && team.cores().size <= 1 && spawner.getSpawns().size == 0 && state.rules.sector.planet.enemyCoreSpawnReplace){
+648:                 //do not recache
+649:                 tile.setOverlayQuiet(Blocks.spawn);
+650: 
+651:                 if(!spawner.getSpawns().contains(tile)){
+652:                     spawner.getSpawns().add(tile);
+653:                 }
+654:             }
+655: 
+656:             Events.fire(new CoreChangeEvent(this));
+657:         }
+658: 
+659:         @Override
+660:         public void playDestroySound(){
+661:             if(team.data().cores.size <= 1 && player != null && player.team() == team && state.rules.canGameOver){
+662:                 //play at full volume when doing a game over
+663:                 block.destroySound.play(block.destroySoundVolume * Core.audio.sfxVolume, Mathf.random(block.destroyPitchMin, block.destroyPitchMax), 0f);
+664:             }else{
+665:                 super.playDestroySound();
+666:             }
+667:         }
+668: 
+669:         @Override
+670:         public void afterDestroyed(){
+671:             super.afterDestroyed();
+672:             if(state.rules.coreCapture){
+673:                 if(!net.client()){
+674:                     tile.setBlock(block, lastDamage);
+675: 
+676:                     //core is invincible for several seconds to prevent recapture
+677:                     ((CoreBuild)tile.build).iframes = captureInvicibility;
+678: 
+679:                     if(net.server()){
+680:                         //delay so clients don't destroy it afterwards
+681:                         Time.run(0f, () -> {
+682:                             tile.setNet(block, lastDamage, 0);
+683:                         });
+684:                     }
+685:                 }
+686:             }
+687:         }
+688: 
+689:         @Override
+690:         public void drawLight(){
+691:             Drawf.light(x, y, lightRadius, Pal.accent, 0.65f + Mathf.absin(20f, 0.1f));
+692:         }
+693: 
+694:         @Override
+695:         public boolean acceptItem(Building source, Item item){
+696:             return state.rules.coreIncinerates || items.get(item) < getMaximumAccepted(item);
+697:         }
+698: 
+699:         @Override
+700:         public int getMaximumAccepted(Item item){
+701:             return state.rules.coreIncinerates ? Integer.MAX_VALUE/2 : storageCapacity;
+702:         }
+703: 
+704:         @Override
+705:         public void onProximityUpdate(){
+706:             super.onProximityUpdate();
+707: 
+708:             for(Building other : state.teams.cores(team)){
+709:                 if(other.tile != tile){
+710:                     this.items = other.items;
+711:                 }
+712:             }
+713:             state.teams.registerCore(this);
+714: 
+715:             storageCapacity = itemCapacity + proximity.sum(e -> owns(e) ? e.block.itemCapacity : 0);
+716:             proximity.each(this::owns, t -> {
+717:                 t.items = items;
+718:                 ((StorageBuild)t).linkedCore = this;
+719:             });
+720: 
+721:             for(Building other : state.teams.cores(team)){
+722:                 if(other.tile == tile) continue;
+723:                 storageCapacity += other.block.itemCapacity + other.proximity.sum(e -> owns(other, e) ? e.block.itemCapacity : 0);
+724:             }
+725: 
+726:             if(!world.isGenerating()){
+727:                 for(Item item : content.items()){
+728:                     items.set(item, Math.min(items.get(item), storageCapacity));
+729:                 }

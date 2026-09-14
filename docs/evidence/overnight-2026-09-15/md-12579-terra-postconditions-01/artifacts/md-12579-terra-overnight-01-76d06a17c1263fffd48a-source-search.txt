@@ -1,0 +1,22 @@
+./core/src/mindustry/editor/MapView.java:21:    EditorTool tool = EditorTool.zoom;
+./core/src/mindustry/editor/MapView.java:34:    EditorTool lastTool;
+./core/src/mindustry/editor/MapView.java:77:                    tool = EditorTool.eraser;
+./core/src/mindustry/editor/MapView.java:82:                    tool = EditorTool.zoom;
+./core/src/mindustry/editor/MapView.java:114:                if(tool == EditorTool.line){
+./core/src/mindustry/editor/MapView.java:140:                if(tool == EditorTool.line && tool.mode == 1){
+./core/src/mindustry/editor/MapView.java:156:    public EditorTool getTool(){
+./core/src/mindustry/editor/MapView.java:160:    public void setTool(EditorTool tool){
+./core/src/mindustry/editor/MapEditorDialog.java:552:                Cons<EditorTool> addTool = tool -> {
+./core/src/mindustry/editor/MapEditorDialog.java:634:                addTool.get(EditorTool.zoom);
+./core/src/mindustry/editor/MapEditorDialog.java:641:                addTool.get(EditorTool.pick);
+./core/src/mindustry/editor/MapEditorDialog.java:652:                addTool.get(EditorTool.line);
+./core/src/mindustry/editor/MapEditorDialog.java:653:                addTool.get(EditorTool.pencil);
+./core/src/mindustry/editor/MapEditorDialog.java:654:                addTool.get(EditorTool.eraser);
+./core/src/mindustry/editor/MapEditorDialog.java:658:                addTool.get(EditorTool.fill);
+./core/src/mindustry/editor/MapEditorDialog.java:659:                addTool.get(EditorTool.spray);
+./core/src/mindustry/editor/EditorTool.java:17:public enum EditorTool{
+./core/src/mindustry/editor/EditorTool.java:323:    public static final EditorTool[] all = values();
+./core/src/mindustry/editor/EditorTool.java:336:    EditorTool(){
+./core/src/mindustry/editor/EditorTool.java:340:    EditorTool(KeyCode code){
+./core/src/mindustry/editor/EditorTool.java:345:    EditorTool(String... altModes){
+./core/src/mindustry/editor/EditorTool.java:349:    EditorTool(KeyCode code, String... altModes){

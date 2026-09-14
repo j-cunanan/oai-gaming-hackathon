@@ -1,0 +1,8 @@
+{
+  "explanation": "Cause: `unitTeam` is declared without an initial value (line 91) and is normally defaulted from the building team only in `updateTile()` (line 107). `write()` can run before that update, but line 271 unconditionally reads `unitTeam.id`, causing the reported null-pointer crash while saving a newly placed Target Dummy.\n\nThe changed serialization line writes the building's `team.id` when `unitTeam` has not yet been initialized; otherwise it writes the explicitly selected dummy team exactly as before. The building team is the same default `updateTile()` would assign, so the saved value preserves the intended default and lets the map save complete rather than leaving a partial output.\n\nThis is a one-line, local serialization guard. It keeps the existing save format (one integer in the same position), so no map format/version change is required. Validation should run the existing replay and also verify both a newly placed default dummy and a dummy configured to another team save and reload with their expected teams.",
+  "risks": [
+    "This relies on `team` being initialized for a building being serialized. That is the existing default source used in `updateTile()` and should hold for placed map buildings, but malformed manually constructed objects are not addressed.",
+    "The patch prevents this specific write-time null dereference; it does not establish the exact cause of any already-corrupted map load failure. Previously interrupted/truncated map files may remain unreadable and should be regenerated.",
+    "Other pre-update code paths that dereference `unitTeam` (for example configuration UI) are intentionally unchanged because the confirmed regression is the serialization crash."
+  ]
+}

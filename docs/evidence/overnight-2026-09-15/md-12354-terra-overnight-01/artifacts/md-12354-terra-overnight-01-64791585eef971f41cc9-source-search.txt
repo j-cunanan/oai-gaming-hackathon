@@ -1,0 +1,7 @@
+./core/src/mindustry/ai/RtsAI.java:352:        float timeDestroyOther = Mathf.zero(selfDps, 0.001f) ? Float.POSITIVE_INFINITY : hp / selfDps;
+./core/src/mindustry/ai/RtsAI.java:353:        float timeDestroySelf = Mathf.zero(dp) ? Float.POSITIVE_INFINITY : selfHealth / dp;
+./core/src/mindustry/ai/RtsAI.java:356:        if(Float.isInfinite(timeDestroyOther) || Mathf.zero(timeDestroySelf)) return 0f;
+./core/src/mindustry/ai/RtsAI.java:358:        if(Float.isInfinite(timeDestroySelf) || Mathf.zero(timeDestroyOther)) return 100000f;
+./core/src/mindustry/ai/RtsAI.java:363:        return timeDestroySelf / timeDestroyOther;
+./core/src/mindustry/game/Teams.java:362:        public void timeDestroy(float x, float y, float range){
+./core/src/mindustry/core/Logic.java:176:                Core.app.post(() -> core.team.data().timeDestroy(core.x, core.y, state.rules.enemyCoreBuildRadius));

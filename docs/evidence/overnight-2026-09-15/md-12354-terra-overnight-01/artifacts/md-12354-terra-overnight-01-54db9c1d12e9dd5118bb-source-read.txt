@@ -1,0 +1,165 @@
+300:                 editor.beginEdit(200, 200);
+301:             }
+302:             shownWithMap = false;
+303: 
+304:             Time.runTask(10f, platform::updateRPC);
+305:         });
+306: 
+307:         hidden(() -> {
+308:             editor.clearOp();
+309:             platform.updateRPC();
+310:             if(!Core.settings.getBool("landscape")) platform.endForceLandscape();
+311:         });
+312: 
+313:         shown(this::build);
+314:     }
+315: 
+316:     public void resumeEditing(){
+317:         state.set(State.menu);
+318:         shownWithMap = true;
+319:         show();
+320:         state.rules = (lastSavedRules == null ? new Rules() : lastSavedRules);
+321:         lastSavedRules = null;
+322:         saved = false;
+323:         editor.renderer.recache();
+324:     }
+325: 
+326:     private void editInGame(){
+327:         menu.hide();
+328:         ui.loadAnd(() -> {
+329:             lastSavedRules = state.rules;
+330:             hide();
+331:             //only reset the player; logic.reset() will clear entities, which we do not want
+332:             state.teams = new Teams();
+333:             player.reset();
+334:             state.rules = Gamemode.editor.apply(lastSavedRules.copy());
+335:             state.rules.limitMapArea = false;
+336:             state.rules.sector = null;
+337:             state.rules.fog = false;
+338:             state.map = new Map(StringMap.of(
+339:                 "name", "Editor Playtesting",
+340:                 "width", editor.width(),
+341:                 "height", editor.height()
+342:             ));
+343:             state.set(State.playing);
+344:             world.endMapLoad();
+345:             player.clearUnit();
+346: 
+347:             for(var unit : Groups.unit){
+348:                 if(unit.spawnedByCore){
+349:                     unit.remove();
+350:                 }
+351:             }
+352: 
+353:             Groups.weather.clear();
+354:             logic.play();
+355: 
+356:             Point2 center = view.project(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f);
+357: 
+358:             CoreBuild best = player.bestCore();
+359: 
+360:             player.set(center.x * tilesize, center.y * tilesize);
+361:             var unit = (best != null ? ((CoreBlock)best.block).unitType : (state.rules.hasEnv(Env.scorching) ? UnitTypes.evoke : UnitTypes.alpha)).spawn(editor.drawTeam, player.x, player.y);
+362:             unit.spawnedByCore = true;
+363:             player.unit(unit);
+364:             player.set(unit);
+365: 
+366:             Core.camera.position.set(unit.x, unit.y);
+367:         });
+368:     }
+369: 
+370:     public void resumeAfterPlaytest(Map map){
+371:         beginEditMap(map.file);
+372:     }
+373: 
+374:     private void playtest(){
+375:         menu.hide();
+376:         Map map = save();
+377: 
+378:         if(map != null){
+379:             //skip dialog, play immediately when shift clicked
+380:             if(Core.input.shift()){
+381:                 hide();
+382:                 //auto pick best fit
+383:                 control.playMap(map, map.applyRules(
+384:                     Gamemode.survival.valid(map) ? Gamemode.survival :
+385:                     Gamemode.attack.valid(map) ? Gamemode.attack :
+386:                     Gamemode.sandbox), true
+387:                 );
+388:             }else{
+389:                 playtestDialog.playListener = this::hide;
+390:                 playtestDialog.show(map, true);
+391:             }
+392:         }
+393:     }
+394: 
+395:     public @Nullable Map save(){
+396:         boolean isEditor = state.rules.editor;
+397:         state.rules.editor = false;
+398:         state.rules.allowEditRules = false;
+399:         state.rules.objectiveFlags.clear();
+400:         state.rules.objectives.each(MapObjective::reset);
+401:         state.stats = new GameStats();
+402:         String name = editor.tags.get("name", "").trim();
+403:         editor.tags.put("rules", JsonIO.write(state.rules));
+404:         editor.tags.remove("width");
+405:         editor.tags.remove("height");
+406: 
+407:         player.clearUnit();
+408: 
+409:         //remove player unit
+410:         Unit unit = Groups.unit.find(u -> u.spawnedByCore);
+411:         if(unit != null){
+412:             unit.remove();
+413:         }
+414: 
+415:         Map returned = null;
+416: 
+417:         if(name.isEmpty()){
+418:             infoDialog.show();
+419:             Core.app.post(() -> ui.showErrorMessage("@editor.save.noname"));
+420:         }else{
+421:             Map map = maps.all().find(m -> m.name().equalsIgnoreCase(name));
+422:             if(map != null && !map.custom && !map.workshop){
+423:                 handleSaveBuiltin(map);
+424:             }else{
+425:                 boolean workshop = false;
+426:                 //try to preserve Steam ID
+427:                 if(map != null && map.tags.containsKey("steamid")){
+428:                     editor.tags.put("steamid", map.tags.get("steamid"));
+429:                     workshop = true;
+430:                 }
+431:                 returned = maps.saveMap(editor.tags, false);
+432:                 if(workshop){
+433:                     returned.workshop = workshop;
+434:                 }
+435:                 ui.showInfoFade("@editor.saved");
+436:             }
+437:         }
+438: 
+439:         menu.hide();
+440:         saved = true;
+441:         state.rules.editor = isEditor;
+442:         return returned;
+443:     }
+444: 
+445:     /** Called when a built-in map save is attempted.*/
+446:     protected void handleSaveBuiltin(Map map){
+447:         ui.showErrorMessage("@editor.save.overwrite");
+448:     }
+449: 
+450:     /**
+451:      * Argument format:
+452:      * 0) button name
+453:      * 1) description
+454:      * 2) icon name
+455:      * 3) listener
+456:      */
+457:     private void createDialog(String title, Object... arguments){
+458:         BaseDialog dialog = new BaseDialog(title);
+459: 
+460:         float h = 90f;
+461: 
+462:         dialog.cont.defaults().size(360f, h).padBottom(5).padRight(5).padLeft(5);
+463: 
+464:         for(int i = 0; i < arguments.length; i += 4){

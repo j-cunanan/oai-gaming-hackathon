@@ -1,0 +1,55 @@
+150:                     world.tiles.eachTile(t -> {
+151:                         Floor result = map[t.floor().id];
+152:                         if(result != null){
+153:                             t.setFloor(result);
+154:                         }
+155:                     });
+156:                 }
+157:             }
+158: 
+159:             if(!net.client() && e.sector.planet.generator != null){
+160:                 e.sector.planet.generator.onSectorCaptured(e.sector);
+161:             }
+162: 
+163:             if(checkCampaignStats()){
+164:                 state.getPlanet().stats().sectorsCaptured ++;
+165:             }
+166:         });
+167: 
+168:         Events.on(SectorLoseEvent.class, e -> {
+169:             if(!net.client() && e.sector.planet.generator != null){
+170:                 e.sector.planet.generator.onSectorLost(e.sector);
+171:             }
+172:         });
+173: 
+174:         Events.on(BlockDestroyEvent.class, e -> {
+175:             if(e.tile.build instanceof CoreBuild core && core.team.isAI() && state.rules.coreDestroyClear){
+176:                 Core.app.post(() -> core.team.data().timeDestroy(core.x, core.y, state.rules.enemyCoreBuildRadius));
+177:             }
+178:         });
+179: 
+180:         //listen to core changes; if all cores have been destroyed, set to derelict.
+181:         Events.on(CoreChangeEvent.class, e -> Core.app.post(() -> {
+182:             if(state.rules.cleanupDeadTeams && state.rules.pvp && !e.core.isAdded() && e.core.team != Team.derelict && e.core.team.cores().isEmpty()){
+183:                 e.core.team.data().destroyToDerelict();
+184:             }
+185:         }));
+186: 
+187:         Events.on(BlockBuildEndEvent.class, e -> {
+188: 
+189:             if((e.team == state.rules.defaultTeam || e.unit != null && e.unit.team == state.rules.defaultTeam)){
+190:                 if(e.breaking){
+191:                     state.stats.buildingsDeconstructed++;
+192:                 }else{
+193:                     state.stats.buildingsBuilt++;
+194:                 }
+195: 
+196:                 if(checkCampaignStats()){
+197:                     (e.breaking ? state.getPlanet().stats().buildingsDeconstructed : state.getPlanet().stats().buildingsBuilt).increment(e.tile.block());
+198:                 }
+199:             }
+200:         });
+201: 
+202:         Events.on(BlockDestroyEvent.class, e -> {
+203:             if(e.tile.team() == state.rules.defaultTeam){
+204:                 state.stats.buildingsDestroyed ++;

@@ -1,0 +1,156 @@
+235:             for(int i = 0; i < 4; i++){
+236:                 if(blends(i) && i != rotation){
+237:                     Draw.alpha(1f - Interp.pow5In.apply(fract()));
+238:                     //prev from back
+239:                     Tmp.v1.set(widthPrev, heightPrev).rotate(i * 90 + 180);
+240:                     Draw.rect(clipped, x + Tmp.v1.x, y + Tmp.v1.y, i * 90 + 180);
+241:                 }
+242:             }
+243: 
+244:             Draw.reset();
+245: 
+246:             for(int i = 0; i < 4; i++){
+247:                 if(!blends(i)){
+248:                     Draw.rect(edgeRegion, x, y, i * 90);
+249:                 }
+250:             }
+251: 
+252:             Draw.z(Layer.blockOver);
+253: 
+254:             if(item != null){
+255:                 item.draw();
+256:             }
+257:         }
+258: 
+259:         @Override
+260:         public void payloadDraw(){
+261:             Draw.rect(block.fullIcon,x, y);
+262:         }
+263: 
+264:         public float time(){
+265:             return Time.time;
+266:         }
+267: 
+268:         @Override
+269:         public void unitOn(Unit unit){
+270:             if(!pushUnits || !enabled || (lastInterp == 0f)) return;
+271: 
+272:             //calculate derivative of units moved last frame
+273:             float delta = (curInterp - lastInterp) * size * tilesize;
+274:             Tmp.v1.trns(rotdeg(), delta * moveForce).scl(1f / Math.max(unit.mass(), 201f));
+275:             unit.move(Tmp.v1.x, Tmp.v1.y);
+276:         }
+277: 
+278:         @Override
+279:         public boolean acceptPayload(Building source, Payload payload){
+280:             return this.item == null
+281:                 && payload.fits(payloadLimit)
+282:                 && (source == this || this.enabled && progress <= 5f);
+283:         }
+284: 
+285:         @Override
+286:         public void handlePayload(Building source, Payload payload){
+287:             this.item = payload;
+288:             this.stepAccepted = curStep();
+289:             this.itemRotation = source == this ? rotdeg() : source.angleTo(this);
+290:             this.animation = 0;
+291: 
+292:             updatePayload();
+293:         }
+294: 
+295:         @Override
+296:         public double sense(Content content){
+297:             if(item instanceof UnitPayload up && up.unit.type == content) return 1;
+298:             if(item instanceof BuildPayload bp && bp.build.block == content) return 1;
+299:             return super.sense(content);
+300:         }
+301: 
+302:         @Override
+303:         public void onRemoved(){
+304:             super.onRemoved();
+305:             if(item != null) item.dump();
+306:         }
+307: 
+308:         @Override
+309:         public void write(Writes write){
+310:             super.write(write);
+311: 
+312:             write.f(progress);
+313:             write.f(itemRotation);
+314:             Payload.write(item, write);
+315:         }
+316: 
+317:         @Override
+318:         public void read(Reads read, byte revision){
+319:             super.read(read, revision);
+320: 
+321:             read.f(); //why is progress written?
+322:             itemRotation = read.f();
+323:             item = Payload.read(read);
+324:         }
+325: 
+326:         public void updatePayload(){
+327:             if(item != null){
+328:                 if(animation > fract()){
+329:                     animation = Mathf.lerp(animation, 0.8f, 0.15f);
+330:                 }
+331: 
+332:                 animation = Math.max(animation, fract());
+333: 
+334:                 float fract = animation;
+335:                 float rot = Mathf.slerp(itemRotation, rotdeg(), fract);
+336: 
+337:                 if(fract < 0.5f){
+338:                     Tmp.v1.trns(itemRotation + 180, (0.5f - fract) * tilesize * size);
+339:                 }else{
+340:                     Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
+341:                 }
+342: 
+343:                 float vx = Tmp.v1.x, vy = Tmp.v1.y;
+344: 
+345:                 item.set(x + vx, y + vy, rot);
+346:             }
+347:         }
+348: 
+349:         protected boolean blends(int direction){
+350:             if(direction == rotation){
+351:                 return !blocked || next != null;
+352:             }
+353:             return PayloadBlock.blends(this, direction);
+354:         }
+355: 
+356:         protected TextureRegion clipRegion(Rect bounds, Rect sprite, TextureRegion region){
+357:             Rect over = Tmp.r3;
+358: 
+359:             boolean overlaps = Intersector.intersectRectangles(bounds, sprite, over);
+360: 
+361:             TextureRegion out = Tmp.tr1;
+362:             out.set(region.texture);
+363:             out.scale = region.scale;
+364: 
+365:             if(overlaps){
+366:                 float w = region.u2 - region.u;
+367:                 float h = region.v2 - region.v;
+368:                 float x = region.u, y = region.v;
+369:                 float newX = (over.x - sprite.x) / sprite.width * w + x;
+370:                 float newY = (over.y - sprite.y) / sprite.height * h + y;
+371:                 float newW = (over.width / sprite.width) * w, newH = (over.height / sprite.height) * h;
+372: 
+373:                 out.set(newX, newY, newX + newW, newY + newH);
+374:             }else{
+375:                 out.set(0f, 0f, 0f, 0f);
+376:             }
+377: 
+378:             return out;
+379:         }
+380: 
+381:         public int curStep(){
+382:             return (int)((time()) / moveTime);
+383:         }
+384: 
+385:         public float fract(){
+386:             return interp.apply(progress / moveTime);
+387:         }
+388:     }
+389: 
+390: }

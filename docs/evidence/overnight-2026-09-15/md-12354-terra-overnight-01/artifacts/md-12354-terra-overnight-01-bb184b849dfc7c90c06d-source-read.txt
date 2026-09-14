@@ -1,0 +1,160 @@
+1: package mindustry.io;
+2: 
+3: import arc.files.*;
+4: import arc.graphics.*;
+5: import arc.struct.*;
+6: import arc.util.io.*;
+7: import mindustry.content.*;
+8: import mindustry.core.*;
+9: import mindustry.game.*;
+10: import mindustry.maps.*;
+11: import mindustry.world.*;
+12: import mindustry.world.blocks.environment.*;
+13: import mindustry.world.blocks.storage.*;
+14: 
+15: import java.io.*;
+16: import java.util.zip.*;
+17: 
+18: import static mindustry.Vars.*;
+19: 
+20: /** Reads and writes map files. */
+21: public class MapIO{
+22:     private static final int[] pngHeader = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+23: 
+24:     public static boolean isImage(Fi file){
+25:         try(InputStream stream = file.read(32)){
+26:             for(int i1 : pngHeader){
+27:                 if(stream.read() != i1){
+28:                     return false;
+29:                 }
+30:             }
+31:             return true;
+32:         }catch(IOException e){
+33:             return false;
+34:         }
+35:     }
+36: 
+37:     public static Map createMap(Fi file, boolean custom) throws IOException{
+38:         try(InputStream is = new InflaterInputStream(file.read(bufferSize)); CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+39:             SaveIO.readHeader(stream);
+40:             int version = stream.readInt();
+41:             SaveVersion ver = SaveIO.getSaveWriter(version);
+42:             if(ver == null) throw new IOException("Unknown save version: " + version + ". Are you trying to load a save from a newer version?");
+43:             StringMap tags = new StringMap();
+44:             ver.readRegion("meta", stream, counter, in -> tags.putAll(ver.readStringMap(in)));
+45:             return new Map(file, tags.getInt("width"), tags.getInt("height"), tags, custom, version, Version.build);
+46:         }
+47:     }
+48: 
+49:     public static void writeMap(Fi file, Map map) throws IOException{
+50:         writeMap(file, map, true);
+51:     }
+52: 
+53:     /** @param embed if true, assets will be embedded in the map - this is needed for external export. */
+54:     public static void writeMap(Fi file, Map map, boolean embed) throws IOException{
+55:         try{
+56:             SaveIO.write(file, new SaveOptions(){{
+57:                 extraTags = map.tags;
+58:                 embedAssets = embed;
+59:             }});
+60:         }catch(Exception e){
+61:             throw new IOException(e);
+62:         }
+63:     }
+64: 
+65:     public static void loadMap(Map map){
+66:         SaveIO.load(map.file);
+67:     }
+68: 
+69:     public static void loadMap(Map map, WorldContext cons){
+70:         SaveIO.load(map.file, cons);
+71:     }
+72: 
+73:     public static Pixmap generatePreview(Map map) throws IOException{
+74:         map.spawns = 0;
+75:         map.teams.clear();
+76: 
+77:         try(InputStream is = new InflaterInputStream(map.file.read(bufferSize)); CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+78:             SaveIO.readHeader(stream);
+79:             int version = stream.readInt();
+80:             SaveVersion ver = SaveIO.getSaveWriter(version);
+81:             if(ver == null) throw new IOException("Unknown save version: " + version + ". Are you trying to load a save from a newer version?");
+82:             ver.readRegion("meta", stream, counter, ver::readStringMap);
+83: 
+84:             Pixmap floors = new Pixmap(map.width, map.height);
+85:             Pixmap walls = new Pixmap(map.width, map.height);
+86:             int black = 255;
+87:             int shade = Color.rgba8888(0f, 0f, 0f, 0.5f);
+88: 
+89:             int width = map.width, height = map.height;
+90:             int len = width*height;
+91:             short[] floorIds = new short[len];
+92:             boolean[] overlays = new boolean[len];
+93: 
+94:             CachedTile tile = new CachedTile(){
+95:                 @Override
+96:                 public void setBlock(Block type){
+97:                     super.setBlock(type);
+98: 
+99:                     int c = colorFor(block(), Blocks.air, Blocks.air, team());
+100:                     if(c != black){
+101:                         walls.setRaw(x, floors.height - 1 - y, c);
+102:                         floors.set(x, floors.height - 1 - y + 1, shade);
+103:                     }
+104:                 }
+105:             };
+106: 
+107:             if(ver.version >= 12) ver.skipChunk(stream);
+108:             ver.readRegion("content", stream, counter, ver::readContentHeader);
+109:             if(ver.version == 11) ver.skipChunk(stream);
+110:             ver.readRegion("preview_map", stream, counter, in -> ver.readMap(in, new WorldContext(){
+111:                 @Override public void resize(int width, int height){}
+112:                 @Override public boolean isGenerating(){return false;}
+113:                 @Override public void begin(){
+114:                     world.setGenerating(true);
+115:                 }
+116:                 @Override public void end(){
+117:                     world.setGenerating(false);
+118:                 }
+119: 
+120:                 @Override
+121:                 public void onReadBuilding(){
+122:                     //read team colors
+123:                     if(tile.build != null){
+124:                         int c = tile.build.team.color.rgba8888();
+125:                         int size = tile.block().size;
+126:                         int offsetx = -(size - 1) / 2;
+127:                         int offsety = -(size - 1) / 2;
+128:                         for(int dx = 0; dx < size; dx++){
+129:                             for(int dy = 0; dy < size; dy++){
+130:                                 int drawx = tile.x + dx + offsetx, drawy = tile.y + dy + offsety;
+131:                                 walls.set(drawx, floors.height - 1 - drawy, c);
+132:                             }
+133:                         }
+134: 
+135:                         if(tile.build.block instanceof CoreBlock){
+136:                             map.teams.add(tile.build.team.id);
+137:                         }
+138:                     }
+139:                 }
+140: 
+141:                 @Override
+142:                 public Tile tile(int index){
+143:                     tile.x = (short)(index % map.width);
+144:                     tile.y = (short)(index / map.width);
+145:                     return tile;
+146:                 }
+147: 
+148:                 @Override
+149:                 public Tile create(int x, int y, int floorID, int overlayID, int wallID){
+150:                     if(overlayID != 0){
+151:                         floors.set(x, floors.height - 1 - y, colorFor(Blocks.air, Blocks.air, content.block(overlayID), Team.derelict));
+152:                     }else{
+153:                         floors.set(x, floors.height - 1 - y, colorFor(Blocks.air, content.block(floorID), Blocks.air, Team.derelict));
+154:                     }
+155:                     if(content.block(overlayID) == Blocks.spawn){
+156:                         map.spawns ++;
+157:                     }
+158:                     floorIds[x + y * width] = (short)floorID;
+159:                     overlays[x + y * width] = overlayID != 0;
+160:                     return tile;

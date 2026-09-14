@@ -1,0 +1,12 @@
+./core/src/mindustry/entities/comp/BlockUnitComp.java:83:                tile.changeTeam(team);
+./core/src/mindustry/entities/comp/BuildingComp.java:1792:    public void changeTeam(Team next){
+./core/src/mindustry/entities/comp/BuildingComp.java:1793:        changeTeam(next, true);
+./core/src/mindustry/entities/comp/BuildingComp.java:1797:    public void changeTeam(Team next, boolean updatePower){
+./core/src/mindustry/entities/comp/BuildingComp.java:2185:                    changeTeam(team);
+./core/src/mindustry/entities/comp/BuildingComp.java:2201:                    changeTeam(team);
+./core/src/mindustry/core/Control.java:523:                                        build.changeTeam(Team.derelict);
+./core/src/mindustry/world/Tile.java:804:            build.changeTeam(team);
+./core/src/mindustry/world/Tile.java:830:                build.changeTeam(team, false);
+./core/src/mindustry/world/Build.java:97:            tile.build.changeTeam(team);
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:540:        public void changeTeam(Team next){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:545:            super.changeTeam(next);

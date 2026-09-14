@@ -1,0 +1,4 @@
+regex parse error:
+    handlePayload(
+                 ^
+error: unclosed group

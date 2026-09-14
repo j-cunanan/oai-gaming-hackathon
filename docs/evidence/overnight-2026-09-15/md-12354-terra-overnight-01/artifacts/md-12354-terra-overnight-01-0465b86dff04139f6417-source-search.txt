@@ -1,0 +1,112 @@
+./core/assets/bundles/bundle_da.properties:2250:team.derelict.name = forladt
+./core/assets/bundles/bundle_ca.properties:2250:team.derelict.name = En ruïnes
+./tools/src/mindustry/tools/Generators.java:514:                    int rgba = team == Team.derelict ? Color.valueOf("b7b8c9").rgba() : team.color.rgba();
+./core/assets/bundles/bundle_ro.properties:2250:team.derelict.name = Ruină
+./core/assets/bundles/bundle_eu.properties:2250:team.derelict.name = abandonatua
+./core/assets/bundles/bundle_fi.properties:2250:team.derelict.name = hylky
+./core/assets/bundles/bundle_fil.properties:2250:team.derelict.name = derelict
+./core/assets/bundles/bundle_th.properties:2250:team.derelict.name = ทิ้งร้าง
+./core/assets/bundles/bundle_uk_UA.properties:2250:team.derelict.name = Переможені
+./core/assets/bundles/bundle_be.properties:2250:team.derelict.name = Пакінутыя
+./core/assets/bundles/bundle_ja.properties:2250:team.derelict.name = 廃墟
+./core/assets/bundles/bundle_fr.properties:2250:team.derelict.name = vestige
+./core/assets/bundles/bundle.properties:2255:team.derelict.name = Derelict
+./core/assets/bundles/bundle_sr.properties:2250:team.derelict.name = Zabačen
+./core/assets/bundles/bundle_pl.properties:2250:team.derelict.name = Porzuceni
+./core/assets/bundles/bundle_vi.properties:2250:team.derelict.name = Bỏ hoang
+./core/assets/bundles/bundle_id_ID.properties:2250:team.derelict.name = Derelik
+./core/assets/bundles/bundle_et.properties:2250:team.derelict.name = unustatud
+./core/assets/bundles/bundle_zh_CN.properties:2250:team.derelict.name = 灰
+./core/assets/bundles/bundle_de.properties:2250:team.derelict.name = Derelikt
+./core/assets/bundles/bundle_bg.properties:2250:team.derelict.name = Останки
+./core/assets/bundles/bundle_ko.properties:2250:team.derelict.name = 잔해
+./core/assets/bundles/bundle_it.properties:2250:team.derelict.name = abbandonato
+./core/assets/bundles/bundle_ru.properties:2250:team.derelict.name = Покинутая
+./core/assets/bundles/bundle_nl.properties:2250:team.derelict.name = wees
+./core/assets/bundles/bundle_lt.properties:2250:team.derelict.name = apleista
+./core/assets/bundles/bundle_tr.properties:2250:team.derelict.name = Kalıntı
+./core/assets/bundles/bundle_hu.properties:2250:team.derelict.name = Elhagyatott
+./core/assets/bundles/bundle_tk.properties:2250:team.derelict.name = derelict
+./core/assets/bundles/bundle_pt_BR.properties:2250:team.derelict.name = Derelict
+./core/assets/bundles/bundle_zh_TW.properties:2250:team.derelict.name = 灰
+./core/assets/bundles/bundle_cs.properties:2250:team.derelict.name = opuštěný
+./core/assets/bundles/bundle_nl_BE.properties:2250:team.derelict.name = derelict
+./core/assets/bundles/bundle_pt_PT.properties:2250:team.derelict.name = Derelict
+./core/assets/bundles/bundle_sv.properties:2250:team.derelict.name = derelicta
+./core/assets/bundles/bundle_es.properties:2250:team.derelict.name = Abandonado
+./core/assets/icons/icons.properties:350:63358=derelict|team-derelict
+./core/src/mindustry/game/Teams.java:126:        return team == other || other == Team.derelict;
+./core/src/mindustry/game/Teams.java:412:            derelictBuffer.chunked(1000, values -> Call.setTeams(values, Team.derelict));
+./core/src/mindustry/game/Rules.java:399:            if(team == Team.derelict){
+./core/src/mindustry/ai/Pathfinder.java:613:        protected Team team = Team.derelict;
+./core/src/mindustry/ai/BlockIndexer.java:395:                if(enemy == team || (enemy == Team.derelict && !state.rules.coreCapture)) continue;
+./core/src/mindustry/ai/BlockIndexer.java:404:                if(enemy == team || (enemy == Team.derelict && !state.rules.coreCapture)) continue;
+./core/src/mindustry/ai/BlockIndexer.java:466:            if(enemy == team || (enemy == Team.derelict && !state.rules.coreCapture)) continue;
+./core/src/mindustry/editor/MapGenerateDialog.java:451:                            color = MapIO.colorFor(tile.block(), tile.floor(), tile.overlay(), Team.derelict);
+./core/src/mindustry/editor/MapGenerateDialog.java:454:                            color = MapIO.colorFor(content.block(PackTile.block(tile)), content.block(PackTile.floor(tile)), content.block(PackTile.overlay(tile)), Team.derelict);
+./core/src/mindustry/entities/Puddles.java:124:                Bullets.fireball.createNet(Team.derelict, x, y, Mathf.random(360f), -1f, 1f, 1f);
+./core/src/mindustry/entities/Units.java:223:        if(team == Team.derelict) return null;
+./core/src/mindustry/entities/Units.java:273:        if(team == Team.derelict) return null;
+./core/src/mindustry/entities/Units.java:285:        if(team == Team.derelict) return null;
+./core/src/mindustry/entities/Units.java:297:        if(team == Team.derelict) return null;
+./core/src/mindustry/entities/Units.java:304:            if(e.dead() || !predicate.get(e) || e.team == Team.derelict || !e.targetable(team) || e.inFogTo(team)) return;
+./core/src/mindustry/entities/Units.java:319:        if(team == Team.derelict) return null;
+./core/src/mindustry/entities/Units.java:326:            if(e.dead() || !predicate.get(e) || e.team == Team.derelict || !e.within(x, y, range + e.hitSize/2f) || !e.targetable(team) || e.inFogTo(team)) return;
+./core/src/mindustry/entities/Units.java:500:            if(other.team != team && other.team != Team.derelict){
+./core/src/mindustry/entities/Damage.java:97:                Time.run(i * 0.8f + Mathf.random(4f), () -> Lightning.create(Team.derelict, Pal.power, 3 + Mathf.pow(power, 0.35f), x, y, Mathf.random(360f), length + Mathf.range(2)));
+./core/src/mindustry/entities/Damage.java:102:                    Time.run(i / 2f, () -> Call.createBullet(Bullets.fireball, Team.derelict, x, y, Mathf.random(360f), Bullets.fireball.damage, 1, 1));
+./core/src/mindustry/entities/Lightning.java:27:    /** Create a lighting branch at a location. Use Team.derelict to damage everyone. */
+./core/src/mindustry/entities/Lightning.java:32:    /** Create a lighting branch at a location. Use Team.derelict to damage everyone. */
+./core/src/mindustry/entities/comp/BuildingComp.java:629:        return team != Team.derelict && block.supportsEnv(state.rules.env) &&
+./core/src/mindustry/entities/comp/BuildingComp.java:1459:            block.destroyBullet.create(this, block.destroyBulletSameTeam ? team : Team.derelict, x, y, Mathf.randomSeed(id(), 360f));
+./core/src/mindustry/entities/comp/BuildingComp.java:1548:        return team == Team.derelict ?
+./core/src/mindustry/entities/units/AIController.java:272:        if(unit.team == Team.derelict) return null;
+./core/src/mindustry/entities/units/AIController.java:277:        if(unit.team == Team.derelict) return null;
+./core/src/mindustry/entities/units/BuildPlan.java:80:        return tile != null && tile.team() == Team.derelict && tile.block() == block && tile.build != null;
+./core/src/mindustry/entities/comp/BuilderComp.java:63:                boolean isSameDerelict = (tile != null && tile.build != null && tile.block() == plan.block && tile.build.tileX() == plan.x && tile.build.tileY() == plan.y && tile.team() == Team.derelict);
+./core/src/mindustry/entities/comp/BuilderComp.java:168:                        (tile.team() == Team.derelict && tile.block() == current.block && tile.build != null && tile.block().allowDerelictRepair && state.rules.derelictRepair) ||
+./core/src/mindustry/entities/comp/BuilderComp.java:196:            }else if((tile.team() != team && tile.team() != Team.derelict) || (!current.breaking && (cb.current != current.block || cb.tile != current.tile()))){
+./core/src/mindustry/entities/comp/TeamComp.java:15:    Team team = Team.derelict;
+./core/src/mindustry/entities/comp/FireComp.java:85:            Bullets.fireball.createNet(Team.derelict, x, y, Mathf.random(360f), -1f, 1, 1);
+./core/src/mindustry/entities/abilities/EnergyFieldAbility.java:139:                    if((b.team != Team.derelict || state.rules.coreCapture) && ((b.team != unit.team && b.block.targetable) || b.damaged()) && !b.block.privileged){
+./core/src/mindustry/world/Build.java:95:        if(tile.team() == Team.derelict && team != Team.derelict && tile.block == result && tile.build != null && tile.block.allowDerelictRepair && state.rules.derelictRepair){
+./core/src/mindustry/world/Build.java:251:                (!state.rules.derelictRepair && check.team() == Team.derelict && check.build != null) ||
+./core/src/mindustry/world/Build.java:252:                (type == check.block() && check.build != null && rotation == check.build.rotation && type.rotate && !((type == check.block && team != Team.derelict && check.team() == Team.derelict))) || //same block, same rotation
+./core/src/mindustry/world/Build.java:257:                    !(((type.canReplace(check.block()) || (check.build != null && check.build.canBeReplaced(type)) || (type == check.block && team != Team.derelict && check.team() == Team.derelict)) || //can replace type OR can replace derelict block of same type
+./core/src/mindustry/ui/dialogs/PlanetDialog.java:462:                        sec.preset.unlocked() ? Tmp.c2.set(Team.derelict.color).lerp(Color.white, Mathf.absin(Time.time, 10f, 1f)) :
+./core/src/mindustry/logic/LExecutor.java:62:    public Team team = Team.derelict;
+./core/src/mindustry/logic/LExecutor.java:1575:                            if(t == null) t = Team.derelict;
+./core/src/mindustry/logic/LExecutor.java:1654:            if(teamVal == null) teamVal = Team.derelict;
+./core/src/mindustry/logic/RadarTarget.java:8:    enemy((team, other) -> team != other.team && other.team != Team.derelict),
+./core/src/mindustry/ui/fragments/HintsFragment.java:64:                    if(build != null && build.team == Team.derelict){
+./core/src/mindustry/ui/fragments/HintsFragment.java:98:            if(e.unit == player.unit() && e.tile.build instanceof ConstructBuild c && c.prevBuild != null && c.prevBuild.contains(b -> b.team == Team.derelict)){
+./core/src/mindustry/input/InputHandler.java:2083:        return tile != null && tile.build != null && !player.dead() && !state.rules.editor && player.team() != Team.derelict && tile.build.team == Team.derelict && tile.build.block.unlockedNowHost() &&
+./core/src/mindustry/input/MobileInput.java:101:            if((tile != null && (player.team() != tile.team && (tile.team != Team.derelict || state.rules.coreCapture)) && player.unit().type.canAttack) || (tile != null && player.unit().type.canHeal && tile.team == player.team() && tile.damaged())){
+./core/src/mindustry/core/NetServer.java:61:                if((state.rules.waveTeam == data.team && state.rules.waves) || !data.hasCore() || data.team == Team.derelict || !data.team.rules().protectCores) return Integer.MAX_VALUE;
+./core/src/mindustry/core/NetServer.java:788:                    }else if(!req.breaking && tile.block() == req.block && tile.team() != Team.derelict && (!req.block.rotate || (tile.build != null && tile.build.rotation == req.rotation))){
+./core/src/mindustry/maps/planet/SerpuloPlanetGenerator.java:678:                if(part != null && BaseGenerator.tryPlace(part, x, y, Team.derelict, rand, (cx, cy) -> {
+./core/src/mindustry/maps/planet/SerpuloPlanetGenerator.java:701:                            if(other.team() == Team.derelict && rand.chance(removeChance)){
+./core/src/mindustry/core/Logic.java:182:            if(state.rules.cleanupDeadTeams && state.rules.pvp && !e.core.isAdded() && e.core.team != Team.derelict && e.core.team.cores().isEmpty()){
+./core/src/mindustry/core/Logic.java:361:                int countAlive = state.teams.getActive().count(t -> t.isAlive() && t.team != Team.derelict);
+./core/src/mindustry/core/Logic.java:365:                    TeamData left = state.teams.getActive().find(t -> t.isAlive() && t.team != Team.derelict);
+./core/src/mindustry/core/Logic.java:366:                    Events.fire(new GameOverEvent(left == null ? Team.derelict : left.team));
+./core/src/mindustry/core/Control.java:486:                            var previousDerelicts = Team.derelict.data().buildings.<Building>toArray(Building.class);
+./core/src/mindustry/core/Control.java:497:                                for(var generatedDerelict : Team.derelict.data().buildings.<Building>toArray(Building.class)){
+./core/src/mindustry/core/Control.java:504:                                    if(tile != null && tile.build == null && Build.validPlace(build.block, Team.derelict, build.tileX(), build.tileY(), build.rotation, false, false)){
+./core/src/mindustry/core/Control.java:505:                                        tile.setBlock(build.block, Team.derelict, build.rotation, () -> build);
+./core/src/mindustry/core/Control.java:523:                                        build.changeTeam(Team.derelict);
+./core/src/mindustry/io/MapIO.java:151:                        floors.set(x, floors.height - 1 - y, colorFor(Blocks.air, Blocks.air, content.block(overlayID), Team.derelict));
+./core/src/mindustry/io/MapIO.java:153:                        floors.set(x, floors.height - 1 - y, colorFor(Blocks.air, content.block(floorID), Blocks.air, Team.derelict));
+./core/src/mindustry/io/MapIO.java:239:                tile.setBlock(block, Team.derelict, 0);
+./core/src/mindustry/io/SaveVersion.java:175:            if(!net.client() && team != Team.derelict){
+./core/src/mindustry/world/Tile.java:64:        changeBuild(Team.derelict, wall::newBuilding, 0);
+./core/src/mindustry/world/Tile.java:205:        return build == null ? Team.derelict : build.team;
+./core/src/mindustry/world/Tile.java:301:        setBlock(type, Team.derelict, 0);
+./core/src/mindustry/world/Tile.java:386:        Call.setTile(this, block, Team.derelict, 0);
+./core/src/mindustry/world/blocks/campaign/LandingPad.java:162:            return state.rules.editor || state.rules.allowEditWorldProcessors || state.isCampaign() || state.rules.infiniteResources || (team != state.rules.defaultTeam && !state.rules.pvp && team != Team.derelict);
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:259:        public Team lastDamage = Team.derelict;
+./core/src/mindustry/world/blocks/payloads/Payload.java:100:            BuildPayload payload = new BuildPayload(block, Team.derelict);
+./core/src/mindustry/world/blocks/defense/turrets/Turret.java:628:            return !Units.invalidateTarget(target, canHeal() ? Team.derelict : team, x, y) || controlled() || logicControlled();
+./core/src/mindustry/world/blocks/power/BeamNode.java:210:            if(Mathf.zero(Renderer.laserOpacity) || team == Team.derelict) return;
+./core/src/mindustry/world/blocks/power/PowerNode.java:497:            if(Mathf.zero(Renderer.laserOpacity) || isPayload() || team == Team.derelict) return;
+./core/src/mindustry/content/TeamEntries.java:9:        //new TeamEntry(Team.derelict);

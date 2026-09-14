@@ -1,0 +1,9 @@
+./core/src/mindustry/editor/MapEditorDialog.java:94:            t.button("@editor.import", Icon.download, () -> createDialog("@editor.import",
+./core/src/mindustry/editor/MapEditorDialog.java:95:                "@editor.importmap", "@editor.importmap.description", Icon.download, (Runnable)loadDialog::show,
+./core/src/mindustry/editor/MapEditorDialog.java:96:                "@editor.importfile", "@editor.importfile.description", Icon.file, (Runnable)() ->
+./core/src/mindustry/editor/MapEditorDialog.java:107:                "@editor.importimage", "@editor.importimage.description", Icon.fileImage, (Runnable)() ->
+./core/src/mindustry/editor/data/MapContentView.java:112:                BaseDialog dialog = new BaseDialog("@editor.import");
+./core/src/mindustry/editor/data/MapPatchesView.java:101:        BaseDialog dialog = new BaseDialog("@editor.import");
+./core/src/mindustry/editor/data/MapBundlesView.java:67:                BaseDialog dialog = new BaseDialog("@editor.import");
+./core/src/mindustry/ui/dialogs/EditorMapsDialog.java:44:        buttons.button("@editor.importmap", Icon.upload, () -> {
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:226:        BaseDialog dialog = new BaseDialog("@editor.import");

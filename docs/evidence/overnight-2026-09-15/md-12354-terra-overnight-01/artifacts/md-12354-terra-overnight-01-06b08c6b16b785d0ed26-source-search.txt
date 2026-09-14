@@ -1,0 +1,2 @@
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:20:public class PayloadConveyor extends Block{
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:77:    public class PayloadConveyorBuild extends Building{

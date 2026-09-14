@@ -1,0 +1,240 @@
+1: package mindustry.mod;
+2: 
+3: import arc.files.*;
+4: import arc.graphics.*;
+5: import arc.graphics.g2d.*;
+6: import arc.graphics.g2d.TextureAtlas.*;
+7: import arc.struct.*;
+8: import arc.util.*;
+9: import mindustry.*;
+10: import mindustry.ctype.*;
+11: import mindustry.graphics.*;
+12: import mindustry.mod.data.*;
+13: import mindustry.net.*;
+14: 
+15: public class DataManager{
+16:     private DataPatcher patcher = new DataPatcher();
+17:     private DataImagePacker packer = new DataImagePacker();
+18:     private DataAudioLoader soundLoader = new DataAudioLoader();
+19:     private DataBundleLoader bundleLoader = new DataBundleLoader();
+20: 
+21:     private ObjectMap<DataAssetType, Seq<DataAsset>> assets = new ObjectMap<>();
+22:     private Seq<DataAsset> orderedAssets = new Seq<>();
+23:     private Seq<DataAsset> orderedExternalAssets = new Seq<>();
+24: 
+25:     public @Nullable String getAudioName(Fi file){
+26:         return file == null ? null : soundLoader.getName(file);
+27:     }
+28: 
+29:     public void reloadContent(boolean reloadArrays){
+30: 
+31:         patcher.apply(getPatches(), getContent(), reloadArrays);
+32: 
+33:         rebuildOrderedAssets();
+34:     }
+35: 
+36:     public void regenerateContentSprites(boolean forcePack){
+37:         var allContent = patcher.getAddedContent();
+38: 
+39:         //TODO: what to do when headless (server?)
+40:         if(allContent.isEmpty()){
+41:             if(forcePack) reloadImages();
+42:             return;
+43:         }
+44: 
+45:         Seq<UnlockableContent> contentToPack = allContent.select(c -> c instanceof UnlockableContent && c.minfo.asset != null).as();
+46:         ObjectSet<String> existingContentHashes = new ObjectSet<>();
+47:         ObjectSet<String> imagesWithHashes = new ObjectSet<>();
+48:         ObjectMap<UnlockableContent, String> hashes = new ObjectMap<>();
+49: 
+50:         //store hashes based on JSON contents
+51:         for(var content : contentToPack){
+52:             String hash = content.minfo.asset.hashData();
+53:             hashes.put(content, hash);
+54:             existingContentHashes.add(hash);
+55:         }
+56: 
+57:         var images = getImages();
+58:         images.removeAll(i -> {
+59:             if(i.isGenerated()){
+60:                 Fi file = new Fi(i.path);
+61:                 String imageToContentHash = file.parent().name();
+62:                 imagesWithHashes.add(imageToContentHash);
+63:                 //don't remove images that correspond to content that exists with that hash
+64:                 return !existingContentHashes.contains(imageToContentHash);
+65:             }
+66:             return false;
+67:         });
+68: 
+69:         //remove content that doesn't need to be packed
+70:         contentToPack.removeAll(u -> imagesWithHashes.contains(hashes.get(u)));
+71: 
+72:         ObjectMap<String, ImageAsset> imageMap = new ObjectMap<>();
+73:         for(var image : images){
+74:             imageMap.put(DataImagePacker.regionPrefix + image.name, image);
+75:         }
+76:         int[] packed = {0};
+77:         ObjectMap<String, PixmapRegion> imagePixmaps = new ObjectMap<>();
+78:         PixmapRegion error = new PixmapRegion(Pixmaps.blankPixmap());
+79:         UnlockableContent[] currentContent = {null};
+80:         String[] currentHash = {null};
+81: 
+82:         MultiPacker saver = new MultiPacker(false){
+83:             @Override
+84:             public void add(PageType type, String name, PixmapRegion region, int[] splits, int[] pads){
+85:                 try{
+86:                     if(region.pixmap.width > 2000) throw new IllegalArgumentException("Max image size exceeded");
+87: 
+88:                     //strip duplicate prefix
+89:                     if(name.startsWith(DataImagePacker.regionPrefix)) name = name.substring(DataImagePacker.regionPrefix.length());
+90:                     String path = "generated/" + currentHash[0] + "/" + name + ".png";
+91:                     ImageAsset newImage = new ImageAsset();
+92:                     newImage.setPath(path);
+93:                     //it would be nice to do this async, but the pixmap typically gets disposed right after add() exist
+94:                     byte[] bytes = PixmapIO.writePngBytes(region.pixmap);
+95:                     newImage.updateData(bytes);
+96: 
+97:                     images.add(newImage);
+98:                     packed[0] ++;
+99:                 }catch(Exception e){
+100:                     Log.err("Failed to pack image " + name, e);
+101:                 }
+102:             }
+103: 
+104:             @Override
+105:             public boolean has(String name){
+106:                 return imageMap.containsKey(name);
+107:             }
+108: 
+109:             @Override
+110:             public boolean has(PageType type, String name){
+111:                 return has(name);
+112:             }
+113: 
+114:             @Override
+115:             public @Nullable PixmapRegion get(TextureRegion region){
+116:                 return get(((AtlasRegion)region).name);
+117:             }
+118: 
+119:             @Override
+120:             public PixmapRegion get(String name){
+121:                 var pix = imagePixmaps.get(name);
+122:                 if(pix != null) return pix;
+123: 
+124:                 var image = imageMap.get(name);
+125:                 if(image == null) return error;
+126: 
+127:                 try{
+128:                     var result = new PixmapRegion(new Pixmap(image.getCacheFileNoNull()));
+129:                     imagePixmaps.put(name, result);
+130:                     return result;
+131:                 }catch(Exception e){
+132:                     Log.err("Failed loading image: " + image.path, e);
+133:                     imagePixmaps.put(name, error);
+134:                     return error;
+135:                 }
+136:             }
+137:         };
+138: 
+139:         for(var content : contentToPack){
+140:             currentContent[0] = content;
+141:             currentHash[0] = hashes.get(content);
+142: 
+143:             try{
+144:                content.createIcons(saver);
+145:             }catch(Throwable e){
+146:                 Log.err(e);
+147:             }
+148:         }
+149: 
+150:         imagePixmaps.each((key, val) -> val.pixmap.dispose());
+151:         error.pixmap.dispose();
+152: 
+153:         if(packed[0] > 0 || forcePack){
+154:             reloadImages();
+155: 
+156:             if(!Vars.headless){
+157:                 for(var cont : contentToPack){
+158:                     try{
+159:                         cont.loadIcon();
+160:                         cont.load();
+161:                     }catch(Exception e){
+162:                         Log.err("Failed to load icons for " + cont, e);
+163:                     }
+164:                 }
+165:             }
+166:         }
+167:     }
+168: 
+169:     public void reloadPatches(Seq<PatchAsset> patches){
+170:         if(patches != getPatches()) getPatches().set(patches);
+171: 
+172:         patcher.unapply();
+173:         patcher.apply(patches, getContent());
+174: 
+175:         rebuildOrderedAssets();
+176:     }
+177: 
+178:     public void reloadImages(){
+179:         packer.unload();
+180:         packer.pack(getImages());
+181: 
+182:         rebuildOrderedAssets();
+183:     }
+184: 
+185:     public void reloadImages(Seq<ImageAsset> images){
+186:         if(images != getImages()) getImages().set(images);
+187: 
+188:         reloadImages();
+189:     }
+190: 
+191:     /** Adds/replaces a single image pushed by the server at runtime, independent of map/mod data patches.
+192:      * Use {@link mindustry.core.NetServer#sendTexture(NetConnection, String, byte[])} to send a texture to connected clients. */
+193:     public void addTexture(String name, byte[] pngData){
+194:         if(!Vars.headless) packer.addTexture(name, pngData);
+195:     }
+196: 
+197:     /** Removes a texture previously added with {@link #addTexture}.
+198:      * Use {@link mindustry.core.NetServer#removeTexture(NetConnection, String)} to remove a texture from connected clients. */
+199:     public void removeTexture(String name){
+200:         if(!Vars.headless) packer.removeTextureQueued(name);
+201:     }
+202: 
+203:     public void reloadAudio(){
+204:         soundLoader.unload();
+205:         soundLoader.load(getSounds(), getMusic());
+206: 
+207:         rebuildOrderedAssets();
+208:     }
+209: 
+210:     public void load(Seq<DataAsset> newAssets){
+211:         unload(); //if already loaded
+212: 
+213:         if(newAssets.isEmpty()) return;
+214: 
+215:         for(var asset : newAssets){
+216:             assets.get(asset.getType(), Seq::new).add(asset);
+217:         }
+218: 
+219:         soundLoader.load(getSounds(), getMusic());
+220: 
+221:         if(!Vars.headless){
+222:             bundleLoader.load(getBundles());
+223:             packer.pack(getImages());
+224:         }
+225: 
+226:         patcher.apply(getPatches(), getContent());
+227: 
+228:         rebuildOrderedAssets();
+229:     }
+230: 
+231:     public void unload(){
+232:         patcher.unapply();
+233:         if(!Vars.headless){
+234:             bundleLoader.unload();
+235:             packer.unload();
+236:         }
+237:         soundLoader.unload();
+238: 
+239:         assets.clear();
+240:         orderedAssets.clear();
