@@ -19,7 +19,7 @@ cd apps/web && npm ci && npm run build && cd ../..
 uv run repro serve
 ```
 
-The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial. Rebuild the worker image after pulling driver changes: the backend now uses protocol 2 over a persistent connection.
+The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial. Rebuild the worker image after pulling driver changes: protocol 3 adds modifier clicks and timed input to the persistent connection. The backend rejects older workers so requested controls cannot silently become ordinary clicks or momentary key taps.
 
 The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
@@ -83,6 +83,8 @@ uv run repro report CASE_ID --output output/pdf/repro-report.pdf
 For state changes such as deletion/reopening, entered/readback values, or payload transport, a replay can use a `sequence` oracle with 2–8 ordered checkpoint labels. A computer action with `checkpoint: label` records its resulting screenshot; a labeled wait captures an unchanged view. Exploration may record additional checkpoints within the action budget; the oracle selects 2–8 relevant ones. The labels travel with their original actions during reduction. The independent verifier compares the actual checkpoint images in action order, including visible prerequisites and the resulting state. Missing, reordered, or uncertain evidence cannot establish reproduction or a successful fix. Checkpoints are cleared between fresh attempts. Static visual, literal-log, and crash checks remain supported; a crash oracle with `log_pattern` requires both a nonzero game exit and that literal signature.
 
 ## What is implemented
+
+Desktop actions support `keys: [ctrl]` or `keys: [shift]` on pointer operations. For `click` and `keypress`, `hold_seconds` holds the mouse button or keys for up to ten seconds; `seconds` remains the settling wait after release. Every action releases held inputs, including on an execution error. Older recorded actions without a hold duration retain their momentary behavior; previously ignored pointer modifiers now execute as recorded, so affected replays need fresh verification.
 
 - Typed report intake, SQLite case snapshots, ordered events and reconnectable SSE.
 - Responses API triage, hypothesis recording, screenshot-guided computer actions, source search and candidate diffs. Default: **`gpt-5.6-luna`**; `REPRO_MODEL=gpt-5.6-terra` is the requested alternative.

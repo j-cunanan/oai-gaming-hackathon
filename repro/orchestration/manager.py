@@ -463,7 +463,7 @@ class Manager:
         tools = [
             Tool(
                 "computer",
-                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). A nonempty checkpoint saves the resulting screen under a unique label. Select 2–8 relevant labels in the final sequence oracle; extra setup checkpoints do not consume that selection. Waits settle the UI.",
+                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). On pointer actions, keys are held during the action (e.g. Ctrl-click or Shift-click). For click/keypress, hold_seconds holds the mouse button/keys for movement or firing; seconds is the settling wait after release. A nonempty checkpoint saves the resulting screen under a unique label. Select 2–8 relevant labels in the final sequence oracle; extra setup checkpoints do not consume that selection.",
                 Action,
                 computer,
             ),

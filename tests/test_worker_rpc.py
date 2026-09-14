@@ -1,14 +1,41 @@
 import asyncio
 import sys
 from types import SimpleNamespace
+from unittest.mock import AsyncMock
 
 import pytest
 
 from repro.computer.rpc import WorkerRPC
+from repro.computer.sandbox import DockerSandbox
 from repro.config import Settings
 from repro.models import Case, CaseInput, State
 from repro.orchestration.manager import Manager
 from repro.storage.store import Store
+
+
+@pytest.mark.parametrize("protocol", [2, 3])
+async def test_worker_handshake_rejects_drivers_that_silently_ignore_timed_input(
+    tmp_path, monkeypatch, protocol
+):
+    settings = Settings(_env_file=None, data_dir=tmp_path)
+    case = Case(
+        report=CaseInput(
+            title="Unit control", body="The unit disappears in transit.", target_commit="a" * 40
+        )
+    )
+    sandbox = DockerSandbox(settings, Store(tmp_path), case)
+    rpc = SimpleNamespace(request=AsyncMock(return_value={"protocol": protocol}))
+    monkeypatch.setattr(sandbox, "stop", AsyncMock())
+    monkeypatch.setattr(sandbox, "exec", AsyncMock())
+    monkeypatch.setattr("repro.computer.sandbox.run", AsyncMock())
+    monkeypatch.setattr("repro.computer.sandbox.asyncio.sleep", AsyncMock())
+    monkeypatch.setattr(WorkerRPC, "start", AsyncMock(return_value=rpc))
+    if protocol == 2:
+        with pytest.raises(RuntimeError, match="Rebuild the worker image"):
+            await sandbox.start()
+    else:
+        await sandbox.start()
+    rpc.request.assert_awaited_once_with("ping", None)
 
 
 async def test_persistent_rpc_orders_large_replies_and_recovers_from_rejected_action(tmp_path):

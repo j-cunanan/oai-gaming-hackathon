@@ -108,25 +108,57 @@ def action(args):
     pg.FAILSAFE = False  # Dedicated Xvfb desktop, never the host desktop.
     pg.PAUSE = 0.12
     op = args["action"]
-    if op == "click":
-        pg.click(args["x"], args["y"], button=args.get("button", "left"))
-    elif op == "double_click":
-        pg.doubleClick(args["x"], args["y"], interval=0.1)
-    elif op == "keypress":
-        aliases = {"escape": "esc", "return": "enter", "control": "ctrl", "super": "win"}
-        keys = [aliases.get(k.lower(), k.lower()) for k in args["keys"]]
-        if any(k not in pg.KEYBOARD_KEYS for k in keys):
-            raise ValueError("Unknown keyboard key")
-        pg.hotkey(*keys)
-    elif op == "type":
-        pg.write(args["text"], interval=0.01)
-    elif op == "scroll":
-        pg.moveTo(args["x"], args["y"])
-        pg.scroll(args["scroll_y"])
-    elif op == "move":
-        pg.moveTo(args["x"], args["y"])
-    elif op != "wait":
+    if op not in {"click", "double_click", "keypress", "type", "scroll", "move", "wait"}:
         raise ValueError("Unsupported action")
+    aliases = {"escape": "esc", "return": "enter", "control": "ctrl", "super": "win"}
+    keys = [aliases.get(k.lower(), k.lower()) for k in args.get("keys", [])]
+    if any(k not in pg.KEYBOARD_KEYS for k in keys):
+        raise ValueError("Unknown keyboard key")
+    if op == "keypress" and not keys:
+        raise ValueError("keypress requires keys")
+    hold = min(max(args.get("hold_seconds", 0), 0), 10)
+    if hold and op not in {"click", "keypress"}:
+        raise ValueError("hold_seconds applies only to click or keypress")
+    if keys and op in {"type", "wait"}:
+        raise ValueError("Use keypress or a pointer action for held keys")
+    held = []
+    try:
+        # A modifier-click must hold its keys across the mouse event. Timed
+        # keypresses likewise need keyDown/keyUp, not a momentary hotkey.
+        if op != "keypress" or hold:
+            for key in keys:
+                held.append(key)
+                pg.keyDown(key)
+        if op == "click":
+            button = args.get("button", "left")
+            if hold:
+                pg.moveTo(args["x"], args["y"])
+                try:
+                    pg.mouseDown(button=button)
+                    time.sleep(hold)
+                finally:
+                    pg.mouseUp(button=button)
+            else:
+                pg.click(args["x"], args["y"], button=button)
+        elif op == "double_click":
+            pg.doubleClick(
+                args["x"], args["y"], interval=0.1, button=args.get("button", "left")
+            )
+        elif op == "keypress":
+            if hold:
+                time.sleep(hold)
+            else:
+                pg.hotkey(*keys)
+        elif op == "type":
+            pg.write(args["text"], interval=0.01)
+        elif op == "scroll":
+            pg.moveTo(args["x"], args["y"])
+            pg.scroll(args["scroll_y"])
+        elif op == "move":
+            pg.moveTo(args["x"], args["y"])
+    finally:
+        for key in reversed(held):
+            pg.keyUp(key)
     # Recorded settling time is preserved; throughput improvements remove process overhead.
     time.sleep(min(max(args.get("seconds", 0.5), 0), 10))
     return observe()
@@ -134,7 +166,7 @@ def action(args):
 
 def dispatch(operation, args):
     if operation == "ping":
-        return {"protocol": 2}
+        return {"protocol": 3}
     if operation == "launch":
         return launch(args)
     if operation == "terminate":
