@@ -103,7 +103,7 @@ Mindustry is the primary implementation target. The Luanti adapter is experiment
 
 Uploads are retained and hashed, but automatic video normalization, save installation and attachment-driven investigation are not implemented. Network/multiplayer experiments, distributed workers, automatic upstream PR publication and reliable ownership inference without CODEOWNERS remain future work. Smoke testing currently checks a clean desktop launch, not broad gameplay coverage. Bounded action reduction is not a proof of global minimality.
 
-Some upstream tests perform network requests at runtime even with Gradle's `--offline` flag. Candidate build/test validation now has network access by default (`REPRO_VALIDATION_NETWORK=true`) so those dependencies can load. Set it to `false` for an offline validation run. The selected policy is recorded in the event audit. Game investigation and replay still use fresh containers with networking disabled; credentials stay in the controller. No tests are skipped.
+Some upstream tests perform network requests at runtime even with Gradle's `--offline` flag. Baseline and candidate test suites now run with networking disabled. An existing-tests failure can earn the amber `baseline_failed` status only when a recorded offline baseline run proves the same named failures already existed. Any new failure or missing/stale/unparseable baseline evidence blocks acceptance. The former `REPRO_VALIDATION_NETWORK` option no longer enables networking. No tests are skipped. See the [baseline-differential protocol](docs/benchmark.md) and use `uv run repro prepare CASE_ID --refresh-baseline-tests` to refresh baseline evidence before patching.
 
 No benchmark success rate is implied by unit tests or mock observations. See [benchmark protocol](docs/benchmark.md) for the evidence boundaries and [development notes](docs/architecture.md) for extension points.
 
@@ -118,3 +118,7 @@ npm run build
 ```
 
 PRs are the collaboration unit. Keep changes scoped, include validation and limitations, and preserve team members' work. Never commit `.env`, runtime data, API keys, downloaded target-game source, or evaluator-only material inside a model-visible workspace.
+
+## Validation gate update — 2026-09-14
+
+The new baseline-differential gate accepts recorded pre-existing upstream test failures separately from clean passes. This code change does not reclassify MD-001's original blocked offline result or its separately recorded network-enabled rerun. A new qualifying offline baseline suite record and case re-validation are required before making any approval claim under the new semantics. Existing evidence, caveats and failure records above remain historical results.

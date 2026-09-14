@@ -71,9 +71,10 @@ async def test_validation_network_policy_is_explicit_and_failed_build_blocks_rep
         adapter=SimpleNamespace(build=("bash", "./gradlew", "desktop:dist")),
     )
     await Manager(settings, store).validate(case, sandbox, None, None)
-    assert calls[0] == ("start", {"network": network})
-    assert ("--offline" in calls[1][1]) is (not network)
+    # The retired option cannot enable networking, including in an existing .env.
+    assert calls[0] == ("start", {"network": False, "fresh_profile": True})
+    assert "--offline" in calls[1][1]
     assert case.state == State.VALIDATING
     assert [check.status for check in case.checks] == ["fail", "not_run", "not_run", "not_run"]
     event = next(e for e in store.events(case.id) if e["kind"] == "validation_environment")
-    assert event["data"]["network"] == ("bridge" if network else "none")
+    assert event["data"]["network"] == "none"

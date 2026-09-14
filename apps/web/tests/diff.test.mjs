@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { allChecksPass, parseDiff } from "../src/diff.ts";
+import { allChecksAccepted, allChecksPass, parseDiff } from "../src/diff.ts";
 
 test("file headers are not changes and hunk line numbers follow additions/removals", () => {
   const [file] = parseDiff(
@@ -58,4 +58,14 @@ test("approval needs every named check and rejects incomplete or failed lists", 
     false,
   );
   assert.equal(allChecksPass([]), false);
+});
+
+test("baseline acceptance applies only to existing tests and stays distinct from pass", () => {
+  const checks = ["Regression before patch", "Candidate build", "Existing tests", "Original replay after patch", "Smoke test"].map((name) => ({name, status: name === "Existing tests" ? "baseline_failed" : "pass"}));
+  assert.equal(allChecksAccepted(checks), true);
+  assert.equal(allChecksPass(checks), false);
+  assert.equal(allChecksAccepted(checks.slice(1)), false);
+  for (const check of checks.filter((c) => c.name !== "Existing tests")) {
+    assert.equal(allChecksAccepted(checks.map((c) => c.name === check.name ? {...c, status: "baseline_failed"} : c)), false);
+  }
 });

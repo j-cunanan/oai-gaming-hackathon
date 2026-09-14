@@ -227,7 +227,9 @@ def render_report(case: Case, store: Store) -> bytes:
     validation = [p("Validation results", heading)]
     validation += [
         p(
-            "All five required checks passed. Approval is a separate human review decision."
+            ("Validation satisfied with pre-existing test failures. Inspect the baseline evidence before approval."
+             if any(c.status == "baseline_failed" for c in case.checks)
+             else "All five required checks passed. Approval is a separate human review decision.")
             if patch_validated(case)
             else "Validation is incomplete or has failed. The recorded results below determine what has been verified."
         )

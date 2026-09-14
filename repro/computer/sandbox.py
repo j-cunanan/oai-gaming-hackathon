@@ -57,19 +57,54 @@ class DockerSandbox:
                     self.repo / "desktop/build/libs/Mindustry.jar", baseline / "Mindustry.jar"
                 )
             preparation_tests = [arg for arg in self.adapter.tests if arg != "--offline"]
+            if self.case.report.game == "mindustry":
+                # Resolve/compile test dependencies during preparation. Actual
+                # baseline assertions run separately with networking disabled.
+                init_script = self.root / "prepare-test-dependencies.gradle"
+                init_script.write_text(
+                    "gradle.projectsEvaluated {\n"
+                    "    gradle.rootProject.tasks.register('reproResolveTestRuntime') {\n"
+                    "        doLast {\n"
+                    "            gradle.rootProject.project(':tests')"
+                    ".configurations.testRuntimeClasspath.files\n"
+                    "        }\n"
+                    "    }\n"
+                    "}\n"
+                )
+                preparation_tests = [
+                    "tests:testClasses" if arg == "tests:test" else arg for arg in preparation_tests
+                ]
+                preparation_tests += [
+                    "--init-script",
+                    "/workspace/prepare-test-dependencies.gradle",
+                    "reproResolveTestRuntime",
+                ]
             code, output = await self.exec(preparation_tests, timeout=600, check=False)
-            self.store.artifact(self.case.id, "baseline-tests.log", output)
+            self.store.artifact(self.case.id, "prepare-test-dependencies.log", output)
             (self.root / "prepared.json").write_text(
                 json.dumps(
                     {
                         "commit": self.case.report.target_commit,
                         "image": self.settings.worker_image,
-                        "baseline_tests_exit_code": code,
+                        "test_dependencies_exit_code": code,
                     }
                 )
             )
         finally:
             await self.stop()
+
+    async def baseline_source_is_clean(self):
+        _, commit = await run(["git", "-C", str(self.repo), "rev-parse", "HEAD"])
+        _, changes = await run(["git", "-C", str(self.repo), "status", "--porcelain"])
+        if commit.strip() != self.case.report.target_commit or changes.strip():
+            raise ValueError("Baseline tests require the untouched source at the target commit")
+
+    async def image_id(self) -> str:
+        # Resolve the running image, not a mutable tag that may have been rebuilt.
+        _, output = await run(["docker", "inspect", "--format", "{{.Image}}", self.name])
+        if not output.strip().startswith("sha256:"):
+            raise ValueError("Cannot establish the running worker image identity")
+        return output.strip()
 
     async def start(self, network=False, *, fresh_profile=False):
         await self.stop()

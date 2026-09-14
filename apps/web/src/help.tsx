@@ -22,7 +22,7 @@ const explanations: Record<string, string> = {
   "Confirmed replays":
     "Benchmark investigations with a confirmed, repeatable baseline reproduction.",
   "Validated candidates":
-    "Proposed patches whose five required validation checks all passed. Human approval is tracked separately.",
+    "Proposed patches whose five required validation checks passed or whose existing-test failures match recorded baseline evidence. Human approval is tracked separately.",
   Triage:
     "Turn the player report into a bug description, expected behavior, known conditions, and open questions.",
   Reproduce:
@@ -95,7 +95,7 @@ const explanations: Record<string, string> = {
   "Reject patch":
     "Record that you do not accept this proposed patch. The evidence remains saved and no upstream change is published.",
   "Approve for handoff":
-    "Available only when all required checks pass and the case is idle. Records your approval locally; a reviewed upstream pull request is still a separate step.",
+    "Available only when all required checks are satisfied, including recorded pre-existing test failures, and the case is idle. Records your approval locally; a reviewed upstream pull request is still a separate step.",
   "Stage timestamps":
     "First entry and Latest are exact saved event times, shown in your local time zone. They include repeated attempts and pauses, so the interval is not active work duration. Stage buttons show the latest event time and open that stage’s log. PDF timestamps use UTC.",
   "Model usage":

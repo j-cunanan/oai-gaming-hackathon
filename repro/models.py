@@ -146,9 +146,28 @@ class Usage(BaseModel):
 
 class Check(BaseModel):
     name: str
-    status: Literal["pass", "fail", "not_run", "error"]
+    status: Literal["pass", "baseline_failed", "fail", "not_run", "error"]
     detail: str
     artifact: str | None = None
+    baseline_artifact: str | None = None
+    failing_tests: list[str] = Field(default_factory=list)
+
+
+class BaselineTestRun(BaseModel):
+    commit_sha: str
+    timestamp: str = Field(default_factory=now)
+    status: Literal["running", "completed", "error"] = "running"
+    exit_code: int | None = None
+    failing_tests: list[str] = Field(default_factory=list)
+    parse_error: str | None = None
+    artifact: str | None = None
+    log_sha256: str | None = None
+    command: list[str]
+    worker_image: str
+    worker_platform: str
+    network: Literal["none"] = "none"
+    parser_version: int
+    detail: str = "Baseline test run started."
 
 
 class PatchRationale(BaseModel):
@@ -175,6 +194,7 @@ class Case(BaseModel):
     reproduction: Reproduction | None = None
     findings: Findings | None = None
     checks: list[Check] = Field(default_factory=list)
+    baseline_tests: dict[str, BaselineTestRun] = Field(default_factory=dict)
     usage: Usage | None = Field(default_factory=Usage)
     patch_artifact: str | None = None
     patch_rationale: PatchRationale | None = None
@@ -200,5 +220,9 @@ def patch_validated(case: Case) -> bool:
     return bool(
         case.patch_artifact
         and REQUIRED_VALIDATION_GATES.issubset(checks)
-        and all(status == "pass" for status in checks.values())
+        and all(
+            check.status == "pass"
+            or (check.name == "Existing tests" and check.status == "baseline_failed")
+            for check in case.checks
+        )
     )

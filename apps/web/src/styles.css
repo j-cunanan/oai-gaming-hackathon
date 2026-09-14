@@ -1670,8 +1670,32 @@ details li + li {
   border-color: #673d4c;
   background: #361e29;
 }
+.check-icon.baseline_failed,
+.phase.baseline-failed .phase-icon {
+  color: #e9bf71;
+  border-color: #8c6b36;
+  background: #3a2e1c;
+}
+.check-label.baseline_failed,
+.validation-row .baseline-notice,
+.phase.baseline-failed {
+  color: #e9bf71;
+}
+.validation-logs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 7px;
+  font-size: 10px;
+}
+.validation-logs a {
+  color: #c3a4d1;
+  text-decoration: underline;
+}
 .validation-row > div {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .validation-row strong {
   font-size: 10px;

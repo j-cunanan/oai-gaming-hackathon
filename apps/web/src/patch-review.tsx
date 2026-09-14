@@ -5,7 +5,7 @@ import {
   FileCode2,
   GitPullRequest,
 } from "lucide-react";
-import { allChecksPass, parseDiff } from "./diff";
+import { allChecksAccepted, allChecksPass, parseDiff } from "./diff";
 import { HelpTip } from "./help";
 
 type Props = {
@@ -25,6 +25,7 @@ export function PatchReview({
 }: Props) {
   const files = useMemo(() => parseDiff(patch), [patch]);
   const passed = allChecksPass(checks);
+  const accepted = allChecksAccepted(checks);
   if (!downloadUrl)
     return (
       <div className="inspector-empty">
@@ -88,7 +89,9 @@ export function PatchReview({
           <CheckCheck size={15} />
           {passed
             ? "All five validation checks passed"
-            : "Validation is not complete"}
+            : accepted
+              ? "Validation satisfied with pre-existing test failures"
+              : "Validation is not complete"}
         </strong>
         {checks
           .filter((check) =>

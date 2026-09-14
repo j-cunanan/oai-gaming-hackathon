@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import time
 from typing import Literal
 
@@ -15,6 +16,7 @@ from repro.minimization.ddmin import minimize
 from repro.minimization.semantic import propose_reduction
 from repro.models import (
     Action,
+    BaselineTestRun,
     BugSpec,
     Case,
     Check,
@@ -27,6 +29,13 @@ from repro.models import (
     patch_validated,
 )
 from repro.storage.store import Store
+from repro.validation import (
+    PARSER_VERSION,
+    baseline_evidence,
+    existing_tests_check,
+    parse_gradle_failures,
+    test_command,
+)
 
 
 class Empty(BaseModel):
@@ -75,7 +84,9 @@ class Manager:
             case, state, f"{summary} Inspect worker-error.log in Evidence for details."
         )
 
-    async def prepare(self, case: Case):
+    async def prepare(self, case: Case, *, refresh_baseline_tests=False):
+        if case.patch_artifact:
+            raise ValueError("Create a new case to prepare an untouched baseline after patching")
         sandbox = DockerSandbox(self.settings, self.store, case)
         self.store.transition(
             case,
@@ -84,6 +95,7 @@ class Manager:
         )
         try:
             await sandbox.prepare()
+            await self.record_baseline_tests(case, sandbox, refresh=refresh_baseline_tests)
             self.store.transition(
                 case,
                 State.READY,
@@ -97,6 +109,57 @@ class Manager:
             raise
         except Exception as exc:
             self.record_failure(case, exc, State.ENVIRONMENT_UNSUPPORTED)
+
+    async def record_baseline_tests(self, case, sandbox, *, refresh=False):
+        command = test_command(sandbox.adapter)
+        record = BaselineTestRun(
+            commit_sha=case.report.target_commit,
+            command=command,
+            worker_image="",
+            worker_platform=self.settings.worker_platform,
+            parser_version=PARSER_VERSION,
+        )
+        progress = self.store.workspace(case.id) / "baseline-test-progress.log"
+        progress.write_text("")
+        output = ""
+        cached = False
+        try:
+            await sandbox.start(network=False, fresh_profile=True)
+            record.worker_image = await sandbox.image_id()
+            await sandbox.baseline_source_is_clean()
+            _, error = baseline_evidence(
+                self.store, case, command, record.worker_image, record.worker_platform
+            )
+            if not refresh and error is None:
+                cached = True
+                self.store.save(case, "baseline_tests_cached", {"commit": record.commit_sha})
+                return
+            case.baseline_tests[record.commit_sha] = record
+            self.store.save(case, "baseline_tests", record.model_dump())
+            record.exit_code, output = await sandbox.exec(
+                command, timeout=600, check=False, output_path=progress
+            )
+            record.status = "completed"
+            record.detail = f"Offline baseline test exit code {record.exit_code}."
+            try:
+                record.failing_tests = parse_gradle_failures(output, record.exit_code)
+            except ValueError as exc:
+                record.parse_error = str(exc)
+                record.detail += f" Unparseable test identifiers: {exc}."
+        except (Exception, asyncio.CancelledError) as exc:
+            record.status = "error"
+            record.detail = f"Baseline test run could not complete: {type(exc).__name__}: {exc}"
+            if progress.exists():
+                output = progress.read_text(errors="replace")
+            if isinstance(exc, asyncio.CancelledError):
+                raise
+        finally:
+            if not cached:
+                record.artifact = self.store.artifact(case.id, "baseline-tests.log", output)
+                record.log_sha256 = hashlib.sha256(output.encode()).hexdigest()
+                case.baseline_tests[record.commit_sha] = record
+                self.store.save(case, "baseline_tests", record.model_dump())
+            await sandbox.stop()
 
     def source_tools(self, sandbox):
         async def read(args):
@@ -206,7 +269,7 @@ class Manager:
             self.store.transition(
                 case,
                 State.AWAITING_HUMAN,
-                "All validation gates passed. Ready for handoff review."
+                "Validation gates satisfied; inspect any pre-existing test failures before handoff."
                 if patch_validated(case)
                 else "Validation is incomplete or failed. Inspect the recorded gates.",
             )
@@ -498,7 +561,7 @@ class Manager:
             State.AWAITING_HUMAN,
             "Candidate ready for review. "
             + (
-                "All validation gates passed."
+                "Validation gates satisfied; inspect any pre-existing test failures."
                 if patch_validated(case)
                 else "Validation is incomplete or failed; inspect the recorded checks before using the patch."
             ),
@@ -688,19 +751,18 @@ class Manager:
             State.VALIDATING,
             "Building the candidate and running existing tests, then replaying the original trigger.",
         )
-        network = self.settings.validation_network
-        await sandbox.start(network=network)
+        await sandbox.start(network=False, fresh_profile=True)
         self.store.save(
             case,
             "validation_environment",
             {
-                "network": "bridge" if network else "none",
+                "network": "none",
                 "phase": "build and existing tests",
                 "worker_image": self.settings.worker_image,
             },
         )
         build = list(sandbox.adapter.build)
-        if case.report.game == "mindustry" and not network:
+        if case.report.game == "mindustry":
             build.append("--offline")
         code, output = await sandbox.exec(build, timeout=900, check=False)
         artifact = self.store.artifact(case.id, "candidate-build.log", output)
@@ -721,22 +783,7 @@ class Manager:
             )
             self.store.save(case)
             return
-        tests = [arg for arg in sandbox.adapter.tests if not (network and arg == "--offline")]
-        code, output = await sandbox.exec(tests, timeout=600, check=False)
-        artifact = self.store.artifact(case.id, "candidate-tests.log", output)
-        case.checks.append(
-            Check(
-                name="Existing tests",
-                status="pass" if code == 0 else "fail",
-                detail=f"Test exit code {code}"
-                + (
-                    ". The log contains UnknownHostException; this worker has networking disabled. Inspect the test log."
-                    if code and not network and "UnknownHostException" in output
-                    else ""
-                ),
-                artifact=artifact,
-            )
-        )
+        await self.check_existing_tests(case, sandbox)
         rep = case.reproduction
         self.store.save(
             case, "validation_environment", {"network": "none", "phase": "fresh game replays"}
@@ -798,6 +845,43 @@ class Manager:
         # Leave the target-state evidence in the viewport; the launch check has its own artifact.
         if replay_screenshot:
             case.latest_screenshot = replay_screenshot
+        self.store.save(case)
+
+    async def check_existing_tests(self, case, sandbox):
+        command = test_command(sandbox.adapter)
+        progress = self.store.workspace(case.id) / "candidate-test-progress.log"
+        progress.write_text("")
+        try:
+            image = await sandbox.image_id()
+            code, output = await sandbox.exec(
+                command, timeout=600, check=False, output_path=progress
+            )
+            artifact = self.store.artifact(case.id, "candidate-tests.log", output)
+            check = existing_tests_check(
+                self.store,
+                case,
+                code,
+                output,
+                artifact,
+                command,
+                image,
+                self.settings.worker_platform,
+            )
+        except (Exception, asyncio.CancelledError) as exc:
+            artifact = self.store.artifact(case.id, "candidate-tests.log", progress.read_bytes())
+            record = case.baseline_tests.get(case.report.target_commit)
+            check = Check(
+                name="Existing tests",
+                status="fail",
+                detail=f"Candidate test run could not complete: {type(exc).__name__}: {exc}",
+                artifact=artifact,
+                baseline_artifact=record.artifact if record else None,
+            )
+            if isinstance(exc, asyncio.CancelledError):
+                case.checks.append(check)
+                self.store.save(case)
+                raise
+        case.checks.append(check)
         self.store.save(case)
 
     @staticmethod

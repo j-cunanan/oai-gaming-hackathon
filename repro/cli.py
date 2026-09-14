@@ -52,13 +52,20 @@ def ingest(
 
 
 @app.command()
-def prepare(case_id: str):
+def prepare(
+    case_id: str,
+    refresh_baseline_tests: bool = typer.Option(
+        False,
+        "--refresh-baseline-tests",
+        help="Ignore the cached baseline suite run for this commit",
+    ),
+):
     """Fetch the exact revision and build it in the preparation sandbox."""
     cfg, store = context()
     case = local_case(store, case_id)
     if case.patch_artifact:
         raise typer.BadParameter("Create a new case to prepare a fresh baseline after patching")
-    asyncio.run(Manager(cfg, store).prepare(case))
+    asyncio.run(Manager(cfg, store).prepare(case, refresh_baseline_tests=refresh_baseline_tests))
     case = local_case(store, case_id)
     typer.echo(f"{case.state}: {case.summary}")
 

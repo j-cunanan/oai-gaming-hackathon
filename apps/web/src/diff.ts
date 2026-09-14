@@ -83,3 +83,14 @@ export function allChecksPass(checks: { name: string; status: string }[]) {
     ) && checks.every((check) => check.status === "pass")
   );
 }
+
+export function checkAccepted(check: { name: string; status: string }) {
+  return check.status === "pass" ||
+    (check.name === "Existing tests" && check.status === "baseline_failed");
+}
+
+export function allChecksAccepted(checks: { name: string; status: string }[]) {
+  return allChecksPass(checks.map((check) => ({
+    ...check, status: checkAccepted(check) ? "pass" : check.status,
+  })));
+}

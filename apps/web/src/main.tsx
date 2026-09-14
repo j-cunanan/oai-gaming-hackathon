@@ -8,6 +8,7 @@ import React, {
 import { createRoot } from "react-dom/client";
 import {
   Activity,
+  AlertTriangle,
   ArrowDownToLine,
   ArrowRight,
   ArrowUpRight,
@@ -40,7 +41,7 @@ import {
 import "./styles.css";
 import { HelpTip } from "./help";
 import { PatchReview } from "./patch-review";
-import { allChecksPass } from "./diff";
+import { allChecksAccepted, checkAccepted } from "./diff";
 import { preferredCase } from "./case-selection";
 import { StageActivity, useStageActivity } from "./stage-activity";
 import { clockTime, dateTime } from "./activity-model";
@@ -48,9 +49,11 @@ import "./case-identity.css";
 
 type CheckResult = {
   name: string;
-  status: string;
+  status: "pass" | "baseline_failed" | "fail" | "not_run" | "error";
   detail: string;
   artifact: string | null;
+  baseline_artifact: string | null;
+  failing_tests: string[];
 };
 type Hypothesis = {
   id: string;
@@ -110,6 +113,18 @@ type Case = {
     limitations: string[];
   } | null;
   checks: CheckResult[];
+  baseline_tests: Record<
+    string,
+    {
+      commit_sha: string;
+      timestamp: string;
+      status: "running" | "completed" | "error";
+      exit_code: number | null;
+      failing_tests: string[];
+      artifact: string | null;
+      detail: string;
+    }
+  >;
   usage: { model_calls: number; input_tokens: number; output_tokens: number } | null;
   first_reproduced_seconds: number | null;
   elapsed_seconds: number | null;
@@ -908,13 +923,19 @@ function App() {
                       const failed =
                         phase.label === "Validate" &&
                         (current.checks.some(
-                          (check) => check.status !== "pass",
+                          (check) => !checkAccepted(check),
                         ) ||
-                          (done && current.checks.length < 5));
+                          (done && !allChecksAccepted(current.checks)));
+                      const preExisting =
+                        phase.label === "Validate" &&
+                        !failed &&
+                        current.checks.some(
+                          (check) => check.status === "baseline_failed",
+                        );
                       return (
                         <React.Fragment key={phase.label}>
                           <div
-                            className={`phase ${done ? "done" : ""} ${active ? "active" : ""} ${failed ? "failed" : ""}`}
+                            className={`phase ${done ? "done" : ""} ${active ? "active" : ""} ${failed ? "failed" : ""} ${preExisting ? "baseline-failed" : ""}`}
                           >
                             <button
                               className="phase-jump"
@@ -930,6 +951,8 @@ function App() {
                               <span className="phase-icon">
                                 {failed ? (
                                   <X size={13} />
+                                ) : preExisting ? (
+                                  <AlertTriangle size={13} />
                                 ) : done ? (
                                   <Check size={13} />
                                 ) : (
@@ -937,7 +960,7 @@ function App() {
                                 )}
                               </span>
                               <span>
-                                <span>{phase.label}</span>
+                                <span>{failed ? "Checks failed" : preExisting ? "Pre-existing failure" : phase.label}</span>
                                 <small
                                   title={
                                     stageTime
@@ -1426,6 +1449,8 @@ function App() {
                               <span className={`check-icon ${c.status}`}>
                                 {c.status === "pass" ? (
                                   <Check size={13} />
+                                ) : c.status === "baseline_failed" ? (
+                                  <AlertTriangle size={13} />
                                 ) : c.status === "fail" ? (
                                   <X size={13} />
                                 ) : (
@@ -1436,10 +1461,67 @@ function App() {
                                 <strong>
                                   {c.name} <HelpTip topic={c.name} />
                                 </strong>
+                                {c.status === "baseline_failed" && (
+                                  <p className="baseline-notice">
+                                    Pre-existing — fails on baseline too
+                                  </p>
+                                )}
                                 <p>{c.detail}</p>
+                                {c.name === "Existing tests" &&
+                                  current.baseline_tests?.[
+                                    current.report.target_commit
+                                  ] && (
+                                    <p>
+                                      Baseline{" "}
+                                      {current.report.target_commit.slice(0, 8)}{" "}
+                                      ·{" "}
+                                      {
+                                        current.baseline_tests[
+                                          current.report.target_commit
+                                        ].timestamp
+                                      }
+                                      {" · "}
+                                      {
+                                        current.baseline_tests[
+                                          current.report.target_commit
+                                        ].status
+                                      }
+                                      {" · exit "}
+                                      {current.baseline_tests[
+                                        current.report.target_commit
+                                      ].exit_code ?? "unavailable"}
+                                    </p>
+                                  )}
+                                <div className="validation-logs">
+                                  {c.baseline_artifact && (
+                                    <a
+                                      href={artifactUrl(
+                                        current,
+                                        c.baseline_artifact,
+                                      )}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Baseline log
+                                    </a>
+                                  )}
+                                  {c.artifact && (
+                                    <a
+                                      href={artifactUrl(current, c.artifact)}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {c.name === "Existing tests"
+                                        ? "Candidate log"
+                                        : "Evidence"}
+                                    </a>
+                                  )}
+                                </div>
                               </div>
                               <span className={`check-label ${c.status}`}>
-                                {c.status.replace("_", " ")}
+                                {c.status === "baseline_failed"
+                                  ? "pre-existing"
+                                  : c.status.replace("_", " ")}
                               </span>
                             </div>
                           ))}
@@ -1483,7 +1565,9 @@ function App() {
                               Boolean(current.imported_from) ||
                                 busy ||
                                 running ||
-                                !allChecksPass(current.checks)
+                                !current.patch_artifact ||
+                                !allChecksAccepted(current.checks) ||
+                                current.checks.some((c) => !checkAccepted(c))
                               }
                               onClick={() => act("approve")}
                             >
