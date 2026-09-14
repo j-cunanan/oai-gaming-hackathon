@@ -74,6 +74,8 @@ const explanations: Record<string, string> = {
     "The source diagnosis and ranked files/functions. A source match helps explain a bug but does not by itself prove the game reproduced it.",
   "Source score":
     "The investigator's 0-to-1 relevance score for this file. It is a ranking signal, not a calibrated probability that the fix is correct.",
+  "Source analysis limitations":
+    "Notes recorded while the AI reviewed source code. This stage has source tools only; the reproduction and validation stages record the actual game executions. The original notes are preserved, even when their wording describes only the source reviewer's view.",
   "Proposed patch":
     "The candidate diff is the proposed patch: exact source lines to add or remove. It is applied in the disposable game workspace for testing and awaits review before handoff.",
   "Why this patch should work":
