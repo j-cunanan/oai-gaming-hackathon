@@ -152,6 +152,40 @@ async def test_sequence_includes_intervening_inputs_only_through_last_checkpoint
     ]
 
 
+async def test_tool_output_consumption_preserves_images_and_allows_late_checkpoint_selection(
+    tmp_path,
+):
+    store = Store(tmp_path)
+    case = Case(
+        report=CaseInput(
+            title="Patch returned",
+            body="Deleted patch returns on reopening.",
+            target_commit="a" * 40,
+        )
+    )
+    worker = SimpleNamespace(action=AsyncMock(side_effect=lambda _: screen()))
+    recorder = Recorder(store, case, worker)
+    for label in [f"setup-{i}" for i in range(8)] + oracle().checkpoints:
+        response = await recorder.act(Action(action="wait", checkpoint=label))
+        # Model.loop consumes these while constructing a function-call response.
+        response.pop("screenshot")
+        response["logs"] = "Changed tool output"
+    assert len(recorder.checkpoints) == 10
+    assert recorder.checkpoints["deleted"]["observation"]["screenshot"] == screen()["screenshot"]
+    assert recorder.checkpoints["deleted"]["observation"]["logs"] == ""
+    model = SimpleNamespace(structured=AsyncMock(return_value=verdict()))
+    result = await verify(
+        model,
+        oracle(),
+        screen(),
+        launched_ok=True,
+        checkpoints=recorder.checkpoints,
+        actions=recorder.attempt_actions,
+    )
+    assert result.observed
+    assert len(model.structured.call_args.kwargs["screenshots"]) == 2
+
+
 async def test_crash_signature_requires_both_nonzero_exit_and_matching_log():
     spec = OracleSpec(
         kind="crash", description="Save crashes with a specific signature", log_pattern="unitTeam"

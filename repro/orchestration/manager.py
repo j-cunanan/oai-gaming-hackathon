@@ -463,7 +463,7 @@ class Manager:
         tools = [
             Tool(
                 "computer",
-                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). A nonempty checkpoint saves the resulting screen under a unique label (at most 8 per experiment); use these for before/after proof. Waits settle the UI.",
+                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). A nonempty checkpoint saves the resulting screen under a unique label. Select 2–8 relevant labels in the final sequence oracle; extra setup checkpoints do not consume that selection. Waits settle the UI.",
                 Action,
                 computer,
             ),
@@ -496,7 +496,8 @@ class Manager:
             "payload transport, or another state change, tag 2–8 meaningful computer actions with "
             "distinct checkpoint labels capturing visible prerequisites/input, the transition, and "
             "the resulting state. A labeled wait can capture the current state without changing it. "
-            "Use oracle kind=sequence with those labels in chronological order; a final screen alone "
+            "You may record extra labeled states while exploring, then select only the 2–8 relevant "
+            "labels for oracle kind=sequence in chronological order; a final screen alone "
             "cannot establish a change or a lost object. Do not reuse labels without resetting. "
             "For a crash, include the specific observed literal log signature when available. "
             "Record at least one hypothesis and its result. Then call finish.\n"

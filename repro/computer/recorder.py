@@ -50,8 +50,6 @@ class Recorder:
         if action.checkpoint:
             if action.checkpoint in self.checkpoints:
                 raise ValueError("Checkpoint label already used; choose a new label or reset")
-            if len(self.checkpoints) >= 8:
-                raise ValueError("At most eight checkpoints are allowed per experiment")
         before = self.last_screenshot
         observation = self.capture(await self.sandbox.action(action), phase)
         self.actions.append(action)
@@ -60,7 +58,9 @@ class Recorder:
             self.checkpoints[action.checkpoint] = {
                 "index": len(self.attempt_actions),
                 "action": action.model_dump(),
-                "observation": observation,
+                # Tool responses may consume image/log fields while preparing the
+                # investigator's next input. Verification retains its own snapshot.
+                "observation": dict(observation),
             }
         self.store.save(
             self.case,
