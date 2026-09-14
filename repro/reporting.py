@@ -178,7 +178,8 @@ def render_report(case: Case, store: Store) -> bytes:
         story += [
             p("Provided maps", heading),
             p(
-                "Original player files restored before each fresh run. Checksums identify inputs; "
+                "Registered input files restored before each fresh run. The report identifies their origin "
+                "and any prepared setup. Checksums identify inputs; "
                 "their presence does not establish a reproduced bug.",
                 small,
             ),

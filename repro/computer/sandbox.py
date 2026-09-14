@@ -226,7 +226,7 @@ class DockerSandbox:
                 self.case,
                 "fixtures_staged",
                 {
-                    "summary": "Restored original provided maps before this fresh game launch.",
+                    "summary": "Restored the registered input files before this fresh game launch.",
                     "fixtures": staged,
                 },
             )

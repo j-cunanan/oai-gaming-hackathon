@@ -158,7 +158,7 @@ def import_case(manifest: Path):
 
 @app.command("add-fixture")
 def add_fixture(source: Path):
-    """Register an original .msav map; print its identity for a case input manifest."""
+    """Register a .msav input; identify its origin and any setup assistance in the case report."""
     _, store = context()
     try:
         fixture = register_fixture(store, source)

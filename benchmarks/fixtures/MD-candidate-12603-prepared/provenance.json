@@ -1,0 +1,31 @@
+{
+  "origin": "operator_setup",
+  "scene": "generator",
+  "game_commit": "ec656a63eb6c063fd35abbd7e65cb3b5dba1078b",
+  "game_jar_sha256": "268ca64025c0a3fe7937dfc1cf44479f4d0142bcfe5ec2bf4949f187e4b6321d",
+  "headless_jar_sha256": "20aa1b112ee96acf609419611327f9318375c23fbfa500c2143169ebf84c8cf1",
+  "builder_source_sha256": "5ca819d16a12734204efb4236fb35d7b03f8069d7eb05faf01931243fd48c9c6",
+  "worker_image_id": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+  "worker_platform": "linux/amd64",
+  "network": "none",
+  "source_workspace_unchanged": true,
+  "historical_source_isolation_verified": true,
+  "symptom_tested": false,
+  "fixture": {
+    "filename": "operator-generator-setup.msav",
+    "bytes": 5284,
+    "sha256": "c09c307cc95a9eb6edb26b6a247f219f1cc525283c32450ee8b7649cb549dc3e"
+  },
+  "preconditions": {
+    "mode": "generator",
+    "operator_prepared": true,
+    "save_reload_preconditions_pass": true,
+    "editor": false,
+    "infinite_resources": true,
+    "reactor_explosions": true,
+    "unit_count": 1,
+    "fixture_bytes": 5284,
+    "symptom_tested": false,
+    "file": "operator-generator-setup.msav"
+  }
+}

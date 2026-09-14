@@ -1,0 +1,112 @@
+id: MD-candidate-12603-prepared
+input:
+  title: '[Prepared setup] Generator ghost state after payload explosion'
+  body: "### Platforms\n\nWindows\n\n### Build\n\nrelease build 159.7\n\n### Issue\n\n[RU] \nГенератор, заправленный\
+    \ взрывчатой смесью, может пережить собственный взрыв, если он стоит на грузовом конвейере. В результате\
+    \ появляется генератор с 0 HP, который неуязвим, продолжает работать и ломает ИИ юнитов, пытающихся с ним\
+    \ взаимодействовать. При перезаходе на сохранение, генератор теряет забагованные свойства, и становится\
+    \ просто блоком с 0 хп.\nДемонстрация бага и его воспроизведения будет прикреплена в виде записи экрана\
+    \ (Простите за плохое качество и фреймрейт, мой ноутбук лучше не запишет)\n\n[EN (DeepSeek translate)]\n\
+    A generator can survive its own explosion if it is placed on a payload conveyor while fueled with Blast\
+    \ Compound. The resulting block has 0 HP, is indestructible, still functions, and can break enemy AI pathfinding.\
+    \ After reloading the save, the generator loses its bugged properties and becomes a normal block with 0\
+    \ HP.\nA video demonstration of the bug and its reproduction is included as a screen recording.\nPlease\
+    \ excuse the low resolution and framerate — my laptop is not capable of capturing higher quality footage.\n\
+    \nhttps://drive.google.com/file/d/1Ikw9oJ3dS4ffMi4ViG005SJQR1KysG-m/view?usp=sharing\n\n### Steps to reproduce\n\
+    \n[RU]\n- Поставьте ГВС/Паровой генератор, и запитайте его взрывчатой смесью;\n- Дайте ему повредиться,\
+    \ и подхватите юнитом;\n- Выгрузите генератор на грузовой конвейер, и подождите до взрыва (Важно: \"Взрывы\
+    \ реакторов\" должны быть включены);\n- Достаньте взорвавшийся генератор с конвейера юнитом, и установите\
+    \ его на землю.\nЕсли у генератора пустая полоса здоровья, то баг удался. Ручную погрузку генератора можно\
+    \ заменить на грузовой загрузчик с Эрекира.\n\n[EN (DeepSeek translate)]\n- Place a Steam Generator (or\
+    \ Combustion generator) and fuel it with Blast Compound.\n- Allow it to take damage, then pick it up using\
+    \ a unit.\n- Unload the damaged generator onto a Payload Conveyor and wait for it to explode. (Important:\
+    \ Reactor explosions must be enabled in the game settings.)\n- After it explodes, pick it up from the conveyor\
+    \ using a unit, and place it back on the ground.\nIf the generator has an empty health bar — the bug has\
+    \ successfully been triggered. Manual loading of the generator can be replaced with a payload loader from\
+    \ Erekir.\n\n### Mods used\n\n[RU]\nБез модов\n\n[EN]\nNo mods\n\n### Save file\n\n[RU]\nБаг может быть\
+    \ воспроизведён на любом сохранении.\n\n[EN (Google translater)]\nThe bug can be reproduced on any save.\n\
+    \n### (Crash) logs\n\n_No response_\n\n### REPRO video/setup assistance (not part of the upstream report)\n\
+    \nThis fresh attempt is explicitly assisted. Codex inspected sampled frames of the original report's linked\
+    \ 331.267-second, 780x438 video on September 15 JST. Those frames are third-party report material, not\
+    \ a fresh REPRO reproduction.\n\nObserved setup in the original video: around 25 seconds a placed Payload\
+    \ Source has a configuration panel with a search field and unit choices. Around 35-55 seconds there is\
+    \ a Steam Generator with adjacent resource sources, a water bar and nonzero power output. The player controls\
+    \ a green payload-capable flying unit; a separate Payload Conveyor is placed nearby. Around 65 seconds\
+    \ the generator is on that conveyor with a visible effect. Later (around 105-115 seconds) hovering the\
+    \ placed Steam Generator shows an empty health bar, water and nonzero power output. Sampled frames do not\
+    \ establish every intermediate input or the exact unit identity.\n\nGeneral setup facts checked in this\
+    \ historical source, not a diagnosis or fix: Payload Source is in the Units category, is 5x5 and requires\
+    \ sandbox/infinite resources. Its configuration combines block and unit choices, so use its search field\
+    \ to find a unit by name rather than guessing an icon. Mega is a payload-capable flying unit with capacity\
+    \ for a 2x2 building. Confirm actual unit output, then use Ctrl-click to control it. Default pickup/drop\
+    \ keys are [ and ]; Space pauses time, E pauses construction, and sustained movement needs keypress hold_seconds.\n\
+    \nFor Steam Generator, configure an Item Source with Blast Compound and a Liquid Source with Water and\
+    \ verify actual delivery and generator operation before the damage/pickup sequence. Allow enough open terrain\
+    \ for the large source and the flight/transport route. A blank editor map with a friendly core can be saved\
+    \ and played as a custom Sandbox map if existing terrain makes setup difficult. Record the actual rules/mode;\
+    \ editor invulnerability would invalidate a damage test. Reactor explosions must be enabled as the original\
+    \ report says.\n\nKeep checkpoints for generator present and fueled, damaged but alive, loaded on conveyor,\
+    \ explosion/effect, then retrieved and placed with its health and operation inspected. A missing item,\
+    \ unbuilt outline, normal payload drawing or an unexecuted step is not the reported ghost-state bug. Stop\
+    \ with a clear setup limitation if those prerequisites cannot be reached. No historical developer fix,\
+    \ future source or root-cause hint was supplied.\n\n\n### REPRO operator-prepared saved scene (explicit\
+    \ additional assistance)\n\nThis variant begins from a small prepared SAVE GAME supplied at /workspace/fixtures/operator-generator-setup.msav.\
+    \ It is not an original player attachment. Import it using Play > Load Game > Import Save (follow the actual\
+    \ UI labels), then load the saved game. Importing it only as an editor map may omit the saved unit entities,\
+    \ so verify that the units are present in gameplay.\n\nThe scene was constructed with the unchanged historical\
+    \ game's normal objects and native SaveIO serializer. It uses a flat 160x120 stone map, a friendly Sharded\
+    \ core and normal Sandbox rules (editor=false, infinite resources=true, reactor explosions=true, no automatic\
+    \ wave timer). The construction audit saved and reloaded the file and checked healthy initial objects and\
+    \ empty conveyors. This is a precondition audit, not a bug reproduction, candidate test or an AI result.\
+    \ There is no damaged, dead or ghost object embedded in the file.\n\nThe scene has one healthy Steam Generator\
+    \ at tile (84,60), a Water-configured Liquid Source to its west at (83,60), an UNCONFIGURED Item Source\
+    \ to its east at (86,60), an empty right-facing Payload Conveyor at (96,60), and one healthy Mega near\
+    \ (82,56). Native source delivery was checked: water reaches the generator; it starts without fuel at full\
+    \ health. Camera metadata is near tile (86,60), but choose screen coordinates from the actual image.\n\n\
+    First inspect the healthy setup and control the Mega. The AI must configure the Item Source with Blast\
+    \ Compound, establish actual damage, perform pickup and transport onto the conveyor, observe the explosion,\
+    \ then retrieve/place the object and check its health and operation. Pause time deliberately when needed\
+    \ for the timing-sensitive steps; normal gameplay damage must occur with editor mode disabled. The construction\
+    \ source supplies no root-cause diagnosis or future patch.\n"
+  game: mindustry
+  target_commit: ec656a63eb6c063fd35abbd7e65cb3b5dba1078b
+  platform: Windows (reported); Linux (planned evaluation)
+  fixtures:
+  - filename: operator-generator-setup.msav
+    sha256: c09c307cc95a9eb6edb26b6a247f219f1cc525283c32450ee8b7649cb549dc3e
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12603
+  reported_at: '2026-09-06T11:10:26Z'
+  fix_commit: e37c2f1ec2bc571d984610b3d84783a89b88bf8e
+  fix_url: https://github.com/Anuken/Mindustry/commit/e37c2f1ec2bc571d984610b3d84783a89b88bf8e
+  changed_files:
+  - core/src/mindustry/entities/comp/PayloadComp.java
+  - core/src/mindustry/world/blocks/payloads/BuildPayload.java
+  - core/src/mindustry/world/blocks/payloads/Payload.java
+  - core/src/mindustry/world/blocks/payloads/PayloadBlock.java
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  - core/src/mindustry/world/blocks/payloads/PayloadUnloader.java
+  all_commit_files:
+  - core/src/mindustry/entities/comp/PayloadComp.java
+  - core/src/mindustry/world/blocks/payloads/BuildPayload.java
+  - core/src/mindustry/world/blocks/payloads/Payload.java
+  - core/src/mindustry/world/blocks/payloads/PayloadBlock.java
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  - core/src/mindustry/world/blocks/payloads/PayloadUnloader.java
+  positive_case: true
+  reproducibility: UNVERIFIED
+  priority: P3 - complex setup
+  suggested_tags: Gameplay / payload lifecycle / destruction
+  proposed_trigger: Fuel a generator with Blast Compound, pick it up damaged, put it on a payload conveyor,
+    let it explode, then try to retrieve and place it.
+  selection_notes: Requires reactor explosions enabled, controlled damage, resources and payload handling.
+    Strong multi-file reasoning case but a long, timing-sensitive demo. Reported on Windows.
+  evidence_notes: Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently
+    fetched body, excluding submission checklist; may include later edits. No comments or fix information added
+    to input. No baseline build or runtime verification performed.
+  assistance: Operator-authored healthy setup save produced by the matching pre-fix game, plus the separately
+    labeled prior setup guidance. Fresh report context; no future fix supplied.
+  video_sha256: f3f768b7547743829a01f91991e436c9a96bb57b759fe06e95f45e5ae2c18d12
+  video_bytes: 95296993
+  distinct_issue: '12603'
+  setup_fixture_provenance: benchmarks/fixtures/MD-candidate-12603-prepared/provenance.json
