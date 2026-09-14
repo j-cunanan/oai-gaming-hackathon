@@ -1,0 +1,85 @@
+./core/src/mindustry/editor/MapView.java:215:        if(editor.drawBlock.size % 2 == 0 && tool != EditorTool.eraser){
+./core/src/mindustry/editor/MapView.java:290:        if((!editor.drawBlock.isMultiblock() || tool == EditorTool.eraser) && tool != EditorTool.fill){
+./core/src/mindustry/editor/MapView.java:315:                float offset = (editor.drawBlock.size % 2 == 0 ? scaling / 2f : 0f);
+./core/src/mindustry/editor/MapView.java:319:                scaling * editor.drawBlock.size / 2f);
+./core/src/mindustry/world/draw/DrawSoftParticles.java:12:public class DrawSoftParticles extends DrawBlock{
+./core/src/mindustry/world/draw/DrawHeatRegion.java:12:public class DrawHeatRegion extends DrawBlock{
+./core/src/mindustry/mod/ContentParser.java:198:        put(DrawBlock.class, (type, data) -> {
+./core/src/mindustry/mod/ContentParser.java:205:                return new DrawMulti(parser.readValue(DrawBlock[].class, data));
+./core/src/mindustry/mod/ContentParser.java:209:            DrawBlock result = make(bc);
+./core/src/mindustry/world/draw/DrawWarmupRegion.java:12:public class DrawWarmupRegion extends DrawBlock{
+./core/src/mindustry/world/draw/DrawPumpLiquid.java:10:public class DrawPumpLiquid extends DrawBlock{
+./core/src/mindustry/world/draw/DrawWeave.java:11:public class DrawWeave extends DrawBlock{
+./core/src/mindustry/world/draw/DrawBubbles.java:9:public class DrawBubbles extends DrawBlock{
+./core/src/mindustry/world/draw/DrawPower.java:13:public class DrawPower extends DrawBlock{
+./core/src/mindustry/world/draw/DrawFade.java:9:public class DrawFade extends DrawBlock{
+./core/src/mindustry/world/draw/DrawBlockParts.java:12:public class DrawBlockParts extends DrawBlock{
+./core/src/mindustry/world/draw/DrawCells.java:12:public class DrawCells extends DrawBlock{
+./core/src/mindustry/world/draw/DrawSideRegion.java:10:public class DrawSideRegion extends DrawBlock{
+./core/src/mindustry/world/draw/DrawBlock.java:15:public class DrawBlock{
+./core/src/mindustry/world/draw/DrawShape.java:8:public class DrawShape extends DrawBlock{
+./core/src/mindustry/world/draw/DrawSpikes.java:7:public class DrawSpikes extends DrawBlock{
+./core/src/mindustry/world/draw/DrawLiquidRegion.java:10:public class DrawLiquidRegion extends DrawBlock{
+./core/src/mindustry/world/draw/DrawArcSmelt.java:9:public class DrawArcSmelt extends DrawBlock{
+./core/src/mindustry/world/draw/DrawParticles.java:10:public class DrawParticles extends DrawBlock{
+./core/src/mindustry/world/draw/DrawGlowRegion.java:11:public class DrawGlowRegion extends DrawBlock{
+./core/src/mindustry/world/draw/DrawMultiWeave.java:10:public class DrawMultiWeave extends DrawBlock{
+./core/src/mindustry/world/draw/DrawCrucibleFlame.java:10:public class DrawCrucibleFlame extends DrawBlock{
+./core/src/mindustry/world/draw/DrawCultivator.java:11:public class DrawCultivator extends DrawBlock{
+./core/src/mindustry/world/draw/DrawMulti.java:10:/** combined several DrawBlocks into one */
+./core/src/mindustry/world/draw/DrawMulti.java:11:public class DrawMulti extends DrawBlock{
+./core/src/mindustry/world/draw/DrawMulti.java:12:    public DrawBlock[] drawers = {};
+./core/src/mindustry/world/draw/DrawMulti.java:17:    public DrawMulti(DrawBlock... drawers){
+./core/src/mindustry/world/draw/DrawMulti.java:21:    public DrawMulti(Seq<DrawBlock> drawers){
+./core/src/mindustry/world/draw/DrawMulti.java:22:        this.drawers = drawers.toArray(DrawBlock.class);
+./core/src/mindustry/world/draw/DrawTurret.java:19:public class DrawTurret extends DrawBlock{
+./core/src/mindustry/world/draw/DrawBlurSpin.java:9:public class DrawBlurSpin extends DrawBlock{
+./core/src/mindustry/world/draw/DrawLiquidOutputs.java:11:/** This must be used in conjunction with another DrawBlock; it only draws outputs. */
+./core/src/mindustry/world/draw/DrawLiquidOutputs.java:12:public class DrawLiquidOutputs extends DrawBlock{
+./core/src/mindustry/world/draw/DrawPistons.java:11:public class DrawPistons extends DrawBlock{
+./core/src/mindustry/world/draw/DrawPulseShape.java:13:public class DrawPulseShape extends DrawBlock{
+./core/src/mindustry/world/draw/DrawFrames.java:9:public class DrawFrames extends DrawBlock{
+./core/src/mindustry/world/draw/DrawFlame.java:12:public class DrawFlame extends DrawBlock{
+./core/src/mindustry/world/draw/DrawRegion.java:12:public class DrawRegion extends DrawBlock{
+./core/src/mindustry/world/draw/DrawHeatInput.java:14:public class DrawHeatInput extends DrawBlock{
+./core/src/mindustry/mod/ClassMap.java:475:        classes.put("DrawBlock", mindustry.world.draw.DrawBlock.class);
+./core/src/mindustry/mod/ClassMap.java:476:        classes.put("DrawBlockParts", mindustry.world.draw.DrawBlockParts.class);
+./core/src/mindustry/world/draw/DrawLiquidTile.java:8:public class DrawLiquidTile extends DrawBlock{
+./core/src/mindustry/world/draw/DrawCircles.java:9:public class DrawCircles extends DrawBlock{
+./core/src/mindustry/world/draw/DrawHeatOutput.java:14:public class DrawHeatOutput extends DrawBlock{
+./core/src/mindustry/mod/DataPatcher.java:410:            }else if(object instanceof DrawBlock draw && parent instanceof Block block){
+./core/src/mindustry/world/draw/DrawDefault.java:9:public class DrawDefault extends DrawBlock{
+./core/src/mindustry/world/blocks/defense/turrets/Turret.java:161:    public DrawBlock drawer = new DrawTurret();
+./core/src/mindustry/world/blocks/defense/RegenProjector.java:32:    public DrawBlock drawer = new DrawDefault();
+./core/src/mindustry/world/blocks/production/Pump.java:24:    public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawPumpLiquid());
+./core/src/mindustry/world/blocks/production/Separator.java:25:    public DrawBlock drawer = new DrawDefault();
+./core/src/mindustry/world/blocks/production/GenericCrafter.java:51:    public DrawBlock drawer = new DrawDefault();
+./core/src/mindustry/editor/MapEditorDialog.java:817:        cont.table(Tex.underline, extra -> extra.labelWrap(() -> editor.drawBlock.localizedName).width(200f).center()).growX();
+./core/src/mindustry/editor/MapEditorDialog.java:821:        }, () -> editor.drawBlock != null && editor.drawBlock.editorConfigurable).with(c -> c.setEnforceMinSize(true)).update(col -> {
+./core/src/mindustry/editor/MapEditorDialog.java:823:            if(lastBlock[0] != editor.drawBlock){
+./core/src/mindustry/editor/MapEditorDialog.java:825:                if(editor.drawBlock != null){
+./core/src/mindustry/editor/MapEditorDialog.java:826:                    editor.drawBlock.buildEditorConfig(configTable[0]);
+./core/src/mindustry/editor/MapEditorDialog.java:829:                lastBlock[0] = editor.drawBlock;
+./core/src/mindustry/editor/MapEditorDialog.java:869:            button.clicked(() -> editor.drawBlock = block);
+./core/src/mindustry/editor/MapEditorDialog.java:871:            button.update(() -> button.setChecked(editor.drawBlock == block));
+./core/src/mindustry/editor/MapEditor.java:33:    public Block drawBlock = Blocks.stone;
+./core/src/mindustry/editor/MapEditor.java:115:        drawBlock = Blocks.stone;
+./core/src/mindustry/editor/MapEditor.java:135:    public void drawBlocksReplace(int x, int y){
+./core/src/mindustry/editor/MapEditor.java:136:        drawBlocks(x, y, tile -> tile.block() != Blocks.air || drawBlock.isFloor());
+./core/src/mindustry/editor/MapEditor.java:139:    public void drawBlocks(int x, int y){
+./core/src/mindustry/editor/MapEditor.java:140:        drawBlocks(x, y, false, false, tile -> true);
+./core/src/mindustry/editor/MapEditor.java:143:    public void drawBlocks(int x, int y, Boolf<Tile> tester){
+./core/src/mindustry/editor/MapEditor.java:144:        drawBlocks(x, y, false, false, tester);
+./core/src/mindustry/editor/EditorTool.java:24:            editor.drawBlock = tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block();
+./core/src/mindustry/editor/EditorTool.java:25:            editor.drawBlock.editorPicked(tile);
+./core/src/mindustry/editor/EditorTool.java:44:                    editor.drawBlocksReplace(x, y);
+./core/src/mindustry/editor/EditorTool.java:47:                    editor.drawBlocks(x, y);
+./core/src/mindustry/editor/EditorTool.java:62:                editor.drawBlocks(x, y);
+./core/src/mindustry/editor/EditorTool.java:65:                editor.drawBlocksReplace(x, y);
+./core/src/mindustry/editor/EditorTool.java:68:                editor.drawBlocks(x, y, true, false, tile -> true);
+./core/src/mindustry/editor/EditorTool.java:72:            }else if(mode == 3 && !(editor.drawBlock instanceof Floor f && f.isLiquid)){
+./core/src/mindustry/world/blocks/heat/HeatConductor.java:18:    public DrawBlock drawer = new DrawDefault();
+./core/src/mindustry/world/blocks/power/PowerGenerator.java:31:    public DrawBlock drawer = new DrawDefault();
+./core/src/mindustry/world/blocks/power/Battery.java:14:    public @Nullable DrawBlock drawer;
+./core/src/mindustry/graphics/BlockRenderer.java:667:    public void drawBlocks(){
+./core/src/mindustry/core/Renderer.java:431:        blocks.drawBlocks();

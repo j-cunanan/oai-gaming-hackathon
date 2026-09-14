@@ -1,0 +1,12 @@
+diff --git a/core/src/mindustry/ui/dialogs/ColorPicker.java b/core/src/mindustry/ui/dialogs/ColorPicker.java
+index f5e096c..35ff0c8 100644
+--- a/core/src/mindustry/ui/dialogs/ColorPicker.java
++++ b/core/src/mindustry/ui/dialogs/ColorPicker.java
+@@ -146,7 +146,6 @@ public class ColorPicker extends BaseDialog{
+                         aSlider.setValue(a);
+                     }
+ 
+-                    updateColor(false);
+                 }catch(Exception ignored){
+                 }
+             }).size(130f, 40f).valid(text -> {

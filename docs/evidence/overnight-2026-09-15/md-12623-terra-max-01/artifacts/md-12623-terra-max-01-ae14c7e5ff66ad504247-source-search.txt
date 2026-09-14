@@ -1,0 +1,4 @@
+regex parse error:
+    editorPicked(
+                ^
+error: unclosed group

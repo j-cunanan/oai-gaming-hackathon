@@ -1,0 +1,46 @@
+{
+  "scope": "Continue the same final color qualification budget with the two omitted, already-recorded wall checkpoints; no action or target-state relaxation.",
+  "old_oracle": {
+    "kind": "sequence",
+    "description": "Required sequence: enter six-digit ff0300 in the Colored Wall picker, confirm it, place and pick the wall, then reopen its picker; also enter and confirm ff0300 for Colored Floor and reopen that picker. The reported bug is readback ff0200ff instead of the committed ff0300ff for both tile types. Establish actual input, commit and relevant picker identity from chronological evidence. Correct behavior is retaining ff0300ff in both readbacks. This scope does not test all reported values or adjacent floor placement.",
+    "log_pattern": null,
+    "checkpoints": [
+      "final-enter-wall-ff0300",
+      "final-confirm-wall-ff0300",
+      "final-readback-wall-ff0200",
+      "final-enter-floor-ff0300",
+      "final-confirm-floor-ff0300",
+      "final-readback-floor-ff0200"
+    ]
+  },
+  "new_oracle": {
+    "kind": "sequence",
+    "description": "Required sequence: enter six-digit ff0300 in the Colored Wall picker, confirm it, place and pick the wall, then reopen its picker; also enter and confirm ff0300 for Colored Floor and reopen that picker. The reported bug is readback ff0200ff instead of the committed ff0300ff for both tile types. Establish actual input, commit and relevant picker identity from chronological evidence. Correct behavior is retaining ff0300ff in both readbacks. This scope does not test all reported values or adjacent floor placement.",
+    "log_pattern": null,
+    "checkpoints": [
+      "final-enter-wall-ff0300",
+      "final-confirm-wall-ff0300",
+      "final-place-wall-input",
+      "final-pick-placed-wall",
+      "final-readback-wall-ff0200",
+      "final-enter-floor-ff0300",
+      "final-confirm-floor-ff0300",
+      "final-readback-floor-ff0200"
+    ]
+  },
+  "actions_unchanged": true,
+  "required_postcondition_unchanged": true,
+  "previous_fresh_result": "0/1 inconclusive: wall placement/picking not present in selected checkpoint images",
+  "previous_snapshot_artifact": "md-12623-terra-replay-02-cc542cf62b4021b6bf92-qualification-before-checkpoint-completion.json",
+  "frozen_first_result_sha256": "eb6b7f58bced9328b6b649f662884d0783a50e281680f1f442d47791d49051f5",
+  "frozen_first_events_sha256": "6d8e53e827605a786f494ae7a6a4eea3afe7b354d5f45592220b48bf3b72dc10",
+  "driver_sha256": "08592aa4f1ef30e2ae07527a75f5fe0cde5af8da91bca9774e5f74c0956d6011",
+  "original_elapsed_seconds": 406.7570893749944,
+  "continuation_max_seconds": 2806,
+  "original_total_job_budget_seconds": 3300,
+  "same_cumulative_model_call_budget": 120,
+  "worker_image": "sha256:63be22a3b69283ede936a1bb49c99df7109938a5c13c5c41123b6d0770024162",
+  "request_timeout_seconds": 450,
+  "max_output_tokens": 24000,
+  "fresh_profile_each_replay": true
+}

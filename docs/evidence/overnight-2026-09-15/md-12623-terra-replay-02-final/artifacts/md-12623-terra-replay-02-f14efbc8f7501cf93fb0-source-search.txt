@@ -1,0 +1,5 @@
+./core/src/mindustry/mod/ClassMap.java:268:        classes.put("ColoredWall", mindustry.world.blocks.environment.ColoredWall.class);
+./core/src/mindustry/content/Blocks.java:71:    coloredFloor, coloredWall,
+./core/src/mindustry/content/Blocks.java:951:        coloredWall = new ColoredWall("colored-wall"){{
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:11:public class ColoredWall extends StaticWall{
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:20:    public ColoredWall(String name){

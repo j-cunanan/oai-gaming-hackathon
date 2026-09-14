@@ -1,0 +1,6 @@
+./core/src/mindustry/editor/EditorTool.java:25:            editor.drawBlock.editorPicked(tile);
+./core/src/mindustry/world/Block.java:1090:    public void editorPicked(Tile tile){
+./core/src/mindustry/world/blocks/environment/ColoredWall.java:68:    public void editorPicked(Tile tile){
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:184:    public void editorPicked(Tile tile){
+./core/src/mindustry/world/blocks/environment/CharacterOverlay.java:84:    public void editorPicked(Tile tile){
+./core/src/mindustry/world/blocks/environment/RuneOverlay.java:99:    public void editorPicked(Tile tile){

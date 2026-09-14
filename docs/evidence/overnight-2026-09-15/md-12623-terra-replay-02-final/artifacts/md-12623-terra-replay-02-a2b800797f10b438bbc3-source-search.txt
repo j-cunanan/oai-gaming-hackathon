@@ -1,0 +1,3 @@
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:828:        public static class SliderSetting extends Setting{
+./core/src/mindustry/ui/builder/UiBuilder.java:306:    public static class SliderBuilder extends NodeBuilder<SliderBuilder>{
+./core/src/mindustry/maps/filters/FilterOption.java:36:    static class SliderOption extends FilterOption{

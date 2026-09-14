@@ -1,0 +1,3 @@
+./core/src/mindustry/editor/MapEditorDialog.java:694:                    slider.moved(f -> editor.brushSize = MapEditor.brushSizes[(int)f]);
+./core/src/mindustry/editor/data/MapAudioView.java:73:                    slider.moved(value -> {
+./core/src/mindustry/maps/filters/FilterOption.java:79:            slider.moved(setter);

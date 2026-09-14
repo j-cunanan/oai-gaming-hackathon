@@ -1,0 +1,518 @@
+{
+  "captured_at": "2026-09-14T21:45:04.997453+00:00",
+  "scope": "One final frozen snapshot per new overnight case ID; no duplicate continuation snapshots. Not a benchmark accuracy estimate or a billing reconciliation. Returned-response usage can omit timed-out requests. Discovery actions and replay actions have different budgets.",
+  "distinct_reports": 7,
+  "new_case_ids": 17,
+  "cases": [
+    {
+      "case_id": "md-12354-terra-fixture-02",
+      "report_number": 12354,
+      "title": "[Original test maps] Derelict conveyor loses current payload on reload",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Both supplied maps were imported through the editor and inspected. cargo-test-map.msav (shown as \u201ctest map\u201d) did run: hovering its large transport block identified \u201cPayload Conveyor \u2014 Derelict,\u201d and a nearby visible object identified as \u201cWorld Processor.\u201d I saved that running scene as first-fixture-derelict-test, loaded the same save, and the post-load view still showed both the Derelict conveyor and the World Processor; no disappearance was visible in that ambiguous scene. However, the UI inspection did not establish that the visible World Processor was actually the conveyor\u2019s current carried payload rather than a separate placed building. cargo-mix-tech.msav (shown as \u201cmix tech\u201d) ran with a Shard core and terrain/resource clusters; its inspected dark marks identified as Coal and no payload conveyor/block-payload setup was found. I also created a separate controlled map and placed a Derelict Payload Conveyor, but did not complete a source/payload/save/load cycle before the investigation limit.",
+      "snapshot": "md-12354-terra-fixture-02",
+      "snapshot_result_sha256": "11b2fb51a86ad84f88ba96f7443554e7aad5ad3be619803490e96cd87f70f2d6",
+      "updated_at": "2026-09-14T19:22:40.750110+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 90,
+        "input_tokens": 1820608,
+        "output_tokens": 22361
+      },
+      "recorded_active_seconds": 1124.836,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12354-terra-overnight-01",
+      "report_number": 12354,
+      "title": "Derelict Payload conveyors do not save current payload",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Could not complete a save/load reproduction. A new controlled editor map was created with a Sharded core, Payload Source, and Payload Conveyor, but no block payload was configured or observed on the conveyor, no Derelict conversion was completed, and no save/load transition was performed.",
+      "snapshot": "md-12354-terra-overnight-01",
+      "snapshot_result_sha256": "21514998f7d73d14f33a549bc917dccf7360405a7411735a8f47f83a5a176643",
+      "updated_at": "2026-09-14T18:27:21.539986+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 91,
+        "input_tokens": 5771192,
+        "output_tokens": 13457
+      },
+      "recorded_active_seconds": 846.635,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-controls-04",
+      "report_number": 12565,
+      "title": "[Prepared setup + learned controls] Unit disappears when entering payload conveyor",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "game investigation reached its 90-turn budget; partial evidence is preserved",
+      "snapshot": "md-12565-terra-controls-04",
+      "snapshot_result_sha256": "390ed2aeec623a775e9d1bead51fc4149e23ef98886e2f70dc5e711db6bd5a75",
+      "updated_at": "2026-09-14T20:17:31.884274+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 91,
+        "input_tokens": 4395162,
+        "output_tokens": 35735
+      },
+      "recorded_active_seconds": 966.236,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-overnight-01",
+      "report_number": 12565,
+      "title": "Unit disappears when entering payload conveyor",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Could not reproduce or disprove the reported disappearance because the required unit-entry transition was not achieved. A vanilla sandbox world was launched, the Units build category was opened, and a Payload Conveyor was selected and placed (its visible tooltip and conveyor sprite confirmed it). Attempts to create a Ground Factory test source produced only unconstructed placement ghosts because the setup lacked delivery/construction capability, and no existing controllable ground unit was available. Thus no unit entered the conveyor.",
+      "snapshot": "md-12565-terra-overnight-01",
+      "snapshot_result_sha256": "95d2ae80b1d332063b499eaa688c23096b3d79934b18d5f1a6e0bb87e39b9e35",
+      "updated_at": "2026-09-14T15:47:30.888062+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 79,
+        "input_tokens": 904716,
+        "output_tokens": 9672
+      },
+      "recorded_active_seconds": 482.28,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-overnight-02",
+      "report_number": 12565,
+      "title": "[Setup guided] Unit disappears when entering payload conveyor",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Could not test the reported payload-entry behavior. In sandbox, a Payload Conveyor was identified and placed, but a valid ground unit payload and a connected output route were not configured. No unit entering a conveyor, disappearance, destruction, or downstream emergence was observed.",
+      "snapshot": "md-12565-terra-overnight-02",
+      "snapshot_result_sha256": "53467293e731322df02721f3bae4264041166dc958269302bd0392685af488d8",
+      "updated_at": "2026-09-14T16:59:28.985535+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 37,
+        "input_tokens": 420738,
+        "output_tokens": 5051
+      },
+      "recorded_active_seconds": 628.508,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-paced-06",
+      "report_number": 12565,
+      "title": "[Recorded trigger + operator scroll calibration] Unit disappears on payload entry",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Calibrated supplied trigger confirmed in 0/1 completed fresh verdicts; 5/5 was required. Source analysis and patching did not start.",
+      "snapshot": "md-12565-terra-paced-06",
+      "snapshot_result_sha256": "689e2a7a9564dd5807cb5f9dc650eb17e557c34f38c67ee8a6994659e691a357",
+      "updated_at": "2026-09-14T20:51:57.283200+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 1,
+        "input_tokens": 7685,
+        "output_tokens": 3449
+      },
+      "recorded_active_seconds": 303.829,
+      "reproduction": {
+        "actions": 33,
+        "original_actions": 33,
+        "successful_runs": 0,
+        "total_runs": 1,
+        "deterministic": false
+      },
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-prepared-03",
+      "report_number": 12565,
+      "title": "[Prepared setup] Unit disappears when entering payload conveyor",
+      "state": "FAILED",
+      "summary": "OpenAI request failed: APITimeoutError (code=None) Inspect worker-error.log in Evidence for details.",
+      "snapshot": "md-12565-terra-prepared-03",
+      "snapshot_result_sha256": "76f3f202d4be6bcc164fdc291f4de151646615af0ca031b2078fc3f47f2a10af",
+      "updated_at": "2026-09-14T19:45:59.618810+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 91,
+        "input_tokens": 3171654,
+        "output_tokens": 23763
+      },
+      "recorded_active_seconds": 1298.182,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12565-terra-replay-05",
+      "report_number": 12565,
+      "title": "[Recorded AI trigger + selected checkpoints] Unit disappears on payload entry",
+      "state": "FAILED",
+      "summary": "OpenAI request failed: APITimeoutError (code=None) Inspect worker-error.log in Evidence for details.",
+      "snapshot": "md-12565-terra-replay-05",
+      "snapshot_result_sha256": "074e3154b9e6b85f51c14d4776faf3dbd49746fa0f6acbab19d93a7563cdeb6d",
+      "updated_at": "2026-09-14T20:34:51.586524+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 2,
+        "input_tokens": 15388,
+        "output_tokens": 5811
+      },
+      "recorded_active_seconds": 667.912,
+      "reproduction": {
+        "actions": 33,
+        "original_actions": 33,
+        "successful_runs": 0,
+        "total_runs": 2,
+        "deterministic": false
+      },
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12579-terra-overnight-01",
+      "report_number": 12579,
+      "title": "Target Dummies crash the game when saved in editor",
+      "state": "AWAITING_HUMAN",
+      "summary": "Validation is incomplete or failed. Inspect the recorded gates.",
+      "snapshot": "md-12579-terra-postconditions-02",
+      "snapshot_result_sha256": "6e7067a914344600b94735ae2816be7aea8058116a4cc3a2517db69b52ecd7b2",
+      "updated_at": "2026-09-14T18:49:54.486061+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 107,
+        "input_tokens": 962177,
+        "output_tokens": 42432
+      },
+      "recorded_active_seconds": 3637.884,
+      "reproduction": {
+        "actions": 12,
+        "original_actions": 15,
+        "successful_runs": 5,
+        "total_runs": 5,
+        "deterministic": true
+      },
+      "checks": [
+        {
+          "name": "Regression before patch",
+          "status": "pass",
+          "detail": "Trigger observed in 5/5 fresh baseline runs.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Candidate build",
+          "status": "pass",
+          "detail": "Build exit code 0",
+          "artifact": "md-12579-terra-overnight-01-27787054bd36856f0ca0-candidate-build.log",
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Existing tests",
+          "status": "fail",
+          "detail": "Test exit code 1. Failing tests: :tests:test::ModTestAllure.begin(). Network-enabled candidate failures cannot be waived by an offline baseline.",
+          "artifact": "md-12579-terra-overnight-01-5fc84047e27a8193f459-candidate-tests.log",
+          "baseline_artifact": "md-12579-terra-overnight-01-a9317017bfa9d68d9695-baseline-tests.log",
+          "failing_tests": [
+            ":tests:test::ModTestAllure.begin()"
+          ]
+        },
+        {
+          "name": "Original replay after patch",
+          "status": "pass",
+          "detail": "5/5 reached expected state without the symptom; bug seen 0 times. Each replay included the unchanged trigger and 12 additional fix-check actions.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Smoke test",
+          "status": "pass",
+          "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+          "artifact": "md-12579-terra-overnight-01-4327843ee0d733c61b99-smoke.png",
+          "baseline_artifact": null,
+          "failing_tests": []
+        }
+      ],
+      "has_candidate": true,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12603-terra-overnight-01",
+      "report_number": 12603,
+      "title": "[RU] \u041f\u0440\u0438\u0437\u0440\u0430\u0447\u043d\u043e\u0435 \u0441\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440\u0430 \u043f\u043e\u0441\u043b\u0435 \u0432\u0437\u0440\u044b\u0432\u0430 \u043d\u0430 \u0433\u0440\u0443\u0437\u043e\u0432\u043e\u043c \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435. [EN] Generator 0\u2011HP ghost state after payload explosion.",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Could not execute the reported fueled-generator payload explosion. A local editor map was created and playtested; a Core Shard was added so the playtest launched, and the Steam Generator was identified and selected. However, the intended infinite-resources rule was not effective in the launched playtest (the placed generator remained a construction ghost due to missing lead/graphite/silicon). Consequently I could not construct, fuel, damage, transport, explode, retrieve, place, or reload the target block.",
+      "snapshot": "md-12603-terra-overnight-01",
+      "snapshot_result_sha256": "08253dc907223e9c96d0e641751413242e9e67c2e0ba85968030978bd44f2f46",
+      "updated_at": "2026-09-14T15:54:34.467288+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 80,
+        "input_tokens": 1032495,
+        "output_tokens": 8793
+      },
+      "recorded_active_seconds": 423.572,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12603-terra-prepared-03",
+      "report_number": 12603,
+      "title": "[Prepared setup] Generator ghost state after payload explosion",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "The prepared save was imported through Load Game and tested in gameplay. The Steam Generator was visibly supplied with Water and Blast Compound, showed 132.0 power output, and later showed nonfatal health loss while fueled. I controlled the supplied Mega and attempted pickup/transport, but did not obtain a confirmed Steam Generator payload on the conveyor, a visible post-explosion retrievable payload, or a placed empty/0-HP generator. The reported anomalous state was therefore not established.",
+      "snapshot": "md-12603-terra-prepared-03",
+      "snapshot_result_sha256": "397a6f27b2f3f77a9c9823e0e9099d7475e6675233da5be04e5f207a90f17fda",
+      "updated_at": "2026-09-14T20:34:09.056677+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 91,
+        "input_tokens": 3292742,
+        "output_tokens": 26189
+      },
+      "recorded_active_seconds": 1089.609,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12603-terra-video-02",
+      "report_number": 12603,
+      "title": "[Video/setup guided] Generator 0-HP ghost state after payload explosion",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "No 0-HP generator ghost state was observed. I created a controlled editor-mode map, explicitly enabled Reactor Explosions, and placed Steam Generators with an adjacent Item Source, but the required Blast Compound configuration and the payload-conveyor explosion/retrieval/redeployment sequence were not completed before the tool-time limit.",
+      "snapshot": "md-12603-terra-video-02",
+      "snapshot_result_sha256": "5adca55ed172bf67ec8461c2a3062049a9ae31878404a8bf497d7c4f1dc53a6c",
+      "updated_at": "2026-09-14T19:03:55.910337+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 91,
+        "input_tokens": 4028221,
+        "output_tokens": 14469
+      },
+      "recorded_active_seconds": 841.417,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12620-terra-overnight-01",
+      "report_number": 12620,
+      "title": "Persistent Datapatch bug",
+      "state": "INSUFFICIENT_EVIDENCE",
+      "summary": "Observed in 3/5 fresh replays. A stable trigger still needs investigation.",
+      "snapshot": "md-12620-terra-overnight-01",
+      "snapshot_result_sha256": "f3a175afdf6482fc3632e5fdcb8500e2296091ceae57d5bb6d46f40fc25f4ea2",
+      "updated_at": "2026-09-14T16:28:23.799138+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 46,
+        "input_tokens": 422239,
+        "output_tokens": 8123
+      },
+      "recorded_active_seconds": 883.08,
+      "reproduction": {
+        "actions": 34,
+        "original_actions": 34,
+        "successful_runs": 3,
+        "total_runs": 5,
+        "deterministic": false
+      },
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12620-terra-overnight-02",
+      "report_number": 12620,
+      "title": "[Evidence guided] Persistent Datapatch bug",
+      "state": "AWAITING_HUMAN",
+      "summary": "Candidate ready for review. Validation gates satisfied; inspect any pre-existing test failures.",
+      "snapshot": "md-12620-terra-overnight-02",
+      "snapshot_result_sha256": "412138e2d29003a32a525111e2a7a9755c20cc13e4de235e45ef18ae1063ebd4",
+      "updated_at": "2026-09-14T17:49:16.930812+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 80,
+        "input_tokens": 926267,
+        "output_tokens": 15071
+      },
+      "recorded_active_seconds": 2939.477,
+      "reproduction": {
+        "actions": 30,
+        "original_actions": 31,
+        "successful_runs": 5,
+        "total_runs": 5,
+        "deterministic": true
+      },
+      "checks": [
+        {
+          "name": "Regression before patch",
+          "status": "pass",
+          "detail": "Bug oracle triggered in 5/5 clean runs; the regression therefore fails on the pre-fix build.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Candidate build",
+          "status": "pass",
+          "detail": "Build exit code 0",
+          "artifact": "md-12620-terra-overnight-02-542b50ef488b59dcc93d-candidate-build.log",
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Existing tests",
+          "status": "pass",
+          "detail": "Test exit code 0.",
+          "artifact": "md-12620-terra-overnight-02-5cc6f514bc42f3905fc4-candidate-tests.log",
+          "baseline_artifact": "md-12620-terra-overnight-02-09dd9d34869a81b78f65-baseline-tests.log",
+          "failing_tests": []
+        },
+        {
+          "name": "Original replay after patch",
+          "status": "pass",
+          "detail": "5/5 reached expected state without the symptom; bug seen 0 times.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Smoke test",
+          "status": "pass",
+          "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+          "artifact": "md-12620-terra-overnight-02-1b55daffc0802b88d198-smoke.png",
+          "baseline_artifact": null,
+          "failing_tests": []
+        }
+      ],
+      "has_candidate": true,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12623-terra-max-01",
+      "report_number": 12623,
+      "title": "Colored tiles do not accept every valid hex code given, instead skipping over some or using the same value twice",
+      "state": "FAILED",
+      "summary": "OpenAI response incomplete; no partial actions were executed Inspect worker-error.log in Evidence for details.",
+      "snapshot": "md-12623-terra-max-01",
+      "snapshot_result_sha256": "f5c34daab2c3808ec6b83e2c6e76f3b9b0c210cf9fdc73a2ec7064edb4493011",
+      "updated_at": "2026-09-14T20:53:58.819753+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 52,
+        "input_tokens": 1313193,
+        "output_tokens": 42109
+      },
+      "recorded_active_seconds": 1189.757,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12623-terra-replay-02",
+      "report_number": 12623,
+      "title": "[Recorded AI trace + selected checkpoints] Color hex readback changes",
+      "state": "AWAITING_HUMAN",
+      "summary": "Candidate ready for review. Validation is incomplete or failed; inspect the recorded checks before using the patch.",
+      "snapshot": "md-12623-terra-replay-02-final",
+      "snapshot_result_sha256": "ef14c2a288cf359307170ac8eca0fa829d2ec796f97ab8998b43584433b189a6",
+      "updated_at": "2026-09-14T21:41:47.897700+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 44,
+        "input_tokens": 520345,
+        "output_tokens": 95683
+      },
+      "recorded_active_seconds": 2263.784,
+      "reproduction": {
+        "actions": 29,
+        "original_actions": 29,
+        "successful_runs": 5,
+        "total_runs": 5,
+        "deterministic": true
+      },
+      "checks": [
+        {
+          "name": "Regression before patch",
+          "status": "pass",
+          "detail": "Bug oracle triggered in 5/5 clean runs; the regression therefore fails on the pre-fix build.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Candidate build",
+          "status": "pass",
+          "detail": "Build exit code 0",
+          "artifact": "md-12623-terra-replay-02-834be520f02fa471c4c9-candidate-build.log",
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Existing tests",
+          "status": "pass",
+          "detail": "Test exit code 0.",
+          "artifact": "md-12623-terra-replay-02-a39564e45b4844e001cc-candidate-tests.log",
+          "baseline_artifact": "md-12623-terra-replay-02-20e5dfcafe97eca6664e-baseline-tests.log",
+          "failing_tests": []
+        },
+        {
+          "name": "Original replay after patch",
+          "status": "fail",
+          "detail": "0/5 reached expected state without the symptom; bug seen 5 times.",
+          "artifact": null,
+          "baseline_artifact": null,
+          "failing_tests": []
+        },
+        {
+          "name": "Smoke test",
+          "status": "pass",
+          "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+          "artifact": "md-12623-terra-replay-02-da2cb773713a10c5609a-smoke.png",
+          "baseline_artifact": null,
+          "failing_tests": []
+        }
+      ],
+      "has_candidate": true,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    },
+    {
+      "case_id": "md-12652-terra-max-01",
+      "report_number": 12652,
+      "title": "Crash in Data Patches & Assets UI",
+      "state": "NOT_REPRODUCED",
+      "summary": "Imported the supplied WotM.msav through the game UI, opened it in the editor, entered in-game editor mode, made a tile edit, quit back to the editor, opened Map Info > Data Patches & Assets, visited Patches, Content, Locale Bundles, Images, Sounds, and Music, then pressed Escape. The game remained running with no visible error and an empty captured log. A second immediate Content-tab-to-Escape close also remained stable.",
+      "snapshot": "md-12652-terra-max-01",
+      "snapshot_result_sha256": "e99586fa5e4b8f747f167d76fde381760ceffec5c78659f81b93c420cae2d8fe",
+      "updated_at": "2026-09-14T18:14:03.357339+00:00",
+      "model_usage_cumulative_returned": {
+        "model_calls": 69,
+        "input_tokens": 1828088,
+        "output_tokens": 15301
+      },
+      "recorded_active_seconds": 874.917,
+      "reproduction": null,
+      "checks": [],
+      "has_candidate": false,
+      "assistance_note": "Read this snapshot README and original report; supplied-trace, prepared-scene, video guidance, cached triage and checkpoint corrections are declared there."
+    }
+  ],
+  "separate_audits": [
+    "target-dummy-controls",
+    "unit-rts-retained-audit",
+    "datapatch-suite-audit",
+    "color-candidate-audit",
+    "../paced-scroll-2026-09-15",
+    "../runner-action-sequences"
+  ],
+  "excluded": "The earlier Weather cases, historical human-fixed qualification controls, and zero-call queue cancellations are not new overnight bug investigations."
+}

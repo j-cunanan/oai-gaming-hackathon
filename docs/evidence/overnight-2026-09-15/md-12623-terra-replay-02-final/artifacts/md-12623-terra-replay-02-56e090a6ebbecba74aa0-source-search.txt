@@ -1,0 +1,13 @@
+./core/src/mindustry/graphics/LoadRenderer.java:45:        //some systems don't support rgba8888 w/ a stencil buffer
+./core/src/mindustry/graphics/LoadRenderer.java:47:            fx = new FxProcessor(Format.rgba8888, 2, 2, false, true);
+./core/src/mindustry/graphics/LoadRenderer.java:53:                fx = new FxProcessor(Format.rgba8888, 2, 2, false, false);
+./core/src/mindustry/world/ColorMapper.java:22:        color2block.put(Color.rgba8888(0, 0, 0, 1), Blocks.air);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:62:                col -> block.lastConfig = col.rgba8888())).left().width(250f).pad(3f).row();
+./core/src/mindustry/world/blocks/environment/OreBlock.java:55:            int shadowColor = Color.rgba8888(0, 0, 0, 0.3f);
+./core/src/mindustry/world/blocks/power/LightBlock.java:81:                color = Tmp.c1.fromDouble(p1).rgba8888();
+./core/src/mindustry/ui/dialogs/JoinDialog.java:350:                    Core.settings.put("color-0", color.rgba8888());
+./core/src/mindustry/core/ContentLoader.java:149:                block.mapColor.rgba8888(color);
+./core/src/mindustry/io/MapIO.java:88:            int shade = Color.rgba8888(0f, 0f, 0f, 0.5f);
+./core/src/mindustry/io/MapIO.java:127:                        int c = tile.build.team.color.rgba8888();
+./tools/src/mindustry/tools/Generators.java:181:                                    copy.setRaw(x, y, Color.rgba8888(1f, 1f, 1f, fluid(gas, x, y, frame)));
+./tools/src/mindustry/tools/Generators.java:798:                int shadowColor = Color.rgba8888(0, 0, 0, 0.3f);

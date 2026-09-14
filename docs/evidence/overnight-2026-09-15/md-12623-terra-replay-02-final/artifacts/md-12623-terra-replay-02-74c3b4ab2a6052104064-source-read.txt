@@ -1,0 +1,187 @@
+1: package mindustry.ui.dialogs;
+2: 
+3: import arc.func.*;
+4: import arc.graphics.*;
+5: import arc.graphics.Texture.*;
+6: import arc.graphics.g2d.*;
+7: import arc.scene.*;
+8: import arc.scene.ui.*;
+9: import arc.util.*;
+10: import mindustry.gen.*;
+11: 
+12: public class ColorPicker extends BaseDialog{
+13:     private static Texture hueTex;
+14: 
+15:     private Cons<Color> cons = c -> {};
+16:     Color current = new Color();
+17:     float h, s, v, a;
+18:     TextField hexField;
+19:     Slider hSlider, sSlider, vSlider, aSlider;
+20: 
+21:     public ColorPicker(){
+22:         super("@pickcolor");
+23:     }
+24: 
+25:     public void show(Color color, Cons<Color> consumer){
+26:         show(color, true, consumer);
+27:     }
+28: 
+29:     public void show(Color color, boolean alpha, Cons<Color> consumer){
+30:         this.current.set(color);
+31:         this.cons = consumer;
+32:         show();
+33: 
+34:         if(hueTex == null){
+35:             hueTex = Pixmaps.hueTexture(128, 1);
+36:             hueTex.setFilter(TextureFilter.linear);
+37:         }
+38: 
+39:         float[] values = color.toHsv(new float[3]);
+40:         h = values[0];
+41:         s = values[1];
+42:         v = values[2];
+43:         a = color.a;
+44: 
+45:         cont.clear();
+46:         cont.pane(t -> {
+47:             t.table(Tex.pane, i -> {
+48:                 i.stack(new Image(Tex.alphaBg), new Image(){{
+49:                     setColor(current);
+50:                     update(() -> setColor(current));
+51:                 }}).size(200f);
+52:             }).colspan(2).padBottom(5);
+53: 
+54:             t.row();
+55: 
+56:             t.defaults().padBottom(6).width(370f).height(44f);
+57: 
+58:             t.stack(new Image(new TextureRegion(hueTex)), hSlider = new Slider(0f, 360f, 0.3f, false){{
+59:                 setValue(h);
+60:                 moved(value -> {
+61:                     h = value;
+62:                     updateColor();
+63:                 });
+64:             }}).row();
+65: 
+66:             t.stack(new Element(){
+67:                 @Override
+68:                 public void draw(){
+69:                     float first = Tmp.c1.set(current).saturation(0f).a(parentAlpha).toFloatBits();
+70:                     float second = Tmp.c1.set(current).saturation(1f).a(parentAlpha).toFloatBits();
+71: 
+72:                     Fill.quad(
+73:                         x, y, first,
+74:                         x + width, y, second,
+75:                         x + width, y + height, second,
+76:                         x, y + height, first
+77:                     );
+78:                 }
+79:             }, sSlider = new Slider(0f, 1f, 0.001f, false){{
+80:                 setValue(s);
+81:                 moved(value -> {
+82:                     s = value;
+83:                     updateColor();
+84:                 });
+85:             }}).row();
+86: 
+87:             t.stack(new Element(){
+88:                 @Override
+89:                 public void draw(){
+90:                     float first = Tmp.c1.set(current).value(0f).a(parentAlpha).toFloatBits();
+91:                     float second = Tmp.c1.fromHsv(h, s, 1f).a(parentAlpha).toFloatBits();
+92: 
+93:                     Fill.quad(
+94:                     x, y, first,
+95:                     x + width, y, second,
+96:                     x + width, y + height, second,
+97:                     x, y + height, first
+98:                     );
+99:                 }
+100:             }, vSlider = new Slider(0f, 1f, 0.001f, false){{
+101:                 setValue(v);
+102: 
+103:                 moved(value -> {
+104:                     v = value;
+105:                     updateColor();
+106:                 });
+107:             }}).row();
+108: 
+109:             if(alpha){
+110:                 t.stack(new Image(Tex.alphaBgLine), new Element(){
+111:                     @Override
+112:                     public void draw(){
+113:                         float first = Tmp.c1.set(current).a(0f).toFloatBits();
+114:                         float second = Tmp.c1.set(current).a(parentAlpha).toFloatBits();
+115: 
+116:                         Fill.quad(
+117:                         x, y, first,
+118:                         x + width, y, second,
+119:                         x + width, y + height, second,
+120:                         x, y + height, first
+121:                         );
+122:                     }
+123:                 }, aSlider = new Slider(0f, 1f, 0.001f, false){{
+124:                     setValue(a);
+125: 
+126:                     moved(value -> {
+127:                         a = value;
+128:                         updateColor();
+129:                     });
+130:                 }}).row();
+131:             }
+132: 
+133:             hexField = t.field(current.toString(), value -> {
+134:                 try{
+135:                     Color.valueOf(current, value);
+136:                     current.toHsv(values);
+137:                     h = values[0];
+138:                     s = values[1];
+139:                     v = values[2];
+140:                     a = current.a;
+141: 
+142:                     hSlider.setValue(h);
+143:                     sSlider.setValue(s);
+144:                     vSlider.setValue(v);
+145:                     if(aSlider != null){
+146:                         aSlider.setValue(a);
+147:                     }
+148: 
+149:                     updateColor(false);
+150:                 }catch(Exception ignored){
+151:                 }
+152:             }).size(130f, 40f).valid(text -> {
+153:                 //garbage performance but who cares this runs only every key type anyway
+154:                 try{
+155:                     Color.valueOf(text);
+156:                     return true;
+157:                 }catch(Exception e){
+158:                     return false;
+159:                 }
+160:             }).get();
+161:         }).grow();
+162: 
+163:         buttons.clear();
+164:         addCloseButton();
+165:         buttons.button("@ok", Icon.ok, () -> {
+166:             cons.get(current);
+167:             hide();
+168:         });
+169:     }
+170: 
+171:     void updateColor(){
+172:         updateColor(true);
+173:     }
+174: 
+175:     void updateColor(boolean updateField){
+176:         current.fromHsv(h, s, v);
+177:         current.a = a;
+178: 
+179:         if(hexField != null && updateField){
+180:             String val = current.toString();
+181:             if(current.a >= 0.9999f){
+182:                 val = val.substring(0, 6);
+183:             }
+184:             hexField.setText(val);
+185:         }
+186:     }
+187: }

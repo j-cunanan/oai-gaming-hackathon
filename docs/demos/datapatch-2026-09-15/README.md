@@ -8,6 +8,8 @@ The original report-only attempt remains at 3/5 confirmation. The shown fresh at
 
 `repro-report.pdf` is the reviewed eight-page REPRO report generated from the saved case using the candidate-outcome-aware renderer identified by SHA-256 in `report-provenance.json`. Its final page now shows the recorded candidate result after reopen; startup smoke no longer replaces that evidence. Its source-review notes remain verbatim, under an explicit source-analysis scope. A static SHA-256 manifest covers the delivered files.
 
+A [short demo script](demo-script.md) explains the persistence failure, the reproduction work and the limits of the evidence.
+
 Rebuild the checkpoint data without new executions:
 
 ```bash

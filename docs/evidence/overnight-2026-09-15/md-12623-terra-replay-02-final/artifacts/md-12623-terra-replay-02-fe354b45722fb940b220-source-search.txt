@@ -1,0 +1,5 @@
+./core/src/mindustry/editor/MapEditor.java:135:    public void drawBlocksReplace(int x, int y){
+./core/src/mindustry/editor/MapEditor.java:139:    public void drawBlocks(int x, int y){
+./core/src/mindustry/editor/MapEditor.java:143:    public void drawBlocks(int x, int y, Boolf<Tile> tester){
+./core/src/mindustry/editor/MapEditor.java:147:    public void drawBlocks(int x, int y, boolean square, boolean forceOverlay, Boolf<Tile> tester){
+./core/src/mindustry/graphics/BlockRenderer.java:667:    public void drawBlocks(){

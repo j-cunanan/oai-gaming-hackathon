@@ -1,0 +1,3 @@
+./core/src/mindustry/entities/comp/WorldLabelComp.java:78:            ((flags & flagAutoscale) != 0 ? 0.2f * Vars.renderer.camerascale + 0.05f : 1f));
+./core/src/mindustry/input/InputHandler.java:1778:            font.getData().setScale(1 / renderer.camerascale);
+./core/src/mindustry/input/InputHandler.java:1783:            float offset = 5f / renderer.camerascale * tilesize;

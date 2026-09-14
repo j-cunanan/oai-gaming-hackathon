@@ -1,0 +1,240 @@
+1: import java.text.SimpleDateFormat
+2: 
+3: buildscript{
+4:     ext{
+5:         arcHash = property("archash")
+6: 
+7:         localArc = new File(rootDir.parent, 'Arc').exists() && !project.hasProperty("noLocalArc")
+8: 
+9:         arcModule = { String name ->
+10:             //skip to last submodule
+11:             name = name.substring(name.lastIndexOf(':') + 1)
+12:             return "com.github.Anuken${localArc ? "" : ".Arc"}:$name:$arcHash"
+13:         }
+14:     }
+15: 
+16:     repositories{
+17:         mavenLocal()
+18:         mavenCentral()
+19:         google()
+20:         maven{ url = 'https://jitpack.io' }
+21:     }
+22: 
+23:     dependencies{
+24:         classpath arcModule(":extensions:packer")
+25:         classpath arcModule(":arc-core")
+26:     }
+27: }
+28: 
+29: plugins{
+30:     id "org.jetbrains.kotlin.jvm" version "2.3.20"
+31:     id "org.jetbrains.kotlin.kapt" version "2.3.20"
+32: }
+33: 
+34: allprojects{
+35:     apply plugin: 'maven-publish'
+36: 
+37:     version = project.hasProperty("packageVersion") ? project.getProperty("packageVersion") : 'release'
+38:     group = 'com.github.Anuken'
+39: 
+40:     ext{
+41:         versionNumber = '8'
+42:         if(!project.hasProperty("versionModifier")) versionModifier = 'release'
+43:         if(!project.hasProperty("versionType")) versionType = 'official'
+44:         appName = 'Mindustry'
+45:         steamworksVersion = 'da41c05b7a2a44c8625ca0ba7d6ca1a2e73f621a'
+46:         rhinoVersion = '32395f942976a6d1d21ec9877664554cd5762306'
+47: 
+48:         loadVersionProps = {
+49:             return new Properties().with{p -> p.load(file('../core/assets/version.properties').newReader()); return p }
+50:         }
+51: 
+52:         debugged = {
+53:             return new File(projectDir.parent, '../Mindustry-Debug').exists() && !project.hasProperty("release") && project.hasProperty("args")
+54:         }
+55: 
+56:         generateDeployName = { String platform ->
+57:             if(platform == "windows"){
+58:                 platform += "64"
+59:             }
+60:             platform = platform.capitalize()
+61: 
+62:             if(platform.endsWith("64") || platform.endsWith("32")){
+63:                 platform = "${platform.substring(0, platform.length() - 2)}-${platform.substring(platform.length() - 2)}bit"
+64:             }
+65: 
+66:             return "[${platform}]${getModifierString()}[${getNeatVersionString()}]${appName}"
+67:         }
+68: 
+69:         getVersionString = {
+70:             String buildVersion = getBuildVersion()
+71:             return "$versionNumber-$versionModifier-$buildVersion"
+72:         }
+73: 
+74:         getNeatVersionString = {
+75:             String buildVersion = getBuildVersion()
+76:             return "v$buildVersion"
+77:         }
+78: 
+79:         hasSprites = {
+80:             def file = new File(rootDir, "core/build/last_pack_version")
+81:             return new File(rootDir, "core/assets/sprites/sprites.aatls").exists() && file.exists() && file.text == versionNumber
+82:         }
+83: 
+84:         getModifierString = {
+85:             if(versionModifier != "release") return "[${versionModifier.toUpperCase()}]"
+86:             return ""
+87:         }
+88: 
+89:         getBuildVersion = {
+90:             if(!project.hasProperty("buildversion")) return "custom build"
+91:             return project.getProperties()["buildversion"]
+92:         }
+93: 
+94:         getCommitHash = {
+95:             return 'git rev-parse --verify --short HEAD'.execute().text.trim()
+96:         }
+97: 
+98:         getPackage = {
+99:             return project.ext.mainClassName.substring(0, project.ext.mainClassName.indexOf("desktop") - 1)
+100:         }
+101: 
+102:         findSdkDir = {
+103:             //null because IntelliJ doesn't get env variables
+104:             def v = System.getenv("ANDROID_HOME")
+105:             if(v != null) return v
+106:             //rootDir is null here, amazing. brilliant.
+107:             def file = new File(rootDir, "local.properties")
+108:             def props = new Properties().with{p -> p.load(file.newReader()); return p }
+109:             return props.get("sdk.dir")
+110:         }
+111: 
+112:         generateLocales = {
+113:             def output = 'en\n'
+114:             def bundles = new File(project(':core').projectDir, 'assets/bundles/')
+115:             bundles.list().sort().each{ name ->
+116:                 if(name == "bundle.properties" || name == "global.properties") return
+117:                 output += name.substring("bundle".length() + 1, name.lastIndexOf('.')) + "\n"
+118:             }
+119:             new File(project(':core').projectDir, 'assets/locales').text = output
+120:             new File(project(':core').projectDir, 'assets/basepartnames').text = new File(project(':core').projectDir, 'assets/baseparts/').list().sort().findAll{f -> f.endsWith(".msch")}.join("\n")
+121:         }
+122: 
+123:         writeVersion = {
+124:             def pfile = new File(project(':core').projectDir, 'assets/version.properties')
+125:             def props = new Properties()
+126: 
+127:             try{
+128:                 pfile.createNewFile()
+129:             }catch(Exception ignored){
+130:             }
+131: 
+132:             if(pfile.exists()){
+133:                 props.load(new FileInputStream(pfile))
+134: 
+135:                 String buildid = getBuildVersion()
+136:                 println("Compiling with build: '$buildid'")
+137: 
+138:                 props["type"] = versionType
+139:                 props["number"] = versionNumber
+140:                 props["modifier"] = versionModifier
+141:                 props["build"] = buildid
+142:                 props["buildDate"] = new SimpleDateFormat("MMMM d, yyyy HH:mm a", Locale.getDefault()).format(new Date())
+143:                 props["commitHash"] = "unknown"
+144:                 if(project.hasProperty("showCommitHash")){
+145:                     props["commitHash"] = getCommitHash()
+146:                 }
+147: 
+148:                 props.store(pfile.newWriter(), "Autogenerated file. Do not modify.")
+149:             }
+150:         }
+151: 
+152:         writeProcessors = {
+153:             new File(rootDir, "annotations/src/main/resources/META-INF/services/").mkdirs()
+154:             def processorFile = new File(rootDir, "annotations/src/main/resources/META-INF/services/javax.annotation.processing.Processor")
+155:             def text = new StringBuilder()
+156:             def files = new File(rootDir, "annotations/src/main/java")
+157:             files.eachFileRecurse(groovy.io.FileType.FILES){ file ->
+158:                 if(file.name.endsWith(".java") && (file.text.contains(" extends BaseProcessor") || (file.text.contains(" extends AbstractProcessor") && !file.text.contains("abstract class")))){
+159:                     text.append(file.path.substring(files.path.length() + 1)).append("\n")
+160:                 }
+161:             }
+162: 
+163:             processorFile.text = text.toString().replace(".java", "").replace("/", ".").replace("\\", ".")
+164:         }
+165: 
+166:         writePlugins = {
+167:             new File(rootDir, "annotations/src/main/resources/META-INF/services/").mkdirs()
+168:             def processorFile = new File(rootDir, "annotations/src/main/resources/META-INF/services/com.sun.source.util.Plugin")
+169:             def text = new StringBuilder()
+170:             def files = new File(rootDir, "annotations/src/main/java")
+171:             files.eachFileRecurse(groovy.io.FileType.FILES){ file ->
+172:                 if(file.name.endsWith(".java") && (file.text.contains(" implements Plugin"))){
+173:                     text.append(file.path.substring(files.path.length() + 1)).append("\n")
+174:                 }
+175:             }
+176: 
+177:             processorFile.text = text.toString().replace(".java", "").replace("/", ".").replace("\\", ".")
+178:         }
+179:     }
+180: 
+181:     repositories{
+182:         mavenLocal()
+183:         mavenCentral()
+184:         maven{ url = "https://central.sonatype.com/repository/maven-snapshots" }
+185:         maven{ url = 'https://jitpack.io' }
+186:     }
+187: 
+188:     task clearCache{
+189:         doFirst{
+190:             delete{
+191:                 delete "$rootDir/core/assets/cache"
+192:             }
+193:         }
+194:     }
+195: 
+196:     tasks.withType(JavaCompile){
+197:         targetCompatibility = JavaVersion.VERSION_17
+198:         sourceCompatibility = JavaVersion.VERSION_17
+199:         options.encoding = "UTF-8"
+200:         options.compilerArgs += ["-Xlint:deprecation"]
+201:         dependsOn clearCache
+202: 
+203:         options.forkOptions.jvmArgs += [
+204:             '--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+205:             '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+206:             '--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+207:             '--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
+208:             '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+209:             '--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+210:             '--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+211:             '--add-opens=java.base/sun.reflect.annotation=ALL-UNNAMED'
+212:         ]
+213:     }
+214: }
+215: 
+216: configure(project(":annotations")){
+217:     tasks.withType(JavaCompile){
+218:         targetCompatibility = JavaVersion.VERSION_17
+219:         sourceCompatibility = JavaVersion.VERSION_17
+220:         options.fork = true
+221: 
+222:         options.compilerArgs.addAll([
+223:             "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+224:             "--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+225:             "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+226:             "--add-exports", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+227:             "--add-exports", "jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+228:             "--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+229:             "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+230:             "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+231:             "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+232:             "--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+233:             "--add-exports", "jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+234:             "--add-exports", "jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+235:             "--add-exports", "java.base/sun.reflect.annotation=ALL-UNNAMED"
+236:         ])
+237:     }
+238: }
+239: 
+240: //compile with java 8 compatibility for everything except the annotation project

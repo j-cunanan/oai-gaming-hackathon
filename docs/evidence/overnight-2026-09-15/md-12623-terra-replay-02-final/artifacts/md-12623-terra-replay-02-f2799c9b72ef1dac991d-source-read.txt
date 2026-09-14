@@ -1,0 +1,94 @@
+1: package mindustry.world.blocks.environment;
+2: 
+3: import arc.graphics.*;
+4: import arc.graphics.g2d.*;
+5: import arc.scene.ui.layout.*;
+6: import arc.util.*;
+7: import mindustry.entities.units.*;
+8: import mindustry.gen.*;
+9: import mindustry.world.*;
+10: 
+11: public class ColoredWall extends StaticWall{
+12:     /** If the alpha value of the color is set to this value, different colors are ignored and no border is drawn. */
+13:     public static final int flagIgnoreDifferentColor = 1;
+14:     /** If the alpha value of the color is set to this value, the wall will have darkness applied, as other walls do. */
+15:     public static final int flagApplyDarkness = 2;
+16: 
+17:     public Color defaultColor = Color.white;
+18:     protected int defaultColorRgba;
+19: 
+20:     public ColoredWall(String name){
+21:         super(name);
+22:         saveData = true;
+23:         editorConfigurable = true;
+24:         saveConfig = true;
+25:     }
+26: 
+27:     @Override
+28:     public void init(){
+29:         super.init();
+30:         lastConfig = defaultColorRgba = defaultColor.rgba();
+31:     }
+32: 
+33:     @Override
+34:     public Object getConfig(Tile tile){
+35:         return tile.extraData;
+36:     }
+37: 
+38:     @Override
+39:     public void buildEditorConfig(Table table){
+40:         ColoredFloor.showColorEdit(table, this);
+41:     }
+42: 
+43:     @Override
+44:     public void drawBase(Tile tile){
+45:         //make sure to mask out the alpha channel - it's generally undesirable, and leads to invisible blocks when thtoe data is not initialized
+46:         Draw.color(tile.extraData | 0xff);
+47:         super.drawBase(tile);
+48:         Draw.color();
+49:     }
+50: 
+51:     @Override
+52:     public void blockChanged(Tile tile){
+53:         //reset to white on first placement
+54:         if(tile.extraData == 0){
+55:             tile.extraData = defaultColorRgba;
+56:         }
+57:     }
+58: 
+59:     @Override
+60:     public void placeEnded(Tile tile, @Nullable Unit builder, int rotation, @Nullable Object config){
+61:         //config is assumed to be an integer RGBA color
+62:         if(config instanceof Integer i){
+63:             tile.extraData = i;
+64:         }
+65:     }
+66: 
+67:     @Override
+68:     public void editorPicked(Tile tile){
+69:         lastConfig = tile.extraData;
+70:     }
+71: 
+72:     @Override
+73:     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+74:         if(plan.config instanceof Integer i){
+75:             Draw.tint(Tmp.c1.set(i | 0xff));
+76:         }
+77:         drawDefaultPlanRegion(plan, list);
+78:     }
+79: 
+80:     @Override
+81:     public boolean checkAutotileSame(Tile tile, @Nullable Tile other){
+82:         return other != null && other.block() == this && ((tile.extraData == flagIgnoreDifferentColor) || tile.extraData == other.extraData);
+83:     }
+84: 
+85:     @Override
+86:     public boolean isDarkened(Tile tile){
+87:         return (tile.extraData == flagApplyDarkness);
+88:     }
+89: 
+90:     @Override
+91:     public int minimapColor(Tile tile){
+92:         return tile.extraData | 0xff;
+93:     }
+94: }

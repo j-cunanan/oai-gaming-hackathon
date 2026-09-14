@@ -1,0 +1,48 @@
+50:             this.getter = getter;
+51:             this.setter = setter;
+52:             this.min = min;
+53:             this.max = max;
+54:             this.step = step;
+55:         }
+56: 
+57:         public SliderOption display(){
+58:             display = true;
+59:             return this;
+60:         }
+61: 
+62:         @Override
+63:         public void build(Table table){
+64:             Element base;
+65:             if(!display){
+66:                 Label l = new Label("@filter.option." + name);
+67:                 l.setWrap(true);
+68:                 l.setStyle(Styles.outlineLabel);
+69:                 base = l;
+70:             }else{
+71:                 Table t = new Table().marginLeft(11f).marginRight(11f);
+72:                 base = t;
+73:                 t.add("@filter.option." + name).growX().wrap().style(Styles.outlineLabel);
+74:                 t.label(() -> Strings.autoFixed(getter.get(), 2)).style(Styles.outlineLabel).right().labelAlign(Align.right).padLeft(6);
+75:             }
+76:             base.touchable = Touchable.disabled;
+77: 
+78:             Slider slider = new Slider(min, max, step, false);
+79:             slider.moved(setter);
+80:             slider.setValue(getter.get());
+81:             if(updateEditorOnChange){
+82:                 slider.changed(changed);
+83:             }else{
+84:                 slider.released(changed);
+85:             }
+86: 
+87:             table.stack(slider, base).colspan(2).pad(3).growX().row();
+88:         }
+89:     }
+90: 
+91:     static class BlockOption extends FilterOption{
+92:         final String name;
+93:         final Prov<Block> supplier;
+94:         final Cons<Block> consumer;
+95:         final Boolf<Block> filter;
+96: 
+97:         BlockOption(String name, Prov<Block> supplier, Cons<Block> consumer, Boolf<Block> filter){

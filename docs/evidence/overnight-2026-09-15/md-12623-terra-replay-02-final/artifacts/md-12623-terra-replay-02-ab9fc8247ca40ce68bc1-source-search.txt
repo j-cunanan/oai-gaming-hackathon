@@ -1,0 +1,5 @@
+./core/src/mindustry/editor/MapObjectivesDialog.java:161:                () -> ui.picker.show(out, res -> set.get(out.set(res)))
+./core/src/mindustry/ui/dialogs/CustomRulesDialog.java:250:            }, () -> ui.picker.show(rules.ambientLight, rules.ambientLight::set)).left().width(250f).row();
+./core/src/mindustry/logic/LStatement.java:228:                ui.picker.show(current, setter);
+./core/src/mindustry/world/blocks/environment/ColoredFloor.java:60:            ui.picker.show(
+./core/src/mindustry/world/blocks/power/LightBlock.java:111:                ui.picker.show(Tmp.c1.set(color).a(0.5f), false, res -> configure(res.rgba()));
