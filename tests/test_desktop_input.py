@@ -102,6 +102,16 @@ def test_bad_modifier_is_rejected_before_any_input(driver):
     assert events == []
 
 
+@pytest.mark.parametrize("amount", [-8, 3, 0])
+def test_scroll_delivers_each_detent_separately_instead_of_one_frame_burst(driver, amount):
+    worker, pg, events = driver
+    worker.action(Action(action="scroll", x=30, y=40, scroll_y=amount, seconds=0.4).model_dump())
+    wheel = [args for name, args, _ in events if name == "scroll"]
+    assert wheel == [(1 if amount > 0 else -1,)] * abs(amount)
+    assert pg.PAUSE == 0.12
+    assert events[-1] == ("sleep", (0.4,), {})
+
+
 @pytest.mark.parametrize(
     "args", [{"action": "wait", "hold_seconds": 1}, {"action": "type", "keys": ["ctrl"]}]
 )

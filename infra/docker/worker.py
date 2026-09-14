@@ -153,7 +153,12 @@ def action(args):
             pg.write(args["text"], interval=0.01)
         elif op == "scroll":
             pg.moveTo(args["x"], args["y"])
-            pg.scroll(args["scroll_y"])
+            # Arc's scroll axis keeps the last event in each game frame. A burst
+            # can therefore collapse many requested detents into a single zoom
+            # step. Each call preserves pg.PAUSE so the game can consume it.
+            amount = args["scroll_y"]
+            for _ in range(abs(amount)):
+                pg.scroll(1 if amount > 0 else -1)
         elif op == "move":
             pg.moveTo(args["x"], args["y"])
     finally:
@@ -166,7 +171,7 @@ def action(args):
 
 def dispatch(operation, args):
     if operation == "ping":
-        return {"protocol": 3}
+        return {"protocol": 4}
     if operation == "launch":
         return launch(args)
     if operation == "terminate":

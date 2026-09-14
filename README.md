@@ -19,7 +19,7 @@ cd apps/web && npm ci && npm run build && cd ../..
 uv run repro serve
 ```
 
-The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial. Rebuild the worker image after pulling driver changes: protocol 3 adds modifier clicks and timed input to the persistent connection. The backend rejects older workers so requested controls cannot silently become ordinary clicks or momentary key taps.
+The API is available at `http://127.0.0.1:8000/api` and its interactive reference at `http://127.0.0.1:8000/docs`. Use one API process. The worker queue is intentionally local and serial. Rebuild the worker image after pulling driver changes: protocol 4 paces individual wheel detents, in addition to modifier clicks and timed input. The backend rejects older workers. Burst scrolling could deliver fewer camera-zoom updates than requested, shifting the targets of recorded clicks. Pacing improves delivery at the tested frame rates; it does not guarantee frame-exact input under every load. Historical recordings keep their original image provenance and are not retroactively revalidated by this change.
 
 `REPRO_MAX_OUTPUT_TOKENS` bounds each model response (default 4,000; supported configuration range 512–32,000). A run using a higher reasoning effort can explicitly allow more, for example 16,000 with `REPRO_REASONING_EFFORT=max` on [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra). The per-job model-call and wall-clock limits still apply. Health and model-call records retain the selected effort and output allowance; incomplete responses never execute partial actions.
 

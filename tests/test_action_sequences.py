@@ -125,8 +125,9 @@ async def test_input_failure_keeps_completed_evidence_and_does_not_send_later_ac
         [Action(action="wait")] * 9,
         [Action(action="keypress", keys=["w"], seconds=10, hold_seconds=10)] * 2,
         [Action(action="type", text="x" * 1100)] * 2,
+        [Action(action="scroll", x=10, y=10, scroll_y=20, seconds=0.5)] * 8,
     ],
 )
-def test_sequence_limits_cover_count_waits_holds_and_typing(actions):
+def test_sequence_limits_cover_count_waits_holds_typing_and_scroll_pacing(actions):
     with pytest.raises(ValidationError):
         ActionSequence(actions=actions)
