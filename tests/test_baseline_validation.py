@@ -345,6 +345,28 @@ async def test_candidate_test_runner_stores_both_log_links(context, logs):
     assert check.baseline_artifact and check.artifact
 
 
+async def test_online_candidate_failure_cannot_reuse_offline_baseline(context, logs):
+    settings, store, case = context
+    baseline(context, logs[0])
+    settings.validation_network = True
+    sandbox = worker(logs[1])
+    await Manager(settings, store).check_existing_tests(case, sandbox)
+    check = store.get(case.id).checks[-1]
+    assert check.status == "fail"
+    assert check.failing_tests == [TEST_ID]
+    assert "cannot be waived" in check.detail
+    assert "--offline" not in sandbox.exec.call_args.args[0]
+    assert not patch_validated(case)
+
+
+def test_network_validation_is_opt_in_and_reported_by_health(tmp_path):
+    settings = Settings(_env_file=None, data_dir=tmp_path)
+    assert settings.validation_network is False
+    settings.validation_network = True
+    with TestClient(create_app(settings)) as client:
+        assert client.get("/api/health").json()["validation_network"] is True
+
+
 async def test_baseline_clean_guard_checks_actual_source(context, monkeypatch):
     settings, store, case = context
     sandbox = DockerSandbox(settings, store, case)
