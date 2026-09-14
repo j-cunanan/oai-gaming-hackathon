@@ -1,0 +1,8 @@
+./core/src/mindustry/world/blocks/logic/LogicDisplay.java:30:        commandRect = 5,
+./core/src/mindustry/input/MobileInput.java:621:                commandRect = true;
+./core/src/mindustry/input/DesktopInput.java:572:                commandRect = true;
+./core/src/mindustry/input/DesktopInput.java:723:                commandRect = true;
+./core/src/mindustry/input/InputHandler.java:113:    public boolean commandRect = false;
+./core/src/mindustry/input/InputHandler.java:957:            commandRect = false;
+./core/src/mindustry/input/InputHandler.java:1086:            commandMode = commandRect = false;
+./core/src/mindustry/input/InputHandler.java:1114:            commandRect = false;

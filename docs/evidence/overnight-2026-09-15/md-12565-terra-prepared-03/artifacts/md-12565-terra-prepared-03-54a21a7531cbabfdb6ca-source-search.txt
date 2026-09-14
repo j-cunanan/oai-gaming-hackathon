@@ -1,0 +1,15 @@
+./server/src/mindustry/server/ServerControl.java:218:                commands.addAll(Strings.join(" ", args).split(","));
+./server/src/mindustry/server/ServerControl.java:225:                commands.addAll(startup);
+./core/src/mindustry/ai/UnitStance.java:88:            incompatibleCommands.addAll(UnitCommand.repairCommand, UnitCommand.assistCommand, UnitCommand.rebuildCommand);
+./core/src/mindustry/ai/UnitStance.java:92:            incompatibleCommands.addAll(UnitCommand.rebuildCommand, UnitCommand.repairCommand, UnitCommand.assistCommand, UnitCommand.enterPayloadCommand);
+./core/src/mindustry/type/UnitType.java:1068:            commands.add(UnitCommand.moveCommand);
+./core/src/mindustry/type/UnitType.java:1071:                commands.add(UnitCommand.enterPayloadCommand);
+./core/src/mindustry/type/UnitType.java:1077:                    commands.add(UnitCommand.rebuildCommand, UnitCommand.assistCommand);
+./core/src/mindustry/type/UnitType.java:1080:                    commands.add(UnitCommand.mineCommand);
+./core/src/mindustry/type/UnitType.java:1087:                    commands.add(UnitCommand.repairCommand);
+./core/src/mindustry/type/UnitType.java:1091:                    commands.add(UnitCommand.rebuildCommand, UnitCommand.assistCommand);
+./core/src/mindustry/type/UnitType.java:1095:                    commands.add(UnitCommand.mineCommand);
+./core/src/mindustry/type/UnitType.java:1098:                    commands.addAll(UnitCommand.loadUnitsCommand, UnitCommand.loadBlocksCommand, UnitCommand.unloadPayloadCommand, UnitCommand.loopPayloadCommand);
+./core/src/mindustry/ui/fragments/PlacementFragment.java:564:                                                commands.add(command);
+./core/src/mindustry/world/blocks/units/UnitFactory.java:323:                                commands.add().size(40f);
+./core/src/mindustry/world/blocks/logic/LogicDisplay.java:136:                commands.addLast(graphicsBuffer.items[i]);

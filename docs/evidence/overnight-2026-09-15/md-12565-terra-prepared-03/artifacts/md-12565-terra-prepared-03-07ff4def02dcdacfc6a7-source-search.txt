@@ -1,0 +1,47 @@
+./core/src/mindustry/type/UnitType.java:1071:                commands.add(UnitCommand.enterPayloadCommand);
+./core/src/mindustry/ai/UnitStance.java:92:            incompatibleCommands.addAll(UnitCommand.rebuildCommand, UnitCommand.repairCommand, UnitCommand.assistCommand, UnitCommand.enterPayloadCommand);
+./core/src/mindustry/ai/UnitCommand.java:17:    public static UnitCommand moveCommand, repairCommand, rebuildCommand, assistCommand, mineCommand, enterPayloadCommand, loadUnitsCommand, loadBlocksCommand, unloadPayloadCommand, loopPayloadCommand;
+./core/src/mindustry/ai/UnitCommand.java:90:        enterPayloadCommand = new UnitCommand("enterPayload", "downOpen", Binding.unitCommandEnterPayload, null){{
+./core/src/mindustry/ai/types/CommandAI.java:175:        return hasStance(UnitStance.boost) || command == UnitCommand.enterPayloadCommand;
+./core/src/mindustry/ai/types/CommandAI.java:231:        if(!net.client() && command == UnitCommand.enterPayloadCommand && unit.type.allowedInPayloads && (targetPos == null ? unit.buildOn() != null : targetBuild != null)){
+./core/src/mindustry/ai/types/CommandAI.java:294:            if(group != null && group.valid && groupIndex < group.units.size && command != UnitCommand.enterPayloadCommand){
+./core/src/mindustry/ai/types/CommandAI.java:302:                (command == UnitCommand.enterPayloadCommand && unit.within(movePos, 4f) || (targetBuild != null && !unit.type.circleTarget && unit.within(targetBuild, targetBuild.block.size * tilesize/2f * 0.9f))) ||
+./core/src/mindustry/ai/types/CommandAI.java:426:        if(command == UnitCommand.enterPayloadCommand && commandQueue.size == 0 && targetPos != null && world.buildWorld(targetPos.x, targetPos.y) != null && world.buildWorld(targetPos.x, targetPos.y).block.acceptsUnitPayloads){
+./core/src/mindustry/input/InputHandler.java:658:        if(unit.controller() instanceof CommandAI ai && ai.command == UnitCommand.enterPayloadCommand){
+./core/src/mindustry/input/InputHandler.java:1268:                            if(cmd == UnitCommand.enterPayloadCommand){
+./core/src/mindustry/input/Binding.java:62:    unitCommandEnterPayload = KeyBind.add("unit_command_enter_payload", KeyCode.unset),
+./core/assets/bundles/bundle_zh_TW.properties:407:command.enterPayload = 進入負荷方塊
+./core/assets/bundles/bundle_bg.properties:407:command.enterPayload = Влез в товарен блок
+./core/assets/bundles/bundle_ko.properties:407:command.enterPayload = 화물 블록에 들어가기
+./core/assets/bundles/bundle_ca.properties:407:command.enterPayload = Entra bloc
+./core/assets/bundles/bundle_uk_UA.properties:407:command.enterPayload = Увійти до вантажної будівлі
+./core/assets/bundles/bundle_be.properties:407:command.enterPayload = Увайсці ў грузавы блок
+./core/assets/bundles/bundle_ro.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_ja.properties:407:command.enterPayload = ペイロードに入る
+./core/assets/bundles/bundle_fil.properties:407:command.enterPayload = Pumasok sa payload
+./core/assets/bundles/bundle_eu.properties:407:command.enterPayload = Karga erabilgarriko blokea sartu
+./core/assets/bundles/bundle_th.properties:407:command.enterPayload = เข้าบล็อกบรรทุก
+./core/assets/bundles/bundle_id_ID.properties:407:command.enterPayload = Masuk ke Blok Muatan
+./core/assets/bundles/bundle_pl.properties:407:command.enterPayload = Wprowadź blok ładunku
+./core/assets/bundles/bundle_de.properties:407:command.enterPayload = Frachtblock betreten
+./core/assets/bundles/bundle_zh_CN.properties:407:command.enterPayload = 进入载荷建筑
+./core/assets/bundles/bundle_et.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_nl.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_vi.properties:407:command.enterPayload = Nhập Khối hàng vào Công trình
+./core/assets/bundles/bundle_fi.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle.properties:412:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_lt.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_sr.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_it.properties:407:command.enterPayload = Entra nel Blocco Carico
+./core/assets/bundles/bundle_ru.properties:407:command.enterPayload = Войти в грузовой блок
+./core/assets/bundles/bundle_fr.properties:407:command.enterPayload = Entrer dans Bloc de Transport
+./core/assets/bundles/bundle_cs.properties:407:command.enterPayload = Zadejte blok užitečného zatížení
+./core/assets/bundles/bundle_tr.properties:407:command.enterPayload = Kargo Bloğu Seç
+./core/assets/bundles/bundle_hu.properties:407:command.enterPayload = Berakodás a raktérbe
+./core/assets/bundles/bundle_tk.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_sv.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_nl_BE.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_pt_BR.properties:407:command.enterPayload = Inserir Bloco de Carga útil
+./core/assets/bundles/bundle_da.properties:407:command.enterPayload = Enter Payload Block
+./core/assets/bundles/bundle_pt_PT.properties:407:command.enterPayload = Inserir bloco de carga
+./core/assets/bundles/bundle_es.properties:407:command.enterPayload = Entrar a bloque de carga

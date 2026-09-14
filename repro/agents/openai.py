@@ -1,4 +1,5 @@
 import json
+import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
@@ -52,7 +53,9 @@ class Model:
             raise RuntimeError("Set OPENAI_API_KEY in the local .env before starting an AI run")
         self.settings, self.store, self.case = settings, store, case
         self.client = AsyncOpenAI(
-            api_key=settings.openai_api_key.get_secret_value(), timeout=90, max_retries=1
+            api_key=settings.openai_api_key.get_secret_value(),
+            timeout=settings.request_timeout_seconds,
+            max_retries=0,
         )
         self.start_calls = case.usage.model_calls
 
@@ -78,6 +81,7 @@ class Model:
                 "model": response.model,
                 "reasoning_effort": self.settings.reasoning_effort,
                 "max_output_tokens": self.settings.max_output_tokens,
+                "request_timeout_seconds": self.settings.request_timeout_seconds,
                 "input_tokens": usage.input_tokens if usage else 0,
                 "output_tokens": usage.output_tokens if usage else 0,
             },
@@ -86,6 +90,24 @@ class Model:
             raise RuntimeError(
                 f"OpenAI response {response.status}; no partial actions were executed"
             )
+
+    def request_failure(self, exc: APIError, purpose: str, started: float) -> RuntimeError:
+        self.store.save(
+            self.case,
+            "model_request_failed",
+            {
+                "purpose": purpose,
+                "model": self.settings.model,
+                "error_type": type(exc).__name__,
+                "code": exc.code,
+                "elapsed_seconds": time.monotonic() - started,
+                "request_timeout_seconds": self.settings.request_timeout_seconds,
+                "automatic_retries": 0,
+                "usage_unavailable": True,
+                "summary": f"OpenAI request failed: {type(exc).__name__}; no automatic retry. Token usage was not returned.",
+            },
+        )
+        return RuntimeError(f"OpenAI request failed: {type(exc).__name__} (code={exc.code})")
 
     async def structured(
         self,
@@ -119,6 +141,7 @@ class Model:
                     },
                 ]
             )
+        started = time.monotonic()
         try:
             response = await self.client.responses.parse(
                 model=self.settings.model,
@@ -137,9 +160,7 @@ class Model:
                 max_output_tokens=self.settings.max_output_tokens,
             )
         except APIError as exc:
-            raise RuntimeError(
-                f"OpenAI request failed: {type(exc).__name__} (code={exc.code})"
-            ) from None
+            raise self.request_failure(exc, purpose, started) from None
         self.record(response, purpose)
         if response.output_parsed is None:
             raise RuntimeError("Model returned no structured result (possibly a refusal)")
@@ -185,6 +206,7 @@ class Model:
                         "content": "At most two tool turns remain in this stage. Use the available completion tool with a grounded result or an honest limitation when ready; do not claim unperformed checks.",
                     }
                 )
+            started = time.monotonic()
             try:
                 response = await self.client.responses.create(
                     model=self.settings.model,
@@ -196,9 +218,7 @@ class Model:
                     max_output_tokens=self.settings.max_output_tokens,
                 )
             except APIError as exc:
-                raise RuntimeError(
-                    f"OpenAI request failed: {type(exc).__name__} (code={exc.code})"
-                ) from None
+                raise self.request_failure(exc, purpose, started) from None
             self.record(response, purpose)
             # Preserve reasoning/tool items for subsequent calls, but never expose them in UI/events.
             messages.extend(response.output)

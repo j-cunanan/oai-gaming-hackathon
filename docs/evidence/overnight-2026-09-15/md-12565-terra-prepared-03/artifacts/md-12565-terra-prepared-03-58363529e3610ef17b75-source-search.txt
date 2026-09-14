@@ -1,0 +1,4 @@
+./core/src/mindustry/entities/comp/SegmentComp.java:104:    public boolean isCommandable(){
+./core/src/mindustry/entities/comp/BuildingComp.java:1387:    public boolean isCommandable(){
+./core/src/mindustry/entities/comp/UnitComp.java:512:    public boolean isCommandable(){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:268:        public boolean isCommandable(){

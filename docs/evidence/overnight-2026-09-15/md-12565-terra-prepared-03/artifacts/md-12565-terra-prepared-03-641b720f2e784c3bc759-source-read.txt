@@ -1,0 +1,70 @@
+400:                                 req.top().left();
+401: 
+402:                                 for(ItemStack stack : displayBlock.requirements){
+403:                                     req.table(line -> {
+404:                                         line.left();
+405:                                         line.image(stack.item.uiIcon).size(8 * 2);
+406:                                         line.add(stack.item.localizedName).maxWidth(140f).fillX().color(Color.lightGray).padLeft(2).left().get().setEllipsis(true);
+407:                                         line.labelWrap(() -> {
+408:                                             Building core = player.core();
+409:                                             int stackamount = Math.round(stack.amount * state.rules.buildCostMultiplier);
+410:                                             if(core == null || state.rules.infiniteResources) return "*/" + stackamount;
+411: 
+412:                                             int amount = core.items.get(stack.item);
+413:                                             String color = (amount < stackamount / 2f ? "[scarlet]" : amount < stackamount ? "[accent]" : "[white]");
+414: 
+415:                                             return color + UI.formatAmount(amount) + "[white]/" + stackamount;
+416:                                         }).padLeft(5);
+417:                                     }).left();
+418:                                     req.row();
+419:                                 }
+420:                             }).growX().left().margin(3);
+421: 
+422:                             topTable.row();
+423:                             topTable.collapser(b -> {
+424:                                 b.left();
+425:                                 b.marginTop(2f);
+426:                                 b.image(Icon.cancel).padRight(2).color(Color.scarlet);
+427:                                 b.label(() -> {
+428:                                     var reason = getUnplaceableReason(displayBlock);
+429:                                     return reason == null ? "" : reason;
+430:                                 }).width(190f).wrap();
+431:                             }, () -> getUnplaceableReason(displayBlock) != null).left();
+432: 
+433:                         }else if(hovered != null){
+434:                             //show hovered item, whatever that may be
+435:                             hovered.display(topTable);
+436:                         }
+437:                     });
+438:                 }).colspan(3).fillX().visible(this::hasInfoBox).touchable(Touchable.enabled).row();
+439: 
+440:                 frame.image().color(Pal.gray).colspan(3).height(4).growX().row();
+441: 
+442:                 blockCatTable = new Table();
+443:                 commandTable = new Table(Tex.pane2);
+444:                 mainStack = new Stack();
+445: 
+446:                 mainStack.update(() -> {
+447:                     if(control.input.commandMode != wasCommandMode){
+448:                         mainStack.clearChildren();
+449:                         mainStack.addChild(control.input.commandMode ? commandTable : blockCatTable);
+450: 
+451:                         //hacky, but forces command table to be same width as blocks
+452:                         if(control.input.commandMode){
+453:                             commandTable.getCells().peek().width(blockCatTable.getWidth() / Scl.scl(1f));
+454:                         }
+455: 
+456:                         wasCommandMode = control.input.commandMode;
+457:                     }
+458:                 });
+459: 
+460:                 frame.add(mainStack).colspan(3).fill();
+461: 
+462:                 frame.row();
+463: 
+464:                 //for better inset visuals at the bottom
+465:                 frame.rect((x, y, w, h) -> {
+466:                     if(Core.scene.marginBottom > 0){
+467:                         Tex.paneLeft.draw(x, 0, w, y);
+468:                     }
+469:                 }).colspan(3).fillX().row();

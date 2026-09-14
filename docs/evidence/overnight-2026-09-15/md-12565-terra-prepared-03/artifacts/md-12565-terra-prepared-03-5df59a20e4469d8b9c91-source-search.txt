@@ -1,0 +1,8 @@
+./core/src/mindustry/world/Block.java:63:    public boolean acceptsUnitPayloads = false;
+./core/src/mindustry/world/blocks/payloads/BlockProducer.java:34:        acceptsUnitPayloads = false;
+./core/src/mindustry/world/blocks/payloads/PayloadSource.java:42:        acceptsUnitPayloads = false;
+./core/src/mindustry/world/blocks/payloads/PayloadBlock.java:29:        acceptsUnitPayloads = true;
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:35:        acceptsUnitPayloads = true;
+./core/src/mindustry/ai/types/CommandAI.java:283:            if(unit.isGrounded() && targetBuild != null && targetBuild.tile.solid() && targetBuild.block.acceptsUnitPayloads && unit.type.pathCostId != ControlPathfinder.costIdLegs && !ramming){
+./core/src/mindustry/ai/types/CommandAI.java:426:        if(command == UnitCommand.enterPayloadCommand && commandQueue.size == 0 && targetPos != null && world.buildWorld(targetPos.x, targetPos.y) != null && world.buildWorld(targetPos.x, targetPos.y).block.acceptsUnitPayloads){
+./core/src/mindustry/input/InputHandler.java:1270:                                if(build != null && build.block.acceptsUnitPayloads && build.team == unit.team){

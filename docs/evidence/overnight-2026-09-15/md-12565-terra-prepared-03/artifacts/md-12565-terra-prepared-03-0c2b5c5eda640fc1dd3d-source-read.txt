@@ -1,0 +1,58 @@
+795:                 this.name = name;
+796:                 String winkey = "setting." + name + ".name.windows";
+797:                 title = OS.isWindows && bundle.has(winkey) ? bundle.get(winkey) : bundle.get("setting." + name + ".name", name);
+798:                 description = bundle.getOrNull("setting." + name + ".description");
+799:             }
+800: 
+801:             public abstract void add(SettingsTable table);
+802: 
+803:             public void addDesc(Element elem){
+804:                 ui.addDescTooltip(elem, description);
+805:             }
+806:         }
+807: 
+808:         public static class CheckSetting extends Setting{
+809:             boolean def;
+810:             Boolc changed;
+811: 
+812:             public CheckSetting(String name, boolean def, Boolc changed){
+813:                 super(name);
+814:                 this.def = def;
+815:                 this.changed = changed;
+816:             }
+817: 
+818:             @Override
+819:             public void add(SettingsTable table){
+820:                 Table box = Elems.check(title, () -> settings.getBool(name), value -> {
+821:                     settings.put(name, value);
+822:                     if(changed != null){
+823:                         changed.get(value);
+824:                     }
+825:                 });
+826: 
+827:                 addDesc(table.add(box).minWidth(Math.min(500f, Core.graphics.getWidth() / 1.2f / Scl.scl(1f))).fillX().height(45f).left().padTop(7f).get());
+828:                 table.row();
+829:             }
+830:         }
+831: 
+832:         public static class SliderSetting extends Setting{
+833:             int def, min, max, step;
+834:             StringProcessor sp;
+835:             Intc changed;
+836: 
+837:             public SliderSetting(String name, int def, int min, int max, int step, StringProcessor s, Intc changed){
+838:                 super(name);
+839:                 this.def = def;
+840:                 this.min = min;
+841:                 this.max = max;
+842:                 this.step = step;
+843:                 this.sp = s;
+844:                 this.changed = changed;
+845:             }
+846: 
+847:             @Override
+848:             public void add(SettingsTable table){
+849:                 Slider slider = new Slider(min, max, step, false);
+850: 
+851:                 slider.setValue(settings.getInt(name));
+852: 

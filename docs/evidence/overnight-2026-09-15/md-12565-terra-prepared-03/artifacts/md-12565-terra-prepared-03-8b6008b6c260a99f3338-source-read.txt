@@ -1,0 +1,70 @@
+710:         }
+711: 
+712:         public void pref(Setting setting){
+713:             list.add(setting);
+714:             rebuild();
+715:         }
+716: 
+717:         public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
+718:             return sliderPref(name, def, min, max, 1, s);
+719:         }
+720: 
+721:         public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
+722:             return sliderPref(name, def, min, max, step, s, null);
+723:         }
+724: 
+725:         public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s, Intc changed){
+726:             return sliderPref(name, def, min, max, 1, s, changed);
+727:         }
+728: 
+729:         public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s, Intc changed){
+730:             SliderSetting res;
+731:             list.add(res = new SliderSetting(name, def, min, max, step, s, changed));
+732:             settings.defaults(name, def);
+733:             rebuild();
+734:             return res;
+735:         }
+736: 
+737:         public void checkPref(String name, boolean def){
+738:             list.add(new CheckSetting(name, def, null));
+739:             settings.defaults(name, def);
+740:             rebuild();
+741:         }
+742: 
+743:         public void checkPref(String name, boolean def, Boolc changed){
+744:             list.add(new CheckSetting(name, def, changed));
+745:             settings.defaults(name, def);
+746:             rebuild();
+747:         }
+748: 
+749:         public void textPref(String name, String def){
+750:             list.add(new TextSetting(name, def, null));
+751:             settings.defaults(name, def);
+752:             rebuild();
+753:         }
+754: 
+755:         public void textPref(String name, String def, Cons<String> changed){
+756:             list.add(new TextSetting(name, def, changed));
+757:             settings.defaults(name, def);
+758:             rebuild();
+759:         }
+760: 
+761:         public void areaTextPref(String name, String def){
+762:             list.add(new AreaTextSetting(name, def, null));
+763:             settings.defaults(name, def);
+764:             rebuild();
+765:         }
+766: 
+767:         public void areaTextPref(String name, String def, Cons<String> changed){
+768:             list.add(new AreaTextSetting(name, def, changed));
+769:             settings.defaults(name, def);
+770:             rebuild();
+771:         }
+772: 
+773:         public void rebuild(){
+774:             clearChildren();
+775: 
+776:             for(Setting setting : list){
+777:                 setting.add(this);
+778:             }
+779: 
