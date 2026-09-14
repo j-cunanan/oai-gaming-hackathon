@@ -33,3 +33,16 @@ The application supports fresh reset-separated replay checkpoints and rejects
 missing/reversed frames, conflicting judgments, absent prerequisites and weak
 confidence. Unit tests cover those rejection paths; the saved examples alone do
 not establish their frequency in real play.
+
+To run a new audit with the current verifier (12 paid API calls at most):
+
+```bash
+REPRO_MODEL=gpt-5.6-terra uv run python scripts/audit_sequences.py --output .repro/new-sequence-audit
+```
+
+Use `--without-trace` for a comparison without intervening inputs. The driver
+requires a new/empty output directory, records source hashes and usage, and leaves
+prior results intact. New judgments may differ; the frozen original results above
+are not overwritten. This driver audits retained evidence, not live recorder or
+UI behavior. Live testing later found and fixed checkpoint snapshot aliasing and
+premature recording limits in PR #13.

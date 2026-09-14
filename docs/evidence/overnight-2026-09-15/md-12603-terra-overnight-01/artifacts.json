@@ -1,0 +1,402 @@
+{
+  "artifacts/md-12603-terra-overnight-01-13a355927bc1ecf1ed57-report.md": {
+    "artifact_id": "md-12603-terra-overnight-01-13a355927bc1ecf1ed57-report.md",
+    "sha256": "13a355927bc1ecf1ed5772d7b9a87acdae3fcd3398bf9dc7d316179091280245",
+    "media_type": "text/markdown"
+  },
+  "artifacts/md-12603-terra-overnight-01-a0ff6593cbd57c604eb2-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-a0ff6593cbd57c604eb2-investigation.png",
+    "sha256": "a0ff6593cbd57c604eb207accc57a0fb3cbcba25cf76f3b43b28ed3d5ad0d32d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-2ecc40c8be464c0bc7ef-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-2ecc40c8be464c0bc7ef-investigation.png",
+    "sha256": "2ecc40c8be464c0bc7efaddd2d5670823cbc12fe51f65e6e722790cfff7a6f1b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-61dc2545d150a54f6c2c-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-61dc2545d150a54f6c2c-investigation.png",
+    "sha256": "61dc2545d150a54f6c2c48d067c2182599282eb4a173f88982e1b02279009885",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-5c9ac0cc984fff8412ca-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-5c9ac0cc984fff8412ca-investigation.png",
+    "sha256": "5c9ac0cc984fff8412ca6191e201f0b28dc4486d52cd039341be97080ec5597c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-7cb0768636da1191c15c-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-7cb0768636da1191c15c-investigation.png",
+    "sha256": "7cb0768636da1191c15cf038506ced2d781772404f4374cd6ec25be678f6037d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-bcf275aa02a222effa98-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-bcf275aa02a222effa98-investigation.png",
+    "sha256": "bcf275aa02a222effa980ea40b4544a257b03ed0cf6a32d7305d02169c94a877",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-04200708533ebe0a075e-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-04200708533ebe0a075e-investigation.png",
+    "sha256": "04200708533ebe0a075efc1622396978a85aa950821411c71ef7b800e0e2582d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-5d509e2cf6dd3614e115-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-5d509e2cf6dd3614e115-investigation.png",
+    "sha256": "5d509e2cf6dd3614e115f96a82b569d83b835635d453bc0791ee9996471d9952",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-8b0d9caf399dcf8826bf-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-8b0d9caf399dcf8826bf-investigation.png",
+    "sha256": "8b0d9caf399dcf8826bf7c659133335193396ee0392faec4b5df0b4cc94e9a08",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-4767e3e49d0232991c66-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-4767e3e49d0232991c66-investigation.png",
+    "sha256": "4767e3e49d0232991c66c4b4597421fd652fea3ed55d1e2900e01b3d32dfb4ea",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-9b3d02745e9b1f884da4-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-9b3d02745e9b1f884da4-investigation.png",
+    "sha256": "9b3d02745e9b1f884da460257034d4386c70a1c51c6b6996c7c59f21e6a745af",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-6da45f6b1bcc2873bf73-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-6da45f6b1bcc2873bf73-investigation.png",
+    "sha256": "6da45f6b1bcc2873bf7342a3307448fe7e692ac9549b95228e4b00652c840139",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-f4f3da446085e8926d70-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-f4f3da446085e8926d70-investigation.png",
+    "sha256": "f4f3da446085e8926d700b697044e2c1c2b9ee77663e0ea21d35f2e4d6172d8c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-938269f12e33c9572684-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-938269f12e33c9572684-investigation.png",
+    "sha256": "938269f12e33c9572684e16a1cf659da266c8218e4faa82a19b3fb0fa0e5fe1b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-b2507e9add5b4fe3a142-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-b2507e9add5b4fe3a142-investigation.png",
+    "sha256": "b2507e9add5b4fe3a1425a85b10440c5a47fab7a3369df8c468a43fdf1f79498",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-ff9590bc2145609b3682-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-ff9590bc2145609b3682-investigation.png",
+    "sha256": "ff9590bc2145609b368244f4d9341d6acad50234144bc038069d871675e77743",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-471234d39935093129b3-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-471234d39935093129b3-investigation.png",
+    "sha256": "471234d39935093129b38b02dfc349693e20c113a51168ecba1a0b77e32a13ff",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-671218e6d40265702a2e-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-671218e6d40265702a2e-investigation.png",
+    "sha256": "671218e6d40265702a2ec209ad602cc68543f114e60742151d7ad59351c53ef1",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-1c6975d563cf5dc754d6-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-1c6975d563cf5dc754d6-investigation.png",
+    "sha256": "1c6975d563cf5dc754d63e67769350eff4d1059213473760695c27d6bd62ca13",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-941d95ce109bb11d7e81-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-941d95ce109bb11d7e81-investigation.png",
+    "sha256": "941d95ce109bb11d7e819005968d06c2d5ac182a4f8a1468431151ee83b3c3a7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-7897f67ff6630ff41032-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-7897f67ff6630ff41032-investigation.png",
+    "sha256": "7897f67ff6630ff41032148c4379eb38284de40fac0cae8f7ced013a25529a56",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-688eee438600db91be23-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-688eee438600db91be23-investigation.png",
+    "sha256": "688eee438600db91be23eeee836848ad3823695c35ef73a15730c36f56f330be",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-e1e6f74a7e9ac5b50a39-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-e1e6f74a7e9ac5b50a39-investigation.png",
+    "sha256": "e1e6f74a7e9ac5b50a395ef6a5845f02cf490e9d6ea9bc4b45b9c7bcc63094cd",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-9e8e65baebd0dddd7992-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-9e8e65baebd0dddd7992-investigation.png",
+    "sha256": "9e8e65baebd0dddd7992072ffa8d7fbc9a831e9159a12ecf0f2a9fad62e36297",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-ebb553c9838a29d27f6b-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-ebb553c9838a29d27f6b-investigation.png",
+    "sha256": "ebb553c9838a29d27f6bca741ebdca183d8d8c387be2eba7a323a74f6823953d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-39951b29a0ac0830181c-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-39951b29a0ac0830181c-investigation.png",
+    "sha256": "39951b29a0ac0830181c89e8e69fa85f423d330f30ee78950dd4df428f6bffd3",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-3965cb4de1bfb637c504-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-3965cb4de1bfb637c504-investigation.png",
+    "sha256": "3965cb4de1bfb637c504013475f6159b5e0e6f177a66366773dea394a28dc5d3",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-1ca2f5e1bc639d6856fe-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-1ca2f5e1bc639d6856fe-investigation.png",
+    "sha256": "1ca2f5e1bc639d6856feff64565c5470f3f9d9b663ee1dae3032856356e621b5",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-4420b5b8423ca544f6c1-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-4420b5b8423ca544f6c1-investigation.png",
+    "sha256": "4420b5b8423ca544f6c1bfb5eff53e91bb1587589f958359d4268ab8e6ec9240",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-491e7f8b7403786181ff-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-491e7f8b7403786181ff-investigation.png",
+    "sha256": "491e7f8b7403786181ff94cf2c15e1640f1461122bceb7a463e8c44a9e85b37e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-9bb9ee50a9888da15732-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-9bb9ee50a9888da15732-investigation.png",
+    "sha256": "9bb9ee50a9888da15732d9e4835ed65f90467f46b4a095f7955422378d53e152",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-69dd9c077337127f4ef5-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-69dd9c077337127f4ef5-investigation.png",
+    "sha256": "69dd9c077337127f4ef5c4941781f226e13acb6062c1aa1f7a79f88e21632dff",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-d4d8b63a7850848921b8-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-d4d8b63a7850848921b8-investigation.png",
+    "sha256": "d4d8b63a7850848921b89b31655679ac63eb8955785d97c527b2ddb294186070",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-3f5ee8950688dd31d9dd-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-3f5ee8950688dd31d9dd-investigation.png",
+    "sha256": "3f5ee8950688dd31d9ddd3b5d32c11c653c82cff831ab0f569ac8a162770c4a7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-8f3c959bbab97da8453c-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-8f3c959bbab97da8453c-investigation.png",
+    "sha256": "8f3c959bbab97da8453c6eb18b05c85f59b4d825e4be5ea38ecc11a7ba2d6a7c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-ce24400e07dc338b6bb5-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-ce24400e07dc338b6bb5-investigation.png",
+    "sha256": "ce24400e07dc338b6bb5aa0b18fe7a33dcafa93e4991e30ddf46114baacf3d45",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-d282fc60843e8095d934-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-d282fc60843e8095d934-investigation.png",
+    "sha256": "d282fc60843e8095d93402c91c3efa40c81be9fa930f90a0fa765e5f87d4fac9",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-dae67f5480f74342489a-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-dae67f5480f74342489a-investigation.png",
+    "sha256": "dae67f5480f74342489ac42dd93252394fdf3da9bfbc83cd0d70764599200208",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-f4715bf930ad9f6fec63-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-f4715bf930ad9f6fec63-investigation.png",
+    "sha256": "f4715bf930ad9f6fec63f06e7ae856472084f317264a46bd92a7b81972031be9",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-a55bd1926d74d51d14f8-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-a55bd1926d74d51d14f8-investigation.png",
+    "sha256": "a55bd1926d74d51d14f84192511d714f84f72ee71db1d083becd7147ee385c96",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-4d2de1ca7c15727cd6fd-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-4d2de1ca7c15727cd6fd-investigation.png",
+    "sha256": "4d2de1ca7c15727cd6fd18c2271d9586519c4175a86ef4b5e7aa703c0026e32e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-8ec03555abdda4a51d22-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-8ec03555abdda4a51d22-investigation.png",
+    "sha256": "8ec03555abdda4a51d22b126f9df540f14d872907aa8249bde0844252e33d806",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-db228af8ddc13d25bfda-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-db228af8ddc13d25bfda-investigation.png",
+    "sha256": "db228af8ddc13d25bfdae070cbcaa53d940593a43ff82a403749a953818c7b2e",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-54ad5f03d8a08c18dba2-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-54ad5f03d8a08c18dba2-investigation.png",
+    "sha256": "54ad5f03d8a08c18dba24ef94502a3703035ae4d635b9a1ac357d662592e1ee6",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-eccdc46053cbc749549d-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-eccdc46053cbc749549d-investigation.png",
+    "sha256": "eccdc46053cbc749549dbedfc362febd5f69c51f9aec9214606b2f1a2debd2a0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-3324a5a810eefa656d5a-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-3324a5a810eefa656d5a-investigation.png",
+    "sha256": "3324a5a810eefa656d5a704fed65d3a06ebd7766d19e82933c1b24cd38c77c25",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-542f692113a5656c55e5-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-542f692113a5656c55e5-investigation.png",
+    "sha256": "542f692113a5656c55e5cf230cfd7e8165fcb3eab455bbe3050e24cc45f24453",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-ae9e9b9e31850fd0e873-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-ae9e9b9e31850fd0e873-investigation.png",
+    "sha256": "ae9e9b9e31850fd0e87340b28da10c7722a91697b203013aacbfd4a36e1ae9f3",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-63735301390ba85693f5-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-63735301390ba85693f5-investigation.png",
+    "sha256": "63735301390ba85693f5693c2a1f91e4c6633ff61df974eee3a6ce0ab473fb66",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-4d59e9e37c03c856640d-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-4d59e9e37c03c856640d-investigation.png",
+    "sha256": "4d59e9e37c03c856640d2ad096d74894c21299ca5b181ad1baa62fc44a196b42",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-426c32c3966bb244efc4-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-426c32c3966bb244efc4-investigation.png",
+    "sha256": "426c32c3966bb244efc40d8c89e6c6ff9991af4d957ef2a738b14dda21b4a773",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-14fe49f28e4511c0bcaf-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-14fe49f28e4511c0bcaf-investigation.png",
+    "sha256": "14fe49f28e4511c0bcafb7e739d7911a75f4735bfc7b745c6f0b13f5313e7ca6",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-8d31b46292695b74bcfb-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-8d31b46292695b74bcfb-investigation.png",
+    "sha256": "8d31b46292695b74bcfbde325959c58baa1e4b58c0132dc20d191ecf86fd493b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-b4037a490ff1ed3799c9-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-b4037a490ff1ed3799c9-investigation.png",
+    "sha256": "b4037a490ff1ed3799c93a385ffc8cf521fedd3806ea7d28cb220cc3d67d0b02",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-e47ddccd3e5d216cf29d-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-e47ddccd3e5d216cf29d-investigation.png",
+    "sha256": "e47ddccd3e5d216cf29dcfb3b7f0e68bc4a58f96a0393bc0e5e506214c1c79a0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-1ad93f48b21deaddbc6b-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-1ad93f48b21deaddbc6b-investigation.png",
+    "sha256": "1ad93f48b21deaddbc6b1b62035165129132b2aef414e3855b7c24e22aff3d10",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-a8077bb3c2226fc44f58-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-a8077bb3c2226fc44f58-investigation.png",
+    "sha256": "a8077bb3c2226fc44f589ea8716cc461ea83e3293abcdf37adf0d2a2f1f1cac2",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-fd465d6eb1bcf3cac0b2-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-fd465d6eb1bcf3cac0b2-investigation.png",
+    "sha256": "fd465d6eb1bcf3cac0b21611e06ab8b8de7a23aac449f903aa9e5d3a52a0a123",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-f3b54a371f01707c2847-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-f3b54a371f01707c2847-investigation.png",
+    "sha256": "f3b54a371f01707c28476e785743265c4652b3a3764bdf2d14aec8c3691e1ac0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-de3083460b27cb5a36c8-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-de3083460b27cb5a36c8-investigation.png",
+    "sha256": "de3083460b27cb5a36c8f827c54e6164bedaae5d052f5c2e3423a73a2ae7a6b3",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-f0ad193acbbb5c640e63-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-f0ad193acbbb5c640e63-investigation.png",
+    "sha256": "f0ad193acbbb5c640e6351a7361eb3eef62836281e6f4f0d22c12cb35816257a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-94a2da28f48e744b7908-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-94a2da28f48e744b7908-investigation.png",
+    "sha256": "94a2da28f48e744b79086c92f01bdc85af915434f061f4290508388617028615",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-a6f118bc0d38dfed5ca3-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-a6f118bc0d38dfed5ca3-investigation.png",
+    "sha256": "a6f118bc0d38dfed5ca3e7f55de264583dc133016eb870830af0b450049ea7f9",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-d5748b8f32816c04b18f-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-d5748b8f32816c04b18f-investigation.png",
+    "sha256": "d5748b8f32816c04b18fdf5515901c94b85f75afa943bf3cf92c13ee682a53a6",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-01fccb91d5372eb623db-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-01fccb91d5372eb623db-investigation.png",
+    "sha256": "01fccb91d5372eb623dbc3e944b2c5104d7f6dce9969b393d260a075584f4c67",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-9ba2eb0dac495b96bf75-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-9ba2eb0dac495b96bf75-investigation.png",
+    "sha256": "9ba2eb0dac495b96bf75a7145cb1b49d1af7e94a615dc242154ab438dd20b795",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-f78f8c634039679325fd-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-f78f8c634039679325fd-investigation.png",
+    "sha256": "f78f8c634039679325fd85a6253de7cf81f781759369d4b7f60c546c291ac87c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-6ed3dd8232d8174f750a-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-6ed3dd8232d8174f750a-investigation.png",
+    "sha256": "6ed3dd8232d8174f750ad70ff5f5db5f844c71b9cbdf79ddc3552b975b76be7f",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-5bd1f2a6be2364fba795-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-5bd1f2a6be2364fba795-investigation.png",
+    "sha256": "5bd1f2a6be2364fba7956c9b3bfa5257a8c3d6158e7572e136a2b95a49a7dbfa",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-494020ae8bbb8376f4ea-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-494020ae8bbb8376f4ea-investigation.png",
+    "sha256": "494020ae8bbb8376f4eaea3cc056b2690f82d538bbcad592917cf555f57e163d",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-c73744f249415d171bae-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-c73744f249415d171bae-investigation.png",
+    "sha256": "c73744f249415d171bae0f9c95e165d5074e68f70962520e11ee45bade3a1aa0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-80a96f8e5dc0f62e32e3-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-80a96f8e5dc0f62e32e3-investigation.png",
+    "sha256": "80a96f8e5dc0f62e32e3d7a44a9b87502bd188d84c634800e63c96e340b46a9b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-74ed5794bd9d24c0b707-investigation.png": {
+    "artifact_id": "md-12603-terra-overnight-01-74ed5794bd9d24c0b707-investigation.png",
+    "sha256": "74ed5794bd9d24c0b7078fd4599f57a5246d7c31484ac15800f44061c077e189",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-dccbf6362f7350667be7-initial.log": {
+    "artifact_id": "md-12603-terra-overnight-01-dccbf6362f7350667be7-initial.log",
+    "sha256": "dccbf6362f7350667be77ef83d4af06852a0ea2ec24adb798bd57152937aa7d4",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-overnight-01-5c0696689b2eafa3d3ae-initial.png": {
+    "artifact_id": "md-12603-terra-overnight-01-5c0696689b2eafa3d3ae-initial.png",
+    "sha256": "5c0696689b2eafa3d3ae63fdfc30b1a9984ad8b553d95f65f1e660db76e0b4ad",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-overnight-01-2ceb09f4d0b264804bef-baseline-tests.log": {
+    "artifact_id": "md-12603-terra-overnight-01-2ceb09f4d0b264804bef-baseline-tests.log",
+    "sha256": "2ceb09f4d0b264804bef37d4b238ad7666d124e744cafaf16b7a0db3cc036dbc",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-overnight-01-f1c6e1638cf952530539-prepare-test-dependencies.log": {
+    "artifact_id": "md-12603-terra-overnight-01-f1c6e1638cf952530539-prepare-test-dependencies.log",
+    "sha256": "f1c6e1638cf9525305395d2b74d86009f1a313d28a3607ecfa73a42aeec40d94",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-overnight-01-275870e06d0f44ed3377-prepare-build.log": {
+    "artifact_id": "md-12603-terra-overnight-01-275870e06d0f44ed3377-prepare-build.log",
+    "sha256": "275870e06d0f44ed337776d8c018714d050d1a7ac4a34ad76d48890f4b988319",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-overnight-01-5f7b37de69e73eac984f-history-audit.json": {
+    "artifact_id": "md-12603-terra-overnight-01-5f7b37de69e73eac984f-history-audit.json",
+    "sha256": "5f7b37de69e73eac984f8549b9b3e0d72e1f54b00a1baf2f9ca1f96456b88e60",
+    "media_type": "application/json"
+  }
+}

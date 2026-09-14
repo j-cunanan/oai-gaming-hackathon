@@ -1,0 +1,119 @@
+{
+  "id": "md-12565-terra-overnight-01",
+  "report": {
+    "title": "Unit disappears when entering payload conveyor",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\n27713\n\n### Issue\n\nUnit disappears when entering payload conveyor\n\n### Steps to reproduce\n\nUsing RTS or manually control a unit entering a payload conveyor.\n\n### Mods used\n\nnone\n\n### Save file\n\nAny save\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "7e80948b58138a569e119857e0add95762d7e0bb",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T15:13:40.734374+00:00",
+  "updated_at": "2026-09-14T15:47:30.888062+00:00",
+  "summary": "Could not reproduce or disprove the reported disappearance because the required unit-entry transition was not achieved. A vanilla sandbox world was launched, the Units build category was opened, and a Payload Conveyor was selected and placed (its visible tooltip and conveyor sprite confirmed it). Attempts to create a Ground Factory test source produced only unconstructed placement ghosts because the setup lacked delivery/construction capability, and no existing controllable ground unit was available. Thus no unit entered the conveyor.",
+  "spec": {
+    "summary": "Reported unit disappearance when it enters a payload conveyor in Mindustry build 27713 on Windows.",
+    "bug_class": "entity visibility/removal or payload-conveyor interaction (reported symptom only)",
+    "observed_behavior": "The reporter states that a unit disappears when entering a payload conveyor.",
+    "expected_behavior": "A unit entering a payload conveyor should remain present and be transported/handled according to normal payload conveyor behavior.",
+    "known_preconditions": [
+      "Game: Mindustry.",
+      "Reported platform: Windows.",
+      "Reported build: 27713.",
+      "Target commit supplied: 7e80948b58138a569e119857e0add95762d7e0bb.",
+      "Reporter states no mods were used.",
+      "The report says the issue can occur while using RTS control or manual unit control.",
+      "A payload conveyor and a unit capable of entering it are involved."
+    ],
+    "uncertain_conditions": [
+      "Whether the unit is actually removed, becomes invisible, is stored as a payload, is moved elsewhere, or is only no longer controllable.",
+      "Whether the behavior occurs for every unit type or only particular units.",
+      "Whether the behavior requires RTS control, manual control, or occurs in both modes.",
+      "Whether the behavior occurs on every map/save; \"Any save\" is reporter-provided and not independently verified.",
+      "Whether the reported Windows build corresponds exactly to the supplied target commit.",
+      "Whether the issue reproduces on Linux; Linux evaluation is planned but no result is provided.",
+      "Whether payload conveyor orientation, connections, power state, unit size, payload capacity, or nearby blocks affect the result.",
+      "Whether the unit is entering the conveyor through intended gameplay behavior versus an edge-case placement/control interaction.",
+      "Whether the report describes a regression and, if so, the last known working build."
+    ],
+    "reproduction_hints": [
+      "On Windows build 27713, create or load a map containing a payload conveyor.",
+      "Use a unit and attempt to enter the payload conveyor while manually controlling the unit.",
+      "Repeat using RTS control if available.",
+      "Observe the unit before entry, while on the conveyor, and after it reaches any connected destination.",
+      "Compare behavior across unit types, conveyor orientations, and connected/unconnected payload conveyor setups.",
+      "Record whether the unit remains selectable, appears in a payload block, emerges at an output, or is absent from the map."
+    ],
+    "required_artifacts": [
+      "Save file or minimal reproducible schematic/map showing the payload conveyor setup.",
+      "Exact unit type(s) involved.",
+      "Video or screenshots covering unit approach, entry, conveyor transit, and expected exit/destination.",
+      "Game logs from a reproduction session, including client log and any console output.",
+      "Exact full game version/build identifier and confirmation of the commit-to-build mapping.",
+      "Reproduction frequency and whether it occurs in a new vanilla world.",
+      "Map name, game mode, and multiplayer/single-player status.",
+      "Payload conveyor configuration: orientation, adjacent blocks, destination block(s), power state, and whether the conveyor network is blocked.",
+      "Control method used for each reproduction attempt: manual control, RTS control, or both.",
+      "Any error messages, desync indicators, or unit selection/state observations after disappearance.",
+      "Linux evaluation results, if testing is performed."
+    ],
+    "severity": "unknown",
+    "confidence": 0.9
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "A controllable unit entering a payload conveyor is removed or becomes invisible instead of surviving transport.",
+      "prediction": "In a vanilla sandbox setup, a unit visible before entry will no longer be visible/selectable after crossing into a payload conveyor, without emerging normally.",
+      "status": "inconclusive",
+      "observation": "A payload conveyor was placed and visibly confirmed in a sandbox world, but no controllable or produced ground unit could be obtained in the available session; therefore an entry event could not be performed."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "7e80948b58138a569e119857e0add95762d7e0bb": {
+      "commit_sha": "7e80948b58138a569e119857e0add95762d7e0bb",
+      "timestamp": "2026-09-14T15:17:12.988341+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12565-terra-overnight-01-22d58c370fdc476ee456-baseline-tests.log",
+      "log_sha256": "22d58c370fdc476ee456b92f8947146f16cdb6f57b3cf0c2ae0aabe0f2b9a0b8",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:5a9200c0e2e51efe26a19442f915f15cff4a4d09e60afd8210ceb74e26a9d4e1",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 79,
+    "input_tokens": 904716,
+    "output_tokens": 9672
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "latest_screenshot": "md-12565-terra-overnight-01-7caf0571b1aba00baf6c-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 482.2802045830176,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12565",
+  "imported_from": null,
+  "case_id": "md-12565-terra-overnight-01"
+}
