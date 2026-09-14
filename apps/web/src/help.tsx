@@ -48,7 +48,7 @@ const explanations: Record<string, string> = {
   "Player report":
     "The original bug description supplied to this case. The investigation's findings and proposed patch are recorded separately.",
   "Provided maps":
-    "Original player maps supplied with this report. The checksum identifies each file. Every fresh run restores the same original map before the AI imports it through the game UI; having the file does not prove the bug occurs.",
+    "Maps or saved scenes supplied to this case. The report identifies original attachments and any separately prepared setup. Each checksum identifies a file restored before every fresh run; having the file does not prove the bug occurs.",
   Severity:
     "The AI's triage estimate from the report. Unknown means there was not enough information to judge impact; it does not mean harmless.",
   "Initial questions":

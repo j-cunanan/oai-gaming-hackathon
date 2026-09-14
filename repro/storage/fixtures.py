@@ -1,4 +1,4 @@
-"""Original player maps, identified by content and restored before every replay."""
+"""Provided maps and setup saves, identified by content and restored before every replay."""
 
 import hashlib
 import os
