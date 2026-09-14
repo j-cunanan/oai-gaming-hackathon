@@ -1,0 +1,58 @@
+228:         public void buildConfiguration(Table table){
+229:             table.table(t -> {
+230:                 t.background(Styles.black6);
+231:                 t.defaults().left();
+232: 
+233:                 t.check(Core.bundle.get("rules.enemyteam"), unitTeam != team, b -> configureFloat(0, Mathf.num(b))).colspan(3).row();
+234:                 t.check(Core.bundle.get("stat.flying"), boosting, b -> configureFloat(1, Mathf.num(b))).colspan(3).row();
+235:                 t.add(Core.bundle.get("stat.armor"));
+236:                 t.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configureFloat(2, Strings.parseFloat(s))).width(200f).padLeft(8f).colspan(2).row();
+237:                 t.add(Core.bundle.get("stat.resettime"));
+238:                 t.field(Strings.autoFixed(resetTime / 60f, 2), TextFieldFilter.floatsOnly, s -> configureFloat(3, Strings.parseFloat(s) * 60f)).padLeft(8f).growX();
+239:                 t.add(StatUnit.seconds.localized()).padLeft(8).row();
+240:                 t.add(Core.bundle.get("stat.hitsize"));
+241:                 t.field("" + (dummySize/tilesize), TextFieldFilter.floatsOnly, s -> configureFloat(4, Strings.parseFloat(s) * tilesize)).padLeft(8f).growX();
+242:                 t.add(StatUnit.blocks.localized()).padLeft(8f);
+243:             }).top().grow().margin(8f);
+244:         }
+245: 
+246:         //helper to send the rest of values, since config does not support arrays
+247:         public void configureFloat(int index, float value){
+248:             FloatSeq seq = FloatSeq.with(Mathf.num(unitTeam != team), Mathf.num(boosting), unitArmor, resetTime, dummySize);
+249:             seq.set(index, value);
+250:             configure(seq);
+251:         }
+252: 
+253:         public int dummyTeam(){
+254:             if(unitTeam != team) return team.id; //Return to own team
+255:             return team != state.rules.waveTeam ? state.rules.waveTeam.id : (team.id % (Team.all.length - 1)) + 1;
+256:         }
+257: 
+258:         @Override
+259:         public Object config(){
+260:             return FloatSeq.with(Mathf.num(unitTeam != team), Mathf.num(boosting), unitArmor, resetTime, dummySize);
+261:         }
+262: 
+263:         @Override
+264:         public void write(Writes write){
+265:             super.write(write);
+266:             write.i(unit == null ? -1 : unit.id);
+267:             write.bool(boosting);
+268:             write.f(unitArmor);
+269:             write.f(resetTime);
+270:             write.f(dummySize);
+271:             write.i(unitTeam.id);
+272:         }
+273: 
+274:         @Override
+275:         public void read(Reads read, byte revision){
+276:             super.read(read, revision);
+277:             readUnitId = read.i();
+278:             boosting = read.bool();
+279:             unitArmor = read.f();
+280:             resetTime = read.f();
+281:             dummySize = read.f();
+282:             unitTeam = Team.get(read.i());
+283:         }
+284:     }
+285: }

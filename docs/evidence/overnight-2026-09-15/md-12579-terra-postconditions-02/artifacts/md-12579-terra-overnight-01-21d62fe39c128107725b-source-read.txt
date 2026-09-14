@@ -1,0 +1,70 @@
+270:                             if(!spanAbove && y > 0 && tester.get(editor.tile(x1, y - 1))){
+271:                                 stack.add(Point2.pack(x1, y - 1));
+272:                                 spanAbove = true;
+273:                             }else if(spanAbove && !tester.get(editor.tile(x1, y - 1))){
+274:                                 spanAbove = false;
+275:                             }
+276: 
+277:                             if(!spanBelow && y < height - 1 && tester.get(editor.tile(x1, y + 1))){
+278:                                 stack.add(Point2.pack(x1, y + 1));
+279:                                 spanBelow = true;
+280:                             }else if(spanBelow && y < height - 1 && !tester.get(editor.tile(x1, y + 1))){
+281:                                 spanBelow = false;
+282:                             }
+283:                             x1++;
+284:                         }
+285:                     }
+286:                     stack.clear();
+287:                 }catch(OutOfMemoryError e){
+288:                     //hack
+289:                     stack = null;
+290:                     System.gc();
+291:                     e.printStackTrace();
+292:                     stack = new IntSeq();
+293:                 }
+294:             }
+295:         }
+296:     },
+297:     spray(KeyCode.r, "replace"){
+298:         final double chance = 0.012;
+299: 
+300:         {
+301:             edit = true;
+302:             draggable = true;
+303:         }
+304: 
+305:         @Override
+306:         public void touched(int x, int y){
+307: 
+308:             //floor spray
+309:             if(editor.drawBlock.isFloor()){
+310:                 editor.drawCircle(x, y, tile -> {
+311:                     if(Mathf.chance(chance)){
+312:                         tile.setFloor(editor.drawBlock.asFloor());
+313:                     }
+314:                 });
+315:             }else if(mode == 0){ //replace-only mode, doesn't affect air
+316:                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
+317:             }else{
+318:                 editor.drawBlocks(x, y, tile -> Mathf.chance(chance));
+319:             }
+320:         }
+321:     };
+322: 
+323:     public static final EditorTool[] all = values();
+324: 
+325:     /** All the internal alternate placement modes of this tool. */
+326:     public final String[] altModes;
+327:     /** Key to activate this tool. */
+328:     public KeyCode key = KeyCode.unset;
+329:     /** The current alternate placement mode. -1 is the standard mode, no changes.*/
+330:     public int mode = -1;
+331:     /** Whether this tool causes canvas changes when touched.*/
+332:     public boolean edit;
+333:     /** Whether this tool should be dragged across the canvas when the mouse moves.*/
+334:     public boolean draggable;
+335: 
+336:     EditorTool(){
+337:         this(new String[]{});
+338:     }
+339: 

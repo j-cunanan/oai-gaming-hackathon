@@ -1,0 +1,132 @@
+{
+  "id": "md-12354-terra-fixture-02",
+  "report": {
+    "title": "[Original test maps] Derelict conveyor loses current payload on reload",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nrelease build 159.3\n\n### Issue\n\nderelict payload conveyors lose their current payload (blocks) after restarting the map or reloading the save\n\n(originally this was a suggestion to rework payload conveyors, but I decided to issue this as a bug instead)\n\n### Steps to reproduce\n\n1.) Place block on payload conveyor and make sure it's derelict\n2.) Save game\n3.) Load game\n4.) See results\n\n### Mods used\n\n_No response_\n\n### Save file\n\n[mindustry-data-export.zip](https://github.com/user-attachments/files/29970021/mindustry-data-export.zip)\n\n### (Crash) logs\n\n_No response_\n\n### REPRO supplied original files (explicit input selection)\n\nThis fresh attempt receives two unchanged maps extracted from the report's linked mindustry-data-export.zip: maps/test map.msav as /workspace/fixtures/cargo-test-map.msav, and maps/mix tech.msav as /workspace/fixtures/cargo-mix-tech.msav. They were selected because they are small, named test scenes (both 200x200); it is not known which map best demonstrates the report. Their save envelopes are version 13, build tag 159, and list no active mods. Import and inspect the first test map through the game's editor UI before constructing an unrelated scene. The fixture copies are restored identically before each fresh run.\n\nThe full original archive also includes larger maps, save slots, settings and a mod ZIP. Those other files are not installed in this case. The two selected maps' mods tags are empty, which is narrower than proving that the reporter never used mods. If either map fails to load or lacks the needed setup, record that limitation.\n\nThe previous report-only attempt never established a payload on a Derelict conveyor and never saved/reloaded. This is a new context with supplied original inputs, not a successful continuation of that attempt. Require visible payload and Derelict ownership before the save, and inspect the same location after reopening. Normal unloading, a map that was already empty, or a unit remaining in payload form does not establish the reported loss. These notes do not supply a source diagnosis or fix.\n",
+    "game": "mindustry",
+    "target_commit": "2c066e9c8c7e153e4eb91d730ead02e9011edd75",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": "159.3",
+    "fixtures": [
+      {
+        "filename": "cargo-test-map.msav",
+        "sha256": "81d1f6d8c20f66647ea655f410b8870219c5b5990dd895b75f5d14c23b52d618"
+      },
+      {
+        "filename": "cargo-mix-tech.msav",
+        "sha256": "db3033c4818efb4ab05bd060ae2fc5d9b1ada740c52c981fa5b13125e5acc255"
+      }
+    ]
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T18:36:47.774113+00:00",
+  "updated_at": "2026-09-14T19:22:40.750110+00:00",
+  "summary": "Both supplied maps were imported through the editor and inspected. cargo-test-map.msav (shown as \u201ctest map\u201d) did run: hovering its large transport block identified \u201cPayload Conveyor \u2014 Derelict,\u201d and a nearby visible object identified as \u201cWorld Processor.\u201d I saved that running scene as first-fixture-derelict-test, loaded the same save, and the post-load view still showed both the Derelict conveyor and the World Processor; no disappearance was visible in that ambiguous scene. However, the UI inspection did not establish that the visible World Processor was actually the conveyor\u2019s current carried payload rather than a separate placed building. cargo-mix-tech.msav (shown as \u201cmix tech\u201d) ran with a Shard core and terrain/resource clusters; its inspected dark marks identified as Coal and no payload conveyor/block-payload setup was found. I also created a separate controlled map and placed a Derelict Payload Conveyor, but did not complete a source/payload/save/load cycle before the investigation limit.",
+  "spec": {
+    "summary": "Unverified report that a block payload on a Derelict payload conveyor is absent after a map restart or save reload.",
+    "bug_class": "Reported save/load or map-restart state-persistence symptom",
+    "observed_behavior": "The reporter states that Derelict payload conveyors lose their current block payload after restarting the map or loading a save. The claimed sequence is to place a block on a payload conveyor, ensure it is Derelict, save, and load. No independent reproduction, before/after capture, log, or inspection result is included, so the claimed disappearance is not established.",
+    "expected_behavior": "Reporter-implied expectation: a block visibly present on a payload conveyor confirmed as Derelict immediately before saving or restarting should still be present at the corresponding location after reopening. Whether this persistence is intended behavior is not independently established.",
+    "known_preconditions": [
+      "Reported platform: Windows.",
+      "Reported game version: release build 159.3.",
+      "Claimed setup requires a payload conveyor carrying a block and being marked Derelict before the save operation.",
+      "The report names both map restart and save loading, although the supplied numbered steps only describe save followed by load.",
+      "Two supplied map fixtures are identified as cargo-test-map.msav (SHA-256 81d1f6d8c20f66647ea655f410b8870219c5b5990dd895b75f5d14c23b52d618) and cargo-mix-tech.msav (SHA-256 db3033c4818efb4ab05bd060ae2fc5d9b1ada740c52c981fa5b13125e5acc255). Supplied metadata describes both as 200x200 maps with save-envelope version 13, build tag 159, and empty map mod tags.",
+      "A target commit was supplied: 2c066e9c8c7e153e4eb91d730ead02e9011edd75."
+    ],
+    "uncertain_conditions": [
+      "Whether the reported symptom occurs at all; no successful reproduction or observed result has been supplied.",
+      "Which supplied map, if either, contains the alleged setup or best demonstrates the report.",
+      "Whether either fixture loads successfully in the relevant game build and contains a payload conveyor with a visible block payload and Derelict status.",
+      "Whether the payload was visibly a block, rather than another payload type, immediately before saving.",
+      "Whether the conveyor's Derelict status and the exact payload location were verified before the save.",
+      "Whether map restart and explicit save/load are separate failing paths or alternative descriptions of one workflow.",
+      "Whether any post-load absence could be distinguished from normal payload movement or unloading; no fixed-location before/after evidence is provided.",
+      "Whether the reported Windows build 159.3 corresponds exactly to the supplied maps' build tag 159 or the supplied target commit.",
+      "Whether mods were active when the issue was observed. The report's mods field has no response; the selected maps have empty mod tags, but the original archive reportedly also contained a mod ZIP, and map tags do not establish the runtime mod state.",
+      "Whether the issue is platform-specific. Linux is described only as planned evaluation, with no result supplied.",
+      "Whether retaining a payload on a Derelict conveyor across save/load is intended behavior."
+    ],
+    "reproduction_hints": [
+      "Use an untouched copy of one supplied fixture at a time and record the exact map name and coordinates of the tested conveyor. If a fixture lacks the required setup, record that limitation rather than treating an unrelated scene as evidence.",
+      "Before saving, capture the same location showing both a visible block payload and the conveyor's Derelict status; record the payload block type and conveyor configuration.",
+      "Save and reopen that exact save, then inspect and capture the same location. Preserve pre-save and post-load files where possible.",
+      "Test explicit save/load and map restart as separate workflows, since the report does not establish whether both fail.",
+      "For each run, record executable version/revision, operating system, enabled mods, and any console or game log output."
+    ],
+    "required_artifacts": [
+      "Missing: a known-good minimal save or map containing the claimed pre-save state, including the exact conveyor location, a visible block payload, and verified Derelict status. The two supplied maps are available but are not yet shown to contain this setup.",
+      "Missing: corresponding post-load or post-restart save data from the same run for comparison.",
+      "Missing: screenshots or video captured immediately before saving and after reopening at the same map coordinates.",
+      "Missing: game, console, or load-related logs. No crash logs were supplied.",
+      "Missing: exact reproduction environment details, including executable revision/build verification, Windows version, and enabled-mod list.",
+      "Missing: a record of inspection and reproduction outcomes for cargo-test-map.msav and cargo-mix-tech.msav, including any failure to load or absence of the required setup."
+    ],
+    "severity": "unknown",
+    "confidence": 0.35
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "The first supplied map can be imported through the editor and may contain a visible Derelict payload conveyor carrying a block.",
+      "prediction": "After importing and opening cargo-test-map.msav, the editor map will either visibly show the required conveyor/payload setup or establish that the fixture lacks it.",
+      "status": "inconclusive",
+      "observation": "Imported cargo-test-map.msav as \u201ctest map,\u201d opened it in the editor and sandbox playtest. Hovering the large conveyor visibly identified it as \u201cPayload Conveyor \u2014 Derelict\u201d; a nearby visible object identifies as \u201cWorld Processor.\u201d The UI view did not unambiguously establish that the World Processor is currently carried by that conveyor."
+    },
+    {
+      "id": "H2",
+      "statement": "The second supplied mix-tech fixture contains a payload-conveyor/block-payload setup usable for the report.",
+      "prediction": "A running sandbox playtest of cargo-mix-tech.msav will expose a Payload Conveyor and a visible block payload to inspect.",
+      "status": "rejected",
+      "observation": "Imported cargo-mix-tech.msav as \u201cmix tech,\u201d opened it in the editor and sandbox playtest. Its visible contents are a Shard core and terrain/resource clusters; hovering the nearby dark marks identifies Coal, and no Payload Conveyor or block payload was found in the inspected setup."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "2c066e9c8c7e153e4eb91d730ead02e9011edd75": {
+      "commit_sha": "2c066e9c8c7e153e4eb91d730ead02e9011edd75",
+      "timestamp": "2026-09-14T19:08:47.043226+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12354-terra-fixture-02-41f7a2402f4b532a3963-baseline-tests.log",
+      "log_sha256": "41f7a2402f4b532a3963f543c184387dea8aed00f6793ed6774e5c61fa05a033",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 90,
+    "input_tokens": 1820608,
+    "output_tokens": 22361
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12354-terra-fixture-02-e4704bdd7d59a662b90e-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 1124.8359840420308,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12354-fixture",
+  "imported_from": null,
+  "case_id": "md-12354-terra-fixture-02"
+}

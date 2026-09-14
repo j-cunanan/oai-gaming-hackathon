@@ -1,0 +1,39 @@
+[91m[1m[E][0m java.lang.RuntimeException: java.io.IOException: java.lang.RuntimeException: java.io.IOException: Error writing region "map".
+	at mindustry.maps.Maps.saveMap(Maps.java:266)
+	at mindustry.editor.MapEditorDialog.save(MapEditorDialog.java:431)
+	at arc.scene.Element.lambda$clicked$2(Element.java:913)
+	at arc.scene.Element$4.clicked(Element.java:922)
+	at arc.scene.event.ClickListener.touchUp(ClickListener.java:77)
+	at arc.scene.event.InputListener.handle(InputListener.java:31)
+	at arc.scene.Scene.touchUp(Scene.java:377)
+	at arc.input.InputMultiplexer.touchUp(InputMultiplexer.java:114)
+	at arc.input.InputEventQueue.drain(InputEventQueue.java:71)
+	at arc.backend.sdl.SdlInput.update(SdlInput.java:181)
+	at arc.backend.sdl.SdlApplication.loop(SdlApplication.java:212)
+	at arc.backend.sdl.SdlApplication.<init>(SdlApplication.java:58)
+	at mindustry.desktop.DesktopLauncher.main(DesktopLauncher.java:53)
+Caused by: java.io.IOException: java.lang.RuntimeException: java.io.IOException: Error writing region "map".
+	at mindustry.io.MapIO.writeMap(MapIO.java:62)
+	at mindustry.maps.Maps.saveMap(Maps.java:226)
+	... 12 more
+Caused by: java.lang.RuntimeException: java.io.IOException: Error writing region "map".
+	at mindustry.io.SaveIO.write(SaveIO.java:135)
+	at mindustry.io.SaveIO.write(SaveIO.java:119)
+	at mindustry.io.MapIO.writeMap(MapIO.java:57)
+	... 13 more
+Caused by: java.io.IOException: Error writing region "map".
+	at mindustry.io.SaveFileReader.writeRegion(SaveFileReader.java:105)
+	at mindustry.io.SaveVersion.write(SaveVersion.java:83)
+	at mindustry.io.SaveIO.write(SaveIO.java:133)
+	... 15 more
+Caused by: java.lang.NullPointerException: Cannot read field "id" because "this.unitTeam" is null
+	at mindustry.world.blocks.defense.TargetDummy$TargetDummyBuild.write(TargetDummy.java:271)
+	at mindustry.gen.Building.writeAll(Building.java:2270)
+	at mindustry.io.SaveVersion.lambda$writeMap$9(SaveVersion.java:266)
+	at mindustry.io.SaveFileReader.writeChunk(SaveFileReader.java:122)
+	at mindustry.io.SaveVersion.writeMap(SaveVersion.java:264)
+	at mindustry.io.SaveFileReader.lambda$writeRegion$1(SaveFileReader.java:103)
+	at mindustry.io.SaveFileReader.writeChunk(SaveFileReader.java:122)
+	at mindustry.io.SaveFileReader.writeRegion(SaveFileReader.java:103)
+	... 17 more
+

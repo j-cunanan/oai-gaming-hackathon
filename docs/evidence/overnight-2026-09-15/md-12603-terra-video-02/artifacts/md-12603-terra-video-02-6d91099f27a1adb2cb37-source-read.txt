@@ -1,0 +1,141 @@
+1: package mindustry.world.blocks.sandbox;
+2: 
+3: import arc.*;
+4: import arc.graphics.g2d.*;
+5: import arc.scene.ui.layout.*;
+6: import arc.util.*;
+7: import arc.util.io.*;
+8: import mindustry.entities.units.*;
+9: import mindustry.gen.*;
+10: import mindustry.type.*;
+11: import mindustry.world.*;
+12: import mindustry.world.blocks.*;
+13: import mindustry.world.meta.*;
+14: 
+15: import static mindustry.Vars.*;
+16: 
+17: public class ItemSource extends Block{
+18:     public int itemsPerSecond = 100;
+19: 
+20:     public ItemSource(String name){
+21:         super(name);
+22:         hasItems = true;
+23:         update = true;
+24:         solid = true;
+25:         group = BlockGroup.transportation;
+26:         configurable = true;
+27:         saveConfig = true;
+28:         noUpdateDisabled = true;
+29:         envEnabled = Env.any;
+30:         clearOnDoubleTap = true;
+31:         drawCached = true;
+32:         drawDynamic = false;
+33: 
+34:         config(Item.class, (ItemSourceBuild tile, Item item) -> tile.outputItem = item.removed ? null : item);
+35:         configClear((ItemSourceBuild tile) -> tile.outputItem = null);
+36:     }
+37: 
+38:     @Override
+39:     public void setBars(){
+40:         super.setBars();
+41:         removeBar("items");
+42:     }
+43: 
+44:     @Override
+45:     public void setStats(){
+46:         super.setStats();
+47: 
+48:         stats.add(Stat.output, itemsPerSecond, StatUnit.itemsSecond);
+49:     }
+50: 
+51:     @Override
+52:     protected TextureRegion[] icons(){
+53:         return new TextureRegion[]{Core.atlas.find("source-bottom"), region};
+54:     }
+55: 
+56:     @Override
+57:     public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list){
+58:         drawPlanConfigCenter(plan, plan.config, "center", true);
+59:     }
+60: 
+61:     @Override
+62:     public boolean outputsItems(){
+63:         return true;
+64:     }
+65: 
+66:     public class ItemSourceBuild extends Building{
+67:         public float counter;
+68:         public Item outputItem;
+69: 
+70:         @Override
+71:         public void draw(){
+72:             if(outputItem == null){
+73:                 Draw.rect("cross-full", x, y);
+74:             }else{
+75:                 Draw.color(outputItem.color);
+76:                 Fill.square(x, y, tilesize/2f - 0.00001f);
+77:                 Draw.color();
+78:             }
+79: 
+80:             super.draw();
+81:         }
+82: 
+83:         @Override
+84:         public void drawSelect(){
+85:             super.drawSelect();
+86:             drawItemSelection(outputItem);
+87:         }
+88: 
+89:         @Override
+90:         public void updateTile(){
+91:             if(outputItem == null) return;
+92: 
+93:             counter += edelta();
+94:             float limit = 60f / itemsPerSecond;
+95: 
+96:             while(counter >= limit){
+97:                 items.set(outputItem, 1);
+98:                 dump(outputItem);
+99:                 produced(outputItem);
+100:                 items.set(outputItem, 0);
+101:                 counter -= limit;
+102:             }
+103:         }
+104: 
+105:         @Override
+106:         public void configured(Unit builder, Object value){
+107:             super.configured(builder, value);
+108: 
+109:             if(!headless){
+110:                 recache();
+111:             }
+112:         }
+113: 
+114:         @Override
+115:         public void buildConfiguration(Table table){
+116:             ItemSelection.buildTable(ItemSource.this, table, content.items(), () -> outputItem, this::configure, selectionRows, selectionColumns);
+117:         }
+118: 
+119:         @Override
+120:         public boolean acceptItem(Building source, Item item){
+121:             return false;
+122:         }
+123: 
+124:         @Override
+125:         public Item config(){
+126:             return outputItem;
+127:         }
+128: 
+129:         @Override
+130:         public void write(Writes write){
+131:             super.write(write);
+132:             write.s(outputItem == null ? -1 : outputItem.id);
+133:         }
+134: 
+135:         @Override
+136:         public void read(Reads read, byte revision){
+137:             super.read(read, revision);
+138:             outputItem = content.item(read.s());
+139:         }
+140:     }
+141: }

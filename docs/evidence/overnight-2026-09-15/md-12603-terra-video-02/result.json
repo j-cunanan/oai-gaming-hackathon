@@ -1,0 +1,120 @@
+{
+  "id": "md-12603-terra-video-02",
+  "report": {
+    "title": "[Video/setup guided] Generator 0-HP ghost state after payload explosion",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nrelease build 159.7\n\n### Issue\n\n[RU] \n\u0413\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440, \u0437\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043d\u044b\u0439 \u0432\u0437\u0440\u044b\u0432\u0447\u0430\u0442\u043e\u0439 \u0441\u043c\u0435\u0441\u044c\u044e, \u043c\u043e\u0436\u0435\u0442 \u043f\u0435\u0440\u0435\u0436\u0438\u0442\u044c \u0441\u043e\u0431\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 \u0432\u0437\u0440\u044b\u0432, \u0435\u0441\u043b\u0438 \u043e\u043d \u0441\u0442\u043e\u0438\u0442 \u043d\u0430 \u0433\u0440\u0443\u0437\u043e\u0432\u043e\u043c \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0435. \u0412 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0435 \u043f\u043e\u044f\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440 \u0441 0 HP, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043d\u0435\u0443\u044f\u0437\u0432\u0438\u043c, \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0435\u0442 \u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u0438 \u043b\u043e\u043c\u0430\u0435\u0442 \u0418\u0418 \u044e\u043d\u0438\u0442\u043e\u0432, \u043f\u044b\u0442\u0430\u044e\u0449\u0438\u0445\u0441\u044f \u0441 \u043d\u0438\u043c \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u043e\u0432\u0430\u0442\u044c. \u041f\u0440\u0438 \u043f\u0435\u0440\u0435\u0437\u0430\u0445\u043e\u0434\u0435 \u043d\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435, \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440 \u0442\u0435\u0440\u044f\u0435\u0442 \u0437\u0430\u0431\u0430\u0433\u043e\u0432\u0430\u043d\u043d\u044b\u0435 \u0441\u0432\u043e\u0439\u0441\u0442\u0432\u0430, \u0438 \u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0441\u044f \u043f\u0440\u043e\u0441\u0442\u043e \u0431\u043b\u043e\u043a\u043e\u043c \u0441 0 \u0445\u043f.\n\u0414\u0435\u043c\u043e\u043d\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0431\u0430\u0433\u0430 \u0438 \u0435\u0433\u043e \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u0431\u0443\u0434\u0435\u0442 \u043f\u0440\u0438\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u0430 \u0432 \u0432\u0438\u0434\u0435 \u0437\u0430\u043f\u0438\u0441\u0438 \u044d\u043a\u0440\u0430\u043d\u0430 (\u041f\u0440\u043e\u0441\u0442\u0438\u0442\u0435 \u0437\u0430 \u043f\u043b\u043e\u0445\u043e\u0435 \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u043e \u0438 \u0444\u0440\u0435\u0439\u043c\u0440\u0435\u0439\u0442, \u043c\u043e\u0439 \u043d\u043e\u0443\u0442\u0431\u0443\u043a \u043b\u0443\u0447\u0448\u0435 \u043d\u0435 \u0437\u0430\u043f\u0438\u0448\u0435\u0442)\n\n[EN (DeepSeek translate)]\nA generator can survive its own explosion if it is placed on a payload conveyor while fueled with Blast Compound. The resulting block has 0 HP, is indestructible, still functions, and can break enemy AI pathfinding. After reloading the save, the generator loses its bugged properties and becomes a normal block with 0 HP.\nA video demonstration of the bug and its reproduction is included as a screen recording.\nPlease excuse the low resolution and framerate \u2014 my laptop is not capable of capturing higher quality footage.\n\nhttps://drive.google.com/file/d/1Ikw9oJ3dS4ffMi4ViG005SJQR1KysG-m/view?usp=sharing\n\n### Steps to reproduce\n\n[RU]\n- \u041f\u043e\u0441\u0442\u0430\u0432\u044c\u0442\u0435 \u0413\u0412\u0421/\u041f\u0430\u0440\u043e\u0432\u043e\u0439 \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440, \u0438 \u0437\u0430\u043f\u0438\u0442\u0430\u0439\u0442\u0435 \u0435\u0433\u043e \u0432\u0437\u0440\u044b\u0432\u0447\u0430\u0442\u043e\u0439 \u0441\u043c\u0435\u0441\u044c\u044e;\n- \u0414\u0430\u0439\u0442\u0435 \u0435\u043c\u0443 \u043f\u043e\u0432\u0440\u0435\u0434\u0438\u0442\u044c\u0441\u044f, \u0438 \u043f\u043e\u0434\u0445\u0432\u0430\u0442\u0438\u0442\u0435 \u044e\u043d\u0438\u0442\u043e\u043c;\n- \u0412\u044b\u0433\u0440\u0443\u0437\u0438\u0442\u0435 \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440 \u043d\u0430 \u0433\u0440\u0443\u0437\u043e\u0432\u043e\u0439 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440, \u0438 \u043f\u043e\u0434\u043e\u0436\u0434\u0438\u0442\u0435 \u0434\u043e \u0432\u0437\u0440\u044b\u0432\u0430 (\u0412\u0430\u0436\u043d\u043e: \"\u0412\u0437\u0440\u044b\u0432\u044b \u0440\u0435\u0430\u043a\u0442\u043e\u0440\u043e\u0432\" \u0434\u043e\u043b\u0436\u043d\u044b \u0431\u044b\u0442\u044c \u0432\u043a\u043b\u044e\u0447\u0435\u043d\u044b);\n- \u0414\u043e\u0441\u0442\u0430\u043d\u044c\u0442\u0435 \u0432\u0437\u043e\u0440\u0432\u0430\u0432\u0448\u0438\u0439\u0441\u044f \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440 \u0441 \u043a\u043e\u043d\u0432\u0435\u0439\u0435\u0440\u0430 \u044e\u043d\u0438\u0442\u043e\u043c, \u0438 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0435 \u0435\u0433\u043e \u043d\u0430 \u0437\u0435\u043c\u043b\u044e.\n\u0415\u0441\u043b\u0438 \u0443 \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440\u0430 \u043f\u0443\u0441\u0442\u0430\u044f \u043f\u043e\u043b\u043e\u0441\u0430 \u0437\u0434\u043e\u0440\u043e\u0432\u044c\u044f, \u0442\u043e \u0431\u0430\u0433 \u0443\u0434\u0430\u043b\u0441\u044f. \u0420\u0443\u0447\u043d\u0443\u044e \u043f\u043e\u0433\u0440\u0443\u0437\u043a\u0443 \u0433\u0435\u043d\u0435\u0440\u0430\u0442\u043e\u0440\u0430 \u043c\u043e\u0436\u043d\u043e \u0437\u0430\u043c\u0435\u043d\u0438\u0442\u044c \u043d\u0430 \u0433\u0440\u0443\u0437\u043e\u0432\u043e\u0439 \u0437\u0430\u0433\u0440\u0443\u0437\u0447\u0438\u043a \u0441 \u042d\u0440\u0435\u043a\u0438\u0440\u0430.\n\n[EN (DeepSeek translate)]\n- Place a Steam Generator (or Combustion generator) and fuel it with Blast Compound.\n- Allow it to take damage, then pick it up using a unit.\n- Unload the damaged generator onto a Payload Conveyor and wait for it to explode. (Important: Reactor explosions must be enabled in the game settings.)\n- After it explodes, pick it up from the conveyor using a unit, and place it back on the ground.\nIf the generator has an empty health bar \u2014 the bug has successfully been triggered. Manual loading of the generator can be replaced with a payload loader from Erekir.\n\n### Mods used\n\n[RU]\n\u0411\u0435\u0437 \u043c\u043e\u0434\u043e\u0432\n\n[EN]\nNo mods\n\n### Save file\n\n[RU]\n\u0411\u0430\u0433 \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0451\u043d \u043d\u0430 \u043b\u044e\u0431\u043e\u043c \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0438.\n\n[EN (Google translater)]\nThe bug can be reproduced on any save.\n\n### (Crash) logs\n\n_No response_\n\n### REPRO video/setup assistance (not part of the upstream report)\n\nThis fresh attempt is explicitly assisted. Codex inspected sampled frames of the original report's linked 331.267-second, 780x438 video on September 15 JST. Those frames are third-party report material, not a fresh REPRO reproduction.\n\nObserved setup in the original video: around 25 seconds a placed Payload Source has a configuration panel with a search field and unit choices. Around 35-55 seconds there is a Steam Generator with adjacent resource sources, a water bar and nonzero power output. The player controls a green payload-capable flying unit; a separate Payload Conveyor is placed nearby. Around 65 seconds the generator is on that conveyor with a visible effect. Later (around 105-115 seconds) hovering the placed Steam Generator shows an empty health bar, water and nonzero power output. Sampled frames do not establish every intermediate input or the exact unit identity.\n\nGeneral setup facts checked in this historical source, not a diagnosis or fix: Payload Source is in the Units category, is 5x5 and requires sandbox/infinite resources. Its configuration combines block and unit choices, so use its search field to find a unit by name rather than guessing an icon. Mega is a payload-capable flying unit with capacity for a 2x2 building. Confirm actual unit output, then use Ctrl-click to control it. Default pickup/drop keys are [ and ]; Space pauses time, E pauses construction, and sustained movement needs keypress hold_seconds.\n\nFor Steam Generator, configure an Item Source with Blast Compound and a Liquid Source with Water and verify actual delivery and generator operation before the damage/pickup sequence. Allow enough open terrain for the large source and the flight/transport route. A blank editor map with a friendly core can be saved and played as a custom Sandbox map if existing terrain makes setup difficult. Record the actual rules/mode; editor invulnerability would invalidate a damage test. Reactor explosions must be enabled as the original report says.\n\nKeep checkpoints for generator present and fueled, damaged but alive, loaded on conveyor, explosion/effect, then retrieved and placed with its health and operation inspected. A missing item, unbuilt outline, normal payload drawing or an unexecuted step is not the reported ghost-state bug. Stop with a clear setup limitation if those prerequisites cannot be reached. No historical developer fix, future source or root-cause hint was supplied.\n",
+    "game": "mindustry",
+    "target_commit": "ec656a63eb6c063fd35abbd7e65cb3b5dba1078b",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": []
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T18:36:47.770781+00:00",
+  "updated_at": "2026-09-14T19:03:55.910337+00:00",
+  "summary": "No 0-HP generator ghost state was observed. I created a controlled editor-mode map, explicitly enabled Reactor Explosions, and placed Steam Generators with an adjacent Item Source, but the required Blast Compound configuration and the payload-conveyor explosion/retrieval/redeployment sequence were not completed before the tool-time limit.",
+  "spec": {
+    "summary": "Unverified report: a damaged, Blast-Compound-fueled generator allegedly remains placeable and operational with an empty health bar after exploding while carried on a Payload Conveyor; the reported abnormal properties reportedly disappear after reloading the save.",
+    "bug_class": "Unverified gameplay state anomaly involving generator destruction, payload transport, and save reload behavior",
+    "observed_behavior": "The reporter alleges that, on Windows release build 159.7 with no mods, a damaged generator fueled with Blast Compound can explode while on a Payload Conveyor and still be retrieved and placed. The placed block is reported to show an empty/0-HP health bar, continue operating, resist further destruction, and affect unit AI attempting to interact with it. The reporter further states that reloading the save removes the alleged invulnerability/operation behavior while leaving a normal-looking block at 0 HP. A linked screen recording is provided, but no independently executed reproduction, local video artifact, save, or logs are included here. Supplied historical video notes claim sampled frames showed a Steam Generator, resource sources, a payload-capable flying unit, a Payload Conveyor, and later an apparent empty health bar with water and nonzero power output; those notes do not establish all inputs, the exact unit, or the full state transition.",
+    "expected_behavior": null,
+    "known_preconditions": [
+      "Reporter-reported platform: Windows.",
+      "Reporter-reported build: release build 159.7.",
+      "Reporter reports no mods were used.",
+      "Reporter states that the \"Reactor explosions\" setting must be enabled.",
+      "Reporter describes placing either a Steam Generator or another generator type ambiguously translated as \"Combustion generator,\" fueling it with Blast Compound, damaging it while it remains alive, transporting it as a payload, and waiting for an explosion on a Payload Conveyor.",
+      "Reporter states that manual placement onto the conveyor may be replaced by an Erekir payload loader.",
+      "A Google Drive video URL was supplied in the report, but the video file itself is not attached to this case."
+    ],
+    "uncertain_conditions": [
+      "The issue has not been independently reproduced or verified.",
+      "The exact affected block is unclear: the original/translated text refers inconsistently to a Steam Generator and a Combustion Generator or equivalent.",
+      "It is unknown whether Blast Compound is the required fuel, whether another fuel/state can trigger the same result, or whether the generator must be actively producing power at explosion time.",
+      "The damage method, exact remaining health before pickup, and whether damage amount is significant are unspecified.",
+      "The precise payload-capable unit, its identity, and whether unit-specific behavior matters are not established.",
+      "It is unknown whether the conveyor itself is required, whether a payload loader changes the result, or whether timing/position/orientation on the conveyor matters.",
+      "The exact game mode, map, rules, sandbox/infinite-resource configuration, editor settings, and whether any invulnerability-related rule was active are not provided.",
+      "The report does not establish that the displayed empty health bar represents an actual internal health value of zero rather than a display/state discrepancy.",
+      "The claims of continued operation, invulnerability, AI failure, and changed behavior after reload are not supported by attached before/after saves, logs, or a complete verified capture.",
+      "The supplied historical video-frame notes do not establish every intermediate action, successful explosion, actual pickup/redeployment sequence, or causal relationship.",
+      "The relationship between the report's stated release build 159.7 and the supplied target commit is not established.",
+      "Linux is listed as planned evaluation metadata, not as a reporter-confirmed affected platform.",
+      "No explicit expected behavior was provided; any expectation that the generator should be removed or nonfunctional after exploding would be an inference rather than a quoted requirement."
+    ],
+    "reproduction_hints": [
+      "Treat these as reporter-provided steps, not as a verified reproduction: place the reported generator type; supply Blast Compound; damage it without destroying it; pick it up with a payload-capable unit; place it on a Payload Conveyor with reactor explosions enabled; wait for the reported explosion; retrieve it; and place it on terrain.",
+      "Record and preserve checkpoints for: generator type/configuration and fuel delivery; health before pickup; payload loading; conveyor placement; explosion; retrieval; redeployment; health/UI state; power generation; response to additional damage; unit interaction; and behavior after save reload.",
+      "Verify the exact game rules and mode during testing, especially the Reactor Explosions setting and any sandbox/editor invulnerability settings.",
+      "Use a controlled map and preserve the pre-explosion save plus the post-explosion/post-redeployment save if the state appears.",
+      "Do not treat an empty health bar alone as confirmation of all reported effects; separately observe operation, damage response, AI interaction, and reload behavior."
+    ],
+    "required_artifacts": [
+      "A minimal save or map containing the setup, preferably with a pre-explosion checkpoint and a post-explosion/redeployed checkpoint.",
+      "The original video file or a downloadable, timestamped clip showing the complete sequence rather than only a link or sampled-frame description.",
+      "Exact game version/build identifier and confirmation of whether it corresponds to release 159.7; include platform/architecture and launcher/distribution if available.",
+      "A complete rules/settings capture, including Reactor Explosions, game mode, sandbox/infinite-resource settings, editor settings, and any invulnerability-related rules.",
+      "Screenshots or video of the generator's configuration, item/liquid supply, active operation, and health immediately before pickup and immediately before the reported explosion.",
+      "Identification of the exact generator block, payload-carrying unit, loading method, conveyor type, and damage method/remaining health.",
+      "Evidence for each claimed post-event property: empty health display, actual operation/power output, response to damage, unit AI behavior, and state before versus after reload.",
+      "Game log and client log from a reproduction attempt, even though no crash is claimed; no crash logs were supplied.",
+      "A mod list/export and confirmation that no enabled client-side or server-side content affects the test."
+    ],
+    "severity": "unknown",
+    "confidence": 0.32
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "A damaged Steam Generator supplied with Blast Compound can explode while carried by a Payload Conveyor yet remain recoverable as a placeable, operating building with an empty health bar.",
+      "prediction": "After fueling, damaging, payload-conveying, exploding, retrieving, and redeploying the generator in sandbox with reactor explosions enabled, the redeployed generator will visibly exist with empty health while retaining operational output.",
+      "status": "inconclusive",
+      "observation": "A controlled editor-mode map was created, Reactor Explosions was visibly enabled, and Steam Generators plus an adjacent Item Source were placed. The Item Source was not configured to Blast Compound and no payload transport, explosion, retrieval, or redeployment was completed before the investigation time limit."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "ec656a63eb6c063fd35abbd7e65cb3b5dba1078b": {
+      "commit_sha": "ec656a63eb6c063fd35abbd7e65cb3b5dba1078b",
+      "timestamp": "2026-09-14T18:54:04.343418+00:00",
+      "status": "completed",
+      "exit_code": 0,
+      "failing_tests": [],
+      "parse_error": null,
+      "artifact": "md-12603-terra-video-02-2846062dcdb6af87299e-baseline-tests.log",
+      "log_sha256": "2846062dcdb6af87299e4fe5dede2c3790c3a9803be96afbaa2dd1cafcb67ff5",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 0."
+    }
+  },
+  "usage": {
+    "model_calls": 91,
+    "input_tokens": 4028221,
+    "output_tokens": 14469
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12603-terra-video-02-26c450c0a92554f875f2-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 841.4174244159949,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12603-video-guided",
+  "imported_from": null,
+  "case_id": "md-12603-terra-video-02"
+}

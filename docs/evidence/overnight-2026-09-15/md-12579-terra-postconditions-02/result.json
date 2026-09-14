@@ -1,0 +1,590 @@
+{
+  "id": "md-12579-terra-overnight-01",
+  "report": {
+    "title": "Target Dummies crash the game when saved in editor",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nbleeding-edge build 27733\n\n### Issue\n\nIf a Target Dummy is placed in the editor and the map is saved, the game crashes. The map also causes an error if it is attempted to be loaded afterwards.\n\n### Steps to reproduce\n\n1. Place a target dummy in the editor\n2. Save the map\n\n### Mods used\n\nNone\n\n### Save file\n\n(As described above, this map is unloadable in-game.)\n[dummy.zip](https://github.com/user-attachments/files/31756506/dummy.zip)\n\n### (Crash) logs\n\n[crash-report-09_02_2026_16_06_14.txt](https://github.com/user-attachments/files/31756477/crash-report-09_02_2026_16_06_14.txt)",
+    "game": "mindustry",
+    "target_commit": "f7ededb3a1950c396e5c113d96a19dd88e71da9a",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": []
+  },
+  "state": "AWAITING_HUMAN",
+  "created_at": "2026-09-14T15:13:40.741844+00:00",
+  "updated_at": "2026-09-14T18:49:54.486061+00:00",
+  "summary": "Validation is incomplete or failed. Inspect the recorded gates.",
+  "spec": {
+    "summary": "Reported crash when saving an editor map containing a Target Dummy; the saved map is also reported to produce an error when loaded afterward.",
+    "bug_class": "Crash / editor save and subsequent map-load failure",
+    "observed_behavior": "On Windows, the reporter states that placing a Target Dummy in the editor and saving the map crashes the game. The reporter further states that attempting to load the resulting saved map produces an error.",
+    "expected_behavior": "Saving an editor map containing a Target Dummy should complete without crashing, and the saved map should load without an error.",
+    "known_preconditions": [
+      "Game: Mindustry.",
+      "Reported platform: Windows.",
+      "Reported build: bleeding-edge build 27733.",
+      "Target commit supplied: f7ededb3a1950c396e5c113d96a19dd88e71da9a.",
+      "Reporter states no mods were used.",
+      "A Target Dummy is placed in an editor map before saving."
+    ],
+    "uncertain_conditions": [
+      "Whether build 27733 exactly corresponds to the supplied target commit.",
+      "Exact Windows version, architecture, graphics configuration, and Java/runtime details.",
+      "Whether the issue occurs with a new blank map or depends on map settings, rules, content, or prior editor actions.",
+      "Whether the crash occurs immediately on save, during save completion, or after a particular save-related action (for example, save dialog confirmation or overwrite).",
+      "Exact error shown when loading the saved map.",
+      "Whether the attached map archive contains the exact map produced by the reported reproduction steps.",
+      "Whether the crash is reproducible on Linux; Linux is listed as planned evaluation, not as a reported affected platform.",
+      "Whether Target Dummy refers to a built-in unit/block/content item and its exact internal content identifier.",
+      "Whether the save was a new map save or an overwrite of an existing map.",
+      "Whether any non-mod local configuration, custom content, or altered game files were present."
+    ],
+    "reproduction_hints": [
+      "Use the reported bleeding-edge build 27733, or first verify its relationship to commit f7ededb3a1950c396e5c113d96a19dd88e71da9a.",
+      "On Windows, create or open an editor map, place a Target Dummy, and save the map.",
+      "After the save attempt, attempt to load the resulting map and record any displayed error.",
+      "Test both a new blank map and the supplied map artifact if it is available and safe to inspect.",
+      "Capture whether the behavior differs between saving a new file and overwriting an existing map."
+    ],
+    "required_artifacts": [
+      "The referenced dummy.zip attachment, including the exact map file and archive contents.",
+      "The referenced crash-report-09_02_2026_16_06_14.txt attachment.",
+      "Full crash stack trace/log output in text form, including game version, runtime, and timestamps.",
+      "The exact map-load error message and associated logs.",
+      "Editor map metadata/settings: map size, mode, rules, tags, and any custom objectives or scripts.",
+      "Exact Target Dummy content identifier and placement details.",
+      "Environment details: Windows version, game distribution/channel, Java/runtime version, and relevant launch arguments.",
+      "Confirmation of the exact executable/build hash used during reproduction.",
+      "If Linux is evaluated, corresponding Linux reproduction outcome and logs."
+    ],
+    "severity": "unknown",
+    "confidence": 0.89
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Saving a newly created editor map after placing a Target Dummy crashes or leaves a map that errors on load.",
+      "prediction": "The save confirmation will cause a crash/error, or re-opening that saved map will show an error.",
+      "status": "supported",
+      "observation": "A blank map named DummySaveTest was created, Target Dummy selected and placed, then Save Map was clicked. The process exited with code 1. The log reports NullPointerException in TargetDummy$TargetDummyBuild.write because unitTeam is null."
+    }
+  ],
+  "reproduction": {
+    "version": 1,
+    "game": "mindustry",
+    "commit": "f7ededb3a1950c396e5c113d96a19dd88e71da9a",
+    "resolution": [
+      1280,
+      720
+    ],
+    "steps": [
+      {
+        "action": "click",
+        "x": 253,
+        "y": 335,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open Editor from main menu",
+        "checkpoint": "open-editor"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 680,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Create a new editor map",
+        "checkpoint": "new-map-dialog"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 383,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus the modal map name input underline",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "DummySaveTest",
+        "seconds": 0.3,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Input new blank map name",
+        "checkpoint": "map-name-entered"
+      },
+      {
+        "action": "click",
+        "x": 704,
+        "y": 429,
+        "keys": [],
+        "text": "",
+        "seconds": 3.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Confirm creation of blank map",
+        "checkpoint": "blank-editor"
+      },
+      {
+        "action": "click",
+        "x": 94,
+        "y": 225,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Switch editor palette to block placement",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 1112,
+        "y": 43,
+        "keys": [],
+        "text": "",
+        "seconds": 0.2,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Focus editor block search",
+        "checkpoint": ""
+      },
+      {
+        "action": "type",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "Target Dummy",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Search for Target Dummy block",
+        "checkpoint": "target-dummy-search"
+      },
+      {
+        "action": "click",
+        "x": 1165,
+        "y": 133,
+        "keys": [],
+        "text": "",
+        "seconds": 0.3,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Select Target Dummy block from results",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 600,
+        "y": 370,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Place selected Target Dummy on blank map",
+        "checkpoint": "target-dummy-placed"
+      },
+      {
+        "action": "click",
+        "x": 35,
+        "y": 52,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open editor map menu to save",
+        "checkpoint": ""
+      },
+      {
+        "action": "click",
+        "x": 548,
+        "y": 186,
+        "keys": [],
+        "text": "",
+        "seconds": 5.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Save map containing Target Dummy",
+        "checkpoint": "save-target-dummy"
+      }
+    ],
+    "oracle": {
+      "kind": "crash",
+      "description": "On Windows, the reporter states that placing a Target Dummy in the editor and saving the map crashes the game. The reporter further states that attempting to load the resulting saved map produces an error.",
+      "log_pattern": "TargetDummy$TargetDummyBuild.write(TargetDummy.java:271)",
+      "checkpoints": [
+        "blank-editor",
+        "target-dummy-search",
+        "target-dummy-placed",
+        "save-target-dummy"
+      ]
+    },
+    "successful_runs": 5,
+    "total_runs": 5,
+    "original_actions": 15,
+    "deterministic": true,
+    "evidence": [
+      "md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png",
+      "md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log",
+      "md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png",
+      "md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log",
+      "md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png",
+      "md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log",
+      "md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png",
+      "md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log",
+      "md-12579-terra-overnight-01-2ab861941ebf8d998cb3-baseline-revalidation.png",
+      "md-12579-terra-overnight-01-b67e164fd9e6de63d655-baseline-revalidation.log"
+    ]
+  },
+  "findings": {
+    "root_cause": "TargetDummy.TargetDummyBuild.write dereferences unitTeam without a null check (`write.i(unitTeam.id)`). `unitTeam` is declared without initialization and is only defaulted to the building's team in `updateTile`; consequently, a newly placed dummy whose update/defaulting has not occurred can throw NullPointerException while map serialization invokes its write method. This exactly matches the supplied oracle frame at TargetDummy.java:271. The failed write can leave the just-written map incomplete, which is a supported explanation for the reported later load error, but the exact load error was not supplied.",
+    "subsystem": "Target Dummy building state serialization in editor-map save / map persistence",
+    "candidates": [
+      {
+        "path": "core/src/mindustry/world/blocks/defense/TargetDummy.java",
+        "symbol": "TargetDummy.TargetDummyBuild.write(Writes)",
+        "score": 0.99,
+        "evidence": [
+          "Lines 91 and 108 show `unitTeam` has no field initializer and is assigned `team` only during `updateTile()`.",
+          "Line 271 unconditionally evaluates `unitTeam.id` while serializing.",
+          "The replay oracle explicitly identifies `TargetDummy$TargetDummyBuild.write(TargetDummy.java:271)`.",
+          "The reproduction places a Target Dummy and then saves, directly exercising this serialization path."
+        ],
+        "reasoning": "This is the direct crash site named by the empirical oracle and contains a concrete null dereference consistent with the newly placed editor building state. It is the primary localization; no future fix is inferred."
+      },
+      {
+        "path": "core/src/mindustry/io/SaveVersion.java",
+        "symbol": "SaveVersion.writeMap(DataOutput) block/entity serialization loop (lines 238-289)",
+        "score": 0.85,
+        "evidence": [
+          "Lines 261-267 serialize each center-tile building by calling `tile.build.writeAll(out)`.",
+          "`BuildingComp.writeAll` calls the concrete building `write` after base state serialization (BuildingComp.java:284-287).",
+          "Therefore, saving a map with the Target Dummy reaches the failing override."
+        ],
+        "reasoning": "This is the verified caller/path that turns the Target Dummy state defect into an editor save crash. It does not itself create the null value."
+      },
+      {
+        "path": "core/src/mindustry/io/SaveVersion.java",
+        "symbol": "SaveVersion.readMap(DataInput, SaveReadState) block/entity deserialization loop (lines 321-395)",
+        "score": 0.58,
+        "evidence": [
+          "Lines 364-374 read each serialized building chunk and wrap failures as `IOException(\"Failed to read tile entity of block: \" + block, e)`.",
+          "A failed save during the corresponding entity chunk write can plausibly leave a malformed or truncated file for this loader to reject."
+        ],
+        "reasoning": "This is the likely path for the reported post-crash load error, but without the produced map or exact load stack trace it cannot be established whether the file is partial, or what read failure occurs."
+      },
+      {
+        "path": "core/src/mindustry/io/MapIO.java",
+        "symbol": "MapIO.writeMap(Fi, Map, boolean)",
+        "score": 0.42,
+        "evidence": [
+          "Lines 55-63 call `SaveIO.write` and wrap any exception in `IOException`.",
+          "This is the map-specific public write entry point above the save serializer."
+        ],
+        "reasoning": "Relevant error propagation boundary for editor map saving, but no evidence indicates it mishandles the exception or causes the invalid state."
+      }
+    ],
+    "limitations": [
+      "No crash report, full stack trace, generated map artifact, or exact load-error text was available to inspect.",
+      "The supplied source does establish the crash-site null dereference and serializer call chain, but does not by itself prove the exact editor scheduling condition that leaves `unitTeam` null in every reproduction.",
+      "The subsequent load failure is localized only as a probable consequence of interrupted/corrupt output; its specific parser failure remains unverified.",
+      "Build 27733-to-commit correspondence and Windows-specific runtime details were not independently verified."
+    ]
+  },
+  "checks": [
+    {
+      "name": "Regression before patch",
+      "status": "pass",
+      "detail": "Trigger observed in 5/5 fresh baseline runs.",
+      "artifact": null,
+      "baseline_artifact": null,
+      "failing_tests": []
+    },
+    {
+      "name": "Candidate build",
+      "status": "pass",
+      "detail": "Build exit code 0",
+      "artifact": "md-12579-terra-overnight-01-27787054bd36856f0ca0-candidate-build.log",
+      "baseline_artifact": null,
+      "failing_tests": []
+    },
+    {
+      "name": "Existing tests",
+      "status": "fail",
+      "detail": "Test exit code 1. Failing tests: :tests:test::ModTestAllure.begin(). Network-enabled candidate failures cannot be waived by an offline baseline.",
+      "artifact": "md-12579-terra-overnight-01-5fc84047e27a8193f459-candidate-tests.log",
+      "baseline_artifact": "md-12579-terra-overnight-01-a9317017bfa9d68d9695-baseline-tests.log",
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ]
+    },
+    {
+      "name": "Original replay after patch",
+      "status": "pass",
+      "detail": "5/5 reached expected state without the symptom; bug seen 0 times. Each replay included the unchanged trigger and 12 additional fix-check actions.",
+      "artifact": null,
+      "baseline_artifact": null,
+      "failing_tests": []
+    },
+    {
+      "name": "Smoke test",
+      "status": "pass",
+      "detail": "Clean desktop launch and live process after startup; deeper gameplay smoke coverage is not implemented.",
+      "artifact": "md-12579-terra-overnight-01-4327843ee0d733c61b99-smoke.png",
+      "baseline_artifact": null,
+      "failing_tests": []
+    }
+  ],
+  "baseline_tests": {
+    "f7ededb3a1950c396e5c113d96a19dd88e71da9a": {
+      "commit_sha": "f7ededb3a1950c396e5c113d96a19dd88e71da9a",
+      "timestamp": "2026-09-14T16:36:41.671967+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12579-terra-overnight-01-a9317017bfa9d68d9695-baseline-tests.log",
+      "log_sha256": "a9317017bfa9d68d9695cf46e7589f43d8090c9404d2e7ab20abf563180736f3",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 107,
+    "input_tokens": 962177,
+    "output_tokens": 42432
+  },
+  "patch_artifact": "md-12579-terra-overnight-01-4c181fda88e8ec77cdbf-candidate.patch",
+  "patch_rationale": {
+    "explanation": "Cause: `unitTeam` is declared without an initial value (line 91) and is normally defaulted from the building team only in `updateTile()` (line 107). `write()` can run before that update, but line 271 unconditionally reads `unitTeam.id`, causing the reported null-pointer crash while saving a newly placed Target Dummy.\n\nThe changed serialization line writes the building's `team.id` when `unitTeam` has not yet been initialized; otherwise it writes the explicitly selected dummy team exactly as before. The building team is the same default `updateTile()` would assign, so the saved value preserves the intended default and lets the map save complete rather than leaving a partial output.\n\nThis is a one-line, local serialization guard. It keeps the existing save format (one integer in the same position), so no map format/version change is required. Validation should run the existing replay and also verify both a newly placed default dummy and a dummy configured to another team save and reload with their expected teams.",
+    "risks": [
+      "This relies on `team` being initialized for a building being serialized. That is the existing default source used in `updateTile()` and should hold for placed map buildings, but malformed manually constructed objects are not addressed.",
+      "The patch prevents this specific write-time null dereference; it does not establish the exact cause of any already-corrupted map load failure. Previously interrupted/truncated map files may remain unreadable and should be regenerated.",
+      "Other pre-update code paths that dereference `unitTeam` (for example configuration UI) are intentionally unchanged because the confirmed regression is the serialization crash."
+    ]
+  },
+  "candidate_verification": {
+    "trigger_sha256": "b0b153f7a0d12211963dcf38badb846ae42443767edbadcbb0b52cb6b8fae5e8",
+    "patch_artifact": "md-12579-terra-overnight-01-4c181fda88e8ec77cdbf-candidate.patch",
+    "followup_steps": [
+      {
+        "action": "wait",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Observe saved editor state after frozen trigger",
+        "checkpoint": "post-save-editor"
+      },
+      {
+        "action": "click",
+        "x": 35,
+        "y": 52,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open editor map menu for return navigation",
+        "checkpoint": "editor-menu-open"
+      },
+      {
+        "action": "click",
+        "x": 640,
+        "y": 510,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Quit editor to saved-map list",
+        "checkpoint": "returned-to-map-list"
+      },
+      {
+        "action": "click",
+        "x": 751,
+        "y": 413,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Confirm exit from saved editor",
+        "checkpoint": "saved-map-list"
+      },
+      {
+        "action": "click",
+        "x": 253,
+        "y": 335,
+        "keys": [],
+        "text": "",
+        "seconds": 2.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open editor map selection",
+        "checkpoint": "editor-map-selection"
+      },
+      {
+        "action": "click",
+        "x": 1062,
+        "y": 278,
+        "keys": [],
+        "text": "",
+        "seconds": 3.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Open saved DummySaveTest map",
+        "checkpoint": "saved-map-reopened"
+      },
+      {
+        "action": "click",
+        "x": 486,
+        "y": 502,
+        "keys": [],
+        "text": "",
+        "seconds": 4.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Load saved map into editor",
+        "checkpoint": "reloaded-editor"
+      },
+      {
+        "action": "scroll",
+        "x": 599,
+        "y": 371,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 5,
+        "button": "left",
+        "semantic": "Zoom in on retained map objects without editing",
+        "checkpoint": "reloaded-object-zoom"
+      },
+      {
+        "action": "scroll",
+        "x": 599,
+        "y": 371,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 20,
+        "button": "left",
+        "semantic": "Increase normal editor zoom around retained object",
+        "checkpoint": "reloaded-object-detail"
+      },
+      {
+        "action": "click",
+        "x": 153,
+        "y": 109,
+        "keys": [],
+        "text": "",
+        "seconds": 0.4,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Activate non-modifying block picker",
+        "checkpoint": "block-picker-active"
+      },
+      {
+        "action": "click",
+        "x": 547,
+        "y": 369,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Sample retained object with non-modifying picker",
+        "checkpoint": "retained-object-sampled"
+      },
+      {
+        "action": "wait",
+        "x": null,
+        "y": null,
+        "keys": [],
+        "text": "",
+        "seconds": 1.0,
+        "hold_seconds": 0.0,
+        "scroll_y": 0,
+        "button": "left",
+        "semantic": "Observe stable reloaded editor state with sampled object",
+        "checkpoint": "final-reloaded-object"
+      }
+    ],
+    "oracle": {
+      "kind": "sequence",
+      "description": "On Windows, the reporter states that placing a Target Dummy in the editor and saving the map crashes the game. The reporter further states that attempting to load the resulting saved map produces an error.",
+      "log_pattern": null,
+      "checkpoints": [
+        "post-save-editor",
+        "editor-map-selection",
+        "saved-map-reopened",
+        "reloaded-editor",
+        "final-reloaded-object"
+      ]
+    }
+  },
+  "latest_screenshot": "md-12579-terra-overnight-01-52d95da04bb3c0170e2d-post-patch.png",
+  "first_reproduced_seconds": 492.47721633303445,
+  "elapsed_seconds": 3637.883751958958,
+  "owner_evidence": [
+    "No CODEOWNERS found. Depth-one history is insufficient to infer ownership reliably."
+  ],
+  "benchmark_id": "MD-candidate-12579",
+  "imported_from": null,
+  "case_id": "md-12579-terra-overnight-01"
+}

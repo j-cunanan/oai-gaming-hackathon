@@ -1,0 +1,14 @@
+{
+  "case_id": "md-12579-terra-overnight-01",
+  "case_updated_at": "2026-09-14T18:49:54.486061+00:00",
+  "pdf_sha256": "6d8d7a62ac8661a9e58c5b9c7d6053695aca00595f95f05dd5260ebe0cac6238",
+  "renderer_path": "repro/reporting.py",
+  "renderer_sha256": "0f43fa67cbf6a6aa73626bcd61cdccecdd7f7e0802f933bb3241eba1af6a354b",
+  "saved_case_sources": {
+    "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02/result.json": "6e7067a914344600b94735ae2816be7aea8058116a4cc3a2517db69b52ecd7b2",
+    "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02/events.jsonl": "a264868994e98ae44cfcec807216d4e83f6faa1dfd152ae65b286f956979a3d9",
+    "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02/artifacts.json": "6b361ed82d4f8bc0d15aabf8e72d28378696b0bcf41efdcd0cea57ae5c626a39"
+  },
+  "method": "Generated from the saved local case without model calls. Baseline selects an image from mixed evidence; the candidate frame is the latest validation_replay screenshot in the current validation attempt.",
+  "visual_review": "All seven Target Dummy pages were reviewed. All eight data-patch report pages had been reviewed, then the changed candidate-frame page was reviewed again."
+}

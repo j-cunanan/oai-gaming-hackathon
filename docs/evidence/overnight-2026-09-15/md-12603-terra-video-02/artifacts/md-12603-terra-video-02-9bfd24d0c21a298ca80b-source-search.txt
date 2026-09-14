@@ -1,0 +1,88 @@
+./core/assets/bundles/bundle_th.properties:2354:hint.rebuildSelect = กด [accent][[B][] แล้วลากเพื่อเลือกแผนบล็อกที่ถูกทำลาย\nแผนบล็อกที่เลือกจะถูกสร้างใหม้โดยอัตโนมัติ
+./core/assets/bundles/bundle_th.properties:2355:hint.rebuildSelect.mobile = กดปุ่ม :copy: คัดลอก แล้วกดปุ่ม :wrench: สร้างใหม่แล้วลากเพื่อเลือกแผนบล็อกที่ถูกทำลาย\nแผนบล็อกที่เลือกจะถูกสร้างใหม้โดยอัตโนมัติ
+./core/assets/bundles/bundle_fil.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_fil.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_fr.properties:2354:hint.rebuildSelect = Retenez [accent][[B][] et faites glisser pour selectionner les plans des blocs détruits.\nCela va automatiquement les reconstruire.
+./core/assets/bundles/bundle_fr.properties:2355:hint.rebuildSelect.mobile = Selectionnez le :copy: bouton de copie, ensuite tapez le :wrench: bouton de reconstruction et faites glisser pour sélectionner les plans des blocs détruits.\nCela va les reconstruire automatiquement.
+./core/assets/bundles/bundle_ro.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_ro.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_ca.properties:2354:hint.rebuildSelect = Manteniu premuda la tecla [accent][[B][] i arrossegueu per a seleccionar els plànols dels blocs destruïts.\nAixí, es podran reconstruir automàticament.
+./core/assets/bundles/bundle_ca.properties:2355:hint.rebuildSelect.mobile = Seleccioneu el botó de copiar :copy:. Després, toqueu el botó de reconstrucció :wrench: i arrossegueu per a triar quins blocs voleu que es reconstrueixin.\nAixò farà que es reconstrueixin de manera automàtica.
+./core/assets/bundles/bundle_be.properties:2354:hint.rebuildSelect = Утрымайце [accent][[B][] і працягніце каб выбраць блокі для разбудавання.\nГэта перабудуе іх аўтаматычна.
+./core/assets/bundles/bundle_be.properties:2355:hint.rebuildSelect.mobile = Выберыце :copy: Кнопку капіявання, потым націсніце на :wrench: кнопку аднаўлення і працягніце каб выбраць зруйнаваныя блокі.\nГэта аўтаматычна аднавіць іх.
+./core/assets/bundles/bundle_id_ID.properties:2354:hint.rebuildSelect = Tahan tombol [accent][[B][] dan seret untuk memilih bagian blok yang hancur.\nBlok akan dibangun ulang secara otomatis.
+./core/assets/bundles/bundle_id_ID.properties:2355:hint.rebuildSelect.mobile = Pilih Tombol :copy: salin, lalu ketuk tombol :wrench: bangun kembali dan seret untuk memilih blok yang hancur.\nIni akan membangun ulang secara otomatis.
+./core/assets/bundles/bundle_fi.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_fi.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_uk_UA.properties:2354:hint.rebuildSelect = Утримуючи [accent][[B][], протягніть, щоби вибрати зруйновані проєкції будівель.\nЦе призведе до їхньої автоматичної перебудови.
+./core/assets/bundles/bundle_uk_UA.properties:2355:hint.rebuildSelect.mobile = Натисніть кнопку :copy: копіювання, потім натисніть кнопку :wrench: перебудови і перетягніть, щоби вибрати знищені проєкції будівель.\nЦе призведе до їхньої автоматичної перебудови.
+./core/assets/bundles/bundle_eu.properties:2354:hint.rebuildSelect = Eutsi [accent][[B][] eta arrastatu suntsitutako blokeen planoak hautatzeko.\nHonek automatikoki berreraikiko ditu.
+./core/assets/bundles/bundle_eu.properties:2355:hint.rebuildSelect.mobile = Hautatu :copy: kopia botoia, gero sakatu :wrench: berreraiki botoia eta arrastatu suntsitutako blokeen planoak hautatzeko.\nHonek automatikoki berreraikiko ditu.
+./core/assets/bundles/bundle_ja.properties:2354:hint.rebuildSelect = [accent][[B][] を押したままドラッグして、破壊されたブロック計画を選択します。\nこれにより、それらが自動的に再建築されます。
+./core/assets/bundles/bundle_ja.properties:2355:hint.rebuildSelect.mobile = :copy: コピーを選択し、その後 :wrench: 再建築ボタンをタップして、破壊されたブロックの設計図をドラッグして選択します。\nそれらは自動的に再建されます。
+./core/assets/bundles/bundle_sr.properties:2354:hint.rebuildSelect = Drži [accent][[B][] i vuci da bi izabrao planove izabranih blokova.\nOvo će automatski ponovo da ih sagradi.
+./core/assets/bundles/bundle_sr.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle.properties:2359:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle.properties:2360:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_vi.properties:2354:hint.rebuildSelect = Giữ [accent][[B][] và kéo để chọn các khối đã bị phá hủy.\nChúng sẽ được tự động được xây lại.
+./core/assets/bundles/bundle_vi.properties:2355:hint.rebuildSelect.mobile = Chọn nút :copy: sao chép, sau đó nhấp nút :wrench: xây lại và kéo để chọn khu vực của các khối đã bị phá hủy.\nViệc này sẽ giúp xây lại chúng một cách tự động.
+./core/assets/bundles/bundle_pl.properties:2354:hint.rebuildSelect = Przytrzymaj [accent][[B][] i przeciągnij, by zaznaczyć plany zniszczonych bloków.\nTo naprawi je automatycznie.
+./core/assets/bundles/bundle_pl.properties:2355:hint.rebuildSelect.mobile = wybierz :copy: przycisk kopiowania,  wtedy dotnij :wrench: przycisk odbudowy i przeciągnij by zaznaczyć plany zniszczonych bloków.\nTo naprawi je automatycznie.
+./core/src/mindustry/entities/comp/BuilderComp.java:202:                Events.fire(new BuildSelectEvent(tile, team, self(), current.breaking));
+./core/assets/bundles/bundle_ko.properties:2354:hint.rebuildSelect = [accent][[B][]를 누르고 끌어서 파괴된 블록 흔적을 선택하세요.\n선택된 블록은 자동으로 복구됩니다.
+./core/assets/bundles/bundle_ko.properties:2355:hint.rebuildSelect.mobile = 복사 버튼 \ue874 을 선택하시고, 재건축 버튼 \ue80f 을 탭하신 뒤, 드래그하여 블록 흔적을 선택하세요. 선택된 블록은 자동으로 복구됩니다.
+./core/assets/bundles/bundle_de.properties:2354:hint.rebuildSelect = Halte [accent][[B][] gedrückt und bewege deine Maus, um Überreste zerstörter Blöcke auszuwählen.\nDiese werden dann automatisch wiederaufgebaut.
+./core/assets/bundles/bundle_de.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_zh_CN.properties:2354:hint.rebuildSelect = 按住[accent][[B][]用鼠标框选被摧毁的建筑以自动重建。
+./core/assets/bundles/bundle_zh_CN.properties:2355:hint.rebuildSelect.mobile = 选择 :copy: 复制按钮，然后点击 :wrench: 重建按钮并拖动以选中被摧毁的建筑。\n这将自动重建这些建筑。
+./core/assets/bundles/bundle_bg.properties:2354:hint.rebuildSelect = Задръжте [accent][[B][] и влачете, за да изберете унищожени блокове.\nТова ще ги застрои наново автоматично.
+./core/assets/bundles/bundle_bg.properties:2355:hint.rebuildSelect.mobile = Изберете копчето за \ue874 копиране, после натиснете копчето за \ue80f построяване и изтеглете, за да изберете унищожените блокове.\nТова ще ги застрои отново автоматично.
+./core/assets/bundles/bundle_et.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_et.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_nl.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_nl.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/src/mindustry/game/EventType.java:602:    public static class BuildSelectEvent{
+./core/src/mindustry/game/EventType.java:608:        public BuildSelectEvent(Tile tile, Team team, Unit builder, boolean breaking){
+./core/src/mindustry/graphics/BlockRenderer.java:457:        if(control.input.isPlacing() || control.input.isBreaking() || (control.input.isRebuildSelecting() && !scene.hasKeyboard())){
+./core/assets/bundles/bundle_lt.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_lt.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_it.properties:2354:hint.rebuildSelect = Tieni premuto [accent][[B][] e trascina per selezionare i progetti dei blocchi distrutti.\nQuesto li ricostruirà automaticamente.
+./core/assets/bundles/bundle_it.properties:2355:hint.rebuildSelect.mobile = Seleziona il pulsante :copy: copia, quindi tocca il pulsante :wrench: ricostruisci e trascina per selezionare i progetti dei blocchi distrutti.\nQuesto li ricostruirà automaticamente.
+./core/assets/bundles/bundle_pt_BR.properties:2354:hint.rebuildSelect = Segure [accent][[B][] e arraste para selecionar blocos destruídos.\nIsso irá reconstruí-los automaticamente.
+./core/assets/bundles/bundle_pt_BR.properties:2355:hint.rebuildSelect.mobile = Selecione o botão :copy: copiar, então toque no botão :wrench: reconstruir e arraste para selecionar planos de blocos destruídos.\nIsso os reconstruirá automaticamente.
+./core/assets/bundles/bundle_hu.properties:2354:hint.rebuildSelect = Tartsd nyomva a [accent][[B][] gombot, majd húzással jelöld ki a megsemmisített blokkterveket.\nEz automatikusan újjáépíti őket.
+./core/assets/bundles/bundle_hu.properties:2355:hint.rebuildSelect.mobile = Válaszd a :copy: másolás gombot, majd koppints az :wrench: újjáépítés gombra, és húzd a megsemmisült blokktervek kijelöléséhez.\nEz automatikusan újjáépíti őket.
+./core/assets/bundles/bundle_ru.properties:2354:hint.rebuildSelect = Удерживайте [accent][[B][] и перетаскивайте, чтобы выбрать уничтоженные блоки.\nОни будут перестроены автоматически.
+./core/assets/bundles/bundle_ru.properties:2355:hint.rebuildSelect.mobile = Выберите кнопку :copy: копирования, затем нажмите кнопку :wrench: перестройки, и проведите для выбора уничтоженных блоков.\nЭто перестроит их автоматически.
+./core/assets/bundles/bundle_zh_TW.properties:2354:hint.rebuildSelect = 按住[accent][[B][]鍵並拖曳以選取被摧毀的建築。\n這將自動重建它們。
+./core/assets/bundles/bundle_zh_TW.properties:2355:hint.rebuildSelect.mobile = 選擇\ue874複製按鈕，然後點擊\ue80f重建按鈕並拖曳以選取被摧毀的建築。\n這將自動重建它們。
+./core/assets/bundles/bundle_tr.properties:2354:hint.rebuildSelect = [accent][[B][] ye basılı tutarak, yok edilmiş blokları seç.\nBu binaları yeniden inşa etmeni sağlar.
+./core/assets/bundles/bundle_tr.properties:2355:hint.rebuildSelect.mobile = \ue874 kopya tuşunu seç, sonra \ue80f yeniden inşa tuşuna bas ve yok olmuş blok planlarını seçmek için sürükle.\nBu onları otomatik olarak tekrardan inşa edecektir.
+./core/assets/bundles/bundle_cs.properties:2354:hint.rebuildSelect = Podrž [accent][[B][] a tažením vyber plány zničených bloků.\nTím se automaticky přestaví.
+./core/assets/bundles/bundle_cs.properties:2355:hint.rebuildSelect.mobile = Vyber tlačítko :copy: kopírování, potom klepni na tlačítko :wrench: přestavby a tažením vyber plány zničených bloků.\nTím se automaticky přestaví.
+./core/assets/bundles/bundle_tk.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_tk.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_sv.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_sv.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_nl_BE.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_nl_BE.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_es.properties:2354:hint.rebuildSelect = Mantén [accent][[B][] y arrastra para seleccionar planos de bloques destruidos.\nEsto los reconstruirá automáticamente.
+./core/assets/bundles/bundle_es.properties:2355:hint.rebuildSelect.mobile = Selecciona el botón :copy: copiar, luego toca el botón :wrench: reconstruir y arrastra para seleccionar los bloques destruidos.\nEsto los reconstruirá automáticamente.
+./core/assets/bundles/bundle_da.properties:2354:hint.rebuildSelect = Hold [accent][[B][] and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/assets/bundles/bundle_da.properties:2355:hint.rebuildSelect.mobile = Select the :copy: copy button, then tap the :wrench: rebuild button and drag to select destroyed block plans.\nThis will rebuild them automatically.
+./core/src/mindustry/input/PlaceMode.java:4:    none, breaking, placing, schematicSelect, rebuildSelect
+./core/src/mindustry/input/Binding.java:33:    rebuildSelect = KeyBind.add("rebuild_select", KeyCode.b),
+./core/src/mindustry/input/DesktopInput.java:142:            }else if(Core.input.keyDown(Binding.rebuildSelect)){
+./core/src/mindustry/input/DesktopInput.java:143:                drawRebuildSelection(schemX, schemY, cursorX, cursorY);
+./core/src/mindustry/input/DesktopInput.java:616:        if((Core.input.keyTap(Binding.schematicSelect) || Core.input.keyTap(Binding.rebuildSelect)) && !Core.scene.hasKeyboard() && mode != breaking){
+./core/src/mindustry/input/DesktopInput.java:633:                if(!input.keyDown(Binding.rebuildSelect)){
+./core/src/mindustry/input/DesktopInput.java:637:            }else if(input.keyRelease(Binding.rebuildSelect)){
+./core/src/mindustry/input/MobileInput.java:406:        }else if(mode == rebuildSelect){
+./core/src/mindustry/input/MobileInput.java:407:            drawRebuildSelection(lineStartX, lineStartY, lastLineX, lastLineY);
+./core/src/mindustry/input/MobileInput.java:482:    public boolean isRebuildSelecting(){
+./core/src/mindustry/input/MobileInput.java:539:                mode = rebuildMode ? rebuildSelect : schematicSelect;
+./core/src/mindustry/input/MobileInput.java:590:        }else if(mode == rebuildSelect){
+./core/src/mindustry/input/MobileInput.java:860:        if(!schematicMode && (mode == schematicSelect || mode == rebuildSelect)){
+./core/src/mindustry/input/MobileInput.java:864:        if(!rebuildMode && mode == rebuildSelect){
+./core/src/mindustry/input/MobileInput.java:868:        if(mode == schematicSelect || mode == rebuildSelect){
+./core/src/mindustry/input/InputHandler.java:749:        if(net.server() && (!state.rules.possessionAllowed && player.bestCore() != build  || !netServer.admins.allowAction(p

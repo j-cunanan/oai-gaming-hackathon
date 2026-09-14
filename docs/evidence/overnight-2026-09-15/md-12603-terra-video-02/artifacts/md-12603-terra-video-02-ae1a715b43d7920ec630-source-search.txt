@@ -1,0 +1,4 @@
+./core/src/mindustry/editor/MapEditorDialog.java:728:            cont.table(this::addBlockSelection).right().growY();
+./core/src/mindustry/editor/MapEditorDialog.java:797:    private void addBlockSelection(Table cont){
+./core/src/mindustry/ui/fragments/HudFragment.java:64:    private void addBlockSelection(Table cont){
+./core/src/mindustry/ui/fragments/HudFragment.java:534:                t.collapser(this::addBlockSelection, () -> Core.settings.getBool("editor-blocks-shown"));

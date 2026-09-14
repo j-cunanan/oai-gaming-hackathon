@@ -1,0 +1,240 @@
+480:                 t.row();
+481:                 t.add(description).color(Color.gray).growX().wrap();
+482:             }).growX().pad(10f).padLeft(5);
+483: 
+484:             button.row();
+485: 
+486:             dialog.cont.row();
+487:         }
+488: 
+489:         dialog.addCloseButton();
+490:         dialog.show();
+491:     }
+492: 
+493:     @Override
+494:     public Dialog show(){
+495:         return super.show(Core.scene, Actions.sequence(Actions.alpha(1f)));
+496:     }
+497: 
+498:     @Override
+499:     public void hide(){
+500:         super.hide(Actions.sequence(Actions.alpha(0f)));
+501:     }
+502: 
+503:     @Override
+504:     public void dispose(){
+505:         editor.renderer.dispose();
+506:     }
+507: 
+508:     public void beginEditMap(Fi file){
+509:         ui.loadAnd(() -> {
+510:             try{
+511:                 shownWithMap = true;
+512:                 editor.beginEdit(MapIO.createMap(file, true));
+513:                 show();
+514:             }catch(Exception e){
+515:                 Log.err(e);
+516:                 ui.showException("@editor.errorload", e);
+517:             }
+518:         });
+519:     }
+520: 
+521:     public MapView getView(){
+522:         return view;
+523:     }
+524: 
+525:     public MapGenerateDialog getGenerateDialog(){
+526:         return generateDialog;
+527:     }
+528: 
+529:     public void resetSaved(){
+530:         saved = false;
+531:     }
+532: 
+533:     public boolean hasPane(){
+534:         return Core.scene.getScrollFocus() == pane || Core.scene.getKeyboardFocus() != this;
+535:     }
+536: 
+537:     public void build(){
+538:         float size = mobile ? 50f : 58f;
+539: 
+540:         clearChildren();
+541:         table(cont -> {
+542:             cont.left();
+543: 
+544:             cont.table(mid -> {
+545:                 mid.top();
+546: 
+547:                 Table tools = new Table().top();
+548: 
+549:                 ButtonGroup<ImageButton> group = new ButtonGroup<>();
+550:                 Table[] lastTable = {null};
+551: 
+552:                 Cons<EditorTool> addTool = tool -> {
+553: 
+554:                     ImageButton button = new ImageButton(ui.getIcon(tool.name()), Styles.squareTogglei);
+555:                     button.clicked(() -> {
+556:                         view.setTool(tool);
+557:                         if(lastTable[0] != null){
+558:                             lastTable[0].remove();
+559:                         }
+560:                     });
+561:                     button.update(() -> button.setChecked(view.getTool() == tool));
+562:                     group.add(button);
+563: 
+564:                     if(tool.altModes.length > 0){
+565:                         button.clicked(l -> {
+566:                             if(!mobile){
+567:                                 //desktop: rightclick
+568:                                 l.setButton(KeyCode.mouseRight);
+569:                             }
+570:                         }, e -> {
+571:                             //need to double tap
+572:                             if(mobile && e.getTapCount() < 2){
+573:                                 return;
+574:                             }
+575: 
+576:                             if(lastTable[0] != null){
+577:                                 lastTable[0].remove();
+578:                             }
+579: 
+580:                             Table table = new Table(Styles.black9);
+581:                             table.defaults().size(300f, 70f);
+582: 
+583:                             for(int i = 0; i < tool.altModes.length; i++){
+584:                                 int mode = i;
+585:                                 String name = tool.altModes[i];
+586: 
+587:                                 table.button(b -> {
+588:                                     b.left();
+589:                                     b.marginLeft(6);
+590:                                     b.setStyle(Styles.flatTogglet);
+591:                                     b.add(Core.bundle.get("toolmode." + name)).left();
+592:                                     b.row();
+593:                                     b.add(Core.bundle.get("toolmode." + name + ".description")).color(Color.lightGray).left();
+594:                                 }, () -> {
+595:                                     tool.mode = (tool.mode == mode ? -1 : mode);
+596:                                     table.remove();
+597:                                 }).update(b -> b.setChecked(tool.mode == mode));
+598:                                 table.row();
+599:                             }
+600: 
+601:                             table.update(() -> {
+602:                                 Vec2 v = button.localToStageCoordinates(Tmp.v1.setZero());
+603:                                 table.setPosition(v.x, v.y, Align.topLeft);
+604:                                 if(!isShown()){
+605:                                     table.remove();
+606:                                     lastTable[0] = null;
+607:                                 }
+608:                             });
+609: 
+610:                             table.pack();
+611:                             table.act(Core.graphics.getDeltaTime());
+612: 
+613:                             addChild(table);
+614:                             lastTable[0] = table;
+615:                         });
+616:                     }
+617: 
+618: 
+619:                     Label mode = new Label("");
+620:                     mode.setColor(Pal.remove);
+621:                     mode.update(() -> mode.setText(tool.mode == -1 ? "" : "M" + (tool.mode + 1) + " "));
+622:                     mode.setAlignment(Align.bottomRight, Align.bottomRight);
+623:                     mode.touchable = Touchable.disabled;
+624: 
+625:                     tools.stack(button, mode);
+626:                 };
+627: 
+628:                 tools.defaults().size(size, size);
+629: 
+630:                 tools.button(Icon.menu, Styles.flati, menu::show);
+631: 
+632:                 ImageButton grid = tools.button(Icon.grid, Styles.squareTogglei, () -> view.setGrid(!view.isGrid())).get();
+633: 
+634:                 addTool.get(EditorTool.zoom);
+635: 
+636:                 tools.row();
+637: 
+638:                 ImageButton undo = tools.button(Icon.undo, Styles.flati, editor::undo).get();
+639:                 ImageButton redo = tools.button(Icon.redo, Styles.flati, editor::redo).get();
+640: 
+641:                 addTool.get(EditorTool.pick);
+642: 
+643:                 tools.row();
+644: 
+645:                 undo.setDisabled(() -> !editor.canUndo());
+646:                 redo.setDisabled(() -> !editor.canRedo());
+647: 
+648:                 undo.update(() -> undo.getImage().setColor(undo.isDisabled() ? Color.gray : Color.white));
+649:                 redo.update(() -> redo.getImage().setColor(redo.isDisabled() ? Color.gray : Color.white));
+650:                 grid.update(() -> grid.setChecked(view.isGrid()));
+651: 
+652:                 addTool.get(EditorTool.line);
+653:                 addTool.get(EditorTool.pencil);
+654:                 addTool.get(EditorTool.eraser);
+655: 
+656:                 tools.row();
+657: 
+658:                 addTool.get(EditorTool.fill);
+659:                 addTool.get(EditorTool.spray);
+660: 
+661:                 ImageButton rotate = tools.button(Icon.right, Styles.flati, () -> editor.rotation = (editor.rotation + 1) % 4).get();
+662:                 rotate.getImage().update(() -> {
+663:                     rotate.getImage().setRotation(editor.rotation * 90);
+664:                     rotate.getImage().setOrigin(Align.center);
+665:                 });
+666: 
+667:                 tools.row();
+668: 
+669:                 tools.image(Tex.whiteui, Pal.gray).colspan(3).height(4f).width(size * 3f + 3f).row();
+670: 
+671:                 ButtonGroup<ImageButton> teamgroup = new ButtonGroup<>();
+672: 
+673:                 int i = 0;
+674: 
+675:                 for(Team team : Team.baseTeams){
+676:                     ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
+677:                     button.margin(4f);
+678:                     button.getImageCell().grow();
+679:                     button.getStyle().imageUpColor = team.color;
+680:                     button.clicked(() -> editor.drawTeam = team);
+681:                     button.update(() -> button.setChecked(editor.drawTeam == team));
+682:                     teamgroup.add(button);
+683:                     tools.add(button);
+684: 
+685:                     if(i++ % 3 == 2) tools.row();
+686:                 }
+687: 
+688:                 mid.add(tools).top().padBottom(-6);
+689: 
+690:                 mid.row();
+691: 
+692:                 mid.table(Tex.underline, t -> {
+693:                     Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
+694:                     slider.moved(f -> editor.brushSize = MapEditor.brushSizes[(int)f]);
+695:                     for(int j = 0; j < MapEditor.brushSizes.length; j++){
+696:                         if(MapEditor.brushSizes[j] == editor.brushSize){
+697:                             slider.setValue(j);
+698:                         }
+699:                     }
+700: 
+701:                     var label = new Label("@editor.brush");
+702:                     label.setAlignment(Align.center);
+703:                     label.touchable = Touchable.disabled;
+704: 
+705:                     t.top().stack(slider, label).width(size * 3f - 20).padTop(4f);
+706:                     t.row();
+707:                 }).padTop(5).growX().top();
+708: 
+709:                 mid.row();
+710: 
+711:                 mid.check("@editor.showblocks", editor.showBuildings, b -> {
+712:                     editor.showBuildings = b;
+713:                     editor.renderer.recacheShadows();
+714:                 }).pad(2f).growX().with(Table::left).row();
+715:                 mid.check("@editor.showterrain", editor.showTerrain, b -> {
+716:                     editor.showTerrain = b;
+717:                     editor.renderer.recacheTerrain();
+718:                 }).pad(2f).growX().with(Table::left).row();
+719:                 mid.check("@editor.showfloor", editor.showFloor, b -> editor.showFloor = b).pad(2f).growX().with(Table::left).row();

@@ -1,0 +1,220 @@
+200: 
+201:             Stack stack = new Stack();
+202:             stack.add(button);
+203:             if(isFavorite(block)){
+204:                 Image favIcon = new Image(Icon.star);
+205:                 favIcon.setColor(Color.gold);
+206:                 favIcon.setOrigin(Align.center);
+207: 
+208:                 if(block.name.equals(lastFavorited)){
+209:                     favIcon.color.a = 0f;
+210:                     favIcon.setScale(0f);
+211:                     favIcon.addAction(Actions.parallel(
+212:                         Actions.scaleTo(0.7f, 0.7f, 0.2f),
+213:                         Actions.alpha(1f, 0.2f),
+214:                         Actions.run(() -> lastFavorited = null)
+215:                     ));
+216:                 }else{
+217:                     favIcon.setScale(0.7f);
+218:                 }
+219: 
+220:                 Table overlay = new Table().align(Align.topRight);
+221:                 overlay.touchable = Touchable.disabled;
+222:                 overlay.add(favIcon).size(2f).pad(12f);
+223: 
+224:                 stack.add(overlay);
+225:             }
+226:             blockSelection.add(stack).size(48f).tooltip(block.localizedName);
+227: 
+228:             if(++i % 6 == 0){
+229:                 blockSelection.row();
+230:             }
+231:         }
+232: 
+233:         if(i == 0){
+234:             blockSelection.add("@none.found").padLeft(54f).padTop(10f);
+235:         }
+236:     }
+237: 
+238:     public void build(Group parent){
+239:         loadFavorites();
+240:         //warn about guardian/boss waves
+241:         Events.on(WaveEvent.class, e -> {
+242:             int max = 10;
+243:             int winWave = state.rules.winWave > 0 ? state.rules.winWave : Integer.MAX_VALUE;
+244:             outer:
+245:             for(int i = state.wave - 1; i <= Math.min(state.wave + max, winWave - 2); i++){
+246:                 for(SpawnGroup group : state.rules.spawns){
+247:                     if(group.effect == StatusEffects.boss && group.getSpawned(i) > 0){
+248:                         int diff = (i + 2) - state.wave;
+249: 
+250:                         //increments at which to warn about incoming guardian
+251:                         if(diff == 1 || diff == 2 || diff == 5 || diff == 10){
+252:                             showToast(Icon.warning, group.type.emoji() + " " + Core.bundle.format("wave.guardianwarn" + (diff == 1 ? ".one" : ""), diff));
+253:                         }
+254: 
+255:                         break outer;
+256:                     }
+257:                 }
+258:             }
+259:         });
+260: 
+261:         Events.on(SectorCaptureEvent.class, e -> {
+262:             if(e.sector.isBeingPlayed()){
+263:                 ui.announce("@sector.capture.current", 5f);
+264:             }else{
+265:                 showToast(Core.bundle.format("sector.capture", e.sector.name()));
+266:             }
+267:         });
+268: 
+269:         Events.on(SectorLoseEvent.class, e -> {
+270:             showToast(Icon.warning, Core.bundle.format("sector.lost", e.sector.name()));
+271:         });
+272: 
+273:         Events.on(SectorInvasionEvent.class, e -> {
+274:             showToast(Icon.warning, Core.bundle.format("sector.attacked", e.sector.name()));
+275:         });
+276: 
+277:         Events.on(ResetEvent.class, e -> {
+278:             coreItems.resetUsed();
+279:             coreItems.clear();
+280:             if(hudLabel != null){
+281:                 hudLabel.color.a = 0f;
+282:             }
+283:             showHudText = false;
+284:         });
+285: 
+286:         //paused table
+287:         parent.fill(t -> {
+288:             float sidePad = dsize * 5 + 4f;
+289:             t.name = "paused";
+290:             t.top().visible(() -> state.isPaused() && shown() && !netServer.isWaitingForPlayers() && !(mobile && Core.graphics.isPortrait())).touchable = Touchable.disabled;
+291:             t.table(Styles.black6, top -> {
+292:                 top.label(() -> state.gameOver && state.isCampaign() ? "@sector.curlost" : "@paused")
+293:                 .style(Styles.outlineLabel).pad(8f);
+294:                 top.spacerX(() -> sidePad + Core.scene.marginLeft - Core.scene.marginRight);
+295:             }).height(pauseHeight).growX()
+296:             .padLeft(sidePad);
+297:         });
+298: 
+299:         //pause disabled table
+300:         parent.fill(t -> {
+301:             t.name = "pause-disabled";
+302:             t.top().visible(() -> pauseDisableDur > 0f && shown() && !mobile && !netServer.isWaitingForPlayers() && !state.isPaused() && !(state.gameOver && state.isCampaign())).touchable = Touchable.disabled;
+303:             t.update(() -> {
+304:                 t.color.a = t.color.a > 0f && pauseDisableDur > 0f ? t.color.a - Time.delta / pauseDisableDur : 1f;
+305:                 if(t.color.a <= 0f){
+306:                     pauseDisableDur = 0f;
+307:                 }
+308:             });
+309:             t.table(Styles.black6, top -> top.label(() -> "@pause.disabled").style(Styles.outlineLabel).pad(8f)).height(pauseHeight).growX();
+310:         });
+311: 
+312:         //left/right gutter areas
+313:         parent.fill((x, y, w, h) -> {
+314:             x = 0f;
+315:             y = 0f;
+316:             w = Core.graphics.getWidth();
+317:             h = Core.graphics.getHeight();
+318:             Draw.color();
+319:             if(Core.scene.marginLeft > 0){
+320:                 paneRight.draw(x, y, Core.scene.marginLeft, h);
+321:             }
+322: 
+323:             if(Core.scene.marginRight > 0){
+324:                 paneLeft.draw(x + w - Core.scene.marginRight, y, Core.scene.marginRight, h);
+325:             }
+326:         });
+327: 
+328:         //"waiting for players"
+329:         parent.fill(t -> {
+330:             t.name = "waiting";
+331:             t.visible(() -> netServer.isWaitingForPlayers() && state.isPaused() && shown()).touchable = Touchable.disabled;
+332:             t.table(Styles.black6, top -> top.add("@waiting.players").style(Styles.outlineLabel).pad(18f));
+333:         });
+334: 
+335:         //minimap + position
+336:         parent.fill(t -> {
+337:             t.name = "minimap/position";
+338:             t.visible(() -> Core.settings.getBool("minimap") && shown());
+339:             //minimap
+340:             t.add(new Minimap()).name("minimap");
+341:             t.row();
+342:             //position
+343:             t.label(() ->
+344:                 (Core.settings.getBool("position") ? player.tileX() + "," + player.tileY() + "\n" : "") +
+345:                 (Core.settings.getBool("mouseposition") ? "[lightgray]" + World.toTile(Core.input.mouseWorldX()) + "," + World.toTile(Core.input.mouseWorldY()) : ""))
+346:             .visible(() -> Core.settings.getBool("position") || Core.settings.getBool("mouseposition"))
+347:             .touchable(Touchable.disabled)
+348:             .style(Styles.outlineLabel)
+349:             .name("position");
+350:             t.top().right();
+351:         });
+352: 
+353:         ui.hints.build(parent);
+354: 
+355:         //menu at top left
+356:         parent.fill(cont -> {
+357:             cont.name = "overlaymarker";
+358:             cont.top().left();
+359: 
+360:             if(mobile){
+361:                 //for better inset visuals
+362:                 cont.rect((x, y, w, h) -> {
+363:                     if(Core.scene.marginTop > 0){
+364:                         Draw.color();
+365:                         Tex.paneRight.draw(x, y, w, Core.scene.marginTop);
+366:                     }
+367:                 }).fillX().row();
+368: 
+369:                 //paused in portrait mode
+370:                 cont.label(() -> state.gameOver && state.isCampaign() ? "@sector.curlost" : "@paused")
+371:                 .style(Styles.outlineLabel)
+372:                 .labelAlign(Align.center)
+373:                 .visible(() -> state.isPaused() && shown && !netServer.isWaitingForPlayers() && Core.graphics.isPortrait())
+374:                 .touchable(Touchable.disabled).height(20f).padTop(-40f).fillX();
+375: 
+376:                 cont.row();
+377: 
+378:                 cont.table(select -> {
+379:                     select.name = "mobile buttons";
+380:                     select.left();
+381:                     select.defaults().size(dsize).left();
+382:                     select.background(Styles.black6);
+383: 
+384:                     ImageButtonStyle style = Styles.clearNonei;
+385: 
+386:                     select.button(Icon.menu, style, ui.paused::show).name("menu");
+387:                     flip = select.button(Icon.upOpen, style, () -> {
+388:                         if(Core.settings.getBool("console")){
+389:                             ui.consolefrag.toggleMobile();
+390:                         }else{
+391:                             toggleMenus();
+392:                         }
+393:                     }).update(i -> {
+394:                         if(Core.settings.getBool("console")){
+395:                             i.getStyle().imageUp = Icon.terminal;
+396:                             shown = true; //force shown when console is enabled, because there is no other way to show/hide
+397:                         }else{
+398:                             i.getStyle().imageUp = shown ? Icon.downOpen : Icon.upOpen;
+399:                         }
+400:                     }).get();
+401:                     flip.name = "flip";
+402: 
+403:                     select.button(Icon.paste, style, ui.schematics::show)
+404:                     .name("schematics");
+405: 
+406:                     select.button(Icon.pause, style, () -> {
+407:                         if(net.active()){
+408:                             ui.listfrag.toggle();
+409:                         }else if(!state.rules.pauseDisabled){
+410:                             state.set(state.isPaused() ? State.playing : State.paused);
+411:                         }
+412:                     }).name("pause").update(i -> {
+413:                         if(net.active()){
+414:                             i.setDisabled(false);
+415:                             i.getStyle().imageUp = Icon.players;
+416:                         }else{
+417:                             i.setDisabled(state.rules.pauseDisabled || (state.isCampaign() && state.afterGameOver));
+418:                             i.getStyle().imageUp = state.isPaused() ? Icon.play : Icon.pause;
+419:                         }

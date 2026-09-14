@@ -1,0 +1,1 @@
+./core/src/mindustry/ui/fragments/HudFragment.java:40:public class HudFragment{

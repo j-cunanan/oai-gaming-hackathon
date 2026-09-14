@@ -1,0 +1,166 @@
+720: 
+721:                 if(!mobile){
+722:                     mid.button("@editor.center", Icon.move, Styles.flatt, view::center).growX().margin(9f);
+723:                 }
+724:             }).margin(0).left().growY();
+725: 
+726:             cont.table(t -> t.add(view).grow()).grow();
+727: 
+728:             cont.table(this::addBlockSelection).right().growY();
+729: 
+730:         }).grow();
+731:     }
+732: 
+733:     private void doInput(){
+734: 
+735:         if(Core.input.ctrl()){
+736:             //alt mode select
+737:             for(int i = 0; i < view.getTool().altModes.length; i++){
+738:                 if(i + 1 < KeyCode.numbers.length && Core.input.keyTap(KeyCode.numbers[i + 1])){
+739:                     view.getTool().mode = i;
+740:                 }
+741:             }
+742:         }else{
+743:             for(EditorTool tool : EditorTool.all){
+744:                 if(Core.input.keyTap(tool.key)){
+745:                     view.setTool(tool);
+746:                     break;
+747:                 }
+748:             }
+749:         }
+750: 
+751:         if(Core.input.keyTap(KeyCode.escape)){
+752:             if(!menu.isShown()){
+753:                 menu.show();
+754:             }
+755:         }
+756: 
+757:         if(Core.input.keyTap(KeyCode.r)){
+758:             editor.rotation = Mathf.mod(editor.rotation + 1, 4);
+759:         }
+760: 
+761:         if(Core.input.keyTap(KeyCode.e)){
+762:             editor.rotation = Mathf.mod(editor.rotation - 1, 4);
+763:         }
+764: 
+765:         //ctrl keys (undo, redo, save)
+766:         if(Core.input.ctrl()){
+767:             if(Core.input.keyTap(KeyCode.z)){
+768:                 if(Core.input.shift()){
+769:                     editor.redo();
+770:                 }else{
+771:                     editor.undo();
+772:                 }
+773:             }
+774: 
+775:             if(Core.input.keyTap(KeyCode.y)){
+776:                 editor.redo();
+777:             }
+778: 
+779:             if(Core.input.keyTap(KeyCode.s)){
+780:                 save();
+781:             }
+782: 
+783:             if(Core.input.keyTap(KeyCode.g)){
+784:                 view.setGrid(!view.isGrid());
+785:             }
+786:         }
+787:     }
+788: 
+789:     private void tryExit(){
+790:         ui.showConfirm("@confirm", "@editor.unsaved", () -> {
+791:             //clears data patches
+792:             logic.reset();
+793:             hide();
+794:         });
+795:     }
+796: 
+797:     private void addBlockSelection(Table cont){
+798:         blockSelection = new Table();
+799:         pane = new ScrollPane(blockSelection, Styles.smallPane);
+800:         pane.setFadeScrollBars(false);
+801:         pane.setOverscroll(true, false);
+802:         pane.exited(() -> {
+803:             if(pane.hasScroll()){
+804:                 Core.scene.setScrollFocus(view);
+805:             }
+806:         });
+807: 
+808:         Table[] configTable = {null};
+809:         Block[] lastBlock = {null};
+810: 
+811:         cont.table(search -> {
+812:             search.image(Icon.zoom).padRight(8);
+813:             search.field("", this::rebuildBlockSelection).growX()
+814:             .name("editor/search").maxTextLength(maxNameLength).get().setMessageText("@players.search");
+815:         }).growX().pad(-2).padLeft(6f);
+816:         cont.row();
+817:         cont.table(Tex.underline, extra -> extra.labelWrap(() -> editor.drawBlock.localizedName).width(200f).center()).growX();
+818:         cont.row();
+819:         cont.collapser(t -> {
+820:             configTable[0] = t;
+821:         }, () -> editor.drawBlock != null && editor.drawBlock.editorConfigurable).with(c -> c.setEnforceMinSize(true)).update(col -> {
+822: 
+823:             if(lastBlock[0] != editor.drawBlock){
+824:                 configTable[0].clear();
+825:                 if(editor.drawBlock != null){
+826:                     editor.drawBlock.buildEditorConfig(configTable[0]);
+827:                     col.invalidateHierarchy();
+828:                 }
+829:                 lastBlock[0] = editor.drawBlock;
+830:             }
+831:         }).growX().row();
+832:         cont.add(pane).expandY().growX().top().left();
+833: 
+834:         rebuildBlockSelection("");
+835:     }
+836: 
+837:     public void rebuildBlockSelection(){
+838:         rebuildBlockSelection("");
+839:     }
+840: 
+841:     private void rebuildBlockSelection(String searchText){
+842:         blockSelection.clear();
+843: 
+844:         blocksOut.clear();
+845:         blocksOut.addAll(Vars.content.blocks());
+846:         blocksOut.sort((b1, b2) -> {
+847:             int core = -Boolean.compare(b1 instanceof CoreBlock, b2 instanceof CoreBlock);
+848:             if(core != 0) return core;
+849:             int synth = Boolean.compare(b1.synthetic(), b2.synthetic());
+850:             if(synth != 0) return synth;
+851:             int ore = Boolean.compare(b1 instanceof OverlayFloor, b2 instanceof OverlayFloor);
+852:             if(ore != 0) return ore;
+853:             return Integer.compare(b1.id, b2.id);
+854:         });
+855: 
+856:         int i = 0;
+857:         String search = searchText.trim().replaceAll(" +", " ").toLowerCase();
+858: 
+859:         for(Block block : blocksOut){
+860:             TextureRegion region = block.uiIcon;
+861: 
+862:             if(!Core.atlas.isFound(region) || !block.inEditor
+863:                     || block.buildVisibility == BuildVisibility.debugOnly
+864:                     || (!searchText.isEmpty() && !block.localizedName.toLowerCase().contains(search))
+865:             ) continue;
+866: 
+867:             ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
+868:             button.getStyle().imageUp = new TextureRegionDrawable(region);
+869:             button.clicked(() -> editor.drawBlock = block);
+870:             button.resizeImage(8 * 4f);
+871:             button.update(() -> button.setChecked(editor.drawBlock == block));
+872:             blockSelection.add(button).size(50f).tooltip(block.localizedName);
+873: 
+874:             int cols = mobile ? 4 : 6;
+875: 
+876:             if(++i % cols == 0){
+877:                 blockSelection.row();
+878:             }
+879:         }
+880: 
+881:         if(i == 0){
+882:             blockSelection.add("@none.found").padLeft(54f).padTop(10f);
+883:         }
+884:     }
+885: }

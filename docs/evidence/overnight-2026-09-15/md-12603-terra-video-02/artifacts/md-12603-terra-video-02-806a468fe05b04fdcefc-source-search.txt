@@ -1,0 +1,64 @@
+./core/assets/bundles/bundle_ko.properties:1622:keybind.deselect.name = 선택 해제
+./core/assets/bundles/bundle_th.properties:1622:keybind.deselect.name = ยกเลิกการเลือก
+./core/assets/bundles/bundle_fi.properties:1622:keybind.deselect.name = Poista valinta
+./core/assets/bundles/bundle_eu.properties:1622:keybind.deselect.name = Deshautatu
+./core/assets/bundles/bundle_ca.properties:1622:keybind.deselect.name = Cancel·la la selecció
+./core/assets/bundles/bundle_ja.properties:1622:keybind.deselect.name = 選択解除
+./core/assets/bundles/bundle_be.properties:1622:keybind.deselect.name = Зняць Вылучэнне
+./core/assets/bundles/bundle_ro.properties:1622:keybind.deselect.name = Deselectează
+./core/assets/bundles/bundle_uk_UA.properties:1622:keybind.deselect.name = Скасувати
+./core/assets/bundles/bundle_de.properties:1622:keybind.deselect.name = Auswahl aufheben
+./core/assets/bundles/bundle_fil.properties:1622:keybind.deselect.name = Deselect
+./core/assets/bundles/bundle_id_ID.properties:1622:keybind.deselect.name = Batal Memilih
+./core/assets/bundles/bundle_vi.properties:1622:keybind.deselect.name = Bỏ chọn
+./core/assets/bundles/bundle.properties:1627:keybind.deselect.name = Deselect
+./core/assets/bundles/bundle_nl.properties:1622:keybind.deselect.name = Deselecteer
+./core/assets/bundles/bundle_ru.properties:1622:keybind.deselect.name = Снять выделение
+./core/assets/bundles/bundle_pt_BR.properties:1622:keybind.deselect.name = Desmarcar
+./core/assets/bundles/bundle_et.properties:1622:keybind.deselect.name = Tühista valik
+./core/assets/bundles/bundle_sr.properties:1622:keybind.deselect.name = Deselect
+./core/assets/bundles/bundle_bg.properties:1622:keybind.deselect.name = Премахни избора
+./core/assets/bundles/bundle_fr.properties:1622:keybind.deselect.name = Désélectionner
+./core/assets/bundles/bundle_pl.properties:1622:keybind.deselect.name = Odznacz
+./core/assets/bundles/bundle_zh_CN.properties:1622:keybind.deselect.name = 取消选择
+./core/assets/bundles/bundle_lt.properties:1622:keybind.deselect.name = Panaikinti Pasirinkimą
+./core/assets/bundles/bundle_it.properties:1622:keybind.deselect.name = Deseleziona
+./core/assets/bundles/bundle_tr.properties:1622:keybind.deselect.name = Seçimleri Kaldır
+./core/assets/bundles/bundle_sv.properties:1622:keybind.deselect.name = Deselect
+./core/assets/bundles/bundle_cs.properties:1622:keybind.deselect.name = Odznačit
+./core/assets/bundles/bundle_zh_TW.properties:1622:keybind.deselect.name = 取消選取
+./core/assets/bundles/bundle_tk.properties:1622:keybind.deselect.name = Eldeki yapiyi birak
+./core/assets/bundles/bundle_nl_BE.properties:1622:keybind.deselect.name = Deselect
+./core/assets/bundles/bundle_hu.properties:1622:keybind.deselect.name = Blokk-kijelölés törlése
+./core/assets/bundles/bundle_es.properties:1622:keybind.deselect.name = Deseleccionar
+./core/assets/bundles/bundle_pt_PT.properties:1622:keybind.deselect.name = Desselecionar
+./core/assets/bundles/bundle_da.properties:1622:keybind.deselect.name = Fravælg
+./core/src/mindustry/editor/BannedContentDialog.java:25:    private Table deselectedTable;
+./core/src/mindustry/editor/BannedContentDialog.java:39:        deselectedTable = new Table();
+./core/src/mindustry/editor/BannedContentDialog.java:118:            table.pane(table2 -> deselectedTable = table2).fill().expand().row();
+./core/src/mindustry/editor/BannedContentDialog.java:149:        rebuildTable(deselectedTable, false);
+./core/src/mindustry/entities/comp/BuildingComp.java:399:    /** Deselect this tile from configuration. */
+./core/src/mindustry/entities/comp/BuildingComp.java:400:    public void deselect(){
+./core/src/mindustry/entities/comp/BuildingComp.java:1694:     * @return whether this block should be deselected.
+./core/src/mindustry/entities/comp/BuildingComp.java:1699:                deselect();
+./core/src/mindustry/logic/LStatement.java:278:        //triggers events behind the element to simulate deselection
+./core/src/mindustry/input/Binding.java:19:    deselect = KeyBind.add("deselect", KeyCode.mouseRight),
+./core/src/mindustry/input/DesktopInput.java:608:        if(Core.input.keyTap(Binding.deselect) && !ui.minimapfrag.shown() && !isPlacing() && player.unit().plans.isEmpty() && !commandMode){
+./core/src/mindustry/input/DesktopInput.java:737:        }else if(Core.input.keyTap(Binding.deselect) && isPlacing()){
+./core/src/mindustry/input/DesktopInput.java:740:        }else if(Core.input.keyTap(Binding.deselect) && !selectPlans.isEmpty()){
+./core/src/mindustry/input/DesktopInput.java:820:        //deselect if not placing
+./core/src/mindustry/input/InputHandler.java:1143:                //deselect
+./core/src/mindustry/world/blocks/logic/CanvasBlock.java:317:                deselect();
+./core/src/mindustry/world/blocks/units/Reconstructor.java:227:                    deselect();
+./core/src/mindustry/world/blocks/logic/LogicBlock.java:763:                deselect();
+./core/src/mindustry/world/blocks/distribution/MassDriver.java:274:                if(link == -1) deselect();
+./core/src/mindustry/world/blocks/logic/MessageBlock.java:152:                deselect();
+./core/src/mindustry/world/blocks/logic/MessageBlock.java:159:                deselect();
+./core/src/mindustry/world/blocks/campaign/LaunchPad.java:187:                deselect();
+./core/src/mindustry/world/blocks/campaign/LaunchPad.java:201:                deselect();
+./core/src/mindustry/world/blocks/campaign/Accelerator.java:259:            deselect();
+./core/src/mindustry/world/blocks/campaign/LandingPad.java:370:                deselect();
+./core/src/mindustry/world/blocks/payloads/PayloadMassDriver.java:450:                if(link == -1) deselect();
+./core/src/mindustry/world/blocks/power/LightBlock.java:112:                deselect();
+./core/src/mindustry/world/blocks/power/LightBlock.java:119:                deselect();
+./core/src/mindustry/world/blocks/power/PowerNode.java:437:                deselect();

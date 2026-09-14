@@ -1,0 +1,12 @@
+./core/src/mindustry/world/Block.java:360:    public Category category = Category.distribution;
+./core/src/mindustry/logic/LogicDialog.java:310:                        LCategory category = example.category();
+./core/src/mindustry/logic/LStatements.java:89:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:121:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:279:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:300:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:340:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:361:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:382:        public LCategory category(){
+./core/src/mindustry/logic/LStatements.java:403:        public LCategory category(){
+./core/src/mindustry/logic/LStatement.java:53:    public LCategory category(){
+./core/src/mindustry/editor/BannedContentDialog.java:73:                    for(Category category : Category.values()){

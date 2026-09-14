@@ -1,0 +1,2 @@
+./core/src/mindustry/ui/dialogs/ContentInfoDialog.java:65:                table.add("@category.purpose").color(Pal.accent).fillX().padTop(10);
+./core/src/mindustry/ui/dialogs/ContentInfoDialog.java:73:                table.add("@category.general").fillX().color(Pal.accent);

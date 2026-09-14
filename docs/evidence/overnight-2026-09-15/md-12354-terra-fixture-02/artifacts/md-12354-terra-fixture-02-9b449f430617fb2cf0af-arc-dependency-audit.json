@@ -1,0 +1,10 @@
+{
+  "dependency": "Arc",
+  "commit": "7637600c41922c078ac6bde26953ef1e71746f35",
+  "upstream": "https://github.com/Anuken/Arc.git",
+  "reason": "Exact pinned historical Arc revision is unavailable from JitPack; unchanged upstream settings.gradle supports ../Arc composite build.",
+  "isolated": true,
+  "future_objects": false,
+  "remotes": [],
+  "game_commit": "2c066e9c8c7e153e4eb91d730ead02e9011edd75"
+}

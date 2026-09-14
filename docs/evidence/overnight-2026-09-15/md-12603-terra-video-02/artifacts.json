@@ -1,0 +1,427 @@
+{
+  "artifacts/md-12603-terra-video-02-0228f44dab8721dad728-report.md": {
+    "artifact_id": "md-12603-terra-video-02-0228f44dab8721dad728-report.md",
+    "sha256": "0228f44dab8721dad7285873dc627e8bdd45afdf5c370f8deb86296fb7306eb7",
+    "media_type": "text/markdown"
+  },
+  "artifacts/md-12603-terra-video-02-6d91099f27a1adb2cb37-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-6d91099f27a1adb2cb37-source-read.txt",
+    "sha256": "6d91099f27a1adb2cb37336e2f9186ed28245dc643f1b60fdfcbda6faf3d09a5",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-26c450c0a92554f875f2-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-26c450c0a92554f875f2-investigation.png",
+    "sha256": "26c450c0a92554f875f24b3b031f9d17311dda0bbf7d734aa1925b76e8ebdbab",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-fdcfd5dadaecaea56bbd-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-fdcfd5dadaecaea56bbd-investigation.png",
+    "sha256": "fdcfd5dadaecaea56bbda75a682d5e12c1be64942078ca6f020aa415f87c7ba0",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-cef88ddfe0e90015b3cf-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-cef88ddfe0e90015b3cf-investigation.png",
+    "sha256": "cef88ddfe0e90015b3cf278e77c38769352191bff5c1217f8c67dbc895ff58ea",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-806a468fe05b04fdcefc-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-806a468fe05b04fdcefc-source-search.txt",
+    "sha256": "806a468fe05b04fdcefc8e4dbb7292731da8e4f145f7daceed7d85cd99d054e1",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-70ce31ca0bcf8180e8ca-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-70ce31ca0bcf8180e8ca-investigation.png",
+    "sha256": "70ce31ca0bcf8180e8cabe39e9a4370e4fb6cca6e1dff1dc3a149b11082aba7b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-9526035714f71a8377a7-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-9526035714f71a8377a7-investigation.png",
+    "sha256": "9526035714f71a8377a7e4547e59e0684b6e36fd9eb61ba13165d724558e1be9",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-bed1e3ef801fa6bf2b75-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-bed1e3ef801fa6bf2b75-investigation.png",
+    "sha256": "bed1e3ef801fa6bf2b751d085217e27da3683dda4e3ab4eb4f71b35bc01679a5",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-9d4390c33cd55ac3e247-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-9d4390c33cd55ac3e247-investigation.png",
+    "sha256": "9d4390c33cd55ac3e2477ad09e5bc9c19647722e883199334b67e7fbf862d964",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-9587bf0a30fa07c80c97-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-9587bf0a30fa07c80c97-investigation.png",
+    "sha256": "9587bf0a30fa07c80c97f5a88baa9ddcc679ac2662c3f2b83d59ab16b6e7da48",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-6f82285958b08c0a7cff-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-6f82285958b08c0a7cff-source-read.txt",
+    "sha256": "6f82285958b08c0a7cfffff50be4b51889b8566ae5f19bd6a67ab3b052b61abd",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-0fc3a4026909f1d4bcc0-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-0fc3a4026909f1d4bcc0-source-search.txt",
+    "sha256": "0fc3a4026909f1d4bcc05aa71b5b9bba166dd6004f9aa4fa0772fe577665f657",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-229b5322557ef3c89294-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-229b5322557ef3c89294-investigation.png",
+    "sha256": "229b5322557ef3c892946893a0effacc125561c45b278a1706713744b573d6d4",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-7e7eab385e8a825679bc-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-7e7eab385e8a825679bc-investigation.png",
+    "sha256": "7e7eab385e8a825679bc250c42587df380cb22bbf29c5b04ed832376963fe3e2",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-6ad10cfe3d5c8d890baf-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-6ad10cfe3d5c8d890baf-investigation.png",
+    "sha256": "6ad10cfe3d5c8d890bafa63eabe1a2e722fd6c3fa4cf684e9b241d578e16ed85",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-4f4bbb12a6c687e67e68-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-4f4bbb12a6c687e67e68-source-read.txt",
+    "sha256": "4f4bbb12a6c687e67e683db64409ac9301cb16307762bb0d22ca5f518c1084a8",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-85138e5e93f31ba2e6eb-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-85138e5e93f31ba2e6eb-investigation.png",
+    "sha256": "85138e5e93f31ba2e6eb26124e62b053e2a43e7c5a8075cc1808d99f6b0a100a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-1f7084889c4c748a6d54-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-1f7084889c4c748a6d54-investigation.png",
+    "sha256": "1f7084889c4c748a6d5419bd5fa814acfca4c3f656ac20adb5927ac0a384d40b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-de9fe2a64fa0912d5e92-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-de9fe2a64fa0912d5e92-investigation.png",
+    "sha256": "de9fe2a64fa0912d5e924abd80cbb381ad98d26ebc78902ea557ab142a8eff38",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-ba6741785e71f2721c16-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-ba6741785e71f2721c16-investigation.png",
+    "sha256": "ba6741785e71f2721c16cd0f52e69b60d6a79190515e436b7c1d21587b320488",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-757b1efeeb14f4f52d03-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-757b1efeeb14f4f52d03-investigation.png",
+    "sha256": "757b1efeeb14f4f52d031e392610379f681e881db51619501d50c77a323dfe1b",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-d3149021c8da52f1176f-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-d3149021c8da52f1176f-investigation.png",
+    "sha256": "d3149021c8da52f1176f694f4760d28b5226f38ff724d193770f9e306de14f53",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-ac8a2362a3311b1e56c4-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-ac8a2362a3311b1e56c4-investigation.png",
+    "sha256": "ac8a2362a3311b1e56c42e9ea9cf06ff3dea2f644718570bb94d1c8bfc7e4ee8",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-bfb13ac7e6261b635f19-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-bfb13ac7e6261b635f19-source-read.txt",
+    "sha256": "bfb13ac7e6261b635f198691e9428a07145ec20c30e97881cfdde494da3fbf96",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-ae1a715b43d7920ec630-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-ae1a715b43d7920ec630-source-search.txt",
+    "sha256": "ae1a715b43d7920ec6307a9465f78cb00ee1ebd0fed671cd2353bb17c77bff2b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-8bd36f062c78f354680c-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-8bd36f062c78f354680c-source-search.txt",
+    "sha256": "8bd36f062c78f354680c20cc437e43e1b412c57f5047f066535efb9406025bbf",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-49680de787a5002150e9-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-49680de787a5002150e9-source-read.txt",
+    "sha256": "49680de787a5002150e9e366962e11d408c53a32044de4a74b3a00bee71da328",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-83862eaf2ad2f7a7168f-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-83862eaf2ad2f7a7168f-source-read.txt",
+    "sha256": "83862eaf2ad2f7a7168f551a8f151165af370549d0764b9510d8f57c759d1405",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-58e48a5e958a6c2f4819-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-58e48a5e958a6c2f4819-source-search.txt",
+    "sha256": "58e48a5e958a6c2f4819c020b86462ead6f8336ccc3ecf968654d428c111e98b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-150555c5103e8b7ca5b2-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-150555c5103e8b7ca5b2-source-search.txt",
+    "sha256": "150555c5103e8b7ca5b23bfbd82829e69c9f8af48b56f1dfc3be8e618afce675",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-c0e5a54ad0c085db96f2-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-c0e5a54ad0c085db96f2-source-search.txt",
+    "sha256": "c0e5a54ad0c085db96f28ef9178d9878a9c19bb90c064cc64ceb2ac42683276b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-e7bc7ec70ca9cdc478c5-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-e7bc7ec70ca9cdc478c5-source-search.txt",
+    "sha256": "e7bc7ec70ca9cdc478c5b2aa4ea75c93c536830af68667a458a80a7dc2895085",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-67435bb8d7bb15625a92-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-67435bb8d7bb15625a92-source-search.txt",
+    "sha256": "67435bb8d7bb15625a92c59f84d967585d963aab1ea24e2558f4b4d2e2832fab",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-9bfd24d0c21a298ca80b-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-9bfd24d0c21a298ca80b-source-search.txt",
+    "sha256": "9bfd24d0c21a298ca80bf8e0194fed6de0f5f2bbfc9b6ee47e170b416cff540b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-a3c87799e79d00644097-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-a3c87799e79d00644097-source-search.txt",
+    "sha256": "a3c87799e79d0064409779bbf9022de7d792c1a056cf1d55e992c18618f5c446",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-5a3c160f7e66cda5cee6-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-5a3c160f7e66cda5cee6-investigation.png",
+    "sha256": "5a3c160f7e66cda5cee6704ebe49b9853f9aab58d78a94d691881a7ab47a5f75",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-aca45094e806ce7c0dd2-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-aca45094e806ce7c0dd2-investigation.png",
+    "sha256": "aca45094e806ce7c0dd23ed41ca029b63486567234725e99d06702ed8ada5439",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-3d9f3d9b086cbfb7b560-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-3d9f3d9b086cbfb7b560-investigation.png",
+    "sha256": "3d9f3d9b086cbfb7b560d2a1961d20a1f7c4e2677a91ed2d08096f4097686e3c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-e091bd0d2c6f77eaa8a0-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-e091bd0d2c6f77eaa8a0-investigation.png",
+    "sha256": "e091bd0d2c6f77eaa8a06924b6ba32b077e1d470b039277dc7207857a1f84774",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-08e5e922c9c4b723472e-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-08e5e922c9c4b723472e-investigation.png",
+    "sha256": "08e5e922c9c4b723472e98a9e3b131e1ebe5a5dcb712b2ecf39d80efae713bc5",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-05f064c6aa7a8f5775eb-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-05f064c6aa7a8f5775eb-investigation.png",
+    "sha256": "05f064c6aa7a8f5775ebcf2ec74705169ba2605611df9fec57de1b8176bdb370",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-6edbab2b5dbd82f67620-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-6edbab2b5dbd82f67620-investigation.png",
+    "sha256": "6edbab2b5dbd82f67620df8073cffbdbcb4adcb8a1ed3e26e9be3c8911e8b9a1",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-fa44d4e873c8d7c2e7a1-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-fa44d4e873c8d7c2e7a1-source-read.txt",
+    "sha256": "fa44d4e873c8d7c2e7a1b5a5ae5b0e9972fd33e0795b86bad10b91cd2cde4b76",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-d260a5de2e378a13513b-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-d260a5de2e378a13513b-investigation.png",
+    "sha256": "d260a5de2e378a13513b9761719b50847f3241c55300e543d5e1e58227d1af85",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-b5ad379755ddffbf9b6d-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-b5ad379755ddffbf9b6d-investigation.png",
+    "sha256": "b5ad379755ddffbf9b6d88f5789370bbf45ca98466687c0a8ac55dd4e86a4ef7",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-164894b6f3e78a4808af-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-164894b6f3e78a4808af-source-read.txt",
+    "sha256": "164894b6f3e78a4808af1264bb279f21b3767900773fd586c98c53b68de7c2bf",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-f1e4955fd246e0521917-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-f1e4955fd246e0521917-investigation.png",
+    "sha256": "f1e4955fd246e052191759e0650699f357a73543c144b682ca8954c1f255c6ac",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-2b2779e4b17bcdc4764e-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-2b2779e4b17bcdc4764e-investigation.png",
+    "sha256": "2b2779e4b17bcdc4764e95a97c9aef9c024cd60d749e136d6ba675c03d1b4593",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-761313fd75ad2c5304ec-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-761313fd75ad2c5304ec-investigation.png",
+    "sha256": "761313fd75ad2c5304ec2de7200c7e855d5dce9d69a3019f5648081b284de745",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-b987a7b434c9372aac46-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-b987a7b434c9372aac46-source-read.txt",
+    "sha256": "b987a7b434c9372aac46256f5910da96ce212aecc16f19a83762acc565a065d0",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-2b0b4bed5f6618f205fa-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-2b0b4bed5f6618f205fa-source-search.txt",
+    "sha256": "2b0b4bed5f6618f205fa14189750779dbaf66e0625eaa638f19d962a6a7dde83",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-6f3470b362f3a5ea2bac-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-6f3470b362f3a5ea2bac-source-search.txt",
+    "sha256": "6f3470b362f3a5ea2bacb9c0e8b776673be795de08feedece46d32be6422823a",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-7783528ac0e97f0d2c7e-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-7783528ac0e97f0d2c7e-source-read.txt",
+    "sha256": "7783528ac0e97f0d2c7eb742fff3de7151eb457f61646ed1b790fb09ee941380",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-3e94efb8c31ff2660c8c-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-3e94efb8c31ff2660c8c-source-read.txt",
+    "sha256": "3e94efb8c31ff2660c8cde92244c7879bd790a3f5b5cd841de43c9c63a6d975d",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-be5044137a27289d077a-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-be5044137a27289d077a-source-read.txt",
+    "sha256": "be5044137a27289d077a8c851553f5ec99d63d7e7cf8c0a54536f84cb358c1df",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-ce7c6e7edc03917cf4c1-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-ce7c6e7edc03917cf4c1-source-read.txt",
+    "sha256": "ce7c6e7edc03917cf4c19191f829dff80eca6587bc739fc4adea91209e80edaa",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-3fb8be983fcf39192de3-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-3fb8be983fcf39192de3-source-search.txt",
+    "sha256": "3fb8be983fcf39192de3b1887992ffebcfe9cc44dc68e0fc0dfb7b3433a1b599",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-e3b0c44298fc1c149afb-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-e3b0c44298fc1c149afb-source-search.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-85f30be3602aaa4af763-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-85f30be3602aaa4af763-source-read.txt",
+    "sha256": "85f30be3602aaa4af763bc553ff677d533745b21e519cef45c3bc39021f88274",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-12bcc6baff116682c4cf-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-12bcc6baff116682c4cf-source-search.txt",
+    "sha256": "12bcc6baff116682c4cf55b6e5e65490701ef5f416e12a4c3e6032ebcfb2a4eb",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-66f8c1781de575431924-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-66f8c1781de575431924-investigation.png",
+    "sha256": "66f8c1781de57543192489afdd24c431922edaffcba4822efe691cc2bcfe4757",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-0673146227b3a8f020fc-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-0673146227b3a8f020fc-investigation.png",
+    "sha256": "0673146227b3a8f020fcf3eff89c5233e85a315bf76e683c52a0ed797abbf0db",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-4e6a616dc5c1093f308b-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-4e6a616dc5c1093f308b-investigation.png",
+    "sha256": "4e6a616dc5c1093f308b9b8dc5b1d69dd51bdc8238ad38b90527dddafe9e0310",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-8e2361a0ac990ef9b7c3-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-8e2361a0ac990ef9b7c3-investigation.png",
+    "sha256": "8e2361a0ac990ef9b7c3c62860905ef25d588a21ce59e904cb6fbb2cbebbd15a",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-0617bdb6ff13848c6fec-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-0617bdb6ff13848c6fec-investigation.png",
+    "sha256": "0617bdb6ff13848c6fecd17eb1a83ac428b962e4a051190f53902a348207b022",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-5edcc89e7de225cf1c03-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-5edcc89e7de225cf1c03-investigation.png",
+    "sha256": "5edcc89e7de225cf1c03e72ac7bf8939084edb80ffe06414dd78f621353dcd90",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-a6192be2b8b22925f62e-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-a6192be2b8b22925f62e-investigation.png",
+    "sha256": "a6192be2b8b22925f62eec041ecf67f0dd1d6afe4f97fd9152752e0bb3e72de8",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-026b84dcb99cf5d7f0f6-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-026b84dcb99cf5d7f0f6-source-read.txt",
+    "sha256": "026b84dcb99cf5d7f0f6122e3a8fd124558697a6df5e62c0804899e24d7dc990",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-d2f38e1fc6aac4b9bd2a-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-d2f38e1fc6aac4b9bd2a-source-search.txt",
+    "sha256": "d2f38e1fc6aac4b9bd2a75e1c0cf1cbed9e9f0681ddd0757c700eea6b72cdd4f",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-2f2971d4d8fc4b95bbe6-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-2f2971d4d8fc4b95bbe6-source-read.txt",
+    "sha256": "2f2971d4d8fc4b95bbe6aded26f2f5bce1e03b95c0380baf96d3a99514745559",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-a533471a4d1aa66761db-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-a533471a4d1aa66761db-source-search.txt",
+    "sha256": "a533471a4d1aa66761dbe389eb9b6ca4043b80c4965f71cf877b126e3076b0cc",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-6665c1d6356f3cd29ca5-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-6665c1d6356f3cd29ca5-source-read.txt",
+    "sha256": "6665c1d6356f3cd29ca5693d751b9b276e50cbd96f3f104206f4472c0244264b",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-dcd07f87d1211fc90341-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-dcd07f87d1211fc90341-source-read.txt",
+    "sha256": "dcd07f87d1211fc90341415b68e3ce383cd0e09dc2db8f8dc813e89ed7c034d7",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-7818f2aad096be2cc2d5-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-7818f2aad096be2cc2d5-source-search.txt",
+    "sha256": "7818f2aad096be2cc2d568a3641bc4320c850ec06851e2728fc23a9a655acd1f",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-2f97bbad6ed7fe6f36ca-source-read.txt": {
+    "artifact_id": "md-12603-terra-video-02-2f97bbad6ed7fe6f36ca-source-read.txt",
+    "sha256": "2f97bbad6ed7fe6f36ca4bbcc03847b905e6281beb27e09209dee3f5a6674785",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-f75a262707ee9e6a810a-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-f75a262707ee9e6a810a-source-search.txt",
+    "sha256": "f75a262707ee9e6a810a6674e3f5d87af8ba291d14818067593c4e876c5dc1bb",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-b2f33d788cd8b87175e6-source-search.txt": {
+    "artifact_id": "md-12603-terra-video-02-b2f33d788cd8b87175e6-source-search.txt",
+    "sha256": "b2f33d788cd8b87175e67808ecd0e2caac9a87b1cf825ccd66b4488fdd7ae037",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-aa54aafeb561e692060b-investigation.png": {
+    "artifact_id": "md-12603-terra-video-02-aa54aafeb561e692060b-investigation.png",
+    "sha256": "aa54aafeb561e692060b483b02b58ddfb1a0332d0e63527e9aa7a6e0ab5cb44c",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-a34e3e79495febfec2b8-initial.log": {
+    "artifact_id": "md-12603-terra-video-02-a34e3e79495febfec2b8-initial.log",
+    "sha256": "a34e3e79495febfec2b896f6547f97e3eb6e16f4223bc0f90f6ff4a060ce551a",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-ad9dce91c0fb181ee800-initial.png": {
+    "artifact_id": "md-12603-terra-video-02-ad9dce91c0fb181ee800-initial.png",
+    "sha256": "ad9dce91c0fb181ee8004db0c9c1f5df1112fe6d7a7ec0a2c1bd361c3a4df0d8",
+    "media_type": "image/png"
+  },
+  "artifacts/md-12603-terra-video-02-2846062dcdb6af87299e-baseline-tests.log": {
+    "artifact_id": "md-12603-terra-video-02-2846062dcdb6af87299e-baseline-tests.log",
+    "sha256": "2846062dcdb6af87299e4fe5dede2c3790c3a9803be96afbaa2dd1cafcb67ff5",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-642776321b3eca0c1e84-prepare-test-dependencies.log": {
+    "artifact_id": "md-12603-terra-video-02-642776321b3eca0c1e84-prepare-test-dependencies.log",
+    "sha256": "642776321b3eca0c1e847147f65faf7a71e2a87a23d87fb3b644bb7db5b799da",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-e56161bc81994432105a-prepare-build.log": {
+    "artifact_id": "md-12603-terra-video-02-e56161bc81994432105a-prepare-build.log",
+    "sha256": "e56161bc81994432105a6b49e356662b1f4004c7bee3e885261030c18a407524",
+    "media_type": "text/plain"
+  },
+  "artifacts/md-12603-terra-video-02-5f7b37de69e73eac984f-history-audit.json": {
+    "artifact_id": "md-12603-terra-video-02-5f7b37de69e73eac984f-history-audit.json",
+    "sha256": "5f7b37de69e73eac984f8549b9b3e0d72e1f54b00a1baf2f9ca1f96456b88e60",
+    "media_type": "application/json"
+  }
+}
