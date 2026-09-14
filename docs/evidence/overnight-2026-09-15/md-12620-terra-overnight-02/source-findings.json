@@ -1,0 +1,55 @@
+{
+  "root_cause": "The confirmed deletion path removes the PatchAsset only from DataManager's per-type patch Seq and rebuilds the UI. It does not call DataManager.reloadPatches (or otherwise rebuild orderedAssets). Map saving serializes orderedAssets via getAllAssets(), so it can write the stale pre-deletion asset list. On reopen, readDataPatches loads that serialized patch again.",
+  "subsystem": "Map editor embedded data-asset editing and map-save serialization",
+  "candidates": [
+    {
+      "path": "core/src/mindustry/editor/data/MapPatchesView.java",
+      "symbol": "MapPatchesView.build(MapAssetsDialog, Table) trash-button confirmation handler",
+      "score": 0.99,
+      "evidence": [
+        "Lines 84-89 confirm deletion removes the selected object only with `patches.remove(patch)` and then calls `diag.rebuild()`; no DataManager reload/rebuild operation follows.",
+        "Lines 31 and 130 show `patches` is `state.data.getPatches()`, the DataManager-owned per-type collection.",
+        "In contrast, lines 125-143 add/replace patches and then invoke `state.data.reloadPatches(patches)`, which is absent from deletion."
+      ],
+      "reasoning": "This is the most direct source of the reported UI-versus-persisted-state split: the visual list is rebuilt from the now-empty per-type collection, but DataManager's save-facing aggregate can remain stale."
+    },
+    {
+      "path": "core/src/mindustry/mod/DataManager.java",
+      "symbol": "DataManager.reloadPatches(Seq<PatchAsset>), rebuildOrderedAssets(), and getAllAssets()",
+      "score": 0.96,
+      "evidence": [
+        "Lines 169-176 show `reloadPatches` unapplies/reapplies patches and calls `rebuildOrderedAssets()`.",
+        "Lines 244-256 rebuild `orderedAssets` by copying all per-type collections.",
+        "Lines 263-265 return `orderedAssets` directly from `getAllAssets()`, while lines 293-306 show `getPatches()` returns the mutable per-type collection.",
+        "Therefore mutating the collection returned by `getPatches()` does not itself update `orderedAssets`."
+      ],
+      "reasoning": "This establishes the stale-cache mechanism connecting the missing reload in the deletion handler to persistence. It also explains why adding/replacing, which calls `reloadPatches`, would not have the same aggregate-list staleness."
+    },
+    {
+      "path": "core/src/mindustry/io/SaveVersion.java",
+      "symbol": "SaveVersion.writeDataPatches(DataOutput, boolean) / readDataPatches(DataInput, SaveReadState)",
+      "score": 0.94,
+      "evidence": [
+        "Lines 595-615 write the patch/assets save region from `state.data.getAllAssets()` and serialize every asset in that aggregate.",
+        "Lines 554-589 read every serialized asset into a new Seq, fire the load event, and call `state.data.load(assets)`.",
+        "A stale PatchAsset remaining in `getAllAssets()` at lines 598-601 is consequently written and later reloaded."
+      ],
+      "reasoning": "This is the persistence endpoint that makes the in-memory aggregate discrepancy observable after save, exit, and reopen. It is not itself shown to mutate incorrectly; it faithfully serializes its supplied aggregate."
+    },
+    {
+      "path": "core/src/mindustry/editor/data/MapBundlesView.java",
+      "symbol": "MapBundlesView.build(MapAssetsDialog, Table) trash-button confirmation handler",
+      "score": 0.48,
+      "evidence": [
+        "Lines 120-125 remove a bundle from its per-type collection and only rebuild the dialog, mirroring the patch deletion pattern.",
+        "DataManager's ordered aggregate is rebuilt only by explicit reload/load paths (DataManager.java lines 244-256), not automatically by collection removal."
+      ],
+      "reasoning": "This is corroborating evidence of a broader editor asset-removal pattern and may imply an analogous persistence risk for bundles. It is lower ranked because the reported replay deletes a datapatch, not a bundle."
+    }
+  ],
+  "limitations": [
+    "Only source was inspected; no game client was run and no supplied screenshot, ZIP, map-save bytes, or runtime logs were available through the tools.",
+    "The report identifies Android/build BE 27790 while source provenance relative to the replay commit was not independently established. The control/data flow in the inspected source nevertheless directly matches the supplied deterministic replay.",
+    "This localizes a cause consistent with the report, but does not determine the future human fix or prove whether other asset types are intended to refresh their runtime loaders on deletion."
+  ]
+}

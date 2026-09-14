@@ -1,0 +1,397 @@
+version: 2
+game: mindustry
+commit: 63b2069e9685063c74abc41fae84a66f73e9e09b
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 253
+  y: 335
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map editor from main menu
+  checkpoint: open_editor
+- action: click
+  x: 635
+  y: 678
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Create a new editable map
+  checkpoint: new_map_dialog
+- action: click
+  x: 700
+  y: 357
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus map-name text field
+  checkpoint: ''
+- action: type
+  x: 630
+  y: 357
+  keys: []
+  text: DatapatchPersistenceTest
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Enter unique map name
+  checkpoint: map_name_attempt
+- action: click
+  x: 701
+  y: 429
+  keys: []
+  text: ''
+  seconds: 4.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Create named test map
+  checkpoint: created_test_map
+- action: click
+  x: 35
+  y: 51
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor menu
+  checkpoint: editor_menu
+- action: click
+  x: 736
+  y: 188
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map information
+  checkpoint: map_info
+- action: click
+  x: 631
+  y: 607
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open Data Patches and Assets
+  checkpoint: assets_dialog_empty
+- action: click
+  x: 748
+  y: 680
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Add a datapatch
+  checkpoint: datapatch_add_options
+- action: click
+  x: 646
+  y: 319
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Load datapatch from current clipboard
+  checkpoint: load_patch_clipboard
+- action: click
+  x: 540
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return to map information with datapatch added
+  checkpoint: patch_present_before_initial_save
+- action: click
+  x: 36
+  y: 50
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open menu to save map containing datapatch
+  checkpoint: ''
+- action: click
+  x: 541
+  y: 187
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Save map with added datapatch
+  checkpoint: initial_map_save
+- action: click
+  x: 35
+  y: 52
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor menu to remove datapatch
+  checkpoint: ''
+- action: click
+  x: 740
+  y: 187
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map information
+  checkpoint: ''
+- action: click
+  x: 630
+  y: 608
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Inspect persisted datapatch before deletion
+  checkpoint: persisted_patch_before_delete
+- action: click
+  x: 955
+  y: 176
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Request deletion of saved datapatch
+  checkpoint: delete_confirmation
+- action: click
+  x: 741
+  y: 404
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm datapatch deletion
+  checkpoint: patch_deleted_ui
+- action: click
+  x: 536
+  y: 681
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Leave empty datapatch list after deletion
+  checkpoint: ''
+- action: click
+  x: 33
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor menu after deletion
+  checkpoint: ''
+- action: click
+  x: 540
+  y: 187
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Save map after datapatch deletion
+  checkpoint: post_delete_map_save
+- action: click
+  x: 35
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor menu to leave saved map
+  checkpoint: ''
+- action: click
+  x: 641
+  y: 510
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Quit editor and return to map list
+  checkpoint: exit_editor_after_deletion
+- action: click
+  x: 742
+  y: 413
+  keys: []
+  text: ''
+  seconds: 5.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm leaving editor after saving deletion
+  checkpoint: confirmed_editor_exit
+- action: click
+  x: 257
+  y: 334
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map editor map list
+  checkpoint: returned_map_list
+- action: double_click
+  x: 203
+  y: 261
+  keys: []
+  text: ''
+  seconds: 5.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Reopen the same custom map after saved deletion
+  checkpoint: reopened_same_map
+- action: click
+  x: 484
+  y: 502
+  keys: []
+  text: ''
+  seconds: 5.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open named map in editor for post-reopen inspection
+  checkpoint: opened_map_editor_again
+- action: click
+  x: 34
+  y: 49
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open reopened map editor menu
+  checkpoint: ''
+- action: click
+  x: 736
+  y: 186
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open reopened map information
+  checkpoint: ''
+- action: click
+  x: 627
+  y: 607
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Inspect datapatches after reopening same saved map
+  checkpoint: post_reopen_patch_state
+oracle:
+  kind: sequence
+  description: The reporter states that a datapatch can appear to be removed during
+    editing, but is present again after saving, leaving the editor, and reopening
+    the map. The report says this was also observed when tested without mods.
+  log_pattern: null
+  checkpoints:
+  - patch_present_before_initial_save
+  - initial_map_save
+  - persisted_patch_before_delete
+  - patch_deleted_ui
+  - post_delete_map_save
+  - exit_editor_after_deletion
+  - reopened_same_map
+  - post_reopen_patch_state
+successful_runs: 5
+total_runs: 5
+original_actions: 31
+deterministic: true
+evidence:
+- md-12620-terra-overnight-02-66f8c1781de575431924-reduced-confirmation.png
+- md-12620-terra-overnight-02-66ffa3c680171d89246f-reduced-confirmation.png
+- md-12620-terra-overnight-02-5953793d6f55a4d1b623-reduced-confirmation.png
+- md-12620-terra-overnight-02-77d35b543e27ef8f26f1-reduced-confirmation.png
+- md-12620-terra-overnight-02-a861c3bee5959678a395-reduced-confirmation.png
+- md-12620-terra-overnight-02-6dd9685c29a13060ee85-reduced-confirmation.png
+- md-12620-terra-overnight-02-95286a9aeb8c25c2f7da-reduced-confirmation.png
+- md-12620-terra-overnight-02-6020ead1fd0b0e515c4f-reduced-confirmation.png
+- md-12620-terra-overnight-02-66f8c1781de575431924-reduced-confirmation.png
+- md-12620-terra-overnight-02-66ffa3c680171d89246f-reduced-confirmation.png
+- md-12620-terra-overnight-02-5953793d6f55a4d1b623-reduced-confirmation.png
+- md-12620-terra-overnight-02-77d35b543e27ef8f26f1-reduced-confirmation.png
+- md-12620-terra-overnight-02-a861c3bee5959678a395-reduced-confirmation.png
+- md-12620-terra-overnight-02-6dd9685c29a13060ee85-reduced-confirmation.png
+- md-12620-terra-overnight-02-0090d631246a60286804-reduced-confirmation.png
+- md-12620-terra-overnight-02-6020ead1fd0b0e515c4f-reduced-confirmation.png
+- md-12620-terra-overnight-02-66f8c1781de575431924-reduced-confirmation.png
+- md-12620-terra-overnight-02-66ffa3c680171d89246f-reduced-confirmation.png
+- md-12620-terra-overnight-02-5953793d6f55a4d1b623-reduced-confirmation.png
+- md-12620-terra-overnight-02-77d35b543e27ef8f26f1-reduced-confirmation.png
+- md-12620-terra-overnight-02-1a974a4948c9bc8081b7-reduced-confirmation.png
+- md-12620-terra-overnight-02-6dd9685c29a13060ee85-reduced-confirmation.png
+- md-12620-terra-overnight-02-4de0ebb0cb350ca49130-reduced-confirmation.png
+- md-12620-terra-overnight-02-6020ead1fd0b0e515c4f-reduced-confirmation.png
+- md-12620-terra-overnight-02-66f8c1781de575431924-reduced-confirmation.png
+- md-12620-terra-overnight-02-66ffa3c680171d89246f-reduced-confirmation.png
+- md-12620-terra-overnight-02-5953793d6f55a4d1b623-reduced-confirmation.png
+- md-12620-terra-overnight-02-77d35b543e27ef8f26f1-reduced-confirmation.png
+- md-12620-terra-overnight-02-1a974a4948c9bc8081b7-reduced-confirmation.png
+- md-12620-terra-overnight-02-6dd9685c29a13060ee85-reduced-confirmation.png
+- md-12620-terra-overnight-02-c58a5ccc9dbf405381b4-reduced-confirmation.png
+- md-12620-terra-overnight-02-6020ead1fd0b0e515c4f-reduced-confirmation.png
+- md-12620-terra-overnight-02-66f8c1781de575431924-reduced-confirmation.png
+- md-12620-terra-overnight-02-69835ebda2adeefab11f-reduced-confirmation.png
+- md-12620-terra-overnight-02-5953793d6f55a4d1b623-reduced-confirmation.png
+- md-12620-terra-overnight-02-77d35b543e27ef8f26f1-reduced-confirmation.png
+- md-12620-terra-overnight-02-a861c3bee5959678a395-reduced-confirmation.png
+- md-12620-terra-overnight-02-6dd9685c29a13060ee85-reduced-confirmation.png
+- md-12620-terra-overnight-02-29e1e566558982307415-reduced-confirmation.png
+- md-12620-terra-overnight-02-6020ead1fd0b0e515c4f-reduced-confirmation.png

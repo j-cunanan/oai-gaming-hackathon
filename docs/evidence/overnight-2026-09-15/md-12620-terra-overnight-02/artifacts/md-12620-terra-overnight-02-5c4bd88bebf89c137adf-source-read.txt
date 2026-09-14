@@ -1,0 +1,48 @@
+140:                     p.margin(10f);
+141:                     p.table(Tex.button, t -> {
+142:                         TextButtonStyle style = Styles.flatt;
+143:                         t.defaults().size(280f, 60f).left();
+144:                         t.row();
+145:                         t.button("@copy.clipboard", Icon.copy, style, () -> {
+146:                             dialog.hide();
+147:                             Core.app.setClipboardText(content.data);
+148:                             ui.showInfoFade("@copied");
+149:                         }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+150:                         t.row();
+151:                         t.button("@export.file", Icon.export, style, () -> {
+152:                             dialog.hide();
+153:                             FileChooser.export(content.name, "json", file -> file.writeString(content.data));
+154:                         }).marginLeft(12f);
+155:                         t.row();
+156:                     });
+157:                 });
+158:                 dialog.show();
+159:             }).size(h);
+160: 
+161:             list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+162:                 ui.showConfirm("@asset.delete.confirm",  () -> {
+163:                     contents.remove(content);
+164:                     Vars.content.remove(content.content);
+165:                     state.data.reloadContent(false);
+166:                     diag.rebuild();
+167:                 });
+168:             }).size(h);
+169: 
+170:             list.row();
+171:         }
+172: 
+173:         if(list.getChildren().isEmpty()){
+174:             list.add("@none.found");
+175:         }
+176:     }
+177: 
+178:     @Override
+179:     public void buildButtons(MapAssetsDialog diag, Table buttons){
+180:         buttons.button("@add", Icon.add, () -> showImport(diag)).size(190f, 64f);
+181:     }
+182: 
+183:     void addContent(MapAssetsDialog diag, ContentType type, String path, String data){
+184:         ui.loadAnd(() -> {
+185:             ContentAsset asset = new ContentAsset(path, type, data);
+186:             state.data.getContent().add(asset);
+187:             state.data.reloadContent(false);

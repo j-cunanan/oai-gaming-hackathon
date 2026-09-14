@@ -1,0 +1,34 @@
+104:                                 ui.showInfoFade("@copied");
+105:                             }catch(Exception e){
+106:                                 ui.showException(e);
+107:                             }
+108:                         }).marginLeft(12f).disabled(b -> Core.app.getClipboardText() == null);
+109:                         t.row();
+110:                         t.button("@export.file", Icon.export, style, () -> {
+111:                             dialog.hide();
+112:                             FileChooser.export(bundle.name, "properties", file::copyTo);
+113:                         }).marginLeft(12f);
+114:                         t.row();
+115:                     });
+116:                 });
+117:                 dialog.show();
+118:             }).size(h).disabled(file == null);
+119: 
+120:             list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+121:                 ui.showConfirm("@asset.delete.confirm",  () -> {
+122:                     bundles.remove(bundle);
+123:                     diag.rebuild();
+124:                 });
+125:             }).size(h);
+126: 
+127:             list.row();
+128:         }
+129: 
+130:         if(list.getChildren().isEmpty()){
+131:             list.add("@patch.none");
+132:         }
+133:     }
+134: 
+135:     @Override
+136:     public void buildButtons(MapAssetsDialog diag, Table buttons){
+137:         buttons.button("@add", Icon.add, () -> {

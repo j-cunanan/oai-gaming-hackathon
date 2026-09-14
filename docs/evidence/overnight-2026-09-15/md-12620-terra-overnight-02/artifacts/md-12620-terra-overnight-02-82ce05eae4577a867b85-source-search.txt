@@ -1,0 +1,27 @@
+./core/src/mindustry/editor/MapProcessorsDialog.java:116:                    t.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+./core/src/mindustry/editor/MapObjectivesDialog.java:347:                if(remover != null) t.button(Icon.trash, Styles.emptyi, remover).fill().padRight(4f);
+./core/src/mindustry/editor/MapObjectivesDialog.java:428:                if(remover != null) remove = t.button(Icon.trash, Styles.emptyi, remover).fill();
+./core/src/mindustry/editor/MapObjectivesDialog.java:473:                if(remover != null) t.button(Icon.trash, Styles.emptyi, remover).fill().padRight(4f);
+./core/src/mindustry/editor/MapObjectivesCanvas.java:384:                        b.button(Icon.trashSmall, () -> removeTile(this));
+./core/src/mindustry/editor/MapLocalesDialog.java:190:                    p.button(Icon.trash, Styles.flati, () -> ui.showConfirm("@confirm", "@locales.deletelocale", () -> {
+./core/src/mindustry/editor/MapLocalesDialog.java:276:                    t.button(Icon.trash, Styles.emptyi, () -> {
+./core/src/mindustry/editor/data/MapAssetsDialog.java:260:                t.button("@asset.clearall", Icon.trash, style, () -> {
+./core/src/mindustry/editor/data/MapContentView.java:161:            list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+./core/src/mindustry/editor/data/MapAudioView.java:97:            list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+./core/src/mindustry/editor/data/MapBundlesView.java:120:            list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+./core/src/mindustry/editor/data/MapPatchesView.java:84:            list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+./core/src/mindustry/editor/data/MapImagesView.java:193:                    t.button("@asset.clearall", Icon.trash, style, () -> {
+./core/src/mindustry/editor/data/MapImagesView.java:296:                    b.button(Icon.trash, istyle, () -> {
+./core/src/mindustry/ui/dialogs/EditorMapsDialog.java:150:        table.button(map.workshop && steam ? "@view.workshop" : "@delete", map.workshop && steam ? Icon.link : Icon.trash, () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:126:            t.button("@settings.clearplanetresearch", Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:145:            t.button("@settings.clearplanetcampaignsaves", Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:179:            t.button("@settings.cleardata", Icon.trash, style, () -> ui.showConfirm("@confirm", "@settings.clearall.confirm", () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:198:            t.button("@settings.clearplanetdata", Icon.trash, style, () -> planetDataDialog.show()).marginLeft(4).row();
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:200:            t.button("@settings.clearsaves", Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:208:            t.button("@settings.clearresearch", Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/SettingsMenuDialog.java:225:            t.button("@settings.clearcampaignsaves", Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/ModsDialog.java:263:                                right.button(mod.hasSteamID() ? Icon.link : Icon.trash, Styles.clearNonei, () -> {
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:166:                                buttons.button(Icon.trash, style, () -> {
+./core/src/mindustry/ui/dialogs/SchematicsDialog.java:566:                            b.button(Icon.trash, Styles.emptyi, () -> {
+./core/src/mindustry/ui/dialogs/JoinDialog.java:202:            inner.button(Icon.trash, Styles.emptyi, () -> {
+./core/src/mindustry/ui/dialogs/LoadDialog.java:125:                    t.button(Icon.trash, Styles.emptyi, () -> {

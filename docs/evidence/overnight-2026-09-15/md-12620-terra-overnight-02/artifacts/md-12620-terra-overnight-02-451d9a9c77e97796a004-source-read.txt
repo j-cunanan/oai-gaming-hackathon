@@ -1,0 +1,40 @@
+75:                             m.setPosition(value);
+76:                         }
+77:                     });
+78:                     slider.visible(() -> {
+79:                         boolean valid = lastPlaying == m && m.isPlaying();
+80:                         if(valid){
+81:                             slider.setValue(m.getPosition(), false);
+82:                         }
+83:                         return valid;
+84:                     });
+85: 
+86:                     Label label = new Label(() -> slider.visible ? UI.formatTime(slider.getValue() * 60f) : "");
+87:                     label.setAlignment(Align.center);
+88:                     label.setStyle(Styles.outlineLabel);
+89:                     label.touchable = Touchable.disabled;
+90: 
+91:                     in.stack(slider, label).growX().height(42f);
+92:                 }
+93:             }).size(w, h).margin(10f);
+94: 
+95:             list.button(Icon.export, Styles.graySquarei, Vars.iconMed, () -> FileChooser.export(asset.name, Strings.getFileExtension(asset.path), file::copyTo)).size(h).disabled(file == null);
+96: 
+97:             list.button(Icon.trash, Styles.graySquarei, iconMed, () -> {
+98:                 ui.showConfirm("@asset.delete.confirm",  () -> {
+99:                     assets.remove(asset);
+100:                     state.data.reloadAudio();
+101:                     diag.rebuild();
+102:                 });
+103:             }).size(h);
+104: 
+105:             list.row();
+106:         }
+107: 
+108:         if(list.getChildren().isEmpty()){
+109:             list.add("@none.found");
+110:         }
+111: 
+112:         list.add(new Element(){
+113:             @Override
+114:             public boolean remove(){

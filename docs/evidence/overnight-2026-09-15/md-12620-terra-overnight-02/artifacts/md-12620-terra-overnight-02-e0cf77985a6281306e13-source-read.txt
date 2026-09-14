@@ -1,0 +1,125 @@
+540:             short id = stream.readShort();
+541:             String name = stream.readUTF();
+542:             entityMapping[id] = EntityMapping.map(name);
+543:         }
+544: 
+545:         return entityMapping;
+546:     }
+547: 
+548:     public void readEntities(DataInput stream, SaveReadState state) throws IOException{
+549:         var mapping = readEntityMapping(stream);
+550:         readTeamBlocks(stream);
+551:         readWorldEntities(stream, mapping, state);
+552:     }
+553: 
+554:     public void readDataPatches(DataInput stream, SaveReadState saveState) throws IOException{
+555:         stream.readInt(); //version - ignored for now
+556: 
+557:         int total = stream.readInt();
+558:         Seq<DataAsset> assets = new Seq<>(total);
+559: 
+560:         for(int i = 0; i < total; i++){
+561:             byte typeId = stream.readByte();
+562:             if(typeId < 0 || typeId >= DataAssetType.all.length) throw new IOException("Invalid asset type ID: " + typeId + ". You are likely loading trying to load a save from a newer version of the game, possibly a beta.");
+563: 
+564:             String path = stream.readUTF();
+565:             boolean embedded = stream.readBoolean();
+566:             var type = DataAssetType.all[typeId];
+567:             var asset = type.create();
+568: 
+569:             asset.setPath(path);
+570: 
+571:             if(embedded){
+572:                 asset.read(stream);
+573:             }else{
+574:                 byte[] hash = new byte[32];
+575:                 stream.readFully(hash);
+576:                 asset.setHash(hash);
+577: 
+578:                 if(!asset.isCached()){
+579:                     //TODO: log this when loading a save
+580:                     Log.warn("Asset @: cache file not found.", asset.path);
+581:                 }
+582:             }
+583: 
+584:             assets.add(asset);
+585:         }
+586: 
+587:         Events.fire(new DataPatchLoadEvent(assets));
+588: 
+589:         state.data.load(assets);
+590: 
+591:         //now that patches are loaded, the rules can actually be read
+592:         readRules(saveState);
+593:     }
+594: 
+595:     public void writeDataPatches(DataOutput stream, boolean forceEmbed) throws IOException{
+596:         stream.writeInt(DataPatcher.patchFormatVersion);
+597: 
+598:         var assets = state.data.getAllAssets();
+599:         stream.writeInt(assets.size);
+600: 
+601:         for(var asset : assets){
+602:             boolean embed = forceEmbed || asset.isAlwaysEmbedded() || asset.byteHash == null;
+603: 
+604:             stream.writeByte(asset.getType().ordinal());
+605:             stream.writeUTF(asset.path);
+606:             stream.writeBoolean(embed);
+607: 
+608:             if(embed){
+609:                 //most embedded assets (images, audio) write byte[] values directly from their cache file. game patches and content write raw string data.
+610:                 asset.write(stream);
+611:             }else{
+612:                 //if it's cached successfully, just write the 32-byte SHA256
+613:                 stream.write(asset.byteHash);
+614:             }
+615:         }
+616:     }
+617: 
+618:     public void readContentHeader(DataInput stream) throws IOException{
+619:         int mapped = stream.readUnsignedByte();
+620: 
+621:         MappableContent[][] map = new MappableContent[ContentType.all.length][0];
+622: 
+623:         for(int i = 0; i < mapped; i++){
+624:             ContentType type = ContentType.all[stream.readByte()];
+625:             short total = stream.readShort();
+626:             map[type.ordinal()] = new MappableContent[total];
+627: 
+628:             for(int j = 0; j < total; j++){
+629:                 String name = stream.readUTF();
+630:                 //fallback only for blocks
+631:                 map[type.ordinal()][j] = content.getByName(type, type == ContentType.block ? fallback.get(name, name) : name);
+632:             }
+633:         }
+634: 
+635:         content.setTemporaryMapper(map);
+636: 
+637:         //HACK: versions below 11 don't read the patch chunk, which means the event for reading patches is never triggered.
+638:         //manually fire the event here for older versions.
+639:         if(version < 11){
+640:             Seq<DataAsset> assets = new Seq<>();
+641:             Events.fire(new DataPatchLoadEvent(assets));
+642: 
+643:             state.data.load(assets);
+644:         }
+645:     }
+646: 
+647:     public void writeContentHeader(DataOutput stream) throws IOException{
+648:         Seq<Content>[] map = content.getContentMap();
+649: 
+650:         int mappable = 0;
+651:         for(Seq<Content> arr : map){
+652:             if(arr.size > 0 && arr.first() instanceof MappableContent){
+653:                 mappable++;
+654:             }
+655:         }
+656: 
+657:         stream.writeByte(mappable);
+658:         for(Seq<Content> arr : map){
+659:             if(arr.size > 0 && arr.first() instanceof MappableContent){
+660:                 stream.writeByte(arr.first().getContentType().ordinal());
+661:                 stream.writeShort(arr.size);
+662:                 for(Content c : arr){
+663:                     stream.writeUTF(((MappableContent)c).name);
+664:                 }
