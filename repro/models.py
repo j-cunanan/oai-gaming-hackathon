@@ -166,6 +166,19 @@ class Usage(BaseModel):
     output_tokens: int = 0
 
 
+class CandidateVerification(BaseModel):
+    trigger_sha256: str
+    patch_artifact: str
+    followup_steps: list[Action] = Field(min_length=1, max_length=40)
+    oracle: OracleSpec
+
+    @model_validator(mode="after")
+    def chronological_verification(self):
+        if self.oracle.kind != "sequence":
+            raise ValueError("Candidate follow-ups require an ordered sequence oracle")
+        return self
+
+
 class Check(BaseModel):
     name: str
     status: Literal["pass", "baseline_failed", "fail", "not_run", "error"]
@@ -220,6 +233,7 @@ class Case(BaseModel):
     usage: Usage | None = Field(default_factory=Usage)
     patch_artifact: str | None = None
     patch_rationale: PatchRationale | None = None
+    candidate_verification: CandidateVerification | None = None
     latest_screenshot: str | None = None
     first_reproduced_seconds: float | None = None
     elapsed_seconds: float | None = 0

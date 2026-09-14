@@ -223,12 +223,25 @@ def render_report(case: Case, store: Store) -> bytes:
             # Plain preformatted text avoids interpreting code as markup.
             story += [Preformatted(plain(diff), code_style, maxLineLength=106)]
 
+    if case.candidate_verification:
+        story += [
+            p("Additional fix checks", heading),
+            p(
+                "Each candidate validation run first executes the unchanged recorded trigger, then these additional checks. Planning experiments are separate from fresh validation repetitions.",
+                small,
+            ),
+        ]
+        for i, action in enumerate(case.candidate_verification.followup_steps, 1):
+            story.append(p(f"{i}. {action.semantic or action.action}"))
+
     validation = [p("Validation results", heading)]
     validation += [
         p(
-            ("Validation satisfied with pre-existing test failures. Inspect the baseline evidence before approval."
-             if any(c.status == "baseline_failed" for c in case.checks)
-             else "All five required checks passed. Approval is a separate human review decision.")
+            (
+                "Validation satisfied with pre-existing test failures. Inspect the baseline evidence before approval."
+                if any(c.status == "baseline_failed" for c in case.checks)
+                else "All five required checks passed. Approval is a separate human review decision."
+            )
             if patch_validated(case)
             else "Validation is incomplete or has failed. The recorded results below determine what has been verified."
         )

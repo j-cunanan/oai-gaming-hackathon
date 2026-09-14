@@ -61,6 +61,8 @@ const explanations: Record<string, string> = {
     "Start the AI investigation for this case. It launches the game, records experiments, and continues toward source diagnosis and a proposed patch when evidence supports it.",
   "Continue to patch":
     "Continue source diagnosis and patch creation from this confirmed replay. The worker first checks the original trigger again on fresh profiles; if it no longer reproduces, analysis stops. Existing evidence is retained. This starts a new bounded AI job.",
+  "Additional fix checks":
+    "Extra recorded actions that check correct behavior after the original trigger, such as reopening a saved map and checking its object. These are planned separately, then frozen and repeated on fresh candidate profiles. Changing the report, trigger or patch invalidates the plan.",
   Stop: "Cancel the active or queued job for this case. Completed events, screenshots, and partial results remain saved.",
   Activity:
     "The full recorded history grouped by investigation stage. Search across stages, include model calls, and open screenshots, game logs, or event details. Entries are loaded incrementally as the investigation runs.",

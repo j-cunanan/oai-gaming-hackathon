@@ -99,6 +99,7 @@ type Case = {
   latest_screenshot: string | null;
   patch_artifact: string | null;
   patch_rationale: { explanation: string; risks: string[] } | null;
+  candidate_verification: { followup_steps: Action[] } | null;
   reproduction: {
     successful_runs: number;
     total_runs: number;
@@ -1413,6 +1414,7 @@ function App() {
                                 : null
                             }
                             rationale={current.patch_rationale ?? null}
+                            followupSteps={current.candidate_verification?.followup_steps}
                             checks={current.checks}
                           />
                         )}
