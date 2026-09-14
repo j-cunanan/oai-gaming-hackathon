@@ -151,13 +151,16 @@ def import_recording(
     directory: Path,
     case_id: str | None = typer.Option(None, "--id", help="Target imported case id"),
     force: bool = typer.Option(False, help="Replace an existing imported recording"),
+    manifest: Path | None = typer.Option(
+        None, "--manifest", help="Input manifest for a candidate recording"
+    ),
 ):
     """Verify and import a recorded evidence package, preserving its provenance."""
     from repro.storage.evidence import import_evidence
 
     _, store = context()
     try:
-        case = import_evidence(store, directory, case_id=case_id, force=force)
+        case = import_evidence(store, directory, case_id=case_id, force=force, manifest=manifest)
     except (ValueError, OSError, KeyError) as exc:
         raise typer.BadParameter(str(exc)) from exc
     with store.connect() as db:
@@ -166,7 +169,7 @@ def import_recording(
     for check in case.checks:
         typer.echo(f"  {check.name}: {check.status}")
     typer.echo(
-        f"{len(case.reproduction.steps) if case.reproduction else 0} actions · "
+        f"{len(case.reproduction.steps) if case.reproduction else 0} replay steps · "
         f"{len(store.artifacts(case.id))} artifacts · {count} events"
     )
 

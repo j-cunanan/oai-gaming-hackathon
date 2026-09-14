@@ -1,0 +1,77 @@
+id: MD-candidate-12354
+input:
+  title: Derelict Payload conveyors do not save current payload
+  body: '### Platforms
+
+
+    Windows
+
+
+    ### Build
+
+
+    release build 159.3
+
+
+    ### Issue
+
+
+    derelict payload conveyors lose their current payload (blocks) after restarting the map or reloading the save
+
+
+    (originally this was a suggestion to rework payload conveyors, but I decided to issue this as a bug instead)
+
+
+    ### Steps to reproduce
+
+
+    1.) Place block on payload conveyor and make sure it''s derelict
+
+    2.) Save game
+
+    3.) Load game
+
+    4.) See results
+
+
+    ### Mods used
+
+
+    _No response_
+
+
+    ### Save file
+
+
+    [mindustry-data-export.zip](https://github.com/user-attachments/files/29970021/mindustry-data-export.zip)
+
+
+    ### (Crash) logs
+
+
+    _No response_'
+  game: mindustry
+  target_commit: 2c066e9c8c7e153e4eb91d730ead02e9011edd75
+  platform: Windows (reported); Linux (planned evaluation)
+  build_version: '159.3'
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12354
+  reported_at: '2026-07-13T14:13:03Z'
+  fix_commit: 3b29a4877f6732e47941a71c3dd5d63bdfbf5054
+  fix_url: https://github.com/Anuken/Mindustry/commit/3b29a4877f6732e47941a71c3dd5d63bdfbf5054
+  changed_files:
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  all_commit_files:
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  positive_case: true
+  reproducibility: UNVERIFIED
+  priority: P2 - overnight supplement
+  suggested_tags: Gameplay / save integrity / payloads
+  proposed_trigger: Place a block on a derelict payload conveyor, save, reload the same world, and compare the payload
+    at the same location.
+  selection_notes: A visible cargo-loss story with fewer timing dependencies than the explosive generator. Must
+    establish derelict ownership and same-world reload; a missing block on an unrelated map is inconclusive. The
+    reported attachment has not been installed or inspected.
+  evidence_notes: Supplementary research on 2026-09-15 JST. Issue body, linked closure commit and parent reviewed
+    through GitHub API. Input excludes submission checklist and contains no comments or fix information. No runtime
+    qualification yet; kept outside admitted manifests.
