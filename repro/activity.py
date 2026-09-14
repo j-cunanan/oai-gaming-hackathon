@@ -29,6 +29,7 @@ PHASE_STAGE = {
     "reduced-confirmation": "reduce",
     "post-patch": "validate",
     "baseline-revalidation": "validate",
+    "resume-baseline": "reproduce",
     "manual-candidate": "validate",
 }
 PURPOSE_STAGE = {
@@ -49,7 +50,7 @@ def stage_for(kind: str, data: dict, previous: str) -> str:
         return STATE_STAGE.get(data.get("state"), previous)
     if kind in {"action", "replay"}:
         return PHASE_STAGE.get(data.get("phase"), previous)
-    if kind == "model_call":
+    if kind in {"model_call", "tool_error"}:
         return PURPOSE_STAGE.get(data.get("purpose"), previous)
     return {
         "localization": "localize",

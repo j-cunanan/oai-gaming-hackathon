@@ -59,6 +59,8 @@ const explanations: Record<string, string> = {
     "Try a shorter baseline replay. If the sequence changes, confirm it again and rerun candidate validation. This uses worker time and AI calls.",
   Investigate:
     "Start the AI investigation for this case. It launches the game, records experiments, and continues toward source diagnosis and a proposed patch when evidence supports it.",
+  "Continue to patch":
+    "Continue source diagnosis and patch creation from this confirmed replay. The worker first checks the original trigger again on fresh profiles; if it no longer reproduces, analysis stops. Existing evidence is retained. This starts a new bounded AI job.",
   Stop: "Cancel the active or queued job for this case. Completed events, screenshots, and partial results remain saved.",
   Activity:
     "The full recorded history grouped by investigation stage. Search across stages, include model calls, and open screenshots, game logs, or event details. Entries are loaded incrementally as the investigation runs.",

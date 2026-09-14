@@ -154,6 +154,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             store.transition(case, State.CANCELLED, "Job cancelled. Recorded evidence is retained.")
         return get_case(case_id)
 
+    @app.post("/api/cases/{case_id}/continue", status_code=202)
+    async def continue_analysis(case_id: str):
+        case = get_case(case_id)
+        idle(case_id)
+        if not settings.openai_api_key or not settings.openai_api_key.get_secret_value():
+            raise HTTPException(503, "Set OPENAI_API_KEY in the backend .env")
+        if not case.spec or not case.reproduction or not case.reproduction.deterministic:
+            raise HTTPException(409, "A confirmed reproduction and report triage are required")
+        if case.patch_artifact:
+            raise HTTPException(409, "A candidate already exists; rerun validation instead")
+        return dispatch(case, manager.continue_case)
+
     @app.post("/api/cases/{case_id}/replay", status_code=202)
     async def replay_case(case_id: str):
         case = get_case(case_id)
@@ -190,7 +202,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(409, "No candidate is awaiting review")
         if not patch_validated(case):
             raise HTTPException(
-                409, "All required gates must pass or have recorded baseline failures before approval"
+                409,
+                "All required gates must pass or have recorded baseline failures before approval",
             )
         store.transition(
             case,
