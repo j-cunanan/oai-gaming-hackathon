@@ -13,7 +13,7 @@ from repro.orchestration.manager import Manager
 from repro.storage.store import Store
 
 
-@pytest.mark.parametrize("protocol", [2, 3])
+@pytest.mark.parametrize("protocol", [2, 3, 4])
 async def test_worker_handshake_rejects_drivers_that_silently_ignore_timed_input(
     tmp_path, monkeypatch, protocol
 ):
@@ -30,7 +30,7 @@ async def test_worker_handshake_rejects_drivers_that_silently_ignore_timed_input
     monkeypatch.setattr("repro.computer.sandbox.run", AsyncMock())
     monkeypatch.setattr("repro.computer.sandbox.asyncio.sleep", AsyncMock())
     monkeypatch.setattr(WorkerRPC, "start", AsyncMock(return_value=rpc))
-    if protocol == 2:
+    if protocol != 4:
         with pytest.raises(RuntimeError, match="Rebuild the worker image"):
             await sandbox.start()
     else:

@@ -1,0 +1,119 @@
+{
+  "scope": "Verify production protocol-4 worker RPC scrolling against the retained Arc SDL backend; no AI requests or game-bug verdicts.",
+  "worker_image": "sha256:63be22a3b69283ede936a1bb49c99df7109938a5c13c5c41123b6d0770024162",
+  "jar_sha256": "69796af247aa37b56c89eec33eec5f392a49c4b9b71052393499815fd8379b42",
+  "probe_java_sha256": "776c9c7a7fa09f2efe2ac43ac99f23cb38a83facfd29c54b1c0e2f04075dcd29",
+  "probe_python_sha256": "09265eee235d0d242b380dd275ee8e93c096cf1874628ef551e8dc3272e6f15a",
+  "worker_source_sha256": "296ac545dc6b242a13c8564c34fc1ca0d62056a4fd85be15d4f61ba5df135d14",
+  "sandbox_source_sha256": "6fe8ae0d73b32c762f14cc026de785334293bf5c9a14f8388182af4f4822c663",
+  "samples": [
+    {
+      "sleep_ms": 16,
+      "mode": "worker-rpc",
+      "trial": 1,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.3996909169945866,
+      "log": "16-worker-rpc-1.log",
+      "log_sha256": "f66b7b0806f2246bf7e3be7aa2f4dfbd58f24adbb2298e57b67ea8641e78f87a"
+    },
+    {
+      "sleep_ms": 16,
+      "mode": "worker-rpc",
+      "trial": 2,
+      "requested": 8,
+      "received_wheel_events": 8,
+      "axis_sum": 8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.1327829999499954,
+      "log": "16-worker-rpc-2.log",
+      "log_sha256": "23ffa54aa8a17486a3280d6b9f1682f221b2aa2c01378542c6c5e172398c0903"
+    },
+    {
+      "sleep_ms": 16,
+      "mode": "worker-rpc",
+      "trial": 3,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.122866417048499,
+      "log": "16-worker-rpc-3.log",
+      "log_sha256": "906238e4a08c9af3a194cc7e63bdd00a79ffe0211951cd4ac19fd96e473da3cc"
+    },
+    {
+      "sleep_ms": 50,
+      "mode": "worker-rpc",
+      "trial": 1,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.1323186249937862,
+      "log": "50-worker-rpc-1.log",
+      "log_sha256": "bea1439dd63ba346b6e2cdc5f81a3b468722d4ba53333b9c666720ad2540e06d"
+    },
+    {
+      "sleep_ms": 50,
+      "mode": "worker-rpc",
+      "trial": 2,
+      "requested": 8,
+      "received_wheel_events": 8,
+      "axis_sum": 8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.151503083994612,
+      "log": "50-worker-rpc-2.log",
+      "log_sha256": "029bec941afa3978fe05e668af3549e935c871ebfe5b8c6c9d743f0d52dfee48"
+    },
+    {
+      "sleep_ms": 50,
+      "mode": "worker-rpc",
+      "trial": 3,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.1414157089893706,
+      "log": "50-worker-rpc-3.log",
+      "log_sha256": "9a719bbc0301f9869fbb1e590af83d6898f3aca4be4d68f99c071f30daf8be41"
+    },
+    {
+      "sleep_ms": 100,
+      "mode": "worker-rpc",
+      "trial": 1,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.1578052080003545,
+      "log": "100-worker-rpc-1.log",
+      "log_sha256": "68194ad2bbe2afeb82a7a38788fb3032e2ec85d1f4dcf9b92dd7c4a5ac102b3e"
+    },
+    {
+      "sleep_ms": 100,
+      "mode": "worker-rpc",
+      "trial": 2,
+      "requested": 8,
+      "received_wheel_events": 8,
+      "axis_sum": 8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.150031583965756,
+      "log": "100-worker-rpc-2.log",
+      "log_sha256": "e3ce55ef85a526cdc048825e7bf25e902208573f763db125149bcad291a917c1"
+    },
+    {
+      "sleep_ms": 100,
+      "mode": "worker-rpc",
+      "trial": 3,
+      "requested": -8,
+      "received_wheel_events": 8,
+      "axis_sum": -8.0,
+      "frames_with_wheel": 8,
+      "input_elapsed_seconds": 1.1344363749958575,
+      "log": "100-worker-rpc-3.log",
+      "log_sha256": "e84a85311cc731085149d6963fd3bf21c189eda3f246460ed2f3d03117d15259"
+    }
+  ]
+}

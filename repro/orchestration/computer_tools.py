@@ -19,10 +19,11 @@ class ActionSequence(BaseModel):
             action.seconds
             + action.hold_seconds
             + (len(action.text) * 0.01 if action.action == "type" else 0)
+            + (abs(action.scroll_y) * 0.12 if action.action == "scroll" else 0)
             for action in self.actions
         )
         if programmed_seconds > 20:
-            raise ValueError("A sequence allows at most 20 seconds of waits, holds and typing")
+            raise ValueError("A sequence allows at most 20 seconds of waits, holds, typing and scrolling")
         return self
 
 
@@ -97,7 +98,8 @@ def sequence_tool(
         "screenshot, checkpoint and replay record. This is not simultaneous or frame-exact. "
         "The final screen and intermediate artifact references are returned. Stops if the "
         "game exits or an input fails. The whole sequence must fit the action budget, use "
-        "new distinct checkpoint labels and total at most 20 seconds of waits, holds and typing.",
+        "new distinct checkpoint labels and total at most 20 seconds of waits, holds, typing "
+        "and paced scrolling.",
         ActionSequence,
         execute,
     )
