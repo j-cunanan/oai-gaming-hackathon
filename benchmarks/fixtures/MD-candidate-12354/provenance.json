@@ -1,0 +1,21 @@
+{
+  "source_url": "https://github.com/user-attachments/files/29970021/mindustry-data-export.zip",
+  "issue_url": "https://github.com/Anuken/Mindustry/issues/12354",
+  "archive_bytes": 1337494,
+  "archive_sha256": "d1955531ef3fa56a02506afe7591656e37364a4d82aa6d497112b9c89f50f5ce",
+  "selection": "The two smallest named test maps from the original report attachment. Bytes unchanged; safe filenames only. Other maps, save slots, settings and an included mod archive were not installed.",
+  "members": [
+    {
+      "archive_member": "maps/test map.msav",
+      "filename": "cargo-test-map.msav",
+      "bytes": 5841,
+      "sha256": "81d1f6d8c20f66647ea655f410b8870219c5b5990dd895b75f5d14c23b52d618"
+    },
+    {
+      "archive_member": "maps/mix tech.msav",
+      "filename": "cargo-mix-tech.msav",
+      "bytes": 5731,
+      "sha256": "db3033c4818efb4ab05bd060ae2fc5d9b1ada740c52c981fa5b13125e5acc255"
+    }
+  ]
+}
