@@ -419,7 +419,7 @@ class Manager:
 
         async def reset(_):
             discovery_actions.clear()
-            recorder.previous_log = ""
+            recorder.reset_attempt()
             self.store.save(
                 case,
                 "reset",
@@ -440,14 +440,21 @@ class Manager:
                 # The report defines the symptom. An investigator cannot redefine success.
                 args.oracle.description = case.spec.observed_behavior
                 observation = await recorder.observe()
-                proof = await verify(model, args.oracle, observation, launched_ok=True)
+                proof = await verify(
+                    model,
+                    args.oracle,
+                    observation,
+                    launched_ok=True,
+                    checkpoints=recorder.checkpoints,
+                    actions=recorder.attempt_actions,
+                )
                 self.store.save(case, "verification", proof.model_dump())
                 if not proof.observed:
                     return {
                         **observation,
                         "accepted": False,
                         "verification": proof.model_dump(),
-                        "next_step": "This screenshot did not prove the reported symptom. Continue testing another view or hypothesis, or finish honestly as not_reproduced. Do not mistake the bottom of a viewport for the end of a scrollable panel.",
+                        "next_step": "The recorded evidence did not prove the reported symptom. For a state change, tag before/input and after/reopened actions with distinct checkpoint labels and use a sequence oracle. Continue testing or finish honestly as not_reproduced.",
                     }
                 verified_observation = proof
             result = args
@@ -456,7 +463,7 @@ class Manager:
         tools = [
             Tool(
                 "computer",
-                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). Waits settle the UI.",
+                "Perform one desktop action. Scroll positive=up, negative=down. Keys use pyautogui names (esc, enter, ctrl). A nonempty checkpoint saves the resulting screen under a unique label (at most 8 per experiment); use these for before/after proof. Waits settle the UI.",
                 Action,
                 computer,
             ),
@@ -485,14 +492,20 @@ class Manager:
             "Investigate the following report in the running game. First handle any first-run dialogs. "
             "Use the UI to test hypotheses. Every action will be replayed from a clean profile, including startup dialogs. "
             "You may search the code to understand navigation, but source matches alone never verify behavior. "
-            "For a visual bug, end with the symptom clearly visible in one screenshot. "
+            "For a static visual bug, end with the symptom visible. For persistence, input/readback, "
+            "payload transport, or another state change, tag 2–8 meaningful computer actions with "
+            "distinct checkpoint labels capturing visible prerequisites/input, the transition, and "
+            "the resulting state. A labeled wait can capture the current state without changing it. "
+            "Use oracle kind=sequence with those labels in chronological order; a final screen alone "
+            "cannot establish a change or a lost object. Do not reuse labels without resetting. "
+            "For a crash, include the specific observed literal log signature when available. "
             "Record at least one hypothesis and its result. Then call finish.\n"
             + case.spec.model_dump_json(),
             tools,
             purpose="game investigation",
             done=lambda: result is not None,
             observation=observation,
-            max_turns=min(45, self.settings.max_model_calls),
+            max_turns=min(90, max(1, self.settings.max_model_calls - 15)),
         )
         if result.outcome != "observed":
             state = (
@@ -505,6 +518,7 @@ class Manager:
         verdict = verified_observation
         case.first_reproduced_seconds = time.monotonic() - started
         rep = case.reproduction = Reproduction(
+            version=2 if result.oracle.kind == "sequence" else 1,
             game=case.report.game,
             commit=case.report.target_commit,
             steps=list(discovery_actions),
@@ -795,17 +809,25 @@ class Manager:
                 sandbox, recorder, model, rep.steps, rep.oracle, phase="post-patch"
             )
             observed_bugs += int(verdict.observed)
-            expected = await model.structured(
-                FixedVerdict,
-                "Evaluate a candidate fix using this post-replay screenshot. The original symptom was: "
-                + rep.oracle.description
-                + ". Mark expected_state_reached=true ONLY if this screen shows the exact UI/game state needed to test that symptom. "
-                "A different menu, blank screen, loading state or crashed game is inconclusive. "
-                "Mark symptom_absent=true ONLY when the correct target state is visible and the reported defect is absent. "
-                f"Process state: {observation.get('process')}",
-                purpose="post-patch expected-state verification",
-                screenshot=observation["screenshot"],
-            )
+            if rep.oracle.kind == "sequence":
+                expected = FixedVerdict(
+                    expected_state_reached=getattr(verdict, "expected_state_reached", False),
+                    symptom_absent=getattr(verdict, "symptom_absent", False),
+                    confidence=verdict.confidence,
+                    explanation=verdict.explanation,
+                )
+            else:
+                expected = await model.structured(
+                    FixedVerdict,
+                    "Evaluate a candidate fix using this post-replay screenshot. The original symptom was: "
+                    + rep.oracle.description
+                    + ". Mark expected_state_reached=true ONLY if this screen shows the exact UI/game state needed to test that symptom. "
+                    "A different menu, blank screen, loading state or crashed game is inconclusive. "
+                    "Mark symptom_absent=true ONLY when the correct target state is visible and the reported defect is absent. "
+                    f"Process state: {observation.get('process')}",
+                    purpose="post-patch expected-state verification",
+                    screenshot=observation["screenshot"],
+                )
             valid = (
                 not verdict.observed
                 and expected.expected_state_reached

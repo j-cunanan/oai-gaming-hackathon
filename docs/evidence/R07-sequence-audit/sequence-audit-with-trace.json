@@ -1,0 +1,255 @@
+{
+  "scope": "New verifier judgments on retained images plus recorded inputs; no new game runs",
+  "rules": {
+    "12620": "A data patch deleted from a map returns after saving, leaving the editor, and reopening that same map. Correct behavior retains the deletion. Confirm a patch existed, was visibly deleted, and inspect the reopened map's patch list.",
+    "12623": "The editor fails to preserve a manually entered RGB hex color after confirming and reopening the picker. Compare visible entered and readback RGB values for Colored Floor and Colored Wall. Appending opaque alpha ff is normal; changing RGB is the defect. Both pickers and their transitions must be demonstrated."
+  },
+  "runs": [
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 1,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.94,
+        "explanation": "The deletion is visibly made and saved for the same map, but the deleted patch reappears after reopening it.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-1.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-1.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-1.png",
+          "6b067de945d7-cabdc5dadb9b66d5e6a5-temporal-1.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-1.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 2,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "The patch existed, was visibly removed, the editor showed a save confirmation, and after leaving and reopening the selected PatchPersistence map its patch list again contains the same patch. This demonstrates the reported persistence defect.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-2.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-2.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-2.png",
+          "6b067de945d7-481d68597c172eee7221-temporal-2.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-2.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 3,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "The deletion did not persist. The patch list initially contains PersistenceProbe, then visibly reports no patchsets after deletion. After the map is saved, exited to Map Info for PatchPersistence, and reopened, PersistenceProbe is present again in the patch list.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-3.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-3.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-3.png",
+          "6b067de945d7-f2f3e6f26bafd11ebb9b-temporal-3.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-3.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 4,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.95,
+        "explanation": "The screenshots demonstrate the defect: a patch was present, then the list visibly became empty, but after the map was saved, exited, and reopened, the patch list again contains the patch.",
+        "evidence": [
+          "6b067de945d7-5953793d6f55a4d1b623-temporal-4.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-4.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-4.png",
+          "6b067de945d7-aefca80e9ec9a6162fb3-temporal-4.png",
+          "6b067de945d7-6020ead1fd0b0e515c4f-temporal-4.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 5,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.9,
+        "explanation": "The screenshots demonstrate the deleted patch returning after the save/leave/reopen sequence for the map shown as PatchPersistence.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-5.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-5.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-5.png",
+          "6b067de945d7-2e9abbbeb98d886e7f0d-temporal-5.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-5.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/human-fixed.json",
+      "recorded_trial": 1,
+      "expected": "correct behavior demonstrated",
+      "matched": true,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.9,
+        "explanation": "The visible sequence demonstrates correct patch-deletion persistence for the inspected map, not the reported return of a deleted patch. A patch named \u201cPersistenceProbe\u201d is present, then the list visibly becomes empty. After a visible \u201cSaved!\u201d state and navigation back to the map list for \u201cPatchPersistence,\u201d the reopened editor\u2019s Patches list still reads \u201cNo patchsets found.\u201d",
+        "evidence": [
+          "1cd16204f7fc-b261af85c44e75236ceb-temporal-1.png",
+          "1cd16204f7fc-77d35b543e27ef8f26f1-temporal-1.png",
+          "1cd16204f7fc-c16b2444bf291388d728-temporal-1.png",
+          "1cd16204f7fc-011be8103438497f7715-temporal-1.png",
+          "1cd16204f7fc-2e0253837f7c1f5328b7-temporal-1.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": true
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 1,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.99,
+        "explanation": "Both Colored Floor and Colored Wall visibly show entered RGB ff0300, then after confirmation and reopening their respective pickers show ff0200ff. The opaque ff suffix is normal, but RGB changed from 0300 to 0200, demonstrating the reported preservation defect for both pickers.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-1.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-1.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-1.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-1.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 2,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "Both visible picker sequences show manually entered RGB `ff0300` changing to readback `ff0200ff` after confirmation and reopening. The `ff` alpha suffix is normal, but the RGB portion changes from `ff0300` to `ff0200`, demonstrating the reported fidelity defect for both Colored Floor and Colored Wall.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-2.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-2.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-2.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-2.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 3,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.99,
+        "explanation": "Both visible picker sequences demonstrate RGB drift after confirmation and reopening. For Colored Floor, the entered value is ff0300, while the reopened picker reads ff0200ff; RGB changed from FF0300 to FF0200 (the appended ff alpha is normal). The same entered/readback mismatch is shown for Colored Wall. The checkpoints visibly show the correct respective object labels and picker states before entry and after the confirm/reopen transitions.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-3.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-3.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-3.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-3.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 4,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.99,
+        "explanation": "Both visible picker transitions demonstrate RGB corruption after confirmation and reopening. For Colored Floor, the entered visible value is ff0300, while the reopened picker reads ff0200ff; ignoring the normal appended opaque alpha ff, RGB changed from ff0300 to ff0200. The same occurs for Colored Wall: ff0300 is entered and the reopened picker reads ff0200ff. The screenshots visibly identify the respective objects and show both picker states.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-4.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-4.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-4.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-4.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 5,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "Both visible picker sequences show the manually entered RGB ff0300, followed by a reopened-picker readback of ff0200ff. The appended opaque alpha ff is normal, but the RGB changes from ff0300 to ff0200, demonstrating the reported fidelity defect for both Colored Floor and Colored Wall.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-5.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-5.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-5.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-5.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/human-fixed.json",
+      "recorded_trial": 1,
+      "expected": "correct behavior demonstrated",
+      "matched": true,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.97,
+        "explanation": "The screenshots demonstrate correct RGB preservation for both pickers, with only the normal opaque-alpha suffix added. Thus the reported RGB-changing defect is not observed.",
+        "evidence": [
+          "071d9553a44a-b02acc57a9be49d28d62-color-1.png",
+          "071d9553a44a-7c9c24ca331e1c906d84-color-1.png",
+          "071d9553a44a-00536d8a0f8f70fb1621-color-1.png",
+          "071d9553a44a-81fdd70473fe43ee39e8-color-1.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": true
+      }
+    }
+  ]
+}

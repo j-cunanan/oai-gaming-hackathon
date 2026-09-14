@@ -1,0 +1,255 @@
+{
+  "scope": "New verifier judgments on retained images; no new game runs",
+  "rules": {
+    "12620": "A data patch deleted from a map returns after saving, leaving the editor, and reopening that same map. Correct behavior retains the deletion. Confirm a patch existed, was visibly deleted, and inspect the reopened map's patch list.",
+    "12623": "The editor fails to preserve a manually entered RGB hex color after confirming and reopening the picker. Compare visible entered and readback RGB values for Colored Floor and Colored Wall. Appending opaque alpha ff is normal; changing RGB is the defect. Both pickers and their transitions must be demonstrated."
+  },
+  "runs": [
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 1,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "The screenshots demonstrate the deletion-persistence defect for the identified map. The patch list initially contains PersistenceProbe, then visibly reports no patchsets; after a visible save, the map-selection dialog identifies PatchPersistence, and the editor\u2019s reopened patch list again contains PersistenceProbe.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-1.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-1.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-1.png",
+          "6b067de945d7-cabdc5dadb9b66d5e6a5-temporal-1.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-1.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 2,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.9,
+        "explanation": "The screenshots show a patch named PersistenceProbe present, then an empty patch list, followed by a visible \u201cSaved!\u201d state and map-info screen for PatchPersistence. The final patch list again contains PersistenceProbe. However, the final editor screenshot does not visibly identify its map, and the screenshots do not visibly verify reopening PatchPersistence into that editor. The same-map save/reopen transition is therefore unverified.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-2.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-2.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-2.png",
+          "6b067de945d7-481d68597c172eee7221-temporal-2.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-2.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 3,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.98,
+        "explanation": "The patch list initially contains `PersistenceProbe` with `[1 fields]`; it is then visibly empty. A `Saved!` confirmation is shown, the editor is exited to Map Info for `PatchPersistence`, and after reopening, the patch list again contains `PersistenceProbe [1 fields]`. This demonstrates the deleted patch returning after save and reopen.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-3.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-3.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-3.png",
+          "6b067de945d7-f2f3e6f26bafd11ebb9b-temporal-3.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-3.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 4,
+      "expected": "symptom observed",
+      "matched": true,
+      "verdict": {
+        "observed": true,
+        "confidence": 0.96,
+        "explanation": "A patchset is initially listed, then the list visibly becomes empty after deletion. The editor shows \u201cSaved!\u201d, the same map named \u201cPatchPersistence\u201d is selected after leaving, and on reopening its patch list again contains the same <unnamed> patchset. This demonstrates the deleted patch returning after save/reopen.",
+        "evidence": [
+          "6b067de945d7-5953793d6f55a4d1b623-temporal-4.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-4.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-4.png",
+          "6b067de945d7-aefca80e9ec9a6162fb3-temporal-4.png",
+          "6b067de945d7-6020ead1fd0b0e515c4f-temporal-4.png"
+        ],
+        "expected_state_reached": true,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/baseline.json",
+      "recorded_trial": 5,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.87,
+        "explanation": "Inconclusive. A patch named \u201cPersistenceProbe\u201d is visible and is then absent before saving, but the screenshots do not visibly identify the map containing that original patch. The later map-info dialog identifies \u201cPatchPersistence,\u201d and the final patch list again shows \u201cPersistenceProbe,\u201d but the reopened editor view does not display a map identity that visibly links it to the original patch view. Therefore the same-map prerequisite is not fully demonstrated.",
+        "evidence": [
+          "6b067de945d7-b261af85c44e75236ceb-temporal-5.png",
+          "6b067de945d7-77d35b543e27ef8f26f1-temporal-5.png",
+          "6b067de945d7-c16b2444bf291388d728-temporal-5.png",
+          "6b067de945d7-2e9abbbeb98d886e7f0d-temporal-5.png",
+          "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-5.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12620",
+      "source": "docs/evidence/qualification/12620/human-fixed.json",
+      "recorded_trial": 1,
+      "expected": "correct behavior demonstrated",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.9,
+        "explanation": "Inconclusive. A patch is visibly present and then absent, and the later patch list is empty, but the screenshots do not visibly identify the map while the initial patch exists or immediately after deletion. Therefore the required same-map continuity from deletion through save/leave/reopen is not established.",
+        "evidence": [
+          "1cd16204f7fc-b261af85c44e75236ceb-temporal-1.png",
+          "1cd16204f7fc-77d35b543e27ef8f26f1-temporal-1.png",
+          "1cd16204f7fc-c16b2444bf291388d728-temporal-1.png",
+          "1cd16204f7fc-011be8103438497f7715-temporal-1.png",
+          "1cd16204f7fc-2e0253837f7c1f5328b7-temporal-1.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 1,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.98,
+        "explanation": "Both Colored Floor and Colored Wall picker views visibly show entered `ff0300` followed by `ff0200ff`; the RGB portion changes from `ff0300` to `ff0200` (not merely the normal appended `ff`). However, no checkpoint visibly shows confirmation closing the picker and reopening it, so the required preservation-through-confirm/reopen sequence is not demonstrated.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-1.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-1.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-1.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-1.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 2,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.96,
+        "explanation": "Inconclusive. Each picker shows an entered six-digit RGB value of ff0300, followed by a visible value of ff0200ff for the same labeled object; the RGB portion therefore differs (ff0300 vs ff0200), not merely by appended alpha. However, the screenshots do not visibly demonstrate confirming the picker and then reopening it: the picker remains open in every checkpoint and no confirmed/intermediate editor state or verified reopen transition is shown. Thus the full reported sequence is not established for either Colored Floor or Colored Wall.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-2.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-2.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-2.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-2.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 3,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.97,
+        "explanation": "Inconclusive. For Colored Floor, the visible picker value is ff0300 in checkpoint-1 and ff0200ff in checkpoint-2; for Colored Wall, it is ff0300 in checkpoint-3 and ff0200ff in checkpoint-4. Thus the RGB portions visibly differ (ff0300 vs ff0200), beyond the normal appended alpha ff. However, every checkpoint still shows the Pick Color dialog, and the supplied images do not visibly demonstrate confirming with OK, closing the picker, or reopening it for either object. The required transition is therefore unverified.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-3.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-3.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-3.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-3.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 4,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.93,
+        "explanation": "Inconclusive. Both Colored Floor and Colored Wall picker views visibly show entered RGB `ff0300` and later a picker field of `ff0200ff`, whose RGB portion differs (`ff0200`); the appended `ff` alone would not be a defect. However, the screenshots do not visibly demonstrate confirmation followed by reopening (the picker remains open in every image), so the required transition is unverified.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-4.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-4.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-4.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-4.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/baseline.json",
+      "recorded_trial": 5,
+      "expected": "symptom observed",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.98,
+        "explanation": "Inconclusive. The Color picker visibly shows Colored Floor with entered RGB ff0300 in checkpoint 1 and ff0200ff in checkpoint 2; Colored Wall likewise shows ff0300 in checkpoint 3 and ff0200ff in checkpoint 4. The RGB component therefore differs (ff0300 versus ff0200); the appended ff alone would be normal. However, every checkpoint still visibly shows the picker, and no screenshot demonstrates confirming with OK, closing it, and reopening either picker. Thus the required transitions and resulting readback states are not verified.",
+        "evidence": [
+          "4ef4f91d50fa-b1e8c9723f95bcb3f4fc-color-5.png",
+          "4ef4f91d50fa-2d336ef222c65d665522-color-5.png",
+          "4ef4f91d50fa-a6b7880be648fde3e156-color-5.png",
+          "4ef4f91d50fa-d584e8f87d4f6b268d44-color-5.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    },
+    {
+      "issue": "12623",
+      "source": "docs/evidence/qualification/12623/human-fixed.json",
+      "recorded_trial": 1,
+      "expected": "correct behavior demonstrated",
+      "matched": false,
+      "verdict": {
+        "observed": false,
+        "confidence": 0.98,
+        "explanation": "Both picker contexts are visible, and each shows the entered RGB `ff0300` followed by `ff0300ff`; the added opaque alpha is normal and the RGB portion is unchanged. However, the screenshots do not visibly demonstrate confirming with OK, closing the picker, and reopening it for either Colored Floor or Colored Wall. Thus the preservation transition required to test the report is unverified.",
+        "evidence": [
+          "071d9553a44a-b02acc57a9be49d28d62-color-1.png",
+          "071d9553a44a-7c9c24ca331e1c906d84-color-1.png",
+          "071d9553a44a-00536d8a0f8f70fb1621-color-1.png",
+          "071d9553a44a-81fdd70473fe43ee39e8-color-1.png"
+        ],
+        "expected_state_reached": false,
+        "symptom_absent": false
+      }
+    }
+  ]
+}

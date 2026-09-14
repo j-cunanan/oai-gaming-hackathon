@@ -80,6 +80,8 @@ uv run repro report CASE_ID --output output/pdf/repro-report.pdf
 
 `replay` uses the retained pre-patch Mindustry build. `--candidate` uses the candidate build. A visual replay needs API access for its independent verifier. An explicit `validate` rerun repeats both baseline and candidate gates, retaining the previous result as an artifact. The validation workflow additionally checks that the expected game/UI state was reached; simply failing to observe the bug is insufficient to approve a patch.
 
+For state changes such as deletion/reopening, entered/readback values, or payload transport, a replay can use a `sequence` oracle with 2–8 ordered checkpoint labels. A computer action with `checkpoint: label` records its resulting screenshot; a labeled wait captures an unchanged view. The labels travel with their original actions during reduction. The independent verifier compares the actual checkpoint images in action order, including visible prerequisites and the resulting state. Missing, reordered, or uncertain evidence cannot establish reproduction or a successful fix. Checkpoints are cleared between fresh attempts. Static visual, literal-log, and crash checks remain supported; a crash oracle with `log_pattern` requires both a nonzero game exit and that literal signature.
+
 ## What is implemented
 
 - Typed report intake, SQLite case snapshots, ordered events and reconnectable SSE.

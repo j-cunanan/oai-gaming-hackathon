@@ -86,9 +86,17 @@ class Model:
             )
 
     async def structured(
-        self, schema: type[BaseModel], prompt: str, *, purpose: str, screenshot: str | None = None
+        self,
+        schema: type[BaseModel],
+        prompt: str,
+        *,
+        purpose: str,
+        screenshot: str | None = None,
+        screenshots: list[tuple[str, str]] | None = None,
     ):
         self.budget()
+        if (screenshot and screenshots) or (screenshots and len(screenshots) > 8):
+            raise ValueError("Use one screenshot or at most eight ordered screenshots")
         content = [{"type": "input_text", "text": prompt}]
         if screenshot:
             content.append(
@@ -97,6 +105,17 @@ class Model:
                     "image_url": f"data:image/png;base64,{screenshot}",
                     "detail": "original",
                 }
+            )
+        for label, encoded in screenshots or []:
+            content.extend(
+                [
+                    {"type": "input_text", "text": label},
+                    {
+                        "type": "input_image",
+                        "image_url": f"data:image/png;base64,{encoded}",
+                        "detail": "original",
+                    },
+                ]
             )
         try:
             response = await self.client.responses.parse(

@@ -11,6 +11,13 @@ class Recorder:
         self.actions: list[Action] = []
         self.last_screenshot: str | None = None
         self.previous_log = ""
+        self.checkpoints: dict[str, dict] = {}
+        self.attempt_actions: list[Action] = []
+
+    def reset_attempt(self):
+        self.previous_log = ""
+        self.checkpoints.clear()
+        self.attempt_actions.clear()
 
     def capture(self, observation: dict, label="screen") -> dict:
         screenshot = observation["screenshot"]
@@ -40,9 +47,21 @@ class Recorder:
         return result
 
     async def act(self, action: Action, *, phase="investigation"):
+        if action.checkpoint:
+            if action.checkpoint in self.checkpoints:
+                raise ValueError("Checkpoint label already used; choose a new label or reset")
+            if len(self.checkpoints) >= 8:
+                raise ValueError("At most eight checkpoints are allowed per experiment")
         before = self.last_screenshot
         observation = self.capture(await self.sandbox.action(action), phase)
         self.actions.append(action)
+        self.attempt_actions.append(action)
+        if action.checkpoint:
+            self.checkpoints[action.checkpoint] = {
+                "index": len(self.attempt_actions),
+                "action": action.model_dump(),
+                "observation": observation,
+            }
         self.store.save(
             self.case,
             "action",
