@@ -2431,3 +2431,22 @@ details li + li {
     display: none;
   }
 }
+
+/* Imported evidence stays visibly distinct from a live investigation. */
+.recording-badge {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 6px 0;
+  padding: 6px 9px;
+  border: 1px solid #b66b11;
+  border-radius: 6px;
+  background: #fff1cc;
+  color: #713f12;
+  font-size: 12px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.recording-badge small { font-size: 10px; color: inherit; }
+.case-nav-item:has(.recording-badge) { align-items: flex-start; }
+.case-nav-item .recording-badge { display: flex; }

@@ -40,6 +40,7 @@ import "./styles.css";
 import { HelpTip } from "./help";
 import { PatchReview } from "./patch-review";
 import { allChecksPass } from "./diff";
+import { preferredCase } from "./case-selection";
 import { StageActivity, useStageActivity } from "./stage-activity";
 import { clockTime, dateTime } from "./activity-model";
 
@@ -65,6 +66,11 @@ type Candidate = {
 };
 type Action = { action: string; semantic: string; [key: string]: unknown };
 type Case = {
+  imported_from?: {
+    source_dir: string;
+    imported_at: string;
+    original_case_id: string;
+  } | null;
   id: string;
   state: string;
   summary: string;
@@ -102,9 +108,9 @@ type Case = {
     limitations: string[];
   } | null;
   checks: CheckResult[];
-  usage: { model_calls: number; input_tokens: number; output_tokens: number };
+  usage: { model_calls: number; input_tokens: number; output_tokens: number } | null;
   first_reproduced_seconds: number | null;
-  elapsed_seconds: number;
+  elapsed_seconds: number | null;
   benchmark_id: string | null;
 };
 type Event = {
@@ -210,6 +216,15 @@ function Badge({ state }: { state: string }) {
     </span>
   );
 }
+function RecordingBadge({ c }: { c: Case }) {
+  if (!c.imported_from) return null;
+  return (
+    <span className="recording-badge" title={`Imported from ${c.imported_from.source_dir} at ${dateTime(c.imported_from.imported_at)}`}>
+      <strong>Imported recording</strong>
+      <small>{c.imported_from.original_case_id} · Recorded {dateTime(c.created_at)}</small>
+    </span>
+  );
+}
 function App() {
   const [cases, setCases] = useState<Case[]>([]);
   const [selected, setSelected] = useState("");
@@ -260,7 +275,7 @@ function App() {
       setBenchmark(metrics);
       setConnected(true);
       setError((previous) => (previous === "Failed to fetch" ? "" : previous));
-      setSelected((id) => id || list[0]?.id || "");
+      setSelected((id) => id || preferredCase(list));
     } catch (e) {
       setConnected(false);
       setError((e as Error).message);
@@ -487,7 +502,7 @@ function App() {
               <span
                 className={`tiny-dot ${c.reproduction?.deterministic ? "green" : "purple"}`}
               />
-              <span>{c.report.title}</span>
+              <span>{c.report.title}<RecordingBadge c={c} /></span>
             </button>
           ))}
           {cases.length === 0 && (
@@ -582,7 +597,7 @@ function App() {
             <Metric
               label="Verified reproductions"
               value={String(confirmed).padStart(2, "0")}
-              caption="Confirmed by fresh replays"
+              caption="Includes recorded reproductions"
               icon={<CheckCheck size={18} />}
             />
             <Metric
@@ -651,7 +666,7 @@ function App() {
                         <td>{c.benchmark_id}</td>
                         <td>{c.report.title}</td>
                         <td>
-                          <Badge state={c.state} />
+                          <Badge state={c.state} /><RecordingBadge c={c} />
                         </td>
                         <td>
                           {c.reproduction
@@ -753,6 +768,7 @@ function App() {
                         <code>{current.report.target_commit.slice(0, 8)}</code>
                       </div>
                       <h2>{current.report.title}</h2>
+                      <RecordingBadge c={current} />
                     </div>
                     <div className="case-header-actions">
                       <Badge state={current.state} />
@@ -760,7 +776,7 @@ function App() {
                       {running ? (
                         <button
                           className="button secondary small"
-                          disabled={busy}
+                          disabled={busy || Boolean(current.imported_from)}
                           onClick={() => act("cancel")}
                         >
                           <Pause size={14} />
@@ -770,7 +786,7 @@ function App() {
                         !current.reproduction && (
                           <button
                             className="button primary small"
-                            disabled={busy || !health?.ai_configured}
+                            disabled={busy || Boolean(current.imported_from) || !health?.ai_configured}
                             onClick={() => act("investigate")}
                           >
                             <Play size={14} />
@@ -867,7 +883,7 @@ function App() {
                               className={`live-tag ${running ? "live" : ""}`}
                             >
                               <span />
-                              {running ? "LIVE" : "LAST CAPTURE"}
+                              {current.imported_from ? "RECORDED CAPTURE" : running ? "LIVE" : "LAST CAPTURE"}
                             </span>
                           </div>
                           <span>1280 × 720</span>
@@ -1018,7 +1034,7 @@ function App() {
                             <HelpTip topic="Recorded replay" />
                             <button
                               className="button secondary small"
-                              disabled={busy || running}
+                              disabled={busy || running || Boolean(current.imported_from)}
                               onClick={() => act("replay")}
                             >
                               <Play size={12} />
@@ -1038,11 +1054,12 @@ function App() {
                             ))}
                           </ol>
                           <p className="muted">
-                            Replay restores the retained pre-patch build.
+                            {current.imported_from ? "Read-only recording. Create a new local case to run another investigation." : "Replay restores the retained pre-patch build."}
                           </p>
                           <button
                             className="button secondary small"
                             disabled={
+                              Boolean(current.imported_from) ||
                               busy ||
                               running ||
                               !current.reproduction.deterministic
@@ -1130,13 +1147,13 @@ function App() {
                             <div className="timeline-footer">
                               <Terminal size={13} />
                               <span>
-                                {current.usage.model_calls} model calls
+                                {current.usage?.model_calls ?? "—"} model calls
                               </span>
                               <span>
-                                {(
+                                {current.usage ? (
                                   current.usage.input_tokens +
                                   current.usage.output_tokens
-                                ).toLocaleString()}{" "}
+                                ).toLocaleString() : "—"}{" "}
                                 tokens
                               </span>
                               <HelpTip topic="Model usage" />
@@ -1305,7 +1322,7 @@ function App() {
                             <button
                               className="icon-button"
                               title="Rerun validation"
-                              disabled={running || busy}
+                              disabled={running || busy || Boolean(current.imported_from)}
                               onClick={() => act("validate")}
                             >
                               <RotateCcw size={14} />
@@ -1360,7 +1377,7 @@ function App() {
                           <div className="action-with-help">
                             <button
                               className="button secondary small"
-                              disabled={busy || running}
+                              disabled={busy || running || Boolean(current.imported_from)}
                               onClick={() => act("reject")}
                             >
                               Reject patch
@@ -1371,6 +1388,7 @@ function App() {
                             <button
                               className="button primary small"
                               disabled={
+                              Boolean(current.imported_from) ||
                                 busy ||
                                 running ||
                                 !allChecksPass(current.checks)

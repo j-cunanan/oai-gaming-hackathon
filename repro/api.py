@@ -69,6 +69,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(404, "Case not found") from None
 
     def idle(case_id):
+        if get_case(case_id).imported_from:
+            raise HTTPException(409, "Imported recordings are read-only. Create a new local case.")
         if case_id in jobs and not jobs[case_id].done():
             raise HTTPException(409, "This case already has an active job")
 

@@ -18,6 +18,13 @@ def context():
     return cfg, Store(cfg.root)
 
 
+def local_case(store: Store, case_id: str) -> Case:
+    case = store.get(case_id)
+    if case.imported_from:
+        raise typer.BadParameter("Imported recordings are read-only. Create a new local case.")
+    return case
+
+
 @app.command()
 def serve(host: str = "127.0.0.1", port: int = 8000):
     """Start the API and the built dashboard (one worker process)."""
@@ -48,11 +55,11 @@ def ingest(
 def prepare(case_id: str):
     """Fetch the exact revision and build it in the preparation sandbox."""
     cfg, store = context()
-    case = store.get(case_id)
+    case = local_case(store, case_id)
     if case.patch_artifact:
         raise typer.BadParameter("Create a new case to prepare a fresh baseline after patching")
     asyncio.run(Manager(cfg, store).prepare(case))
-    case = store.get(case_id)
+    case = local_case(store, case_id)
     typer.echo(f"{case.state}: {case.summary}")
 
 
@@ -60,11 +67,11 @@ def prepare(case_id: str):
 def investigate(case_id: str):
     """Investigate, verify, reduce, localize and propose a candidate patch."""
     cfg, store = context()
-    case = store.get(case_id)
+    case = local_case(store, case_id)
     if case.reproduction or case.patch_artifact:
         raise typer.BadParameter("Create a new case to investigate again from a fresh baseline")
     asyncio.run(Manager(cfg, store).investigate(case))
-    result = store.get(case_id)
+    result = local_case(store, case_id)
     typer.echo(f"{result.state}: {result.summary}")
 
 
@@ -98,7 +105,7 @@ def replay(case_id: str, candidate: bool = False, regression: bool = False):
     """Replay recorded actions. --regression exits 1 when the bug is observed."""
     cfg, store = context()
     verdict = asyncio.run(
-        Manager(cfg, store).replay_case(store.get(case_id), baseline=not candidate)
+        Manager(cfg, store).replay_case(local_case(store, case_id), baseline=not candidate)
     )
     typer.echo(verdict.model_dump_json(indent=2))
     if regression and verdict.observed:
@@ -109,16 +116,16 @@ def replay(case_id: str, candidate: bool = False, regression: bool = False):
 def validate(case_id: str):
     """Rebuild and validate; test networking follows REPRO_VALIDATION_NETWORK."""
     cfg, store = context()
-    asyncio.run(Manager(cfg, store).validate_case(store.get(case_id)))
-    typer.echo(store.get(case_id).model_dump_json(indent=2))
+    asyncio.run(Manager(cfg, store).validate_case(local_case(store, case_id)))
+    typer.echo(local_case(store, case_id).model_dump_json(indent=2))
 
 
 @app.command()
 def reduce(case_id: str):
     """Refine a confirmed baseline replay and revalidate an existing candidate if it changes."""
     cfg, store = context()
-    asyncio.run(Manager(cfg, store).refine_case(store.get(case_id)))
-    result = store.get(case_id)
+    asyncio.run(Manager(cfg, store).refine_case(local_case(store, case_id)))
+    result = local_case(store, case_id)
     typer.echo(f"{result.state}: {result.summary}")
 
 
@@ -130,6 +137,31 @@ def import_case(manifest: Path):
     case = Case(benchmark_id=data["id"], report=CaseInput.model_validate(data["input"]))
     store.save(case, "received")
     typer.echo(case.id)
+
+
+@app.command("import-evidence")
+def import_recording(
+    directory: Path,
+    case_id: str | None = typer.Option(None, "--id", help="Target imported case id"),
+    force: bool = typer.Option(False, help="Replace an existing imported recording"),
+):
+    """Verify and import a recorded evidence package, preserving its provenance."""
+    from repro.storage.evidence import import_evidence
+
+    _, store = context()
+    try:
+        case = import_evidence(store, directory, case_id=case_id, force=force)
+    except (ValueError, OSError, KeyError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    with store.connect() as db:
+        count = db.execute("SELECT count(*) FROM events WHERE case_id=?", (case.id,)).fetchone()[0]
+    typer.echo(f"Imported recording: {case.id} · {case.state}")
+    for check in case.checks:
+        typer.echo(f"  {check.name}: {check.status}")
+    typer.echo(
+        f"{len(case.reproduction.steps) if case.reproduction else 0} actions · "
+        f"{len(store.artifacts(case.id))} artifacts · {count} events"
+    )
 
 
 if __name__ == "__main__":

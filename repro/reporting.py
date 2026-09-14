@@ -118,6 +118,14 @@ def render_report(case: Case, store: Store) -> bytes:
         )
     )
     story = [cover, Spacer(1, 10)]
+    if case.imported_from:
+        story += [
+            p(
+                f"Imported recording: {case.imported_from.original_case_id}. "
+                f"Recorded {case.created_at}; imported {case.imported_from.imported_at}.",
+                heading,
+            )
+        ]
     generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
     state = case.state.replace("_", " ").capitalize()
     story += [
@@ -279,7 +287,9 @@ def render_report(case: Case, store: Store) -> bytes:
         p(
             f"{case.usage.model_calls:,} model calls; {case.usage.input_tokens:,} input tokens; "
             f"{case.usage.output_tokens:,} output tokens. Usage accumulates across jobs on this case. "
-            "PDF export uses saved data and makes no model calls.",
+            "PDF export uses saved data and makes no model calls."
+            if case.usage
+            else "Usage not recorded.",
             small,
         ),
         p(
