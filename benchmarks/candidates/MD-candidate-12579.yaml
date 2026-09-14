@@ -15,9 +15,15 @@ evaluator:
   all_commit_files:
     - "core/src/mindustry/world/blocks/defense/TargetDummy.java"
   positive_case: true
-  reproducibility: "UNVERIFIED"
+  reproducibility: "QUALIFIED_LINUX_AMD64"
   priority: "P1"
   suggested_tags: "Crash / editor / initialization"
   proposed_trigger: "Place a Target Dummy in a fresh editor map, then save."
   selection_notes: "No imported save should be necessary; reported on Windows, Linux reproduction unverified. Verify save and reload succeed on the candidate, not just absence of a crash."
-  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. Runtime qualification subsequently completed; see linked evidence and retained failed attempts."
+  qualification:
+    date: '2026-09-14'
+    baseline_runs: 5/5
+    human_fixed_control: passed once
+    evidence: docs/evidence/qualification/12579/
+    scope: Evaluator qualification only; not a new autonomous patch result.

@@ -109,6 +109,9 @@ class DockerSandbox:
             timeout=30,
         )
         await asyncio.sleep(1)
+        # Xvfb and Openbox start asynchronously. A game opened before Openbox is
+        # ready may keep its default size, invalidating recorded coordinates.
+        await self.exec(["python3", "/opt/repro/wait_desktop.py", "--wm"], timeout=20)
         self._rpc = await WorkerRPC.start(
             ["docker", "exec", "-i", self.name, "python3", "-u", "/opt/repro/worker.py", "serve"],
             self.root / "worker-rpc.log",

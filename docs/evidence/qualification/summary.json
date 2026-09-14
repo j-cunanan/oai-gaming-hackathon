@@ -1,0 +1,134 @@
+[
+  {
+    "issue": "12579",
+    "baseline_passed": 5,
+    "baseline_total": 5,
+    "human_fixed_passed": true,
+    "environments": [
+      {
+        "role": "baseline",
+        "case_id": "a7ca1211ec55",
+        "commit": "f7ededb3a1950c396e5c113d96a19dd88e71da9a",
+        "preparation_tests": {
+          "tests": 213,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 19,
+          "input_tokens": 100479,
+          "output_tokens": 1866
+        }
+      },
+      {
+        "role": "human-fixed",
+        "case_id": "3985527513a0",
+        "commit": "db8d9669c25aaf5aa7ad9ac56e7cac1bbc1a0465",
+        "preparation_tests": {
+          "tests": 213,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 43,
+          "input_tokens": 222933,
+          "output_tokens": 2336
+        }
+      }
+    ]
+  },
+  {
+    "issue": "12620",
+    "baseline_passed": 5,
+    "baseline_total": 5,
+    "human_fixed_passed": true,
+    "environments": [
+      {
+        "role": "baseline",
+        "case_id": "6b067de945d7",
+        "commit": "63b2069e9685063c74abc41fae84a66f73e9e09b",
+        "preparation_tests": {
+          "tests": 276,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 57,
+          "input_tokens": 434863,
+          "output_tokens": 5490
+        }
+      },
+      {
+        "role": "human-fixed",
+        "case_id": "1cd16204f7fc",
+        "commit": "b3317f3d4d7c9b201d03a39be17bae2bbda90169",
+        "preparation_tests": {
+          "tests": 276,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 2,
+          "input_tokens": 16214,
+          "output_tokens": 363
+        }
+      }
+    ]
+  },
+  {
+    "issue": "12623",
+    "baseline_passed": 5,
+    "baseline_total": 5,
+    "human_fixed_passed": true,
+    "environments": [
+      {
+        "role": "baseline",
+        "case_id": "4ef4f91d50fa",
+        "commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+        "preparation_tests": {
+          "tests": 276,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 39,
+          "input_tokens": 254403,
+          "output_tokens": 3961
+        }
+      },
+      {
+        "role": "human-fixed",
+        "case_id": "071d9553a44a",
+        "commit": "da4be8f848f562cbd1289fe549d5c77ae0fb39cc",
+        "preparation_tests": {
+          "tests": 276,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "tests_network": "bridge",
+        "game_network": "none",
+        "usage": {
+          "model_calls": 1,
+          "input_tokens": 6127,
+          "output_tokens": 147
+        }
+      }
+    ]
+  }
+]

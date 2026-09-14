@@ -1,0 +1,345 @@
+{
+  "case_id": "071d9553a44a",
+  "source_case_id": "4ef4f91d50fa",
+  "commit": "da4be8f848f562cbd1289fe549d5c77ae0fb39cc",
+  "control": true,
+  "passed": 1,
+  "total": 1,
+  "runs": [
+    {
+      "trial": 1,
+      "passed": true,
+      "verdict": {
+        "colored_floor_picker_verified": true,
+        "colored_wall_picker_verified": true,
+        "floor_entered_hex": "ff0300",
+        "floor_reopened_hex": "ff0300ff",
+        "wall_entered_hex": "ff0300",
+        "wall_reopened_hex": "ff0300ff",
+        "confidence": 0.99,
+        "explanation": "All four screenshots visibly show the color picker and its hex field. In chronological order, the visible strings are ff0300, ff0300ff, ff0300, and ff0300ff. Both reopened values include a trailing ff absent from the entered strings."
+      },
+      "frames": [
+        {
+          "step": 12,
+          "label": "Enter reported mismatch ff0300",
+          "artifact": "071d9553a44a-b02acc57a9be49d28d62-color-1.png"
+        },
+        {
+          "step": 15,
+          "label": "Read confirmed floor color",
+          "artifact": "071d9553a44a-7c9c24ca331e1c906d84-color-1.png"
+        },
+        {
+          "step": 23,
+          "label": "Enter ff0300 for wall",
+          "artifact": "071d9553a44a-00536d8a0f8f70fb1621-color-1.png"
+        },
+        {
+          "step": 26,
+          "label": "Read back wall selection after placement",
+          "artifact": "071d9553a44a-81fdd70473fe43ee39e8-color-1.png"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "x": 258,
+      "y": 337,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open editor; no startup dialog visible"
+    },
+    {
+      "action": "click",
+      "x": 640,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "New test map"
+    },
+    {
+      "action": "click",
+      "x": 596,
+      "y": 357,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus name"
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "Hex fidelity test",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Name map"
+    },
+    {
+      "action": "click",
+      "x": 698,
+      "y": 428,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Create map"
+    },
+    {
+      "action": "click",
+      "x": 1100,
+      "y": 44,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Search tiles"
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "colored",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Find colored terrain"
+    },
+    {
+      "action": "click",
+      "x": 1140,
+      "y": 133,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select Colored Floor"
+    },
+    {
+      "action": "click",
+      "x": 1112,
+      "y": 142,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open floor color"
+    },
+    {
+      "action": "click",
+      "x": 630,
+      "y": 537,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus hex"
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Replace hex"
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "ff0300",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Enter reported mismatch ff0300"
+    },
+    {
+      "action": "click",
+      "x": 757,
+      "y": 679,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm floor color"
+    },
+    {
+      "action": "wait",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Settle confirmation"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 139,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Read confirmed floor color"
+    },
+    {
+      "action": "click",
+      "x": 535,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Close readback without further confirmation"
+    },
+    {
+      "action": "click",
+      "x": 91,
+      "y": 165,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select pencil placement"
+    },
+    {
+      "action": "click",
+      "x": 540,
+      "y": 350,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Place floor with confirmed color"
+    },
+    {
+      "action": "click",
+      "x": 1174,
+      "y": 196,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select Colored Wall separately"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open wall color"
+    },
+    {
+      "action": "click",
+      "x": 631,
+      "y": 536,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus wall hex"
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Replace wall hex"
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "ff0300",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Enter ff0300 for wall"
+    },
+    {
+      "action": "click",
+      "x": 757,
+      "y": 679,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm wall input"
+    },
+    {
+      "action": "click",
+      "x": 550,
+      "y": 350,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Place colored wall"
+    },
+    {
+      "action": "click",
+      "x": 1105,
+      "y": 140,
+      "keys": [],
+      "text": "",
+      "seconds": 0.75,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Read back wall selection after placement"
+    }
+  ],
+  "oracle": "Entered RGB ff0300 compared with reopened RGB; alpha ff accepted separately. Both Colored Floor and Colored Wall must reach their pickers.",
+  "limitations": [
+    "Chronological qualification verifier, not yet supported by standard single-frame replay verifier.",
+    "This checks ff0300 rounding to ff0200; it does not exhaust all hex values."
+  ]
+}

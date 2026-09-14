@@ -15,9 +15,16 @@ evaluator:
   all_commit_files:
     - "core/src/mindustry/editor/data/MapPatchesView.java"
   positive_case: true
-  reproducibility: "UNVERIFIED"
+  reproducibility: "QUALIFIED_LINUX_AMD64"
   priority: "P1"
   suggested_tags: "Persistence / editor / data patches"
   proposed_trigger: "Create a map, add and save a data patch, delete it, save, leave and reopen the map."
   selection_notes: "Reported on Android; confirm Linux behavior. Needs a valid harmless data patch created through the UI. No process restart is required by the reported steps."
-  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. Runtime qualification subsequently completed; see linked evidence and retained failed attempts."
+  qualification:
+    date: '2026-09-14'
+    baseline_runs: 5/5
+    human_fixed_control: passed once
+    evidence: docs/evidence/qualification/12620/
+    scope: Evaluator qualification only; not a new autonomous patch result.
+    limitation: Requires chronological screenshots; standard single-frame replay verification remains insufficient.

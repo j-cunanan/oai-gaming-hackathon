@@ -1,0 +1,38 @@
+[
+  {
+    "role": "baseline",
+    "case_id": "a7ca1211ec55",
+    "commit": "f7ededb3a1950c396e5c113d96a19dd88e71da9a",
+    "preparation_tests": {
+      "tests": 213,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests_network": "bridge",
+    "game_network": "none",
+    "usage": {
+      "model_calls": 19,
+      "input_tokens": 100479,
+      "output_tokens": 1866
+    }
+  },
+  {
+    "role": "human-fixed",
+    "case_id": "3985527513a0",
+    "commit": "db8d9669c25aaf5aa7ad9ac56e7cac1bbc1a0465",
+    "preparation_tests": {
+      "tests": 213,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests_network": "bridge",
+    "game_network": "none",
+    "usage": {
+      "model_calls": 43,
+      "input_tokens": 222933,
+      "output_tokens": 2336
+    }
+  }
+]

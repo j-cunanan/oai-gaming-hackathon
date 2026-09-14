@@ -1,0 +1,32 @@
+{
+  "id": "071d9553a44a",
+  "report": {
+    "title": "Human-fixed control: Colored tiles do not accept every valid hex code given, instead skipping over some or using the same value twice",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nv159.7\n\n### Issue\n\n'Colored Wall' & 'Colored Floor' tiles in editor do not accept every hex color code given to them in game. I tested this on both v159.7 and BE 27795 just to make sure it was not yet addressed.\n\nIn the save file below I did it for the following values: ff0000 to ff2000. Here is the table for the hex codes inputted vs accepted by the editor so you can copy paste: \nff0000 -> ff0000\nff0100 -> ff0100\nff0200 -> ff0200\nff0300 -> ff0200\nff0400 -> ff0300\nff0500 -> ff0500 \nff0600 -> ff0600\nff0700 -> ff0700\nff0800 -> ff0700\nff0900 -> ff0800\nff0a00 -> ff0a00\nff0b00 -> ff0b00\nff0c00 -> ff0b00\nff0d00 -> ff0c00\nff0e00 -> ff0e00\nff0f00 -> ff0f00\nff1000 -> ff1000\nff1100 -> ff1000\nff1200 -> ff1100\nff1300 -> ff1300\nff1400 -> ff1400\nff1500 -> ff1400\nff1600 -> ff1500\nff1700 -> ff1600\nff1800 -> ff1800\nff1900 -> ff1900\nff1a00 -> ff1900\nff1b00 -> ff1a00\nff1c00 -> ff1c00\nff1d00 -> ff1d00\nff1e00 -> ff1e00\nff1f00 -> ff1e00\nff2000 -> ff1f00\n\n### Steps to reproduce\n\n1. Open the map editor and go to edit any map\n2. Select the 'Colored Floor' or 'Colored Wall' tile in editor \n3. Paste in any hex color codes that differ by 1 in value and place each one down next to one another, eventually you'll see that the tiles no longer separate as the hex color code did not change its value properly\n\n<img width=\"1589\" height=\"354\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4108df1e-991f-4c17-8249-2a855d052525\" />\n\n### Mods used\n\nnone\n\n### Save file\n\n[Debris Field With Color Tiles For You To Look At.zip](https://github.com/user-attachments/files/32078489/Debris.Field.With.Color.Tiles.For.You.To.Look.At.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "da4be8f848f562cbd1289fe549d5c77ae0fb39cc",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "READY",
+  "created_at": "2026-09-14T07:44:46.562177+00:00",
+  "updated_at": "2026-09-14T07:52:16.079430+00:00",
+  "summary": "Build prepared. Investigation uses an isolated desktop with game network access disabled.",
+  "spec": null,
+  "hypotheses": [],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "usage": {
+    "model_calls": 1,
+    "input_tokens": 6127,
+    "output_tokens": 147
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "latest_screenshot": "071d9553a44a-81fdd70473fe43ee39e8-color-1.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 0.0,
+  "owner_evidence": [],
+  "benchmark_id": null
+}

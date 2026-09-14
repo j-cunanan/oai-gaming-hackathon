@@ -1,0 +1,89 @@
+{
+  "id": "4ef4f91d50fa",
+  "report": {
+    "title": "Colored tiles do not accept every valid hex code given, instead skipping over some or using the same value twice",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\nv159.7\n\n### Issue\n\n'Colored Wall' & 'Colored Floor' tiles in editor do not accept every hex color code given to them in game. I tested this on both v159.7 and BE 27795 just to make sure it was not yet addressed.\n\nIn the save file below I did it for the following values: ff0000 to ff2000. Here is the table for the hex codes inputted vs accepted by the editor so you can copy paste: \nff0000 -> ff0000\nff0100 -> ff0100\nff0200 -> ff0200\nff0300 -> ff0200\nff0400 -> ff0300\nff0500 -> ff0500 \nff0600 -> ff0600\nff0700 -> ff0700\nff0800 -> ff0700\nff0900 -> ff0800\nff0a00 -> ff0a00\nff0b00 -> ff0b00\nff0c00 -> ff0b00\nff0d00 -> ff0c00\nff0e00 -> ff0e00\nff0f00 -> ff0f00\nff1000 -> ff1000\nff1100 -> ff1000\nff1200 -> ff1100\nff1300 -> ff1300\nff1400 -> ff1400\nff1500 -> ff1400\nff1600 -> ff1500\nff1700 -> ff1600\nff1800 -> ff1800\nff1900 -> ff1900\nff1a00 -> ff1900\nff1b00 -> ff1a00\nff1c00 -> ff1c00\nff1d00 -> ff1d00\nff1e00 -> ff1e00\nff1f00 -> ff1e00\nff2000 -> ff1f00\n\n### Steps to reproduce\n\n1. Open the map editor and go to edit any map\n2. Select the 'Colored Floor' or 'Colored Wall' tile in editor \n3. Paste in any hex color codes that differ by 1 in value and place each one down next to one another, eventually you'll see that the tiles no longer separate as the hex color code did not change its value properly\n\n<img width=\"1589\" height=\"354\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4108df1e-991f-4c17-8249-2a855d052525\" />\n\n### Mods used\n\nnone\n\n### Save file\n\n[Debris Field With Color Tiles For You To Look At.zip](https://github.com/user-attachments/files/32078489/Debris.Field.With.Color.Tiles.For.You.To.Look.At.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T07:30:32.312942+00:00",
+  "updated_at": "2026-09-14T07:54:08.550568+00:00",
+  "summary": "UI action sequence showed ff0300 input and ff0200ff reopened selection for both terrain types, but the final single screenshot cannot establish the prior input. Automated visual verification rejected that oracle; evidence is limited to the multi-screenshot sequence.",
+  "spec": {
+    "summary": "Unverified report of some hex color inputs producing different or repeated values for Mindustry editor Colored Floor and Colored Wall tiles.",
+    "bug_class": "Reported color-input fidelity discrepancy",
+    "observed_behavior": "The player reports that on Windows, in v159.7 and BE 27795 with no mods, some entered hex codes are not preserved by Colored Floor and Colored Wall tiles. The supplied table lists 33 inputs from ff0000 through ff2000, with 15 reported mismatches. Examples include ff0300 → ff0200, ff0800 → ff0700, and ff2000 → ff1f00. The player also reports that adjacent tiles sometimes no longer separate when successive colors are entered. These claims have not been independently verified; the linked image and save archive have not been inspected.",
+    "expected_behavior": "If the editor supports exact six-digit RGB hex values, valid inputs should be preserved and recoverable without substitution. Whether adjacent tiles should visually separate for every distinct color requires confirmation.",
+    "known_preconditions": [
+      "Reported game: Mindustry.",
+      "Reported platform: Windows.",
+      "Reported tested builds: v159.7 and BE 27795.",
+      "Player reports no mods.",
+      "Reported workflow uses the map editor with Colored Floor or Colored Wall tiles.",
+      "Provided evaluation target commit: ef5d3cb26bcd794a6e560dbb8d20b6f8200b130c; its relationship to the reported builds is not established."
+    ],
+    "uncertain_conditions": [
+      "Whether the reported discrepancy is reproducible.",
+      "How the player measured the 'accepted' hex values: immediate field readback, tile inspection, reopening the editor, or save-file inspection.",
+      "Whether both tile types exhibit every listed mismatch.",
+      "The exact input confirmation, placement, and color readback sequence.",
+      "Whether 'tiles no longer separate' refers to visual similarity, tile joining, or identical stored colors.",
+      "Whether entered colors are expected to retain exact six-digit RGB precision.",
+      "Whether the behavior persists after saving and reloading.",
+      "Exact Windows version and executable provenance are unspecified; structured build_version is null despite builds being named in the report.",
+      "Linux is a planned evaluation platform, not a reported reproduction platform.",
+      "Whether the supplied target commit exhibits the reported behavior."
+    ],
+    "reproduction_hints": [
+      "Follow the reported workflow: open any map in the editor, select Colored Floor or Colored Wall, enter successive hex colors, and place tiles beside one another.",
+      "Use the supplied ff0000–ff2000 sequence, which increments the green channel by one while holding red and blue fixed.",
+      "Include reported matching inputs such as ff0200 and ff0500 alongside reported mismatches such as ff0300 → ff0200 and ff0400 → ff0300.",
+      "Document entered text, confirmation action, placed tile, and the method used to read back its color; test each tile type separately.",
+      "Treat any Linux evaluation as a separate platform check rather than confirmation of the Windows report."
+    ],
+    "required_artifacts": [
+      "Retrieve and inspect the linked screenshot: https://github.com/user-attachments/assets/4108df1e-991f-4c17-8249-2a855d052525.",
+      "Retrieve and inspect the linked map archive: https://github.com/user-attachments/files/32078489/Debris.Field.With.Color.Tiles.For.You.To.Look.At.zip.",
+      "A recording or annotated screenshots showing exact input, confirmation, placement, and color readback for a reported mismatch.",
+      "Exact build identifiers and platform details for each reproduction attempt, including correspondence to the target commit.",
+      "Separate results for Colored Floor and Colored Wall, including whether values change before or after save/reload.",
+      "Runtime logs from a reproduction attempt, if available; no logs were supplied."
+    ],
+    "severity": "unknown",
+    "confidence": 0.5
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Editor color selection loses one green-channel unit for ff0300.",
+      "prediction": "Entering ff0300 and confirming then reopening color selection will show ff0200.",
+      "status": "supported",
+      "observation": "Colored Floor: entered ff0300, clicked OK, reopened Color. Field displays ff0200ff (RGBA). Discrepancy occurs before placement or saving. Screenshot 4ef4f91d50fa-2d336ef222c65d665522-investigation.png."
+    },
+    {
+      "id": "H2",
+      "statement": "Colored Wall exhibits the same ff0300 selection round-trip discrepancy as Colored Floor.",
+      "prediction": "After entering ff0300 and clicking OK, reopening Wall Color displays ff0200ff.",
+      "status": "supported",
+      "observation": "Entered ff0300 in Colored Wall picker, clicked OK, placed wall at (550,350), reopened Color: ff0200ff visible. This is selection readback, not independent inspection of tile storage."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "usage": {
+    "model_calls": 39,
+    "input_tokens": 254403,
+    "output_tokens": 3961
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "latest_screenshot": "4ef4f91d50fa-d584e8f87d4f6b268d44-color-5.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 177.25033829093445,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12623"
+}

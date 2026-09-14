@@ -1,0 +1,11 @@
+{
+  "case_id": "4ef4f91d50fa",
+  "state": "INSUFFICIENT_EVIDENCE",
+  "summary": "UI action sequence showed ff0300 input and ff0200ff reopened selection for both terrain types, but the final single screenshot cannot establish the prior input. Automated visual verification rejected that oracle; evidence is limited to the multi-screenshot sequence.",
+  "usage": {
+    "model_calls": 34,
+    "input_tokens": 223768,
+    "output_tokens": 3163
+  },
+  "reproduction": null
+}
