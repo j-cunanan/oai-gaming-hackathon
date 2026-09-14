@@ -143,6 +143,28 @@ def test_api_missing_ai_and_review_validation(tmp_path):
         )
 
 
+@pytest.mark.parametrize(
+    "origin,status",
+    [
+        ("http://127.0.0.1:8001", 201),
+        ("http://localhost:8001", 201),
+        ("http://localhost:5173", 201),
+        ("http://127.0.0.1:8000", 201),
+        ("http://127.0.0.1:8002", 403),
+        ("http://example.com:8001", 403),
+        ("null", 403),
+    ],
+)
+def test_custom_server_port_accepts_its_local_dashboard_origin(tmp_path, origin, status):
+    app = create_app(Settings(_env_file=None, data_dir=tmp_path, OPENAI_API_KEY=""))
+    with TestClient(app, base_url="http://127.0.0.1:8001") as client:
+        response = client.post(
+            "/api/cases", json=report().model_dump(), headers={"Origin": origin}
+        )
+        assert response.status_code == status
+        assert len(app.state.store.list()) == int(status == 201)
+
+
 def test_api_artifacts_scoped_and_restart_recorded(tmp_path):
     settings = Settings(_env_file=None, data_dir=tmp_path, OPENAI_API_KEY="")
     store = Store(tmp_path)

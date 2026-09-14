@@ -53,8 +53,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def local_origin_guard(request: Request, call_next):
         # Loopback service. Browser pages from other origins cannot trigger local jobs.
         origin = request.headers.get("origin")
+        server_port = request.url.port or (443 if request.url.scheme == "https" else 80)
         allowed = {
-            f"http://{host}:{port}" for host in ("localhost", "127.0.0.1") for port in (8000, 5173)
+            f"http://{host}:{port}"
+            for host in ("localhost", "127.0.0.1")
+            for port in (8000, 5173, server_port)
         }
         if request.method not in ("GET", "HEAD", "OPTIONS") and origin and origin not in allowed:
             return JSONResponse({"detail": "Untrusted browser origin"}, status_code=403)
