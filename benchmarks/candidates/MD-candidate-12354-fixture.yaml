@@ -1,0 +1,111 @@
+id: MD-candidate-12354-fixture
+input:
+  title: '[Original test maps] Derelict conveyor loses current payload on reload'
+  body: '### Platforms
+
+
+    Windows
+
+
+    ### Build
+
+
+    release build 159.3
+
+
+    ### Issue
+
+
+    derelict payload conveyors lose their current payload (blocks) after restarting the map or reloading the
+    save
+
+
+    (originally this was a suggestion to rework payload conveyors, but I decided to issue this as a bug instead)
+
+
+    ### Steps to reproduce
+
+
+    1.) Place block on payload conveyor and make sure it''s derelict
+
+    2.) Save game
+
+    3.) Load game
+
+    4.) See results
+
+
+    ### Mods used
+
+
+    _No response_
+
+
+    ### Save file
+
+
+    [mindustry-data-export.zip](https://github.com/user-attachments/files/29970021/mindustry-data-export.zip)
+
+
+    ### (Crash) logs
+
+
+    _No response_
+
+
+    ### REPRO supplied original files (explicit input selection)
+
+
+    This fresh attempt receives two unchanged maps extracted from the report''s linked mindustry-data-export.zip:
+    maps/test map.msav as /workspace/fixtures/cargo-test-map.msav, and maps/mix tech.msav as /workspace/fixtures/cargo-mix-tech.msav.
+    They were selected because they are small, named test scenes (both 200x200); it is not known which map
+    best demonstrates the report. Their save envelopes are version 13, build tag 159, and list no active mods.
+    Import and inspect the first test map through the game''s editor UI before constructing an unrelated scene.
+    The fixture copies are restored identically before each fresh run.
+
+
+    The full original archive also includes larger maps, save slots, settings and a mod ZIP. Those other files
+    are not installed in this case. The two selected maps'' mods tags are empty, which is narrower than proving
+    that the reporter never used mods. If either map fails to load or lacks the needed setup, record that limitation.
+
+
+    The previous report-only attempt never established a payload on a Derelict conveyor and never saved/reloaded.
+    This is a new context with supplied original inputs, not a successful continuation of that attempt. Require
+    visible payload and Derelict ownership before the save, and inspect the same location after reopening.
+    Normal unloading, a map that was already empty, or a unit remaining in payload form does not establish
+    the reported loss. These notes do not supply a source diagnosis or fix.
+
+    '
+  game: mindustry
+  target_commit: 2c066e9c8c7e153e4eb91d730ead02e9011edd75
+  platform: Windows (reported); Linux (planned evaluation)
+  build_version: '159.3'
+  fixtures:
+  - filename: cargo-test-map.msav
+    sha256: 81d1f6d8c20f66647ea655f410b8870219c5b5990dd895b75f5d14c23b52d618
+  - filename: cargo-mix-tech.msav
+    sha256: db3033c4818efb4ab05bd060ae2fc5d9b1ada740c52c981fa5b13125e5acc255
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12354
+  reported_at: '2026-07-13T14:13:03Z'
+  fix_commit: 3b29a4877f6732e47941a71c3dd5d63bdfbf5054
+  fix_url: https://github.com/Anuken/Mindustry/commit/3b29a4877f6732e47941a71c3dd5d63bdfbf5054
+  changed_files:
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  all_commit_files:
+  - core/src/mindustry/world/blocks/payloads/PayloadConveyor.java
+  positive_case: true
+  reproducibility: UNVERIFIED
+  priority: P2 - overnight supplement
+  suggested_tags: Gameplay / save integrity / payloads
+  proposed_trigger: Place a block on a derelict payload conveyor, save, reload the same world, and compare
+    the payload at the same location.
+  selection_notes: A visible cargo-loss story with fewer timing dependencies than the explosive generator.
+    Must establish derelict ownership and same-world reload; a missing block on an unrelated map is inconclusive.
+    The reported attachment has not been installed or inspected.
+  evidence_notes: Supplementary research on 2026-09-15 JST. Issue body, linked closure commit and parent reviewed
+    through GitHub API. Input excludes submission checklist and contains no comments or fix information. No
+    runtime qualification yet; kept outside admitted manifests.
+  assistance: Two selected unchanged small test maps from the original attachment, plus explicit metadata and
+    setup limits. No future fix in investigator input.
+  distinct_issue: '12354'
