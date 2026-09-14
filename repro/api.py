@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, Header, HTTPException, Request, UploadFile
+from fastapi import FastAPI, Header, HTTPException, Query, Request, UploadFile
 from fastapi.responses import (
     FileResponse,
     JSONResponse,
@@ -14,6 +14,7 @@ from fastapi.responses import (
 )
 from fastapi.staticfiles import StaticFiles
 
+from repro.activity import activity_snapshot
 from repro.adapters import ADAPTERS
 from repro.config import Settings
 from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
@@ -212,6 +213,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if tail:
             return store.latest_events(case_id, tail)
         return store.events(case_id, max(0, after))
+
+    @app.get("/api/cases/{case_id}/activity")
+    def activity(case_id: str, after: int = Query(default=0, ge=0)):
+        get_case(case_id)
+        return activity_snapshot(store, case_id, after)
+
+    @app.get("/api/cases/{case_id}/events/{seq}")
+    def event_record(case_id: str, seq: int):
+        get_case(case_id)
+        try:
+            return store.event(case_id, seq)
+        except KeyError:
+            raise HTTPException(404, "Event not found") from None
 
     @app.get("/api/cases/{case_id}/stream")
     async def stream(

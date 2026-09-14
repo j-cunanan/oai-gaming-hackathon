@@ -95,6 +95,15 @@ class Store:
         case.state, case.summary = state, summary
         self.save(case, "state")
 
+    def event(self, case_id: str, seq: int) -> dict:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT * FROM events WHERE case_id=? AND seq=?", (case_id, seq)
+            ).fetchone()
+        if not row:
+            raise KeyError(seq)
+        return {**dict(row), "data": json.loads(row["data"])}
+
     def latest_events(self, case_id: str, count=100) -> list[dict]:
         with self.connect() as db:
             rows = db.execute(

@@ -14,7 +14,6 @@ import {
   Check,
   CheckCheck,
   ChevronRight,
-  Circle,
   Clock3,
   Code2,
   Crosshair,
@@ -41,6 +40,8 @@ import "./styles.css";
 import { HelpTip } from "./help";
 import { PatchReview } from "./patch-review";
 import { allChecksPass } from "./diff";
+import { StageActivity, useStageActivity } from "./stage-activity";
+import { clockTime, dateTime } from "./activity-model";
 
 type CheckResult = {
   name: string;
@@ -214,7 +215,14 @@ function App() {
   const [selected, setSelected] = useState("");
   const [current, setCurrent] = useState<Case | null>(null);
   const [health, setHealth] = useState<Health | null>(null);
-  const [events, setEvents] = useState<Event[]>([]);
+  const [stageSelection, setStageSelection] = useState<{
+    key: string;
+    request: number;
+  } | null>(null);
+  const activity = useStageActivity(
+    current?.id || "",
+    current?.updated_at || "",
+  );
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [benchmark, setBenchmark] = useState<Benchmark | null>(null);
   const [page, setPage] = useState("investigations");
@@ -292,7 +300,7 @@ function App() {
   }, [refreshList]);
   useEffect(() => {
     setCurrent(null);
-    setEvents([]);
+    setStageSelection(null);
     setArtifacts([]);
     setPatch("");
     setPatchError("");
@@ -311,7 +319,6 @@ function App() {
         ]);
         if (disposed || selectedRef.current !== selected) return;
         setCurrent(c);
-        setEvents(log);
         eventRevision.current = log.at(-1)?.seq ?? 0;
         source = new EventSource(
           `/api/cases/${selected}/stream?after=${eventRevision.current}`,
@@ -321,7 +328,6 @@ function App() {
           const e = JSON.parse((message as MessageEvent).data) as Event;
           if (e.seq <= eventRevision.current) return;
           eventRevision.current = e.seq;
-          setEvents((previous) => [...previous, e].slice(-150));
           if (e.kind === "action") {
             setCurrent(
               (previous) =>
@@ -409,33 +415,6 @@ function App() {
   const activePhase = current
     ? phases.findIndex((p) => p.states.includes(current.state))
     : -1;
-  const visibleEvents = events
-    .filter((e) => !["model_call", "observation"].includes(e.kind))
-    .slice(-35)
-    .reverse();
-  const initialTime = current ? new Date(current.created_at).getTime() : 0;
-  function eventText(e: Event) {
-    if (e.kind === "action") {
-      const a = e.data.action as Action;
-      return a.semantic || human(a.action);
-    }
-    if (e.kind === "hypothesis") return String(e.data.statement);
-    if (e.kind === "replay") {
-      const v = e.data.verdict as { observed: boolean; explanation: string };
-      return `${human(String(e.data.phase))}: ${v.observed ? "symptom observed" : "symptom not confirmed"}`;
-    }
-    if (e.kind === "verification") return String(e.data.explanation);
-    if (e.kind === "minimization")
-      return `Replay reduced from ${e.data.original} to ${e.data.reduced} actions`;
-    if (e.kind === "localization") return String(e.data.root_cause);
-    if (e.kind === "patch" || e.kind === "reduction_proposal")
-      return String(e.data.explanation);
-    if (e.kind === "validation_replay")
-      return e.data.fixed
-        ? "Expected state reached; symptom absent"
-        : "Fix not established in this replay";
-    return String(e.data.summary || human(e.kind));
-  }
 
   return (
     <div className="app-shell">
@@ -813,6 +792,9 @@ function App() {
                   <div className="pipeline">
                     {phases.map((phase, i) => {
                       const Icon = phase.icon;
+                      const stageTime = activity.snapshot?.stages.find(
+                        (stage) => stage.key === phase.label.toLowerCase(),
+                      )?.last_at;
                       const done = activePhase > i;
                       const active = activePhase === i;
                       const failed =
@@ -826,18 +808,39 @@ function App() {
                           <div
                             className={`phase ${done ? "done" : ""} ${active ? "active" : ""} ${failed ? "failed" : ""}`}
                           >
-                            <span className="phase-icon">
-                              {failed ? (
-                                <X size={13} />
-                              ) : done ? (
-                                <Check size={13} />
-                              ) : (
-                                <Icon size={14} />
-                              )}
-                            </span>
-                            <span>
-                              {failed ? "Checks failed" : phase.label}
-                            </span>
+                            <button
+                              className="phase-jump"
+                              aria-label={`View ${phase.label} activity`}
+                              onClick={() => {
+                                setTab("activity");
+                                setStageSelection((previous) => ({
+                                  key: phase.label.toLowerCase(),
+                                  request: (previous?.request || 0) + 1,
+                                }));
+                              }}
+                            >
+                              <span className="phase-icon">
+                                {failed ? (
+                                  <X size={13} />
+                                ) : done ? (
+                                  <Check size={13} />
+                                ) : (
+                                  <Icon size={14} />
+                                )}
+                              </span>
+                              <span>
+                                <span>{phase.label}</span>
+                                <small
+                                  title={
+                                    stageTime
+                                      ? `Latest recorded: ${dateTime(stageTime)}`
+                                      : "No recorded events"
+                                  }
+                                >
+                                  {stageTime ? clockTime(stageTime) : "—"}
+                                </small>
+                              </span>
+                            </button>
                             <HelpTip topic={phase.label} />
                             {active && running && (
                               <span className="phase-pulse" />
@@ -1116,57 +1119,14 @@ function App() {
                                 <LoaderCircle className="spin" size={16} />
                               )}
                             </div>
-                            <div className="timeline-title">
-                              <span>EXPERIMENT TIMELINE</span>
-                              <span>{events.length} recent events</span>
-                            </div>
-                            <div className="timeline">
-                              {visibleEvents.map((e) => (
-                                <div
-                                  className={`event event-${e.kind}`}
-                                  key={e.seq}
-                                >
-                                  <span className="event-node">
-                                    {e.kind === "action" ? (
-                                      <Crosshair size={12} />
-                                    ) : e.kind === "replay" ? (
-                                      <RotateCcw size={12} />
-                                    ) : e.kind === "hypothesis" ? (
-                                      <FlaskConical size={12} />
-                                    ) : (
-                                      <Circle size={8} />
-                                    )}
-                                  </span>
-                                  <div>
-                                    <div className="event-meta">
-                                      <span>
-                                        {human(
-                                          e.kind === "action"
-                                            ? String(e.data.phase)
-                                            : e.kind,
-                                        )}
-                                      </span>
-                                      <time>
-                                        {duration(
-                                          (new Date(e.created_at).getTime() -
-                                            initialTime) /
-                                            1000,
-                                        )}
-                                      </time>
-                                    </div>
-                                    <p>{eventText(e)}</p>
-                                  </div>
-                                </div>
-                              ))}
-                              {visibleEvents.length === 0 && (
-                                <div className="inspector-empty">
-                                  <Activity size={25} />
-                                  <p>
-                                    Experiments will appear here as they run.
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                            <StageActivity
+                              key={current.id}
+                              snapshot={activity.snapshot}
+                              error={activity.error}
+                              retry={activity.retry}
+                              selection={stageSelection}
+                              checks={current.checks}
+                            />
                             <div className="timeline-footer">
                               <Terminal size={13} />
                               <span>
