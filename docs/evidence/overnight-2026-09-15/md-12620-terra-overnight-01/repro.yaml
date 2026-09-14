@@ -1,0 +1,444 @@
+version: 2
+game: mindustry
+commit: 63b2069e9685063c74abc41fae84a66f73e9e09b
+resolution:
+- 1280
+- 720
+steps:
+- action: click
+  x: 262
+  y: 334
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the map editor from the main menu.
+  checkpoint: editor_menu
+- action: click
+  x: 641
+  y: 681
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Create a new editor map.
+  checkpoint: new_map_dialog
+- action: click
+  x: 668
+  y: 322
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus the new map name field.
+  checkpoint: ''
+- action: type
+  x: 668
+  y: 322
+  keys: []
+  text: datapatch-repro
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Name the new map for the datapatch persistence test.
+  checkpoint: ''
+- action: keypress
+  x: 0
+  y: 0
+  keys:
+  - tab
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Navigate focus to the map-name input.
+  checkpoint: ''
+- action: click
+  x: 699
+  y: 352
+  keys: []
+  text: ''
+  seconds: 0.2
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Focus map-name field.
+  checkpoint: ''
+- action: type
+  x: 699
+  y: 352
+  keys: []
+  text: datapatch-repro
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Enter a map name.
+  checkpoint: ''
+- action: click
+  x: 705
+  y: 428
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm creation of the editor map.
+  checkpoint: ''
+- action: click
+  x: 33
+  y: 50
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor actions menu to locate map data assets.
+  checkpoint: ''
+- action: click
+  x: 735
+  y: 185
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open Map Info where map assets are configured.
+  checkpoint: ''
+- action: click
+  x: 635
+  y: 606
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the map Data Patches and Assets editor.
+  checkpoint: ''
+- action: click
+  x: 745
+  y: 680
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Add a datapatch to the map.
+  checkpoint: ''
+- action: click
+  x: 643
+  y: 321
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Choose datapatch import from clipboard.
+  checkpoint: ''
+- action: wait
+  x: 0
+  y: 0
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm the newly added datapatch is visibly listed before saving.
+  checkpoint: patch_added
+- action: click
+  x: 540
+  y: 681
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return from the datapatches list to map information.
+  checkpoint: ''
+- action: click
+  x: 34
+  y: 50
+  keys: []
+  text: ''
+  seconds: 0.4
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor actions.
+  checkpoint: ''
+- action: click
+  x: 544
+  y: 186
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Save map with the added datapatch.
+  checkpoint: patch_initial_save
+- action: click
+  x: 33
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open actions to return to map data assets.
+  checkpoint: ''
+- action: click
+  x: 739
+  y: 187
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map info.
+  checkpoint: ''
+- action: click
+  x: 623
+  y: 608
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open datapatches list for removal.
+  checkpoint: ''
+- action: click
+  x: 955
+  y: 178
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Delete the listed datapatch.
+  checkpoint: patch_delete_transition
+- action: click
+  x: 742
+  y: 403
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm datapatch deletion and verify the list becomes empty.
+  checkpoint: patch_deleted
+- action: click
+  x: 536
+  y: 681
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return to editor after deleting the datapatch.
+  checkpoint: ''
+- action: click
+  x: 34
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open editor actions to save the deletion.
+  checkpoint: ''
+- action: click
+  x: 543
+  y: 186
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Save the map after datapatch deletion.
+  checkpoint: patch_deleted_save
+- action: click
+  x: 32
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open menu to exit the editor.
+  checkpoint: ''
+- action: click
+  x: 639
+  y: 510
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Quit the editor after saving the deletion.
+  checkpoint: editor_exit_after_delete
+- action: click
+  x: 742
+  y: 411
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Confirm exiting the saved editor session.
+  checkpoint: ''
+- action: click
+  x: 263
+  y: 334
+  keys: []
+  text: ''
+  seconds: 2.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Return to the map editor map list.
+  checkpoint: ''
+- action: double_click
+  x: 208
+  y: 258
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Reopen the same custom map after saving the deletion.
+  checkpoint: map_reopened
+- action: click
+  x: 490
+  y: 502
+  keys: []
+  text: ''
+  seconds: 3.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open the saved map in editor to inspect loaded datapatches.
+  checkpoint: ''
+- action: click
+  x: 34
+  y: 51
+  keys: []
+  text: ''
+  seconds: 0.3
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Open map info after reopening.
+  checkpoint: ''
+- action: click
+  x: 738
+  y: 187
+  keys: []
+  text: ''
+  seconds: 0.5
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: View reopened map information.
+  checkpoint: ''
+- action: click
+  x: 631
+  y: 607
+  keys: []
+  text: ''
+  seconds: 1.0
+  hold_seconds: 0.0
+  scroll_y: 0
+  button: left
+  semantic: Inspect datapatches after reopening the saved map.
+  checkpoint: reopened_patch_absent
+oracle:
+  kind: sequence
+  description: The reporter states that after adding and saving a datapatch in a map,
+    deleting the datapatch appears to remove it temporarily. After saving, leaving
+    the editor, and reopening the map, the datapatch is present again. The reporter
+    says the behavior was also observed without mods.
+  log_pattern: null
+  checkpoints:
+  - patch_added
+  - patch_delete_transition
+  - patch_deleted
+  - patch_deleted_save
+  - editor_exit_after_delete
+  - map_reopened
+  - reopened_patch_absent
+successful_runs: 3
+total_runs: 5
+original_actions: 34
+deterministic: false
+evidence:
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-investigation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-investigation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-investigation.png
+- md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-investigation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-investigation.png
+- md-12620-terra-overnight-01-cd52ff35ae1e56609ca9-investigation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-investigation.png
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png
+- md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png
+- md-12620-terra-overnight-01-2cdc3591ea93baf41992-confirmation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png
+- md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png
+- md-12620-terra-overnight-01-cd34e70e2fedfbb8ea3a-confirmation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png
+- md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png
+- md-12620-terra-overnight-01-9d08d46493e550890892-confirmation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png
+- md-12620-terra-overnight-01-2e8f95d03d6bb08f2733-confirmation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png
+- md-12620-terra-overnight-01-c7a74e91a0d389104361-confirmation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png
+- md-12620-terra-overnight-01-5953793d6f55a4d1b623-confirmation.png
+- md-12620-terra-overnight-01-79623b51484854e7e6a6-confirmation.png
+- md-12620-terra-overnight-01-77d35b543e27ef8f26f1-confirmation.png
+- md-12620-terra-overnight-01-cab075e1376afbdd669e-confirmation.png
+- md-12620-terra-overnight-01-6dd9685c29a13060ee85-confirmation.png
+- md-12620-terra-overnight-01-405bc343880307a1bee8-confirmation.png
+- md-12620-terra-overnight-01-6020ead1fd0b0e515c4f-confirmation.png

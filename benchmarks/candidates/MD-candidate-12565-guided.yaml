@@ -1,0 +1,101 @@
+id: MD-candidate-12565-guided
+input:
+  title: '[Setup guided] Unit disappears when entering payload conveyor'
+  body: '### Platforms
+
+
+    Windows
+
+
+    ### Build
+
+
+    27713
+
+
+    ### Issue
+
+
+    Unit disappears when entering payload conveyor
+
+
+    ### Steps to reproduce
+
+
+    Using RTS or manually control a unit entering a payload conveyor.
+
+
+    ### Mods used
+
+
+    none
+
+
+    ### Save file
+
+
+    Any save
+
+
+    ### (Crash) logs
+
+
+    _No response_
+
+
+    ### REPRO setup assistance (not part of the upstream report)
+
+
+    A prior local attempt did not obtain a ground unit, so the entry transition was never tested. These notes concern
+    setup and controls only; the original reported symptom above is unchanged.
+
+
+    - In this pre-fix source, core/src/mindustry/world/blocks/payloads/PayloadSource.java supports both Block and
+    UnitType configuration. The vanilla sandbox Payload Source can supply a test unit without building a factory
+    supply chain. Verify its actual unit output before trying the reported trigger, and keep the test scene small.
+
+    - core/src/mindustry/game/Gamemode.java distinguishes sandbox (infinite resources) from editor (also instant
+    construction). The editor menu''s Edit in Game action is implemented by MapEditorDialog.editInGame. This can
+    help create a setup, but record the mode/rules and perform the actual report test in normal play; setup shortcuts
+    must not manufacture the symptom.
+
+    - core/src/mindustry/input/Binding.java defines Ctrl for direct unit control, Shift for command mode, and E
+    for pausing/resuming construction. Inspect the source or Controls screen if unsure. A placement outline is not
+    proof that construction completed.
+
+    - The updated input worker supports keys on pointer actions (for example Ctrl-click), plus hold_seconds on keypress
+    for sustained movement. seconds alone is a wait after releasing the keys.
+
+    - A unit entering a payload can legitimately stop being drawn as a walking unit. Check the connected transport/output
+    and the same unit''s continued existence; do not count normal payload transport as disappearance.
+
+    '
+  game: mindustry
+  target_commit: 7e80948b58138a569e119857e0add95762d7e0bb
+  platform: Windows (reported); Linux (planned evaluation)
+evaluator:
+  issue_url: https://github.com/Anuken/Mindustry/issues/12565
+  reported_at: '2026-09-01T02:52:33Z'
+  fix_commit: ae291be0a1ab1aebce7690863e53878667582e6a
+  fix_url: https://github.com/Anuken/Mindustry/commit/ae291be0a1ab1aebce7690863e53878667582e6a
+  changed_files:
+  - core/src/mindustry/entities/comp/BuildingComp.java
+  - core/src/mindustry/input/InputHandler.java
+  - core/src/mindustry/world/blocks/payloads/PayloadBlock.java
+  all_commit_files:
+  - core/src/mindustry/entities/comp/BuildingComp.java
+  - core/src/mindustry/input/InputHandler.java
+  - core/src/mindustry/world/blocks/payloads/PayloadBlock.java
+  positive_case: true
+  reproducibility: UNVERIFIED
+  priority: P2
+  suggested_tags: Gameplay / payloads / unit state
+  proposed_trigger: Drive or command a unit into a payload conveyor in a fresh sandbox map.
+  selection_notes: Needs unit and conveyor setup. A unit becoming a payload is normal; verify unexpected loss by
+    observing transport/output, not disappearance alone. Reported on Windows.
+  evidence_notes: Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched
+    body, excluding submission checklist; may include later edits. No comments or fix information added to input.
+    No baseline build or runtime verification performed.
+  assistance: General setup guidance from the previous unsuccessful attempt and pre-fix control/setup source. Fresh
+    model context; no future source or fix information in input.
+  distinct_issue: '12565'

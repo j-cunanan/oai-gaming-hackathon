@@ -1,0 +1,90 @@
+340:                 }
+341: 
+342:                 if(hadEntity){
+343:                     isCenter = stream.readBoolean();
+344:                 }
+345: 
+346:                 //set block only if this is the center; otherwise, it's handled elsewhere
+347:                 if(isCenter){
+348:                     tile.setBlock(block);
+349:                     if(tile.build != null){
+350:                         if(!state.preview) state.allBuildings.add(tile.build);
+351:                         tile.build.enabled = true;
+352:                     }
+353:                 }
+354: 
+355:                 //must be assigned after setBlock, because that can reset data
+356:                 if(hadData){
+357:                     tile.data = data;
+358:                     tile.floorData = floorData;
+359:                     tile.overlayData = overlayData;
+360:                     tile.extraData = extraData;
+361:                     context.onReadTileData();
+362:                 }
+363: 
+364:                 if(hadEntity){
+365:                     if(isCenter){ //only read entity for center blocks
+366:                         if(block.hasBuilding()){
+367:                             try{
+368:                                 readChunkReads(stream, (in, len) -> {
+369:                                     byte revision = in.b();
+370:                                     tile.build.readAll(in, revision);
+371:                                 });
+372:                             }catch(Throwable e){
+373:                                 throw new IOException("Failed to read tile entity of block: " + block, e);
+374:                             }
+375:                         }else{
+376:                             //skip the entity region, as the entity and its IO code are now gone
+377:                             skipChunk(stream);
+378:                         }
+379: 
+380:                         context.onReadBuilding();
+381:                     }
+382:                 }else if(!hadData){ //never read consecutive blocks if there's data
+383:                     int consecutives = stream.readUnsignedByte();
+384: 
+385:                     for(int j = i + 1; j < i + 1 + consecutives; j++){
+386:                         context.tile(j).setBlock(block);
+387:                     }
+388: 
+389:                     i += consecutives;
+390:                 }
+391:             }
+392:         }finally{
+393:             if(!generating) context.end();
+394:         }
+395:     }
+396: 
+397:     public void writeTeamBlocks(DataOutput stream) throws IOException{
+398:         //write team data with entities.
+399:         Seq<TeamData> data = state.teams.getActive().copy();
+400:         if(!data.contains(Team.sharded.data())) data.add(Team.sharded.data());
+401: 
+402:         Writes writes = new Writes(stream);
+403: 
+404:         stream.writeInt(data.size);
+405:         for(TeamData team : data){
+406:             stream.writeInt(team.team.id);
+407:             stream.writeInt(team.plans.size);
+408:             for(BlockPlan block : team.plans){
+409:                 stream.writeShort(block.x);
+410:                 stream.writeShort(block.y);
+411:                 stream.writeShort(block.rotation);
+412:                 stream.writeShort(block.block.id);
+413:                 TypeIO.writeObject(writes, block.config);
+414:             }
+415:         }
+416:     }
+417: 
+418:     public void writeWorldEntities(DataOutput stream) throws IOException{
+419:         //units are not included in Groups.all
+420:         stream.writeInt(Groups.all.count(Entityc::serialize) + Groups.unit.size());
+421: 
+422:         for(Entityc entity : Groups.all){
+423:             if(!entity.serialize()) continue;
+424: 
+425:             writeEntity(entity, stream);
+426:         }
+427: 
+428:         for(Entityc entity : Groups.unit){
+429:             writeEntity(entity, stream);

@@ -1,0 +1,122 @@
+{
+  "id": "md-12565-terra-overnight-02",
+  "report": {
+    "title": "[Setup guided] Unit disappears when entering payload conveyor",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\n27713\n\n### Issue\n\nUnit disappears when entering payload conveyor\n\n### Steps to reproduce\n\nUsing RTS or manually control a unit entering a payload conveyor.\n\n### Mods used\n\nnone\n\n### Save file\n\nAny save\n\n### (Crash) logs\n\n_No response_\n\n### REPRO setup assistance (not part of the upstream report)\n\nA prior local attempt did not obtain a ground unit, so the entry transition was never tested. These notes concern setup and controls only; the original reported symptom above is unchanged.\n\n- In this pre-fix source, core/src/mindustry/world/blocks/payloads/PayloadSource.java supports both Block and UnitType configuration. The vanilla sandbox Payload Source can supply a test unit without building a factory supply chain. Verify its actual unit output before trying the reported trigger, and keep the test scene small.\n- core/src/mindustry/game/Gamemode.java distinguishes sandbox (infinite resources) from editor (also instant construction). The editor menu's Edit in Game action is implemented by MapEditorDialog.editInGame. This can help create a setup, but record the mode/rules and perform the actual report test in normal play; setup shortcuts must not manufacture the symptom.\n- core/src/mindustry/input/Binding.java defines Ctrl for direct unit control, Shift for command mode, and E for pausing/resuming construction. Inspect the source or Controls screen if unsure. A placement outline is not proof that construction completed.\n- The updated input worker supports keys on pointer actions (for example Ctrl-click), plus hold_seconds on keypress for sustained movement. seconds alone is a wait after releasing the keys.\n- A unit entering a payload can legitimately stop being drawn as a walking unit. Check the connected transport/output and the same unit's continued existence; do not count normal payload transport as disappearance.\n",
+    "game": "mindustry",
+    "target_commit": "7e80948b58138a569e119857e0add95762d7e0bb",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T16:37:29.282810+00:00",
+  "updated_at": "2026-09-14T16:59:28.985535+00:00",
+  "summary": "Could not test the reported payload-entry behavior. In sandbox, a Payload Conveyor was identified and placed, but a valid ground unit payload and a connected output route were not configured. No unit entering a conveyor, disappearance, destruction, or downstream emergence was observed.",
+  "spec": {
+    "summary": "Reported on Windows: a unit reportedly disappears when entering a payload conveyor. The report states this can occur while using RTS controls or direct manual unit control. No independent reproduction or verification is provided.",
+    "bug_class": "Gameplay / unit-payload transport behavior",
+    "observed_behavior": "The player reports that a unit disappears when it enters a payload conveyor.",
+    "expected_behavior": null,
+    "known_preconditions": [
+      "Reported platform: Windows.",
+      "Reported build: 27713.",
+      "Reported mods: none.",
+      "The scenario involves a unit entering a payload conveyor.",
+      "The player reports two possible control paths: RTS control or manual/direct unit control.",
+      "A prior local setup attempt did not obtain a ground unit, so the payload-entry transition was not tested.",
+      "The provided target commit is 7e80948b58138a569e119857e0add95762d7e0bb."
+    ],
+    "uncertain_conditions": [
+      "Whether the report reproduces on the specified target commit.",
+      "Whether the affected unit is a valid ground unit payload for the conveyor configuration.",
+      "Which specific unit type was used.",
+      "Which payload conveyor variant, orientation, configuration, and connected output were used.",
+      "Whether the unit actually entered the conveyor versus being blocked, destroyed, redirected, or otherwise removed before entry.",
+      "Whether apparent disappearance is normal visual removal while the unit is carried as a payload.",
+      "Whether the unit continues to exist in the payload transport chain or emerges from a connected output.",
+      "Whether RTS control and direct manual control produce the same result.",
+      "Whether the issue depends on map, game mode, rules, team, unit AI state, or payload source configuration.",
+      "Whether the stated 'Any save' means a new sandbox map, an existing save, or no save-specific dependency.",
+      "Whether the issue occurs on Linux; Linux is only listed as planned evaluation, not as a reported affected platform.",
+      "No expected behavior was explicitly stated by the reporter."
+    ],
+    "reproduction_hints": [
+      "Create a minimal test scene with a payload conveyor and a connected transport/output path.",
+      "Use a known ground unit, potentially supplied through a sandbox Payload Source, and verify the source's configured output before testing.",
+      "Record the game mode and rules used for setup and for the actual test.",
+      "Test the unit's transition into the conveyor, then inspect downstream transport/output and confirm whether the unit persists or exits.",
+      "Test RTS-commanded entry and direct-control entry separately.",
+      "Do not treat loss of the walking-unit sprite alone as confirmation of a defect, because carried payloads may no longer be rendered as walking units.",
+      "If using editor or setup shortcuts, perform the actual observation under normal gameplay conditions and document the distinction."
+    ],
+    "required_artifacts": [
+      "Save file or minimal map containing the conveyor layout and unit source.",
+      "Exact unit type and team used.",
+      "Screenshot or video covering the unit before entry, entry into the conveyor, and all connected outputs/downstream transport.",
+      "Conveyor type, orientation, configuration, and complete connected payload-routing layout.",
+      "Game mode, map/rules, and whether editor setup or sandbox tools were used.",
+      "Input method and exact actions for each reported path: RTS control and direct manual control.",
+      "Confirmation of whether the unit can be found downstream, exits an output, is destroyed, or is absent from the map.",
+      "Runtime logs and any relevant console output, even though no crash log was supplied.",
+      "Build identification sufficient to map reported build 27713 to the evaluated revision, if applicable."
+    ],
+    "severity": "unknown",
+    "confidence": 0.91
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "A valid ground unit entering a payload conveyor is only visually absent while carried and should emerge from a connected output.",
+      "prediction": "In a minimal sandbox layout with a payload source, conveyor, and output, the unit will be visible before loading and reappear at the output rather than being lost.",
+      "status": "inconclusive",
+      "observation": "Sandbox was started and a Payload Conveyor was placed, but a Payload Source plus a valid ground-unit payload/output chain was not configured. Direct movement moved the player's flying unit away from the test area, so no unit-entry transition was observed."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "7e80948b58138a569e119857e0add95762d7e0bb": {
+      "commit_sha": "7e80948b58138a569e119857e0add95762d7e0bb",
+      "timestamp": "2026-09-14T16:53:12.884533+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12565-terra-overnight-02-3feb3bc53d5bdbd5562f-baseline-tests.log",
+      "log_sha256": "3feb3bc53d5bdbd5562f50e489d1a3df5d27193e52ec8e906b7a7922a72949a0",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 37,
+    "input_tokens": 420738,
+    "output_tokens": 5051
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12565-terra-overnight-02-2b2989489c4036de1471-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 628.5076695000171,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12565-guided",
+  "imported_from": null,
+  "case_id": "md-12565-terra-overnight-02"
+}

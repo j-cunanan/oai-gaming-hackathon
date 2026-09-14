@@ -1,8 +1,29 @@
-# Overnight gameplay setup attempts — September 15, 2026
+# Overnight investigation records — September 15, 2026
 
-These frozen records preserve the first live Terra attempts at the harder payload
-bugs. Both ended **inconclusive before the report's trigger was executed**. No
-reproduction rate, negative-case success or game fix is claimed.
+The [overnight progress report](../../overnight-2026-09-15.md) tracks the current
+shortlist. Each package below is a frozen snapshot, including unsuccessful attempts.
+
+New records retained after the initial gameplay attempts:
+
+- `md-12579-terra-overnight-01`: verified 12-action crash trigger and a fresh AI patch.
+  Three gates pass; the existing-test fixture returns 404, and the full candidate
+  visual check passed only 1/5 because reopening was not recorded. The patch avoids
+  the save crash in all five candidate executions. No fully validated fix is claimed.
+- `md-12620-terra-overnight-01`: original report-only data-patch investigation,
+  3/5 confirmed replays and no patch. `datapatch-selection-audit` separately shows
+  5/5 retained-image judgments after including the omitted initial-save checkpoint.
+  It does not change the original case or count as new game executions.
+- `md-12565-terra-overnight-02`: a separate setup-guided attempt (37 Terra calls)
+  still stopped before the required unit-entry transition. Use the corresponding
+  `MD-candidate-12565-guided.yaml` input manifest when importing it.
+- `target-dummy-controls`: supplemental evaluator tests authored after the AI
+  proposal. Full online baseline repeats the fixture 404. Default-team serialization
+  fails 3/3 on baseline and passes 3/3 with the exact AI patch; the explicit-team
+  control passes on both. These do not replace full-map reload verification.
+
+For the initial two gameplay records below, both attempts ended **inconclusive
+before the report's trigger was executed**. No reproduction rate, negative-case
+success or game fix is claimed for either.
 
 | Report | Model attempts | Outcome | Total model usage |
 | --- | --- | --- | --- |
@@ -44,3 +65,14 @@ records a potentially clearer cargo-loss-on-reload story. Its issue and historic
 fix were reviewed, but it has **not been run or qualified**. #12626 remains deferred
 for the behavioral-contract reason in the original shortlist; it was not silently
 reintroduced as a fresh positive candidate.
+
+The new crash and persistence packages use the same importer:
+
+```bash
+uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12579-terra-overnight-01 --manifest benchmarks/candidates/MD-candidate-12579.yaml --id recorded-md-12579
+uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12620-terra-overnight-01 --manifest benchmarks/candidates/MD-candidate-12620.yaml --id recorded-md-12620
+uv run repro import-evidence docs/evidence/overnight-2026-09-15/md-12565-terra-overnight-02 --manifest benchmarks/candidates/MD-candidate-12565-guided.yaml --id recorded-md-12565-guided
+```
+
+The supplied-input variants are explicitly labeled assistance and remain separate
+from the report-only cases. They are not additional distinct bug reports.
