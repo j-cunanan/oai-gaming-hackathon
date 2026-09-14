@@ -15,5 +15,7 @@ apps/web/dist/
 .DS_Store
 *.log
 *.tsbuildinfo
+/output/
+/tmp/pdfs/
 benchmarks/results/*
 !benchmarks/results/.gitkeep

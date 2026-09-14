@@ -2,15 +2,23 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, Header, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi.responses import (
+    FileResponse,
+    JSONResponse,
+    PlainTextResponse,
+    Response,
+    StreamingResponse,
+)
 from fastapi.staticfiles import StaticFiles
 
 from repro.adapters import ADAPTERS
 from repro.config import Settings
 from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
 from repro.orchestration.manager import Manager
+from repro.reporting import render_report
 from repro.storage.store import Store
 
 
@@ -272,9 +280,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             headers={"Content-Security-Policy": "default-src 'none'; sandbox"},
         )
 
-    @app.get("/api/cases/{case_id}/report", response_class=PlainTextResponse)
-    async def report(case_id: str):
-        return manager.report(get_case(case_id))
+    @app.get("/api/cases/{case_id}/report")
+    def report(case_id: str, format: Literal["pdf", "markdown"] = "pdf"):
+        case = get_case(case_id)
+        if format == "markdown":
+            return PlainTextResponse(manager.report(case))
+        # Run in FastAPI's thread pool so PDF layout does not stall live worker events.
+        return Response(
+            render_report(case, store),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'inline; filename="repro-report-{case.id}.pdf"',
+                "Cache-Control": "no-store",
+            },
+        )
 
     @app.get("/api/benchmarks")
     async def benchmarks():

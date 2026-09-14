@@ -41,6 +41,10 @@ Mindustry startup retains the eight-second minimum and additionally waits for it
 
 The dashboard starts its event stream after the latest loaded event, appends incoming events directly and coalesces case snapshot refreshes. Artifact metadata is fetched only while the Evidence tab is open, and its list renders 50 rows at a time. Filtering still searches the complete fetched index.
 
+Patch proposals persist a concise explanation and risks alongside the selected patch artifact. Older cases recover that data from the patch event matching the exact artifact ID, so a different proposal cannot supply its justification. The dashboard presents this saved explanation, the validation evidence, and the colored source diff as separate parts of review. Info buttons explain the terminology without additional API requests.
+
+`repro/reporting.py` builds a plain, paginated PDF from saved case data and case-scoped artifacts using ReportLab. `/api/cases/{id}/report` returns it by default; `?format=markdown` preserves the text report, and the CLI selects PDF for a `.pdf` output path. PDF rendering runs in FastAPI's thread pool so it does not block the event loop. Report generation makes no model calls, escapes user/model text, preserves failed or missing checks, and labels unavailable evidence without inventing replacements.
+
 ## Next engineering work
 
 - Add reproducible offline fixture preparation for environments that cannot permit network access during tests.

@@ -151,6 +151,11 @@ class Check(BaseModel):
     artifact: str | None = None
 
 
+class PatchRationale(BaseModel):
+    explanation: str
+    risks: list[str] = Field(default_factory=list)
+
+
 class Case(BaseModel):
     id: str = Field(default_factory=lambda: uuid4().hex[:12])
     report: CaseInput
@@ -165,6 +170,7 @@ class Case(BaseModel):
     checks: list[Check] = Field(default_factory=list)
     usage: Usage = Field(default_factory=Usage)
     patch_artifact: str | None = None
+    patch_rationale: PatchRationale | None = None
     latest_screenshot: str | None = None
     first_reproduced_seconds: float | None = None
     elapsed_seconds: float = 0
