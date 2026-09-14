@@ -197,14 +197,17 @@ async def test_planning_reserves_calls_for_fresh_repetitions(tmp_path):
     sandbox.reset.assert_not_awaited()
 
 
-@pytest.mark.parametrize("available", [True, False])
+@pytest.mark.parametrize("available", [True, False, "budget_exhausted"])
 async def test_candidate_validation_repeats_frozen_followups_or_leaves_gate_unrun(
     tmp_path, monkeypatch, available
 ):
     case = example()
     store = Store(tmp_path)
-    plan = plan_for(case) if available else None
+    has_plan = available is True
+    plan = plan_for(case) if has_plan else None
     planner = AsyncMock(return_value=plan)
+    if available == "budget_exhausted":
+        planner.side_effect = BudgetExceeded("Planning reached its turn budget")
     monkeypatch.setattr("repro.orchestration.manager.plan_postconditions", planner)
     sandbox = SimpleNamespace(
         case=case,
@@ -235,9 +238,13 @@ async def test_candidate_validation_repeats_frozen_followups_or_leaves_gate_unru
     manager = Manager(Settings(_env_file=None, repetitions=2), store)
     manager.check_existing_tests = AsyncMock()
     await manager.validate(case, sandbox, model, recorder)
-    assert replay_mock.await_count == (2 if available else 0)
+    assert replay_mock.await_count == (2 if has_plan else 0)
     assert case.reproduction.successful_runs == case.reproduction.total_runs == 5
     assert len(case.reproduction.steps) == 1
     gate = next(c for c in case.checks if c.name == "Original replay after patch")
-    assert gate.status == ("pass" if available else "not_run")
+    assert gate.status == ("pass" if has_plan else "not_run")
+    assert next(c for c in case.checks if c.name == "Smoke test").status == "pass"
+    if available == "budget_exhausted":
+        assert any(e["kind"] == "fix_check_unavailable" for e in store.events(case.id))
+        assert not any(e["kind"] == "validation_replay" for e in store.events(case.id))
     model.structured.assert_not_awaited()

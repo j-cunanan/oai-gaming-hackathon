@@ -300,7 +300,14 @@ def render_report(case: Case, store: Store) -> bytes:
         validation.append(p("No validation checks have been recorded yet."))
     story.append(KeepTogether(validation))
     if case.findings and case.findings.limitations:
-        story += [p("Limitations", heading)]
+        story += [
+            p("Source analysis limitations", heading),
+            p(
+                "These are the source reviewer's recorded notes. That stage inspects code; "
+                "see Recorded reproduction and Validation results for executed game checks.",
+                small,
+            ),
+        ]
         story += [p("- " + limit) for limit in case.findings.limitations]
     story += [
         p("Usage and review", heading),

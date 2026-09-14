@@ -798,6 +798,11 @@ class Manager:
 
         await model.loop(
             "Localize this empirically confirmed bug. Inspect actual source before naming files/symbols. "
+            "Earlier stages already executed the game and confirmed the replay below. Your current "
+            "tools inspect source only; distinguish the limits of this source review from the "
+            "recorded game executions. Do not say the whole case was never run because this stage "
+            "cannot control the game. Treat replay counts and artifact IDs as recorded evidence, "
+            "and do not invent additional runs or claim to have viewed unavailable images. "
             "Use up to five ranked candidates; explain the evidence and limitations. Do not claim the future human fix is known.\n"
             + case.spec.model_dump_json()
             + "\nReplay:\n"
@@ -960,15 +965,25 @@ class Manager:
             )
         needs_followups = rep.oracle.kind in {"crash", "log"}
         if needs_followups and not plan:
-            plan = await plan_postconditions(
-                self.settings,
-                self.store,
-                case,
-                sandbox,
-                model,
-                recorder,
-                self.source_tools(sandbox),
-            )
+            try:
+                plan = await plan_postconditions(
+                    self.settings,
+                    self.store,
+                    case,
+                    sandbox,
+                    model,
+                    recorder,
+                    self.source_tools(sandbox),
+                )
+            except BudgetExceeded as exc:
+                # No affirmative plan means no counted candidate trials. The
+                # separate, non-model startup check can still run within the
+                # enclosing job's wall-clock limit.
+                self.store.save(
+                    case,
+                    "fix_check_unavailable",
+                    {"summary": str(exc) + ". No repeated fix checks were counted."},
+                )
         candidate_steps = rep.steps + plan.followup_steps if plan else rep.steps
         candidate_oracle = plan.oracle if plan else rep.oracle
         trials = self.settings.repetitions if plan or not needs_followups else 0
@@ -1119,7 +1134,13 @@ class Manager:
                 f"- `{c.path}` / {c.symbol or 'symbol unknown'} ({c.score:.2f}): {c.reasoning}"
                 for c in case.findings.candidates
             ]
-            lines += ["\nLimitations: " + "; ".join(case.findings.limitations)]
+            if case.findings.limitations:
+                lines += [
+                    "\n### Source analysis limitations",
+                    "These are the source reviewer's recorded notes. That stage inspects code; "
+                    "see Reproduction and Validation for executed game checks.",
+                    *["- " + limitation for limitation in case.findings.limitations],
+                ]
         if case.checks:
             lines += ["\n## Validation"] + [
                 f"- {c.name}: **{c.status}** — {c.detail}" for c in case.checks

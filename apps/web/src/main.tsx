@@ -1443,6 +1443,27 @@ function App() {
                                     </details>
                                   </div>
                                 ))}
+                                {current.findings.limitations.length > 0 && (
+                                  <details className="source-candidate">
+                                    <summary>
+                                      Source analysis limitations
+                                      <HelpTip topic="Source analysis limitations" />
+                                    </summary>
+                                    <p className="muted">
+                                      These are the source reviewer’s recorded
+                                      notes. That stage inspects code; see the
+                                      reproduction and validation sections for
+                                      executed game checks.
+                                    </p>
+                                    <ul>
+                                      {current.findings.limitations.map(
+                                        (limit, i) => (
+                                          <li key={i}>{limit}</li>
+                                        ),
+                                      )}
+                                    </ul>
+                                  </details>
+                                )}
                               </>
                             ) : (
                               <EmptyPanel

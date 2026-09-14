@@ -122,7 +122,10 @@ async def plan_postconditions(settings, store, case, sandbox, model, recorder, s
         "Each follow-up will later run after the unchanged trigger on fresh profiles. Reset "
         "restores the candidate and executes the trigger again, discarding only this experiment's "
         "follow-ups. A separate verifier must see the expected behavior; do not assume clicks "
-        "worked or claim untested save/load behavior. Finish inconclusive if it cannot be shown.\n"
+        "worked or claim untested save/load behavior. Reloading may change the camera framing; "
+        "use normal zoom or a non-modifying picker to identify a retained object when needed. "
+        "Focus on visible postconditions and consult source only when it resolves a specific "
+        "navigation question. Finish inconclusive if the expected behavior cannot be shown.\n"
         + case.report.model_dump_json()
         + "\nFrozen trigger: "
         + json.dumps([a.model_dump() for a in case.reproduction.steps]),
@@ -151,7 +154,7 @@ async def plan_postconditions(settings, store, case, sandbox, model, recorder, s
         purpose="candidate verification planning",
         done=lambda: conclusion is not None,
         observation=observation,
-        max_turns=min(24, model.remaining_calls - settings.repetitions - 1),
+        max_turns=min(40, model.remaining_calls - settings.repetitions - 1),
     )
     if conclusion.outcome != "verified":
         store.save(case, "fix_check_unavailable", {"summary": conclusion.summary})
