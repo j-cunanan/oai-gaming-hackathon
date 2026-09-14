@@ -16,9 +16,16 @@ evaluator:
     - "core/src/mindustry/ui/dialogs/ColorPicker.java"
     - "core/src/mindustry/world/blocks/distribution/ItemBridge.java"
   positive_case: true
-  reproducibility: "UNVERIFIED"
+  reproducibility: "QUALIFIED_LINUX_AMD64"
   priority: "P1"
   suggested_tags: "UI / numeric precision / color picker"
   proposed_trigger: "In the editor, enter adjacent hex values such as ff0200 and ff0300 for colored tiles and inspect the retained values."
   selection_notes: "Reported on Windows; Linux unverified. Tiny color differences are weak screenshot evidence: verify displayed hex values and persistence. ItemBridge.java in the human commit is incidental formatting, excluded from causal-file scoring."
-  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. No baseline build or runtime verification performed."
+  evidence_notes: "Issue and linked commit reviewed through GitHub API on 2026-09-14. Report is the currently fetched body, excluding submission checklist; may include later edits. No comments or fix information added to input. Runtime qualification subsequently completed; see linked evidence and retained failed attempts."
+  qualification:
+    date: '2026-09-14'
+    baseline_runs: 5/5
+    human_fixed_control: passed once
+    evidence: docs/evidence/qualification/12623/
+    scope: Evaluator qualification only; not a new autonomous patch result.
+    limitation: Requires chronological screenshots; standard single-frame replay verification remains insufficient.

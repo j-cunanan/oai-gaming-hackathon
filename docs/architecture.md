@@ -39,7 +39,13 @@ The desktop driver stays alive on one ordered JSON-lines pipe per container. Eac
 
 Mindustry startup retains the eight-second minimum and additionally waits for its existing load-complete log marker, with a 45-second bound and one second for the final resize/interactive frames. This prevents the first recorded click from arriving while assets still load on an emulated CPU. First-run dialogs are never dismissed automatically. Other adapters retain their existing startup wait until they define a readiness marker.
 
-The dashboard starts its event stream after the latest loaded event, appends incoming events directly and coalesces case snapshot refreshes. Artifact metadata is fetched only while the Evidence tab is open, and its list renders 50 rows at a time. Filtering still searches the complete fetched index.
+The dashboard starts its event stream after the latest loaded event and uses new events to coalesce case snapshot and incremental activity refreshes. Artifact metadata is fetched only while the Evidence tab is open, and its list renders 50 rows at a time. Filtering still searches the complete fetched index.
+
+Stage activity is derived from the complete durable audit by `repro/activity.py`, including records older than the 500-event SSE page. State transitions, recorded action phases, and named model purposes assign entries to the six UI stages; failures and cancellations stay with the stage that encountered them. Historical first/latest timestamps are event boundaries, not inferred active durations. New investigations explicitly record triage starting. `/api/cases/{id}/activity?after=SEQ` returns compact new entries plus stage summaries, and the dashboard merges deltas without duplicating earlier entries. Raw records are fetched only when expanded through the case-scoped `/events/{seq}` endpoint. The PDF uses the same stage mapping and UTC timestamps; the UI displays the browser's local time zone.
+
+Patch proposals persist a concise explanation and risks alongside the selected patch artifact. Older cases recover that data from the patch event matching the exact artifact ID, so a different proposal cannot supply its justification. The dashboard presents this saved explanation, the validation evidence, and the colored source diff as separate parts of review. Info buttons explain the terminology without additional API requests.
+
+`repro/reporting.py` builds a plain, paginated PDF from saved case data and case-scoped artifacts using ReportLab. `/api/cases/{id}/report` returns it by default; `?format=markdown` preserves the text report, and the CLI selects PDF for a `.pdf` output path. PDF rendering runs in FastAPI's thread pool so it does not block the event loop. Report generation makes no model calls, escapes user/model text, preserves failed or missing checks, and labels unavailable evidence without inventing replacements.
 
 ## Next engineering work
 

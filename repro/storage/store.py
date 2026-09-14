@@ -6,7 +6,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-from repro.models import Case, State, now
+from repro.models import Case, PatchRationale, State, now
 
 
 class Store:
@@ -30,6 +30,10 @@ class Store:
                     sha256 TEXT NOT NULL, size INTEGER NOT NULL, media_type TEXT NOT NULL
                 );
             """)
+
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(events)")}
+            if "recorded_seq" not in columns:
+                db.execute("ALTER TABLE events ADD COLUMN recorded_seq INTEGER")
 
     def connect(self):
         db = sqlite3.connect(self.database, timeout=15)
@@ -58,7 +62,23 @@ class Store:
             row = db.execute("SELECT data FROM cases WHERE id=?", (case_id,)).fetchone()
         if not row:
             raise KeyError(case_id)
-        return Case.model_validate_json(row["data"])
+        case = Case.model_validate_json(row["data"])
+        if case.patch_artifact and not case.patch_rationale:
+            # Older cases already saved the explanation in their patch event.
+            # Match this exact patch, rather than an unrelated later proposal/upload.
+            with self.connect() as db:
+                rows = db.execute(
+                    "SELECT data FROM events WHERE case_id=? AND kind='patch' ORDER BY seq DESC",
+                    (case_id,),
+                )
+                for event in rows:
+                    data = json.loads(event["data"])
+                    if data.get("artifact") == case.patch_artifact and data.get("explanation"):
+                        case.patch_rationale = PatchRationale(
+                            explanation=data["explanation"], risks=data.get("risks", [])
+                        )
+                        break
+        return case
 
     def list(self) -> list[Case]:
         with self.connect() as db:
@@ -78,6 +98,15 @@ class Store:
     def transition(self, case: Case, state: State, summary: str):
         case.state, case.summary = state, summary
         self.save(case, "state")
+
+    def event(self, case_id: str, seq: int) -> dict:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT * FROM events WHERE case_id=? AND seq=?", (case_id, seq)
+            ).fetchone()
+        if not row:
+            raise KeyError(seq)
+        return {**dict(row), "data": json.loads(row["data"])}
 
     def latest_events(self, case_id: str, count=100) -> list[dict]:
         with self.connect() as db:

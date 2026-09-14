@@ -2,15 +2,24 @@ import asyncio
 import json
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
-from fastapi import FastAPI, Header, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi import FastAPI, Header, HTTPException, Query, Request, UploadFile
+from fastapi.responses import (
+    FileResponse,
+    JSONResponse,
+    PlainTextResponse,
+    Response,
+    StreamingResponse,
+)
 from fastapi.staticfiles import StaticFiles
 
+from repro.activity import activity_snapshot
 from repro.adapters import ADAPTERS
 from repro.config import Settings
 from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
 from repro.orchestration.manager import Manager
+from repro.reporting import render_report
 from repro.storage.store import Store
 
 
@@ -60,6 +69,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(404, "Case not found") from None
 
     def idle(case_id):
+        if get_case(case_id).imported_from:
+            raise HTTPException(409, "Imported recordings are read-only. Create a new local case.")
         if case_id in jobs and not jobs[case_id].done():
             raise HTTPException(409, "This case already has an active job")
 
@@ -205,6 +216,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return store.latest_events(case_id, tail)
         return store.events(case_id, max(0, after))
 
+    @app.get("/api/cases/{case_id}/activity")
+    def activity(case_id: str, after: int = Query(default=0, ge=0)):
+        get_case(case_id)
+        return activity_snapshot(store, case_id, after)
+
+    @app.get("/api/cases/{case_id}/events/{seq}")
+    def event_record(case_id: str, seq: int):
+        get_case(case_id)
+        try:
+            return store.event(case_id, seq)
+        except KeyError:
+            raise HTTPException(404, "Event not found") from None
+
     @app.get("/api/cases/{case_id}/stream")
     async def stream(
         case_id: str,
@@ -272,9 +296,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             headers={"Content-Security-Policy": "default-src 'none'; sandbox"},
         )
 
-    @app.get("/api/cases/{case_id}/report", response_class=PlainTextResponse)
-    async def report(case_id: str):
-        return manager.report(get_case(case_id))
+    @app.get("/api/cases/{case_id}/report")
+    def report(case_id: str, format: Literal["pdf", "markdown"] = "pdf"):
+        case = get_case(case_id)
+        if format == "markdown":
+            return PlainTextResponse(manager.report(case))
+        # Run in FastAPI's thread pool so PDF layout does not stall live worker events.
+        return Response(
+            render_report(case, store),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'inline; filename="repro-report-{case.id}.pdf"',
+                "Cache-Control": "no-store",
+            },
+        )
 
     @app.get("/api/benchmarks")
     async def benchmarks():

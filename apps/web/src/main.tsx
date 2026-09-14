@@ -15,11 +15,10 @@ import {
   Check,
   CheckCheck,
   ChevronRight,
-  Circle,
   Clock3,
   Code2,
+  Copy,
   Crosshair,
-  FileCode2,
   FileText,
   FlaskConical,
   FolderOpen,
@@ -40,6 +39,13 @@ import {
   X,
 } from "lucide-react";
 import "./styles.css";
+import { HelpTip } from "./help";
+import { PatchReview } from "./patch-review";
+import { allChecksAccepted, checkAccepted } from "./diff";
+import { preferredCase } from "./case-selection";
+import { StageActivity, useStageActivity } from "./stage-activity";
+import { clockTime, dateTime } from "./activity-model";
+import "./case-identity.css";
 
 type CheckResult = {
   name: string;
@@ -65,6 +71,11 @@ type Candidate = {
 };
 type Action = { action: string; semantic: string; [key: string]: unknown };
 type Case = {
+  imported_from?: {
+    source_dir: string;
+    imported_at: string;
+    original_case_id: string;
+  } | null;
   id: string;
   state: string;
   summary: string;
@@ -87,6 +98,7 @@ type Case = {
   hypotheses: Hypothesis[];
   latest_screenshot: string | null;
   patch_artifact: string | null;
+  patch_rationale: { explanation: string; risks: string[] } | null;
   reproduction: {
     successful_runs: number;
     total_runs: number;
@@ -113,9 +125,9 @@ type Case = {
       detail: string;
     }
   >;
-  usage: { model_calls: number; input_tokens: number; output_tokens: number };
+  usage: { model_calls: number; input_tokens: number; output_tokens: number } | null;
   first_reproduced_seconds: number | null;
-  elapsed_seconds: number;
+  elapsed_seconds: number | null;
   benchmark_id: string | null;
 };
 type Event = {
@@ -189,20 +201,6 @@ function bytes(n: number) {
     ? `${(n / 1024 / 1024).toFixed(1)} MB`
     : `${Math.max(1, Math.round(n / 1024))} KB`;
 }
-function checkAccepted(check: CheckResult) {
-  return check.status === "pass" || check.status === "baseline_failed";
-}
-
-function allGatesPresent(c: Case) {
-  return [
-    "Regression before patch",
-    "Candidate build",
-    "Existing tests",
-    "Original replay after patch",
-    "Smoke test",
-  ].every((name) => c.checks.some((check) => check.name === name));
-}
-
 function artifactUrl(c: Case, id: string) {
   return `/api/cases/${c.id}/artifacts/${encodeURIComponent(id)}`;
 }
@@ -235,12 +233,32 @@ function Badge({ state }: { state: string }) {
     </span>
   );
 }
+function RecordingBadge({ c }: { c: Case }) {
+  if (!c.imported_from) return null;
+  return (
+    <span className="recording-badge" title={`Imported from ${c.imported_from.source_dir} at ${dateTime(c.imported_from.imported_at)}`}>
+      <strong>Imported recording</strong>
+      <small>{c.imported_from.original_case_id} · Recorded {dateTime(c.created_at)}</small>
+    </span>
+  );
+}
 function App() {
   const [cases, setCases] = useState<Case[]>([]);
   const [selected, setSelected] = useState("");
   const [current, setCurrent] = useState<Case | null>(null);
+  const requestedCase = useRef(
+    new URLSearchParams(window.location.search).get("case"),
+  );
+  const [copiedCase, setCopiedCase] = useState<string | null>(null);
   const [health, setHealth] = useState<Health | null>(null);
-  const [events, setEvents] = useState<Event[]>([]);
+  const [stageSelection, setStageSelection] = useState<{
+    key: string;
+    request: number;
+  } | null>(null);
+  const activity = useStageActivity(
+    current?.id || "",
+    current?.updated_at || "",
+  );
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [benchmark, setBenchmark] = useState<Benchmark | null>(null);
   const [page, setPage] = useState("investigations");
@@ -250,6 +268,7 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [connected, setConnected] = useState(false);
   const [patch, setPatch] = useState("");
+  const [patchError, setPatchError] = useState("");
   const [filter, setFilter] = useState("");
   const [artifactLimit, setArtifactLimit] = useState(50);
   const [artifactsLoading, setArtifactsLoading] = useState(false);
@@ -277,7 +296,9 @@ function App() {
       setBenchmark(metrics);
       setConnected(true);
       setError((previous) => (previous === "Failed to fetch" ? "" : previous));
-      setSelected((id) => id || list[0]?.id || "");
+      setSelected(
+        (id) => id || list.find((c) => c.id === requestedCase.current)?.id || preferredCase(list),
+      );
     } catch (e) {
       setConnected(false);
       setError((e as Error).message);
@@ -317,9 +338,11 @@ function App() {
   }, [refreshList]);
   useEffect(() => {
     setCurrent(null);
-    setEvents([]);
+    setCopiedCase(null);
+    setStageSelection(null);
     setArtifacts([]);
     setPatch("");
+    setPatchError("");
     setFilter("");
     setArtifactLimit(50);
     eventRevision.current = 0;
@@ -335,7 +358,6 @@ function App() {
         ]);
         if (disposed || selectedRef.current !== selected) return;
         setCurrent(c);
-        setEvents(log);
         eventRevision.current = log.at(-1)?.seq ?? 0;
         source = new EventSource(
           `/api/cases/${selected}/stream?after=${eventRevision.current}`,
@@ -345,7 +367,6 @@ function App() {
           const e = JSON.parse((message as MessageEvent).data) as Event;
           if (e.seq <= eventRevision.current) return;
           eventRevision.current = e.seq;
-          setEvents((previous) => [...previous, e].slice(-150));
           if (e.kind === "action") {
             setCurrent(
               (previous) =>
@@ -392,14 +413,22 @@ function App() {
   }, [selected, tab, refreshArtifacts]);
   useEffect(() => {
     let disposed = false;
+    setPatch("");
+    setPatchError("");
     if (current?.patch_artifact)
       fetch(artifactUrl(current, current.patch_artifact))
-        .then((r) => r.text())
+        .then((r) => {
+          if (!r.ok) throw new Error("Could not load the patch.");
+          return r.text();
+        })
         .then((text) => {
           if (!disposed) setPatch(text);
         })
         .catch(() => {
-          if (!disposed) setPatch("Could not load the patch.");
+          if (!disposed)
+            setPatchError(
+              "Could not load the patch. Reopen this case to retry.",
+            );
         });
     return () => {
       disposed = true;
@@ -421,37 +450,26 @@ function App() {
     }
   }
   const running = Boolean(current && health?.active_jobs.includes(current.id));
+  const viewingCase =
+    current?.id === selected ? current : cases.find((c) => c.id === selected);
+  useEffect(() => {
+    document.title =
+      page === "benchmarks"
+        ? "REPRO · Benchmark"
+        : viewingCase
+          ? `${viewingCase.id} · ${viewingCase.report.title} | REPRO`
+          : "REPRO · Investigation workspace";
+    if (page !== "investigations" || !viewingCase) return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("case") !== viewingCase.id) {
+      url.searchParams.set("case", viewingCase.id);
+      window.history.replaceState(null, "", url);
+    }
+  }, [page, viewingCase?.id, viewingCase?.report.title]);
   const confirmed = cases.filter((c) => c.reproduction?.deterministic).length;
   const activePhase = current
     ? phases.findIndex((p) => p.states.includes(current.state))
     : -1;
-  const visibleEvents = events
-    .filter((e) => !["model_call", "observation"].includes(e.kind))
-    .slice(-35)
-    .reverse();
-  const initialTime = current ? new Date(current.created_at).getTime() : 0;
-  function eventText(e: Event) {
-    if (e.kind === "action") {
-      const a = e.data.action as Action;
-      return a.semantic || human(a.action);
-    }
-    if (e.kind === "hypothesis") return String(e.data.statement);
-    if (e.kind === "replay") {
-      const v = e.data.verdict as { observed: boolean; explanation: string };
-      return `${human(String(e.data.phase))}: ${v.observed ? "symptom observed" : "symptom not confirmed"}`;
-    }
-    if (e.kind === "verification") return String(e.data.explanation);
-    if (e.kind === "minimization")
-      return `Replay reduced from ${e.data.original} to ${e.data.reduced} actions`;
-    if (e.kind === "localization") return String(e.data.root_cause);
-    if (e.kind === "patch" || e.kind === "reduction_proposal")
-      return String(e.data.explanation);
-    if (e.kind === "validation_replay")
-      return e.data.fixed
-        ? "Expected state reached; symptom absent"
-        : "Fix not established in this replay";
-    return String(e.data.summary || human(e.kind));
-  }
 
   return (
     <div className="app-shell">
@@ -471,22 +489,30 @@ function App() {
         </div>
         <span className="nav-caption">WORKSPACE</span>
         <nav>
-          <button
-            className={
-              page === "investigations" ? "nav-item selected" : "nav-item"
-            }
-            onClick={() => setPage("investigations")}
-          >
-            <Crosshair size={17} />
-            Investigations<span className="nav-count">{cases.length}</span>
-          </button>
-          <button
-            className={page === "benchmarks" ? "nav-item selected" : "nav-item"}
-            onClick={() => setPage("benchmarks")}
-          >
-            <FlaskConical size={17} />
-            Benchmark
-          </button>
+          <div className="nav-with-help">
+            <button
+              className={
+                page === "investigations" ? "nav-item selected" : "nav-item"
+              }
+              onClick={() => setPage("investigations")}
+            >
+              <Crosshair size={17} />
+              Investigations<span className="nav-count">{cases.length}</span>
+            </button>
+            <HelpTip topic="Investigations" />
+          </div>
+          <div className="nav-with-help">
+            <button
+              className={
+                page === "benchmarks" ? "nav-item selected" : "nav-item"
+              }
+              onClick={() => setPage("benchmarks")}
+            >
+              <FlaskConical size={17} />
+              Benchmark
+            </button>
+            <HelpTip topic="Benchmark" />
+          </div>
         </nav>
         <div className="recent-label">
           <span className="nav-caption">RECENT CASES</span>
@@ -502,6 +528,12 @@ function App() {
           {cases.slice(0, 8).map((c) => (
             <button
               key={c.id}
+              aria-current={
+                selected === c.id && page === "investigations"
+                  ? "page"
+                  : undefined
+              }
+              aria-label={`${c.report.title}, case ${c.id}, ${human(c.state)}`}
               className={
                 selected === c.id && page === "investigations"
                   ? "case-nav-item chosen"
@@ -516,7 +548,12 @@ function App() {
               <span
                 className={`tiny-dot ${c.reproduction?.deterministic ? "green" : "purple"}`}
               />
-              <span>{c.report.title}</span>
+              <span className="case-nav-copy">
+                <strong>{c.report.title}</strong>
+                <code>{c.id}</code>
+                <small>{human(c.state)}</small>
+                <RecordingBadge c={c} />
+              </span>
             </button>
           ))}
           {cases.length === 0 && (
@@ -539,11 +576,22 @@ function App() {
       <div className="main-shell">
         <header className="topbar">
           <div className="breadcrumb">
-            Workspace
+            <span>Workspace</span>
             <ChevronRight size={13} />
             <strong>
               {page === "benchmarks" ? "Benchmark" : "Investigations"}
             </strong>
+            {page === "investigations" && viewingCase && (
+              <>
+                <ChevronRight size={13} />
+                <code
+                  className="case-breadcrumb"
+                  title={`Viewing case ${viewingCase.id}`}
+                >
+                  {viewingCase.id}
+                </code>
+              </>
+            )}
           </div>
           <div className="topbar-right">
             <span className="connection">
@@ -587,14 +635,36 @@ function App() {
               <p>
                 {page === "benchmarks"
                   ? "Historical game bugs. Isolated revisions. Inspectable outcomes."
-                  : "Investigate the game. Capture the evidence. Find the cause."}
+                  : "Each investigation follows one bug report: reproduce it, diagnose the cause, and review a proposed fix."}
               </p>
             </div>
-            <button className="button primary" onClick={() => setShowNew(true)}>
-              <Plus size={16} />
-              New investigation
-            </button>
+            <div className="action-with-help">
+              <button
+                className="button primary"
+                onClick={() => setShowNew(true)}
+              >
+                <Plus size={16} />
+                New investigation
+              </button>
+              <HelpTip topic="New investigation" />
+            </div>
           </div>
+          {page === "investigations" && viewingCase && (
+            <div
+              className="selected-case-banner"
+              role="status"
+              aria-live="polite"
+            >
+              <div>
+                <span className="selected-case-label">
+                  VIEWING CASE <HelpTip topic="Case ID" />
+                </span>
+                <code>{viewingCase.id}</code>
+                <strong>{viewingCase.report.title}</strong>
+              </div>
+              <Badge state={viewingCase.state} />
+            </div>
+          )}
           <div className="metrics-row">
             <Metric
               label="Total investigations"
@@ -605,7 +675,7 @@ function App() {
             <Metric
               label="Verified reproductions"
               value={String(confirmed).padStart(2, "0")}
-              caption="Confirmed by fresh replays"
+              caption="Includes recorded reproductions"
               icon={<CheckCheck size={18} />}
             />
             <Metric
@@ -629,15 +699,23 @@ function App() {
               <div className="benchmark-stats">
                 <div>
                   <strong>{benchmark?.attempted ?? 0}</strong>
-                  <span>Investigation attempts</span>
+                  <span>
+                    Investigation attempts{" "}
+                    <HelpTip topic="Investigation attempts" />
+                  </span>
                 </div>
                 <div>
                   <strong>{benchmark?.confirmed ?? 0}</strong>
-                  <span>Confirmed replays</span>
+                  <span>
+                    Confirmed replays <HelpTip topic="Confirmed replays" />
+                  </span>
                 </div>
                 <div>
                   <strong>{benchmark?.validated_patches ?? 0}</strong>
-                  <span>Validated candidates</span>
+                  <span>
+                    Validated candidates{" "}
+                    <HelpTip topic="Validated candidates" />
+                  </span>
                 </div>
               </div>
               <p className="benchmark-note">
@@ -666,7 +744,7 @@ function App() {
                         <td>{c.benchmark_id}</td>
                         <td>{c.report.title}</td>
                         <td>
-                          <Badge state={c.state} />
+                          <Badge state={c.state} /><RecordingBadge c={c} />
                         </td>
                         <td>
                           {c.reproduction
@@ -741,7 +819,7 @@ function App() {
                   >
                     {cases.map((c) => (
                       <option key={c.id} value={c.id}>
-                        {c.report.title} · {c.id.slice(-8)}
+                        {c.id} · {c.report.title} · {human(c.state)}
                       </option>
                     ))}
                   </select>
@@ -750,31 +828,62 @@ function App() {
               {!current || current.id !== selected ? (
                 <div className="loading">
                   <LoaderCircle className="spin" />
-                  Loading investigation…
+                  Loading case {selected}…
                 </div>
               ) : (
                 <div className="case-workspace">
                   <div className="case-header">
-                    <div>
+                    <div className="case-heading-copy">
+                      <div className="case-identity">
+                        <span>CASE</span>
+                        <code>{current.id}</code>
+                        <button
+                          className="icon-button"
+                          title="Copy case ID"
+                          aria-label={
+                            copiedCase === current.id
+                              ? "Case ID copied"
+                              : "Copy case ID"
+                          }
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(current.id);
+                              setCopiedCase(current.id);
+                            } catch {
+                              setError(
+                                "Could not copy the case ID. You can select the visible ID and copy it.",
+                              );
+                            }
+                          }}
+                        >
+                          {copiedCase === current.id ? (
+                            <Check size={13} />
+                          ) : (
+                            <Copy size={13} />
+                          )}
+                        </button>
+                      </div>
                       <div className="case-meta">
-                        <span className="case-id">
-                          {current.benchmark_id ||
-                            current.id.slice(0, 8).toUpperCase()}
-                        </span>
-                        <span> / </span>
                         <span className="game-name">{current.report.game}</span>
+                        {current.benchmark_id && (
+                          <span className="benchmark-reference">
+                            Benchmark {current.benchmark_id}
+                          </span>
+                        )}
                         <span className="meta-dot">·</span>
                         <GitBranch size={12} />
                         <code>{current.report.target_commit.slice(0, 8)}</code>
                       </div>
                       <h2>{current.report.title}</h2>
+                      <RecordingBadge c={current} />
                     </div>
                     <div className="case-header-actions">
                       <Badge state={current.state} />
+                      <HelpTip topic="Case status" />
                       {running ? (
                         <button
                           className="button secondary small"
-                          disabled={busy}
+                          disabled={busy || Boolean(current.imported_from)}
                           onClick={() => act("cancel")}
                         >
                           <Pause size={14} />
@@ -784,7 +893,7 @@ function App() {
                         !current.reproduction && (
                           <button
                             className="button primary small"
-                            disabled={busy || !health?.ai_configured}
+                            disabled={busy || Boolean(current.imported_from) || !health?.ai_configured}
                             onClick={() => act("investigate")}
                           >
                             <Play size={14} />
@@ -792,11 +901,23 @@ function App() {
                           </button>
                         )
                       )}
+                      <HelpTip
+                        topic={
+                          running
+                            ? "Stop"
+                            : !current.reproduction
+                              ? "Investigate"
+                              : ""
+                        }
+                      />
                     </div>
                   </div>
                   <div className="pipeline">
                     {phases.map((phase, i) => {
                       const Icon = phase.icon;
+                      const stageTime = activity.snapshot?.stages.find(
+                        (stage) => stage.key === phase.label.toLowerCase(),
+                      )?.last_at;
                       const done = activePhase > i;
                       const active = activePhase === i;
                       const failed =
@@ -804,7 +925,7 @@ function App() {
                         (current.checks.some(
                           (check) => !checkAccepted(check),
                         ) ||
-                          (done && !allGatesPresent(current)));
+                          (done && !allChecksAccepted(current.checks)));
                       const preExisting =
                         phase.label === "Validate" &&
                         !failed &&
@@ -816,24 +937,42 @@ function App() {
                           <div
                             className={`phase ${done ? "done" : ""} ${active ? "active" : ""} ${failed ? "failed" : ""} ${preExisting ? "baseline-failed" : ""}`}
                           >
-                            <span className="phase-icon">
-                              {failed ? (
-                                <X size={13} />
-                              ) : preExisting ? (
-                                <AlertTriangle size={13} />
-                              ) : done ? (
-                                <Check size={13} />
-                              ) : (
-                                <Icon size={14} />
-                              )}
-                            </span>
-                            <span>
-                              {failed
-                                ? "Checks failed"
-                                : preExisting
-                                  ? "Pre-existing failure"
-                                  : phase.label}
-                            </span>
+                            <button
+                              className="phase-jump"
+                              aria-label={`View ${phase.label} activity`}
+                              onClick={() => {
+                                setTab("activity");
+                                setStageSelection((previous) => ({
+                                  key: phase.label.toLowerCase(),
+                                  request: (previous?.request || 0) + 1,
+                                }));
+                              }}
+                            >
+                              <span className="phase-icon">
+                                {failed ? (
+                                  <X size={13} />
+                                ) : preExisting ? (
+                                  <AlertTriangle size={13} />
+                                ) : done ? (
+                                  <Check size={13} />
+                                ) : (
+                                  <Icon size={14} />
+                                )}
+                              </span>
+                              <span>
+                                <span>{failed ? "Checks failed" : preExisting ? "Pre-existing failure" : phase.label}</span>
+                                <small
+                                  title={
+                                    stageTime
+                                      ? `Latest recorded: ${dateTime(stageTime)}`
+                                      : "No recorded events"
+                                  }
+                                >
+                                  {stageTime ? clockTime(stageTime) : "—"}
+                                </small>
+                              </span>
+                            </button>
+                            <HelpTip topic={phase.label} />
                             {active && running && (
                               <span className="phase-pulse" />
                             )}
@@ -854,11 +993,12 @@ function App() {
                           <div>
                             <Monitor size={15} />
                             <span>Game viewport</span>
+                            <HelpTip topic="Game viewport" />
                             <span
                               className={`live-tag ${running ? "live" : ""}`}
                             >
                               <span />
-                              {running ? "LIVE" : "LAST CAPTURE"}
+                              {current.imported_from ? "RECORDED CAPTURE" : running ? "LIVE" : "LAST CAPTURE"}
                             </span>
                           </div>
                           <span>1280 × 720</span>
@@ -908,7 +1048,10 @@ function App() {
                       </section>
                       <div className="repro-stats">
                         <div>
-                          <span>Reproduction rate</span>
+                          <span>
+                            Reproduction rate{" "}
+                            <HelpTip topic="Reproduction rate" />
+                          </span>
                           <strong>
                             {current.reproduction ? (
                               <>
@@ -929,14 +1072,19 @@ function App() {
                           </em>
                         </div>
                         <div>
-                          <span>Time to first proof</span>
+                          <span>
+                            Time to first proof{" "}
+                            <HelpTip topic="Time to first proof" />
+                          </span>
                           <strong>
                             {duration(current.first_reproduced_seconds)}
                           </strong>
                           <em>Measured from investigation start</em>
                         </div>
                         <div>
-                          <span>Replay actions</span>
+                          <span>
+                            Replay actions <HelpTip topic="Replay actions" />
+                          </span>
                           <strong>
                             {current.reproduction ? (
                               <>
@@ -955,9 +1103,11 @@ function App() {
                         <div className="panel-title">
                           <FileText size={16} />
                           <h3>Player report</h3>
+                          <HelpTip topic="Player report" />
                           {current.spec && (
                             <span className="tag">
                               {current.spec.severity.toUpperCase()}
+                              <HelpTip topic="Severity" />
                             </span>
                           )}
                         </div>
@@ -971,36 +1121,41 @@ function App() {
                         </div>
                         {current.spec &&
                           current.spec.uncertain_conditions.length > 0 && (
-                            <details>
-                              <summary>
-                                Open questions{" "}
-                                <span>
-                                  {current.spec.uncertain_conditions.length}
-                                </span>
-                              </summary>
-                              <ul>
-                                {current.spec.uncertain_conditions.map(
-                                  (q, i) => (
-                                    <li key={i}>{q}</li>
-                                  ),
-                                )}
-                              </ul>
-                            </details>
+                            <div className="questions-block">
+                              <details>
+                                <summary>
+                                  Initial questions{" "}
+                                  <span>
+                                    {current.spec.uncertain_conditions.length}
+                                  </span>
+                                </summary>
+                                <ul>
+                                  {current.spec.uncertain_conditions.map(
+                                    (q, i) => (
+                                      <li key={i}>{q}</li>
+                                    ),
+                                  )}
+                                </ul>
+                              </details>
+                              <HelpTip topic="Initial questions" />
+                            </div>
                           )}
                       </section>
                       {current.reproduction && (
                         <section className="panel replay-panel">
                           <div className="panel-title">
                             <RotateCcw size={16} />
-                            <h3>Confirmed replay</h3>
+                            <h3>Recorded replay</h3>
+                            <HelpTip topic="Recorded replay" />
                             <button
                               className="button secondary small"
-                              disabled={busy || running}
+                              disabled={busy || running || Boolean(current.imported_from)}
                               onClick={() => act("replay")}
                             >
                               <Play size={12} />
                               Replay bug
                             </button>
+                            <HelpTip topic="Replay bug" />
                           </div>
                           <ol>
                             {current.reproduction.steps.map((a, i) => (
@@ -1014,11 +1169,12 @@ function App() {
                             ))}
                           </ol>
                           <p className="muted">
-                            Replay restores the retained pre-patch build.
+                            {current.imported_from ? "Read-only recording. Create a new local case to run another investigation." : "Replay restores the retained pre-patch build."}
                           </p>
                           <button
                             className="button secondary small"
                             disabled={
+                              Boolean(current.imported_from) ||
                               busy ||
                               running ||
                               !current.reproduction.deterministic
@@ -1028,6 +1184,7 @@ function App() {
                             <RotateCcw size={12} />
                             Reduce &amp; revalidate
                           </button>
+                          <HelpTip topic="Reduce & revalidate" />
                           <p className="muted">
                             Tests a shorter baseline replay. If it changes,
                             candidate validation runs again.
@@ -1052,21 +1209,28 @@ function App() {
                             { id: "source", label: "Source", icon: Code2 },
                             {
                               id: "patch",
-                              label: "Patch",
+                              label: "Proposed patch",
                               icon: GitPullRequest,
                             },
                           ].map((t) => (
-                            <button
-                              key={t.id}
-                              className={tab === t.id ? "active" : ""}
-                              onClick={() => setTab(t.id)}
-                            >
-                              <t.icon size={14} />
-                              {t.label}
-                              {t.id === "evidence" && artifacts.length > 0 && (
-                                <small>{artifacts.length}</small>
-                              )}
-                            </button>
+                            <div className="tab-item" key={t.id}>
+                              <button
+                                className={
+                                  tab === t.id
+                                    ? "tab-select active"
+                                    : "tab-select"
+                                }
+                                onClick={() => setTab(t.id)}
+                              >
+                                <t.icon size={14} />
+                                {t.label}
+                                {t.id === "evidence" &&
+                                  artifacts.length > 0 && (
+                                    <small>{artifacts.length}</small>
+                                  )}
+                              </button>
+                              <HelpTip topic={t.label} />
+                            </div>
                           ))}
                         </div>
                         {tab === "activity" && (
@@ -1087,69 +1251,27 @@ function App() {
                                 <LoaderCircle className="spin" size={16} />
                               )}
                             </div>
-                            <div className="timeline-title">
-                              <span>EXPERIMENT TIMELINE</span>
-                              <span>{events.length} recent events</span>
-                            </div>
-                            <div className="timeline">
-                              {visibleEvents.map((e) => (
-                                <div
-                                  className={`event event-${e.kind}`}
-                                  key={e.seq}
-                                >
-                                  <span className="event-node">
-                                    {e.kind === "action" ? (
-                                      <Crosshair size={12} />
-                                    ) : e.kind === "replay" ? (
-                                      <RotateCcw size={12} />
-                                    ) : e.kind === "hypothesis" ? (
-                                      <FlaskConical size={12} />
-                                    ) : (
-                                      <Circle size={8} />
-                                    )}
-                                  </span>
-                                  <div>
-                                    <div className="event-meta">
-                                      <span>
-                                        {human(
-                                          e.kind === "action"
-                                            ? String(e.data.phase)
-                                            : e.kind,
-                                        )}
-                                      </span>
-                                      <time>
-                                        {duration(
-                                          (new Date(e.created_at).getTime() -
-                                            initialTime) /
-                                            1000,
-                                        )}
-                                      </time>
-                                    </div>
-                                    <p>{eventText(e)}</p>
-                                  </div>
-                                </div>
-                              ))}
-                              {visibleEvents.length === 0 && (
-                                <div className="inspector-empty">
-                                  <Activity size={25} />
-                                  <p>
-                                    Experiments will appear here as they run.
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                            <StageActivity
+                              key={current.id}
+                              snapshot={activity.snapshot}
+                              error={activity.error}
+                              retry={activity.retry}
+                              selection={stageSelection}
+                              checks={current.checks}
+                            />
                             <div className="timeline-footer">
                               <Terminal size={13} />
                               <span>
-                                {current.usage.model_calls} model calls
+                                {current.usage?.model_calls ?? "—"} model calls
                               </span>
                               <span>
-                                {(
+                                {current.usage ? (
                                   current.usage.input_tokens +
                                   current.usage.output_tokens
-                                ).toLocaleString()}{" "}
+                                ).toLocaleString() : "—"}{" "}
                                 tokens
                               </span>
+                              <HelpTip topic="Model usage" />
                             </div>
                           </>
                         )}
@@ -1236,6 +1358,7 @@ function App() {
                                       <code>{c.path}</code>
                                       <span className="source-score">
                                         {c.score.toFixed(2)}
+                                        <HelpTip topic="Source score" />
                                       </span>
                                     </div>
                                     <strong>{c.symbol}</strong>
@@ -1260,59 +1383,24 @@ function App() {
                           </div>
                         )}
                         {tab === "patch" && (
-                          <div className="patch-tab">
-                            {patch ? (
-                              <>
-                                <div className="patch-caption">
-                                  <FileCode2 size={15} />
-                                  Candidate diff
-                                  <a
-                                    href={artifactUrl(
-                                      current,
-                                      current.patch_artifact!,
-                                    )}
-                                    download
-                                  >
-                                    <ArrowDownToLine size={15} />
-                                  </a>
-                                </div>
-                                <pre className="diff">
-                                  {patch.split("\n").map((line, i) => (
-                                    <div
-                                      key={i}
-                                      className={
-                                        line.startsWith("+")
-                                          ? "addition"
-                                          : line.startsWith("-")
-                                            ? "deletion"
-                                            : line.startsWith("@@")
-                                              ? "hunk"
-                                              : ""
-                                      }
-                                    >
-                                      {line || " "}
-                                    </div>
-                                  ))}
-                                </pre>
-                                <p className="patch-note">
-                                  Applied in the disposable game workspace.
-                                  Review and validation are required before
-                                  handoff.
-                                </p>
-                              </>
-                            ) : (
-                              <EmptyPanel
-                                icon={<GitPullRequest />}
-                                text="A candidate diff appears after reproduction, localization and a failing replay regression."
-                              />
-                            )}
-                          </div>
+                          <PatchReview
+                            patch={patch}
+                            error={patchError}
+                            downloadUrl={
+                              current.patch_artifact
+                                ? artifactUrl(current, current.patch_artifact)
+                                : null
+                            }
+                            rationale={current.patch_rationale ?? null}
+                            checks={current.checks}
+                          />
                         )}
                       </section>
                       <section className="panel hypothesis-panel">
                         <div className="panel-title">
                           <FlaskConical size={16} />
                           <h3>Hypotheses</h3>
+                          <HelpTip topic="Hypotheses" />
                           <span className="muted">
                             {current.hypotheses.length}
                           </span>
@@ -1345,14 +1433,16 @@ function App() {
                           <div className="panel-title">
                             <ShieldCheck size={16} />
                             <h3>Validation gates</h3>
+                            <HelpTip topic="Validation gates" />
                             <button
                               className="icon-button"
                               title="Rerun validation"
-                              disabled={running || busy}
+                              disabled={running || busy || Boolean(current.imported_from)}
                               onClick={() => act("validate")}
                             >
                               <RotateCcw size={14} />
                             </button>
+                            <HelpTip topic="Rerun validation" />
                           </div>
                           {current.checks.map((c) => (
                             <div className="validation-row" key={c.name}>
@@ -1368,7 +1458,9 @@ function App() {
                                 )}
                               </span>
                               <div>
-                                <strong>{c.name}</strong>
+                                <strong>
+                                  {c.name} <HelpTip topic={c.name} />
+                                </strong>
                                 {c.status === "baseline_failed" && (
                                   <p className="baseline-notice">
                                     Pre-existing — fails on baseline too
@@ -1443,38 +1535,47 @@ function App() {
                       Conclusions stay tied to recorded evidence.
                     </span>
                     <div>
-                      <a
-                        className="button secondary small"
-                        href={`/api/cases/${current.id}/report`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <ArrowDownToLine size={14} />
-                        Export report
-                      </a>
+                      <div className="action-with-help">
+                        <a
+                          className="button secondary small"
+                          href={`/api/cases/${current.id}/report`}
+                          download={`repro-report-${current.id}.pdf`}
+                        >
+                          <ArrowDownToLine size={14} />
+                          Export PDF
+                        </a>
+                        <HelpTip topic="Export PDF" />
+                      </div>
                       {current.state === "AWAITING_HUMAN" && (
                         <>
-                          <button
-                            className="button secondary small"
-                            disabled={busy || running}
-                            onClick={() => act("reject")}
-                          >
-                            Reject candidate
-                          </button>
-                          <button
-                            className="button primary small"
-                            disabled={
-                              busy ||
-                              running ||
-                              !current.patch_artifact ||
-                              !allGatesPresent(current) ||
-                              current.checks.some((c) => !checkAccepted(c))
-                            }
-                            onClick={() => act("approve")}
-                          >
-                            <Check size={14} />
-                            Approve for handoff
-                          </button>
+                          <div className="action-with-help">
+                            <button
+                              className="button secondary small"
+                              disabled={busy || running || Boolean(current.imported_from)}
+                              onClick={() => act("reject")}
+                            >
+                              Reject patch
+                            </button>
+                            <HelpTip topic="Reject patch" />
+                          </div>
+                          <div className="action-with-help">
+                            <button
+                              className="button primary small"
+                              disabled={
+                              Boolean(current.imported_from) ||
+                                busy ||
+                                running ||
+                                !current.patch_artifact ||
+                                !allChecksAccepted(current.checks) ||
+                                current.checks.some((c) => !checkAccepted(c))
+                              }
+                              onClick={() => act("approve")}
+                            >
+                              <Check size={14} />
+                              Approve for handoff
+                            </button>
+                            <HelpTip topic="Approve for handoff" />
+                          </div>
                         </>
                       )}
                     </div>
@@ -1517,7 +1618,9 @@ function Metric({
   return (
     <div className="metric">
       <div>
-        <span>{label}</span>
+        <span>
+          {label} <HelpTip topic={label} />
+        </span>
         {icon}
       </div>
       <strong>{value}</strong>

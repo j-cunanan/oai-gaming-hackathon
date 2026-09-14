@@ -23,6 +23,7 @@ from repro.models import (
     Findings,
     Hypothesis,
     OracleSpec,
+    PatchRationale,
     Reproduction,
     State,
     patch_validated,
@@ -374,6 +375,9 @@ class Manager:
             self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
 
     async def _investigate(self, case: Case, sandbox: DockerSandbox, model: Model, started):
+        self.store.save(
+            case, "stage_started", {"stage": "triage", "summary": "Starting report triage."}
+        )
         if not case.spec:
             case.spec = await model.structured(
                 BugSpec,
@@ -699,6 +703,7 @@ class Manager:
             case.patch_artifact = self.store.artifact(
                 case.id, "candidate.patch", diff, "text/x-diff"
             )
+            case.patch_rationale = PatchRationale(explanation=args.explanation, risks=args.risks)
             self.store.artifact(
                 case.id, "patch-rationale.json", args.model_dump_json(indent=2), "application/json"
             )
@@ -719,6 +724,8 @@ class Manager:
 
         await model.loop(
             "Propose a minimal causal patch for the confirmed bug. A failing gameplay replay regression already exists. "
+            "Explain in plain language what caused the bug, what the changed lines do, why that should fix it, "
+            "and what risks or tradeoffs need review. This is a proposed explanation; validation follows. "
             "Inspect exact source lines, then submit a valid unified diff. Do not add diagnostic shortcuts, weaken the oracle, "
             "disable behavior, or change unrelated files. Do not change Gradle, dependencies or build scripts.\n"
             + case.findings.model_dump_json()
@@ -887,6 +894,12 @@ class Manager:
             "\n## Player report",
             case.report.body,
         ]
+        if case.imported_from:
+            lines.insert(
+                1,
+                f"**Imported recording: {case.imported_from.original_case_id}** · "
+                f"Recorded {case.created_at}; imported {case.imported_from.imported_at}.",
+            )
         if case.reproduction:
             r = case.reproduction
             lines += [
@@ -909,9 +922,23 @@ class Manager:
             lines += ["\n## Validation"] + [
                 f"- {c.name}: **{c.status}** — {c.detail}" for c in case.checks
             ]
+        if case.patch_artifact:
+            lines += ["\n## Proposed patch"]
+            if case.patch_rationale:
+                lines += ["\n### Why this patch should work", case.patch_rationale.explanation]
+                lines += ["\n### Risks and tradeoffs"]
+                lines += [f"- {risk}" for risk in case.patch_rationale.risks] or [
+                    "No specific risks were recorded."
+                ]
+            else:
+                lines += ["No saved explanation is available for this patch."]
         lines += [
             "\n## Usage",
-            f"{case.usage.model_calls} model calls; {case.usage.input_tokens} input and {case.usage.output_tokens} output tokens.",
+            (
+                f"{case.usage.model_calls} model calls; {case.usage.input_tokens} input and {case.usage.output_tokens} output tokens."
+                if case.usage
+                else "Usage not recorded."
+            ),
             "\nCandidate changes exist only in a disposable local repository. Human review does not publish or merge them upstream.",
         ]
         return "\n\n".join(lines) + "\n"

@@ -170,6 +170,18 @@ class BaselineTestRun(BaseModel):
     detail: str = "Baseline test run started."
 
 
+class PatchRationale(BaseModel):
+    explanation: str
+    risks: list[str] = Field(default_factory=list)
+
+
+class ImportedRecording(BaseModel):
+    source_dir: str
+    imported_at: str
+    original_case_id: str
+    package_sha256: str
+
+
 class Case(BaseModel):
     id: str = Field(default_factory=lambda: uuid4().hex[:12])
     report: CaseInput
@@ -183,13 +195,15 @@ class Case(BaseModel):
     findings: Findings | None = None
     checks: list[Check] = Field(default_factory=list)
     baseline_tests: dict[str, BaselineTestRun] = Field(default_factory=dict)
-    usage: Usage = Field(default_factory=Usage)
+    usage: Usage | None = Field(default_factory=Usage)
     patch_artifact: str | None = None
+    patch_rationale: PatchRationale | None = None
     latest_screenshot: str | None = None
     first_reproduced_seconds: float | None = None
-    elapsed_seconds: float = 0
+    elapsed_seconds: float | None = 0
     owner_evidence: list[str] = Field(default_factory=list)
     benchmark_id: str | None = None
+    imported_from: ImportedRecording | None = None
 
 
 REQUIRED_VALIDATION_GATES = {
@@ -206,5 +220,9 @@ def patch_validated(case: Case) -> bool:
     return bool(
         case.patch_artifact
         and REQUIRED_VALIDATION_GATES.issubset(checks)
-        and all(check.status in {"pass", "baseline_failed"} for check in case.checks)
+        and all(
+            check.status == "pass"
+            or (check.name == "Existing tests" and check.status == "baseline_failed")
+            for check in case.checks
+        )
     )

@@ -1,0 +1,79 @@
+{
+  "id": "6b067de945d7",
+  "report": {
+    "title": "Persistent Datapatch bug",
+    "body": "### Platforms\n\nAndroid\n\n### Build\n\nBE 27790\n\n### Issue\n\nWhen you save a datapatch in a map, suddenly, attempting to remove it does not work.\nWhen you remove it, it gets temporarily removed, but gets added back when you open the map.\nI tested this with or without mods and it still happened by the way.\n\n### Steps to reproduce\n\nMake map\nAdd data-patch\nSave map\nDelete data-patch\nSave map\nLeave editor\nCome back to map editor\nSee that the data-patch is back.\n\n### Mods used\n\nI tested it in vanilla but here are the mods I usually use.\n\nAuto Research (gone from in-game mod browser?)\nPatch Editor (I think this mod doesn't cause the issue)\nPatch Viewer\nCLaJ\n\n### Save file\n\nI zipped the msav here\n\n[persistent datapatch bug.zip](https://github.com/user-attachments/files/32028828/persistent.datapatch.bug.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "63b2069e9685063c74abc41fae84a66f73e9e09b",
+    "platform": "Android (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T07:30:31.715943+00:00",
+  "updated_at": "2026-09-14T07:51:19.575511+00:00",
+  "summary": "UI sequence supported H1: imported PersistenceProbe, saved PatchPersistence, confirmed deletion and empty list, saved, exited, reopened, and saw PersistenceProbe again. However, the final-frame verifier did not accept this as proof because a single screenshot cannot establish the prior deletion/save/reopen sequence. Leaving the returned patch visible; no claim of Android/build-specific verification.",
+  "spec": {
+    "summary": "Unverified report that a deleted map datapatch reappears after saving and reopening the map in Mindustry on Android, reported build BE 27790.",
+    "bug_class": "Reported map-edit persistence issue",
+    "observed_behavior": "The player reports that deleting a previously saved datapatch temporarily removes it from the editor, but it reappears after the map is saved, exited, and reopened. The player states that this occurred both with and without mods. No independent reproduction or artifact inspection is provided.",
+    "expected_behavior": "After deleting a datapatch and saving the map, the datapatch should remain absent when the map is reopened.",
+    "known_preconditions": [
+      "The reported game is Mindustry on Android.",
+      "The report body identifies the build as BE 27790; the supplied build_version field is null.",
+      "The reported sequence starts with a map containing a datapatch that has already been saved.",
+      "The supplied evaluation target commit is 63b2069e9685063c74abc41fae84a66f73e9e09b; Linux is listed for planned evaluation, not as an observed affected platform."
+    ],
+    "uncertain_conditions": [
+      "Whether the reported behavior is reproducible or constitutes a game defect is unverified.",
+      "The relationship between reported build BE 27790 and the target commit is not established.",
+      "The Android version, device model, and exact application package are unspecified.",
+      "The datapatch contents and exact editor actions used to add and delete it are unspecified.",
+      "It is unclear how mods were disabled or removed, whether the game was restarted, and whether the vanilla test used a fresh map.",
+      "The report lists Auto Research, Patch Editor, Patch Viewer, and CLaJ as usual mods, but does not establish which were active during each test or their versions.",
+      "Reproduction frequency, scope across maps, and whether the restored datapatch affects gameplay are unknown.",
+      "The linked archive's availability, contents, and position in the reported save/delete sequence have not been verified.",
+      "Whether the same behavior occurs on Linux is unknown."
+    ],
+    "reproduction_hints": [
+      "Follow the player's unverified sequence: create a map, add a datapatch, and save the map.",
+      "Delete the datapatch, save again, leave the editor, and reopen the same map.",
+      "Check whether the deleted datapatch is present after reopening; this outcome is reported, not independently established.",
+      "For any reproduction attempt, record the exact build, platform, datapatch contents, save actions, and mod state."
+    ],
+    "required_artifacts": [
+      "Retrieve and inspect the reported save archive: https://github.com/user-attachments/files/32028828/persistent.datapatch.bug.zip.",
+      "Map saves captured before deletion and after deletion and saving, with each stage clearly labeled.",
+      "The exact datapatch contents used in a minimal reproduction.",
+      "A screen recording or screenshots showing deletion, saving, exiting, and reopening the same map.",
+      "Runtime logs covering the sequence; no logs were supplied in the report.",
+      "Device and Android version details, exact build/package identification, and confirmation of its relationship to the target commit.",
+      "Mod versions and per-test enabled state, including the procedure used for the reported vanilla test."
+    ],
+    "severity": "unknown",
+    "confidence": 0.4
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Deleting the sole previously saved datapatch fails to persist when the map is saved and reopened without mods.",
+      "prediction": "The patch list becomes empty immediately after deletion but contains the patch again after reopening.",
+      "status": "supported",
+      "observation": "Created PatchPersistence, imported {\"name\":\"PersistenceProbe\",\"block\":{\"duo\":{\"health\":321}}}, saved, deleted patch and confirmed empty list, saved again, quit and reopened same map. PersistenceProbe [1 fields] returned. Final screenshot 6b067de945d7-6e507af1f4a47ed2fa0a-investigation.png. Mods UI showed No mods found; runtime logs remained empty."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "usage": {
+    "model_calls": 57,
+    "input_tokens": 434863,
+    "output_tokens": 5490
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "latest_screenshot": "6b067de945d7-6e507af1f4a47ed2fa0a-temporal-5.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 236.88993308297358,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12620"
+}

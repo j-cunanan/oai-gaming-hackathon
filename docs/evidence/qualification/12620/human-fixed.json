@@ -1,0 +1,503 @@
+{
+  "case_id": "1cd16204f7fc",
+  "source_case_id": "6b067de945d7",
+  "commit": "b3317f3d4d7c9b201d03a39be17bae2bbda90169",
+  "control": true,
+  "passed": 1,
+  "total": 1,
+  "runs": [
+    {
+      "trial": 1,
+      "passed": true,
+      "verdict": {
+        "patch_present_before": true,
+        "patch_list_empty_after_deletion": true,
+        "same_map_saved_and_reopened": true,
+        "patch_present_after_reopen": false,
+        "confidence": 0.99,
+        "explanation": "Step 26 shows exactly one patch entry with one field. Step 28 shows 'No patchsets found.' with the search field blank, confirming deletion rather than filtering. Step 31 displays 'Saved!'. Step 36 identifies the selected map as PatchPersistence, which the recorded sequence then opens in the editor. Step 40 again shows 'No patchsets found.' with a blank search field. The deletion persisted after saving and reopening; no patch reappeared."
+      },
+      "frames": [
+        {
+          "step": 26,
+          "label": "Show saved patch.",
+          "artifact": "1cd16204f7fc-b261af85c44e75236ceb-temporal-1.png"
+        },
+        {
+          "step": 28,
+          "label": "Confirm deletion; capture empty patch list.",
+          "artifact": "1cd16204f7fc-77d35b543e27ef8f26f1-temporal-1.png"
+        },
+        {
+          "step": 31,
+          "label": "Save map after deletion.",
+          "artifact": "1cd16204f7fc-c16b2444bf291388d728-temporal-1.png"
+        },
+        {
+          "step": 36,
+          "label": "Select same PatchPersistence map.",
+          "artifact": "1cd16204f7fc-011be8103438497f7715-temporal-1.png"
+        },
+        {
+          "step": 40,
+          "label": "Final visual check for deleted patch reappearance.",
+          "artifact": "1cd16204f7fc-2e0253837f7c1f5328b7-temporal-1.png"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "action": "click",
+      "x": 252,
+      "y": 405,
+      "keys": [],
+      "text": "",
+      "seconds": 0.3,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Inspect mod state; no startup dialog present."
+    },
+    {
+      "action": "click",
+      "x": 732,
+      "y": 417,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Dismiss automatic mod-list network error."
+    },
+    {
+      "action": "click",
+      "x": 437,
+      "y": 682,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Back to menu."
+    },
+    {
+      "action": "click",
+      "x": 260,
+      "y": 334,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open Editor."
+    },
+    {
+      "action": "click",
+      "x": 640,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Create new map."
+    },
+    {
+      "action": "click",
+      "x": 597,
+      "y": 363,
+      "keys": [],
+      "text": "",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Focus map name."
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "PatchPersistence",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Name minimal test map."
+    },
+    {
+      "action": "click",
+      "x": 706,
+      "y": 426,
+      "keys": [],
+      "text": "",
+      "seconds": 0.3,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm new map."
+    },
+    {
+      "action": "wait",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Wait for editor."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open map editor menu."
+    },
+    {
+      "action": "click",
+      "x": 733,
+      "y": 186,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Inspect map metadata."
+    },
+    {
+      "action": "click",
+      "x": 626,
+      "y": 606,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open Data Patches & Assets."
+    },
+    {
+      "action": "click",
+      "x": 748,
+      "y": 681,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Add test patch."
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "esc"
+      ],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Close import dialog."
+    },
+    {
+      "action": "click",
+      "x": 261,
+      "y": 119,
+      "keys": [],
+      "text": "",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Use search field to prepare clipboard patch text."
+    },
+    {
+      "action": "type",
+      "x": null,
+      "y": null,
+      "keys": [],
+      "text": "{\"name\":\"PersistenceProbe\",\"block\":{\"duo\":{\"health\":321}}}",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Enter exact minimal patch JSON."
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select patch text."
+    },
+    {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "ctrl",
+        "x"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Cut JSON to clipboard and clear filter."
+    },
+    {
+      "action": "click",
+      "x": 748,
+      "y": 681,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Add patch from clipboard."
+    },
+    {
+      "action": "click",
+      "x": 649,
+      "y": 319,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Import exact test JSON."
+    },
+    {
+      "action": "click",
+      "x": 545,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Return from assets."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open save menu."
+    },
+    {
+      "action": "click",
+      "x": 546,
+      "y": 187,
+      "keys": [],
+      "text": "",
+      "seconds": 0.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Save map with patch before deletion."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open menu to delete patch."
+    },
+    {
+      "action": "click",
+      "x": 733,
+      "y": 186,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open Map Info."
+    },
+    {
+      "action": "click",
+      "x": 626,
+      "y": 606,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Show saved patch."
+    },
+    {
+      "action": "click",
+      "x": 954,
+      "y": 178,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Delete previously saved PersistenceProbe."
+    },
+    {
+      "action": "click",
+      "x": 741,
+      "y": 404,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm deletion; capture empty patch list."
+    },
+    {
+      "action": "click",
+      "x": 545,
+      "y": 680,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Return to editor after deletion."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open menu."
+    },
+    {
+      "action": "click",
+      "x": 546,
+      "y": 187,
+      "keys": [],
+      "text": "",
+      "seconds": 0.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Save map after deletion."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open menu to exit."
+    },
+    {
+      "action": "click",
+      "x": 647,
+      "y": 510,
+      "keys": [],
+      "text": "",
+      "seconds": 0.3,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Quit saved editor map."
+    },
+    {
+      "action": "click",
+      "x": 741,
+      "y": 414,
+      "keys": [],
+      "text": "",
+      "seconds": 0.3,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Confirm exit after successful save."
+    },
+    {
+      "action": "click",
+      "x": 260,
+      "y": 334,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reopen map browser."
+    },
+    {
+      "action": "click",
+      "x": 200,
+      "y": 257,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Select same PatchPersistence map."
+    },
+    {
+      "action": "click",
+      "x": 489,
+      "y": 502,
+      "keys": [],
+      "text": "",
+      "seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reopen saved map in editor."
+    },
+    {
+      "action": "click",
+      "x": 32,
+      "y": 50,
+      "keys": [],
+      "text": "",
+      "seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Inspect reopened map patches."
+    },
+    {
+      "action": "click",
+      "x": 733,
+      "y": 186,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Open reopened map info."
+    },
+    {
+      "action": "click",
+      "x": 626,
+      "y": 606,
+      "keys": [],
+      "text": "",
+      "seconds": 0.2,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Final visual check for deleted patch reappearance."
+    }
+  ],
+  "oracle": "chronological screenshot sequence",
+  "limitations": [
+    "Qualification evidence only; temporal oracle is not yet implemented in the standard single-frame replay verifier."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "1cd16204f7fc",
+  "report": {
+    "title": "Human-fixed control: Persistent Datapatch bug",
+    "body": "### Platforms\n\nAndroid\n\n### Build\n\nBE 27790\n\n### Issue\n\nWhen you save a datapatch in a map, suddenly, attempting to remove it does not work.\nWhen you remove it, it gets temporarily removed, but gets added back when you open the map.\nI tested this with or without mods and it still happened by the way.\n\n### Steps to reproduce\n\nMake map\nAdd data-patch\nSave map\nDelete data-patch\nSave map\nLeave editor\nCome back to map editor\nSee that the data-patch is back.\n\n### Mods used\n\nI tested it in vanilla but here are the mods I usually use.\n\nAuto Research (gone from in-game mod browser?)\nPatch Editor (I think this mod doesn't cause the issue)\nPatch Viewer\nCLaJ\n\n### Save file\n\nI zipped the msav here\n\n[persistent datapatch bug.zip](https://github.com/user-attachments/files/32028828/persistent.datapatch.bug.zip)\n\n### (Crash) logs\n\n_No response_",
+    "game": "mindustry",
+    "target_commit": "b3317f3d4d7c9b201d03a39be17bae2bbda90169",
+    "platform": "Android (reported); Linux (planned evaluation)",
+    "build_version": null
+  },
+  "state": "READY",
+  "created_at": "2026-09-14T07:37:37.740986+00:00",
+  "updated_at": "2026-09-14T07:48:38.525386+00:00",
+  "summary": "Build prepared. Investigation uses an isolated desktop with game network access disabled.",
+  "spec": null,
+  "hypotheses": [],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "usage": {
+    "model_calls": 2,
+    "input_tokens": 16214,
+    "output_tokens": 363
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "latest_screenshot": "1cd16204f7fc-2e0253837f7c1f5328b7-temporal-1.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 0.0,
+  "owner_evidence": [],
+  "benchmark_id": null
+}

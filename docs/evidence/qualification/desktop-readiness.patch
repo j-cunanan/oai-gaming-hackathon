@@ -1,0 +1,37 @@
+diff --git a/infra/docker/Dockerfile b/infra/docker/Dockerfile
+index e64a3d0..44d566d 100644
+--- a/infra/docker/Dockerfile
++++ b/infra/docker/Dockerfile
+@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
+ RUN pip3 install --no-cache-dir PyAutoGUI==0.9.54 mss==10.1.0 Pillow==11.3.0
+ RUN useradd --create-home --uid 1000 worker && mkdir /workspace && chown worker /workspace
+ COPY worker.py /opt/repro/worker.py
++COPY wait_desktop.py /opt/repro/wait_desktop.py
+ COPY entrypoint.sh /opt/repro/entrypoint.sh
+ RUN chmod +x /opt/repro/entrypoint.sh
+ USER worker
+diff --git a/infra/docker/entrypoint.sh b/infra/docker/entrypoint.sh
+index 6cdd1db..bf81b91 100644
+--- a/infra/docker/entrypoint.sh
++++ b/infra/docker/entrypoint.sh
+@@ -3,5 +3,6 @@ set -eu
+ touch /home/worker/.Xauthority
+ xauth add :99 . "$(python3 -c 'import secrets; print(secrets.token_hex(16))')"
+ Xvfb :99 -screen 0 1280x720x24 -nolisten tcp -auth /home/worker/.Xauthority &
++python3 /opt/repro/wait_desktop.py
+ openbox >/tmp/openbox.log 2>&1 &
+ exec sleep infinity
+diff --git a/repro/computer/sandbox.py b/repro/computer/sandbox.py
+index 09a0cb6..26ebb31 100644
+--- a/repro/computer/sandbox.py
++++ b/repro/computer/sandbox.py
+@@ -109,6 +109,9 @@ class DockerSandbox:
+             timeout=30,
+         )
+         await asyncio.sleep(1)
++        # Xvfb and Openbox start asynchronously. A game opened before Openbox is
++        # ready may keep its default size, invalidating recorded coordinates.
++        await self.exec(["python3", "/opt/repro/wait_desktop.py", "--wm"], timeout=20)
+         self._rpc = await WorkerRPC.start(
+             ["docker", "exec", "-i", self.name, "python3", "-u", "/opt/repro/worker.py", "serve"],
+             self.root / "worker-rpc.log",

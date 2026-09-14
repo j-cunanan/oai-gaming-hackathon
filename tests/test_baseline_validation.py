@@ -405,3 +405,13 @@ def test_cli_refresh_flag_is_forwarded(context, monkeypatch):
     result = CliRunner().invoke(cli, ["prepare", case.id, "--refresh-baseline-tests"])
     assert result.exit_code == 0, result.output
     assert prepare.call_args.kwargs == {"refresh_baseline_tests": True}
+
+
+def test_baseline_failure_cannot_waive_other_gates(context):
+    _, _, case = context
+    case.checks = [Check(name=name, status="pass", detail="ok") for name in REQUIRED_VALIDATION_GATES]
+    assert patch_validated(case)
+    for check in case.checks:
+        check.status = "baseline_failed"
+        assert patch_validated(case) == (check.name == "Existing tests")
+        check.status = "pass"

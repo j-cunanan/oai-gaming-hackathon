@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip3 install --no-cache-dir PyAutoGUI==0.9.54 mss==10.1.0 Pillow==11.3.0
 RUN useradd --create-home --uid 1000 worker && mkdir /workspace && chown worker /workspace
 COPY worker.py /opt/repro/worker.py
+COPY wait_desktop.py /opt/repro/wait_desktop.py
 COPY entrypoint.sh /opt/repro/entrypoint.sh
 RUN chmod +x /opt/repro/entrypoint.sh
 USER worker

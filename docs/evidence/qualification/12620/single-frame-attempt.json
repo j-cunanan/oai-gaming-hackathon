@@ -1,0 +1,11 @@
+{
+  "case_id": "6b067de945d7",
+  "state": "INSUFFICIENT_EVIDENCE",
+  "summary": "UI sequence supported H1: imported PersistenceProbe, saved PatchPersistence, confirmed deletion and empty list, saved, exited, reopened, and saw PersistenceProbe again. However, the final-frame verifier did not accept this as proof because a single screenshot cannot establish the prior deletion/save/reopen sequence. Leaving the returned patch visible; no claim of Android/build-specific verification.",
+  "usage": {
+    "model_calls": 47,
+    "input_tokens": 353793,
+    "output_tokens": 3794
+  },
+  "reproduction": null
+}
