@@ -1,0 +1,50 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+No Android SDK found. Skipping Android module.
+Local Arc not found. Cloning https://github.com/Anuken/Arc to a directory next to Mindustry is highly recommended, as jitpack is unreliable.
+
+> Configure project :
+Compiling with build: 'custom build'
+
+> Task :annotations:clearCache
+Caught exception: Couldn't poll for events, error = 4
+Error while receiving file changes
+net.rubygrapefruit.platform.NativeException: Couldn't poll for events, error = 4
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop0(Native Method)
+	at org.gradle.fileevents.internal.AbstractNativeFileEventFunctions$NativeFileWatcher.executeRunLoop(AbstractNativeFileEventFunctions.java:32)
+	at org.gradle.fileevents.internal.AbstractFileEventFunctions$AbstractFileWatcher$1.run(AbstractFileEventFunctions.java:154)
+> Task :annotations:compileJava
+> Task :core:clearCache
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :annotations:processResources
+> Task :annotations:classes
+> Task :annotations:jar
+> Task :core:kaptGenerateStubsKotlin SKIPPED
+> Task :core:preGen UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :tests:clearCache
+> Task :tests:compileJava NO-SOURCE
+> Task :tests:processResources NO-SOURCE
+> Task :tests:classes UP-TO-DATE
+> Task :tests:processTestResources
+> Task :core:kaptKotlin
+> Task :core:compileKotlin SKIPPED
+> Task :core:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :core:classes
+> Task :core:jar
+
+> Task :tests:compileTestJava
+Note: /workspace/repo/tests/src/test/java/DataAssetTests.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tests:testClasses
+> Task :tests:test
+
+[Incubating] Problems report is available at: file:///workspace/repo/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 38s
+12 actionable tasks: 12 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.1/userguide/configuration_cache_enabling.html
