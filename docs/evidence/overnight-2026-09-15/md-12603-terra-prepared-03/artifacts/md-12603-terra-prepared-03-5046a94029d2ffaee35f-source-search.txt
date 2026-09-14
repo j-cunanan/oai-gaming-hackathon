@@ -1,0 +1,6 @@
+./core/src/mindustry/entities/comp/PayloadComp.java:105:        Fx.unitPickup.at(unit);
+./core/src/mindustry/entities/comp/PayloadComp.java:118:        Fx.unitPickup.at(tile);
+./core/src/mindustry/content/Fx.java:417:    unitPickup = new Effect(18, e -> {
+./core/src/mindustry/input/InputHandler.java:598:                    Fx.unitPickup.at(build);
+./core/src/mindustry/input/InputHandler.java:608:                        Fx.unitPickup.at(build);
+./core/src/mindustry/input/InputHandler.java:615:            Fx.unitPickup.at(build);

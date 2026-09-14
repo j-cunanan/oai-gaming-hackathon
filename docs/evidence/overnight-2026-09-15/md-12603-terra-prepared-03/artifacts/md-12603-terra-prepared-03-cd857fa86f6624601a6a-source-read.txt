@@ -1,0 +1,110 @@
+2025: 
+2026:     //endregion
+2027:     //region overrides
+2028: 
+2029:     /** Tile configuration. Defaults to null. Used for block rebuilding. */
+2030:     @Nullable
+2031:     public Object config(){
+2032:         return null;
+2033:     }
+2034: 
+2035:     @Replace
+2036:     @Override
+2037:     public boolean isValid(){
+2038:         return tile.build == self() && !dead();
+2039:     }
+2040: 
+2041:     @MethodPriority(100)
+2042:     @Override
+2043:     public void heal(){
+2044:         healthChanged();
+2045:     }
+2046: 
+2047:     @MethodPriority(100)
+2048:     @Override
+2049:     public void heal(float amount){
+2050:         healthChanged();
+2051:     }
+2052: 
+2053:     @Override
+2054:     public float hitSize(){
+2055:         return tile.block().size * tilesize;
+2056:     }
+2057: 
+2058:     @Replace
+2059:     @Override
+2060:     public void kill(){
+2061:         Call.buildDestroyed(self());
+2062:     }
+2063: 
+2064:     @Replace
+2065:     @Override
+2066:     public void damage(float damage){
+2067:         if(dead()) return;
+2068: 
+2069:         float dm = state.rules.blockHealth(team);
+2070:         lastDamageTime = Time.time;
+2071: 
+2072:         if(Mathf.zero(dm)){
+2073:             damage = health + 1;
+2074:         }else{
+2075:             damage /= dm;
+2076:         }
+2077: 
+2078:         //TODO handle this better on the client.
+2079:         if(!net.client()){
+2080:             health -= handleDamage(damage);
+2081:         }
+2082: 
+2083:         healthChanged();
+2084: 
+2085:         if(health <= 0){
+2086:             Call.buildDestroyed(self());
+2087:         }
+2088:     }
+2089: 
+2090:     public void healthChanged(){
+2091:         //server-side, health updates are batched.
+2092:         if(net.server()){
+2093:             netServer.buildHealthUpdate(self());
+2094:         }
+2095: 
+2096:         indexer.notifyHealthChanged(self());
+2097:     }
+2098: 
+2099:     @Override
+2100:     public double sense(LAccess sensor){
+2101:         return switch(sensor){
+2102:             case x -> World.conv(x);
+2103:             case y -> World.conv(y);
+2104:             case color -> Color.toDoubleBits(team.color.r, team.color.g, team.color.b, 1f);
+2105:             case dead -> !isValid() ? 1 : 0;
+2106:             case solid -> block.solid || checkSolid() ? 1 : 0;
+2107:             case team -> team.id;
+2108:             case health -> health;
+2109:             case maxHealth -> maxHealth;
+2110:             case efficiency -> efficiency;
+2111:             case timescale -> timeScale;
+2112:             case range -> this instanceof Ranged r ? r.range() / tilesize : 0;
+2113:             case rotation -> rotation;
+2114:             case totalItems -> items == null ? 0 : items.total();
+2115:             //totalLiquids is inherently bad design, but unfortunately it is useful for conduits/tanks
+2116:             case totalLiquids -> liquids == null ? 0 : liquids.currentAmount();
+2117:             case totalPower -> power == null || block.consPower == null ? 0 : power.status * (block.consPower.buffered ? block.consPower.capacity : 1f);
+2118:             case itemCapacity -> block.hasItems ? block.itemCapacity : 0;
+2119:             case liquidCapacity -> block.hasLiquids ? block.liquidCapacity : 0;
+2120:             case powerCapacity -> block.consPower != null ? block.consPower.capacity : 0f;
+2121:             case powerNetIn -> power == null ? 0 : power.graph.getLastScaledPowerIn() * 60;
+2122:             case powerNetOut -> power == null ? 0 : power.graph.getLastScaledPowerOut() * 60;
+2123:             case powerNetStored -> power == null ? 0 : power.graph.getLastPowerStored();
+2124:             case powerNetCapacity -> power == null ? 0 : power.graph.getLastCapacity();
+2125:             case armor -> block.armor;
+2126:             case enabled -> enabled ? 1 : 0;
+2127:             case controlled -> this instanceof ControlBlock c && c.isControlled() ? GlobalVars.ctrlPlayer : 0;
+2128:             case payloadCount -> (getPayloads() != null ? getPayloads().total() : 0) + (getPayload() != null ? 1 : 0);
+2129:             case size -> block.size;
+2130:             case cameraX, cameraY, cameraWidth, cameraHeight -> this instanceof ControlBlock c ? c.unit().sense(sensor) : 0;
+2131:             default -> Float.NaN; //gets converted to null in logic
+2132:         };
+2133:     }
+2134: 

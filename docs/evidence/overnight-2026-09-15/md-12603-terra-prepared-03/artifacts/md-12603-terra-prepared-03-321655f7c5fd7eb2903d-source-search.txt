@@ -1,0 +1,4 @@
+regex parse error:
+    buildDestroyed(Building
+                  ^
+error: unclosed group

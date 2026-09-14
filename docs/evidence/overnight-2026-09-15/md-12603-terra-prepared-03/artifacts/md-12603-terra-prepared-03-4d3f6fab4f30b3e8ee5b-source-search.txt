@@ -1,0 +1,3 @@
+./core/src/mindustry/world/blocks/payloads/PayloadMassDriver.java:44:        data.payload.draw();
+./core/src/mindustry/world/blocks/payloads/PayloadMassDriver.java:378:                    payload.draw();
+./core/src/mindustry/world/blocks/payloads/PayloadBlock.java:261:                payload.draw();

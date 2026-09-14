@@ -1,0 +1,105 @@
+680:     //region handler methods
+681: 
+682:     /** @return whether the player can select (but not actually control) this building. */
+683:     public boolean canControlSelect(Unit player){
+684:         return false;
+685:     }
+686: 
+687:     /** Called when a player control-selects this building - not called for ControlBlock subclasses. */
+688:     public void onControlSelect(Unit player){
+689: 
+690:     }
+691: 
+692:     /** Called when this building receives a position command. Requires a commandable block. */
+693:     public void onCommand(Vec2 target){
+694: 
+695:     }
+696: 
+697:     /** @return the position that this block points to for commands, or null. */
+698:     public @Nullable Vec2 getCommandPosition(){
+699:         return null;
+700:     }
+701: 
+702:     public void handleUnitPayload(Unit unit, Cons<Payload> grabber){
+703:         Fx.spawn.at(unit);
+704: 
+705:         if(unit.isPlayer()){
+706:             unit.getPlayer().clearUnit();
+707:         }
+708: 
+709:         unit.remove();
+710: 
+711:         //needs new ID as it is now a payload
+712:         if(net.client()){
+713:             unit.id = EntityGroup.nextId();
+714:         }else{
+715:             //server-side, this needs to be delayed until next frame because otherwise the packets sent out right after this event would have the wrong unit ID, leading to ghosts
+716:             Core.app.post(() -> unit.id = EntityGroup.nextId());
+717:         }
+718: 
+719:         grabber.get(new UnitPayload(unit));
+720:         Fx.unitDrop.at(unit);
+721:     }
+722: 
+723:     public boolean canWithdraw(){
+724:         return true;
+725:     }
+726: 
+727:     public boolean canUnload(){
+728:         return block.unloadable;
+729:     }
+730: 
+731:     public boolean canResupply(){
+732:         return block.allowResupply;
+733:     }
+734: 
+735:     public boolean payloadCheck(int conveyorRotation){
+736:         return block.rotate && (rotation + 2) % 4 == conveyorRotation;
+737:     }
+738: 
+739:     /** Called when an unloader takes an item. */
+740:     public void itemTaken(Item item){
+741: 
+742:     }
+743: 
+744:     public boolean allowDeposit(){
+745:         return block.alwaysAllowDeposit || !state.rules.onlyDepositCore;
+746:     }
+747: 
+748:     /** Called when this block is dropped as a payload. */
+749:     public void dropped(){
+750: 
+751:     }
+752: 
+753:     /** This is for logic blocks. */
+754:     public void handleString(Object value){
+755: 
+756:     }
+757: 
+758:     public void created(){}
+759: 
+760:     /** @return whether this block is currently "active" and should be consuming requirements. */
+761:     public boolean shouldConsume(){
+762:         return enabled;
+763:     }
+764: 
+765:     public boolean productionValid(){
+766:         return true;
+767:     }
+768: 
+769:     /** @return whether this building is currently "burning" a trigger consumer (an item) - if true, valid() on those will return true. */
+770:     public boolean consumeTriggerValid(){
+771:         return false;
+772:     }
+773: 
+774:     public float getPowerProduction(){
+775:         return 0f;
+776:     }
+777: 
+778:     /** Returns the amount of items this block can accept. */
+779:     public int acceptStack(Item item, int amount, Teamc source){
+780:         if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team)){
+781:             return Math.min(getMaximumAccepted(item) - items.get(item), amount);
+782:         }else{
+783:             return 0;
+784:         }

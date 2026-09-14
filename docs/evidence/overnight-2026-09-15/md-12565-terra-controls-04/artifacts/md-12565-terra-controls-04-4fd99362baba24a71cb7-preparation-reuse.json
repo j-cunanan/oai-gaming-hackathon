@@ -1,0 +1,31 @@
+{
+  "source_case": "md-12565-terra-prepared-03",
+  "target_commit": "7e80948b58138a569e119857e0add95762d7e0bb",
+  "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+  "history_audit": {
+    "commit": "7e80948b58138a569e119857e0add95762d7e0bb",
+    "future_objects": false,
+    "remotes": [],
+    "isolated": true
+  },
+  "source_clean": true,
+  "copied_components": [
+    "repo",
+    "gradle",
+    "baseline",
+    "prepared.json"
+  ],
+  "game_jar_sha256": "69796af247aa37b56c89eec33eec5f392a49c4b9b71052393499815fd8379b42",
+  "baseline_jar_sha256": "69796af247aa37b56c89eec33eec5f392a49c4b9b71052393499815fd8379b42",
+  "fresh_runtime_directory": true,
+  "baseline_test_sources": [
+    {
+      "source_case": "md-12565-terra-prepared-03",
+      "source_artifact": "md-12565-terra-prepared-03-5ca534d84e2e78371d1e-baseline-tests.log",
+      "new_artifact": "md-12565-terra-controls-04-5ca534d84e2e78371d1e-reused-baseline-tests.log",
+      "sha256": "5ca534d84e2e78371d1e44627e4cb72b5c29b617d08cad780f0ea156c3201eb2",
+      "original_timestamp": "2026-09-14T19:30:05.730635+00:00"
+    }
+  ],
+  "scope": "Compilation and dependency cache reused from the same untouched pre-fix revision and worker image. Copied offline baseline evidence retains its original timestamp. New model context; every gameplay replay starts with a fresh profile. No new build or test execution is claimed by this reuse."
+}

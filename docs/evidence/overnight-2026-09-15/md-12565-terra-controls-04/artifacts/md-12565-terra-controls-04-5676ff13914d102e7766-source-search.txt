@@ -1,0 +1,127 @@
+./core/src/mindustry/mod/ContentParser.java:478:                    return (T)new PayloadStack(cont == null ? Blocks.router : cont, number);
+./core/src/mindustry/editor/MapGenerateDialog.java:309:            t.stack(preview, new Stack(){{
+./core/src/mindustry/editor/MapEditorDialog.java:625:                    tools.stack(button, mode);
+./core/src/mindustry/editor/MapEditorDialog.java:705:                    t.top().stack(slider, label).width(size * 3f - 20).padTop(4f);
+./core/src/mindustry/editor/MapEditor.java:27:    private OperationStack stack = new OperationStack();
+./core/src/mindustry/editor/MapObjectivesDialog.java:157:                b -> b.stack(new Image(Tex.alphaBg), new Image(Tex.whiteui){{
+./core/src/mindustry/editor/MapObjectivesDialog.java:489:        stack(
+./core/src/mindustry/editor/data/MapAudioView.java:91:                    in.stack(slider, label).growX().height(42f);
+./core/src/mindustry/editor/OperationStack.java:10:    public OperationStack(){
+./core/src/mindustry/editor/WaveInfoDialog.java:105:        cont.stack(new Table(Tex.clear, main -> {
+./core/src/mindustry/entities/comp/BuildingComp.java:779:    public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/entities/comp/BuildingComp.java:792:    public int removeStack(Item item, int amount){
+./core/src/mindustry/entities/comp/BuildingComp.java:801:    public void handleStack(Item item, int amount, @Nullable Teamc source){
+./core/src/mindustry/entities/comp/BuildingComp.java:2220:                    handleStack(item, acceptStack(item, amount - items.get(item), null), null);
+./core/src/mindustry/entities/comp/BuildingComp.java:2222:                    removeStack(item, items.get(item) - amount);
+./core/src/mindustry/entities/comp/MinerComp.java:79:            int accepted = core.acceptStack(item(), stack().amount, this);
+./core/src/mindustry/entities/comp/MinerComp.java:103:                if(core != null && within(core, mineTransferRange) && core.acceptStack(item, 1, this) == 1 && offloadImmediately()){
+./core/src/mindustry/entities/comp/ItemsComp.java:10:    ItemStack stack = new ItemStack();
+./core/src/mindustry/entities/comp/UnitComp.java:268:            case totalItems -> stack().amount;
+./core/src/mindustry/entities/comp/UnitComp.java:320:            case firstItem -> stack().amount == 0 ? null : item();
+./core/src/mindustry/entities/comp/UnitComp.java:336:        if(content == stack().item) return stack().amount;
+./core/src/mindustry/entities/comp/UnitComp.java:886:        float explosiveness = 2f + item().explosiveness * stack().amount * 1.53f;
+./core/src/mindustry/entities/comp/UnitComp.java:887:        float flammability = item().flammability * stack().amount / 1.9f;
+./core/src/mindustry/entities/comp/UnitComp.java:888:        float power = item().charge * Mathf.pow(stack().amount, 1.11f) * 160f;
+./core/src/mindustry/graphics/OverlayRenderer.java:254:            if(input.canDropItem() && build != null && build.interactable(player.team()) && build.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0 && player.within(build, itemTransferRange) &&
+./core/src/mindustry/content/Blocks.java:1044:            outputItem = new ItemStack(Items.graphite, 1);
+./core/src/mindustry/content/Blocks.java:1056:            outputItem = new ItemStack(Items.graphite, 2);
+./core/src/mindustry/content/Blocks.java:1072:            outputItem = new ItemStack(Items.silicon, 1);
+./core/src/mindustry/content/Blocks.java:1088:            outputItem = new ItemStack(Items.silicon, 8);
+./core/src/mindustry/content/Blocks.java:1106:            outputItem = new ItemStack(Items.metaglass, 1);
+./core/src/mindustry/content/Blocks.java:1123:            outputItem = new ItemStack(Items.plastanium, 1);
+./core/src/mindustry/content/Blocks.java:1139:            outputItem = new ItemStack(Items.phaseFabric, 1);
+./core/src/mindustry/content/Blocks.java:1157:            outputItem = new ItemStack(Items.surgeAlloy, 1);
+./core/src/mindustry/content/TechTree.java:173:                finishedRequirements[i] = new ItemStack(requirements[i].item, Core.settings == null ? 0 : Core.settings.getInt("req-" + content.name + "-" + requirements[i].item.name));
+./core/src/mindustry/logic/LogicDialog.java:194:                        t.stack(new Image(Tex.whiteui, varColor), new Label(" " + s.name + " ", Styles.outlineLabel){{
+./core/src/mindustry/logic/LogicDialog.java:220:                        t.stack(new Image(Tex.whiteui, typeColor(s, new Color())){{
+./core/src/mindustry/logic/LExecutor.java:525:                                int accepted = build.acceptStack(unit.item(), dropped, unit);
+./core/src/mindustry/logic/LStatements.java:645:                    Stack stack = new Stack(tables[selected]);
+./core/src/mindustry/logic/LStatements.java:2363:                    Stack stack = new Stack(tables[selected]);
+./core/src/mindustry/logic/GlobalVarsDialog.java:49:                    t.stack(new Image(Tex.whiteui, varColor), new Label(" " + entry.name + " ", Styles.outlineLabel)).padRight(pad);
+./core/src/mindustry/type/ItemStack.java:13:    public ItemStack(Item item, int amount){
+./core/src/mindustry/type/ItemStack.java:20:    public ItemStack(){
+./core/src/mindustry/type/ItemStack.java:32:        return new ItemStack(item, amount);
+./core/src/mindustry/type/ItemStack.java:42:            copy[i] = new ItemStack(stacks[i].item, Mathf.round(stacks[i].amount * amount));
+./core/src/mindustry/type/ItemStack.java:50:            stacks[i / 2] = new ItemStack((Item)items[i], ((Number)items[i + 1]).intValue());
+./core/src/mindustry/type/ItemStack.java:58:            stacks.add(new ItemStack((Item)items[i], ((Number)items[i + 1]).intValue()));
+./core/src/mindustry/type/ItemSeq.java:53:            if(values[i] != 0) out.add(new ItemStack(Vars.content.item(i), values[i]));
+./core/src/mindustry/type/ItemSeq.java:67:                result[index ++] = new ItemStack(Vars.content.item(i), values[i]);
+./core/src/mindustry/type/LiquidStack.java:12:    public LiquidStack(Liquid liquid, float amount){
+./core/src/mindustry/type/LiquidStack.java:18:    protected LiquidStack(){
+./core/src/mindustry/type/LiquidStack.java:30:        return new LiquidStack(liquid, amount);
+./core/src/mindustry/type/LiquidStack.java:40:            copy[i] = new LiquidStack(stacks[i].liquid, stacks[i].amount * amount);
+./core/src/mindustry/type/LiquidStack.java:48:            stacks[i / 2] = new LiquidStack((Liquid)items[i], ((Number)items[i + 1]).floatValue());
+./core/src/mindustry/type/LiquidStack.java:56:            stacks.add(new LiquidStack((Liquid)items[i], ((Number)items[i + 1]).floatValue()));
+./core/src/mindustry/type/PayloadStack.java:11:    public PayloadStack(UnlockableContent item, int amount){
+./core/src/mindustry/type/PayloadStack.java:16:    public PayloadStack(UnlockableContent item){
+./core/src/mindustry/type/PayloadStack.java:20:    public PayloadStack(){
+./core/src/mindustry/type/PayloadStack.java:26:            stacks[i / 2] = new PayloadStack((UnlockableContent)items[i], ((Number)items[i + 1]).intValue());
+./core/src/mindustry/type/PayloadStack.java:34:            stacks.add(new PayloadStack((UnlockableContent)items[i], ((Number)items[i + 1]).intValue()));
+./core/src/mindustry/game/Waves.java:137:                items = new ItemStack(Items.blastCompound, 60);
+./core/src/mindustry/game/Waves.java:146:                items = new ItemStack(Items.pyratite, 100);
+./core/src/mindustry/type/UnitType.java:1413:                out[i] = new ItemStack(stacks[i].item, UI.roundAmount((int)(stacks[i].amount * researchCostMultiplier)));
+./core/src/mindustry/io/TypeIO.java:1053:        return new ItemStack(readItem(read), read.i());
+./core/src/mindustry/io/TypeIO.java:1084:            stacks[i] = new LiquidStack(liquid, read.f());
+./core/src/mindustry/world/Block.java:1190:        return consume(new ConsumeItems(new ItemStack[]{new ItemStack(item, amount)}));
+./core/src/mindustry/world/Block.java:1288:            out[i] = new ItemStack(requirements[i].item, UI.roundAmount(quantity));
+./core/src/mindustry/io/JsonIO.java:261:                return new ItemStack(json.getSerializer(Item.class).read(json, jsonData.get("item"), Item.class), jsonData.getInt("amount"));
+./core/src/mindustry/world/meta/Stats.java:59:        add(stat, StatValues.items(new ItemStack(item, 1)));
+./core/src/mindustry/world/meta/StatValues.java:188:        t.add(new Stack(){{
+./core/src/mindustry/world/meta/StatValues.java:229:    private static Stack stack(TextureRegion region, int amount, @Nullable UnlockableContent content, boolean tooltip){
+./core/src/mindustry/world/meta/StatValues.java:230:        Stack stack = new Stack();
+./core/src/mindustry/world/meta/StatValues.java:251:    private static Stack stack(TextureRegion region, int amount, @Nullable UnlockableContent content){
+./core/src/mindustry/world/meta/StatValues.java:252:        return stack(region, amount, content, true);
+./core/src/mindustry/world/meta/StatValues.java:255:    public static Stack stack(ItemStack stack){
+./core/src/mindustry/world/meta/StatValues.java:256:        return stack(stack.item.uiIcon, stack.amount, stack.item);
+./core/src/mindustry/world/meta/StatValues.java:259:    public static Stack stack(UnlockableContent item, int amount){
+./core/src/mindustry/world/blocks/storage/StorageBlock.java:84:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/storage/StorageBlock.java:85:            int result = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:792:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:795:            super.handleStack(item, realAmount, source);
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:809:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:810:            int result = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/units/UnitCargoUnloadPoint.java:77:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:245:                                        solid.add(StatValues.stack(plan.itemReq[i])).pad(5);
+./core/src/mindustry/world/blocks/units/UnitAssembler.java:254:                                    solid.add(StatValues.stack(plan.requirements.get(i))).pad(5);
+./core/src/mindustry/world/blocks/storage/Unloader.java:248:                    from.removeStack(item, 1);
+./core/src/mindustry/world/blocks/campaign/LaunchPad.java:151:                items.each((item, amount) -> entity.stacks.add(new ItemStack(item, amount)));
+./core/src/mindustry/world/blocks/defense/turrets/ItemTurret.java:133:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/defense/turrets/ItemTurret.java:142:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/defense/turrets/ItemTurret.java:150:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/consumers/ConsumePayloadFilter.java:60:            block -> image.add(new ReqImage(StatValues.stack(block, 1),
+./core/src/mindustry/world/blocks/distribution/Junction.java:49:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/Duct.java:231:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/Duct.java:232:            int removed = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/distribution/Duct.java:238:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/Duct.java:239:            super.handleStack(item, amount, source);
+./core/src/mindustry/world/blocks/distribution/Router.java:76:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/Router.java:94:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/Router.java:95:            int result = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/distribution/Conveyor.java:309:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/Conveyor.java:333:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/Conveyor.java:338:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/Conveyor.java:456:                        handleStack(item, amount - items.get(item), null);
+./core/src/mindustry/world/blocks/distribution/Conveyor.java:458:                        removeStack(item, items.get(item) - amount);
+./core/src/mindustry/world/blocks/distribution/DuctJunction.java:143:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/DuctJunction.java:148:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:323:                    handleStack(item, build.items.get(item), null);
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:344:        public int acceptStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:346:            return super.acceptStack(item, amount, source);
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:357:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:360:            super.handleStack(item, amount, source);
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:365:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:367:                return super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/distribution/DuctRouter.java:166:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/DuctRouter.java:167:            int removed = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/distribution/DuctRouter.java:173:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/DuctRouter.java:174:            super.handleStack(item, amount, source);
+./core/src/mindustry/world/blocks/distribution/OverflowDuct.java:141:        public int removeStack(Item item, int amount){
+./core/src/mindustry/world/blocks/distribution/OverflowDuct.java:142:            int removed = super.removeStack(item, amount);
+./core/src/mindustry/world/blocks/distribution/OverflowDuct.java:148:        public void handleStack(Item item, int amount, Teamc source){
+./core/src/mindustry/world/blocks/distribution/OverflowDuct.java:149:            super.handleStack(item, amount, source);
+./core/src/mindustry/world/consumers/ConsumeItemDynamic.java:46:            table.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/consumers/ConsumeItems.java:36:                c.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/consumers/ConsumeItemFilter.java:38:        content.items().each(i -> filter.get(i) && i.unlockedNow() && !i.hidden, item -> image.add(new ReqImage(StatValues.stack(item, 1),
+./core/src/mindustry/world/consumers/ConsumePayloads.java:41:                t.add(StatValues.stack(stack));
+./core/src/mindustry/world/consumers/ConsumePayloads.java:54:                c.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
+./core/src/mindustry/world/con

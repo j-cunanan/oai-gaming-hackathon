@@ -1,0 +1,115 @@
+1125:                 Events.fire(Trigger.unitCommandChange);
+1126:             }
+1127:         }
+1128:     }
+1129: 
+1130:     public void tapCommandUnit(){
+1131:         if(commandMode){
+1132: 
+1133:             Unit unit = selectedCommandUnit(input.mouseWorldX(), input.mouseWorldY());
+1134:             Building build = world.buildWorld(input.mouseWorldX(), input.mouseWorldY());
+1135:             if(unit != null){
+1136:                 if(!selectedUnits.contains(unit)){
+1137:                     selectedUnits.add(unit);
+1138:                 }else{
+1139:                     selectedUnits.remove(unit);
+1140:                 }
+1141:                 commandBuildings.clear();
+1142:             }else{
+1143:                 //deselect
+1144:                 selectedUnits.clear();
+1145: 
+1146:                 if(build != null && build.team == player.team() && build.isCommandable()){
+1147:                     if(commandBuildings.contains(build)){
+1148:                         commandBuildings.remove(build);
+1149:                     }else{
+1150:                         commandBuildings.add(build);
+1151:                     }
+1152: 
+1153:                 }else{
+1154:                     commandBuildings.clear();
+1155:                 }
+1156:             }
+1157:             Events.fire(Trigger.unitCommandChange);
+1158:         }
+1159:     }
+1160: 
+1161:     public void commandTap(float screenX, float screenY){
+1162:         commandTap(screenX, screenY, false);
+1163:     }
+1164: 
+1165:     public void commandTap(float screenX, float screenY, boolean queue){
+1166:         if(commandMode){
+1167:             //right click: move to position
+1168: 
+1169:             //move to location - TODO right click instead?
+1170:             Vec2 target = input.mouseWorld(screenX, screenY).cpy();
+1171: 
+1172:             if(selectedUnits.size > 0){
+1173: 
+1174:                 Teamc attack = world.buildWorld(target.x, target.y);
+1175: 
+1176:                 if(attack == null || attack.team() == player.team()){
+1177:                     attack = selectedEnemyUnit(target.x, target.y);
+1178:                 }
+1179: 
+1180:                 int[] ids = new int[selectedUnits.size];
+1181:                 for(int i = 0; i < ids.length; i++){
+1182:                     ids[i] = selectedUnits.get(i).id;
+1183:                 }
+1184: 
+1185:                 int maxChunkSize = 200;
+1186: 
+1187:                 if(ids.length > maxChunkSize){
+1188:                     for(int i = 0; i < ids.length; i += maxChunkSize){
+1189:                         int[] data = Arrays.copyOfRange(ids, i, Math.min(i + maxChunkSize, ids.length));
+1190:                         Call.commandUnits(player, data, attack instanceof Building b ? b : null, attack instanceof Unit u ? u : null, target, queue, i + maxChunkSize >= ids.length);
+1191:                     }
+1192:                 }else{
+1193:                     Call.commandUnits(player, ids, attack instanceof Building b ? b : null, attack instanceof Unit u ? u : null, target, queue, true);
+1194:                 }
+1195:             }
+1196: 
+1197:             if(commandBuildings.size > 0){
+1198:                 Call.commandBuilding(player, commandBuildings.mapInt(b -> b.pos()).toArray(), target);
+1199:             }
+1200:         }
+1201:     }
+1202: 
+1203:     public void drawCommand(Unit sel){
+1204:         Drawf.poly(sel.x, sel.y, 6, sel.hitSize / unitSelectRadScl + Mathf.absin(4f, 1f), 0f, selectedUnits.contains(sel) ? Pal.remove : Pal.accent);
+1205:     }
+1206: 
+1207:     public void drawCommand(Building build){
+1208:         Drawf.poly(build.x, build.y, 4, build.hitSize() / 1.4f + + 0.5f + Mathf.absin(4f, 1f), 0f, commandBuildings.contains(build) ? Pal.remove : Pal.accent);
+1209:     }
+1210: 
+1211:     public void drawCommanded(){
+1212:         Draw.draw(Layer.plans, () -> {
+1213:             drawCommanded(true);
+1214:         });
+1215: 
+1216:         Draw.draw(Layer.groundUnit - 1, () -> {
+1217:             drawCommanded(false);
+1218:         });
+1219: 
+1220:         Draw.draw(Layer.overlayUI, () -> {
+1221:             drawCommandedTargets();
+1222:         });
+1223:     }
+1224: 
+1225:     public void drawCommandedTargets(){
+1226:         if(commandMode){
+1227:             for(Unit unit : selectedUnits){
+1228:                 if(unit.controller() instanceof CommandAI ai){
+1229:                     var cmd =  ai.currentCommand();
+1230: 
+1231:                     if(ai.attackTarget != null && cmd.drawTarget){
+1232:                         Drawf.target(ai.attackTarget.getX(), ai.attackTarget.getY(), 6f, Pal.remove);
+1233:                     }
+1234:                 }
+1235:             }
+1236:         }
+1237:     }
+1238: 
+1239:     public void drawCommanded(boolean flying){

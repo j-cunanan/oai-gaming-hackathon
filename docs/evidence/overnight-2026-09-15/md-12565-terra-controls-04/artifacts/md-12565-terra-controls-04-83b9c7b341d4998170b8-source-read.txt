@@ -1,0 +1,180 @@
+475:         }
+476: 
+477:         //zoom camera
+478:         if((!Core.scene.hasScroll() || Core.input.keyDown(Binding.diagonalPlacement)) && !ui.chatfrag.shown() && !ui.consolefrag.shown() && Math.abs(Core.input.axisTap(Binding.zoom)) > 0
+479:             && !Core.input.keyDown(Binding.rotatePlaced) && (Core.input.keyDown(Binding.diagonalPlacement) ||
+480:                 !Binding.zoom.value.equals(Binding.rotate.value) || ((!player.isBuilder() || !isPlacing() || !block.rotate) && selectPlans.isEmpty()))){
+481:             renderer.scaleCamera(Core.input.axisTap(Binding.zoom));
+482:         }
+483: 
+484:         if(Core.input.keyTap(Binding.select) && !Core.scene.hasMouse()){
+485:             Tile selected = world.tileWorld(input.mouseWorldX(), input.mouseWorldY());
+486:             if(selected != null){
+487:                 Call.tileTap(player, selected);
+488:             }
+489:         }
+490: 
+491:         if(input.keyTap(Binding.ping) && !Core.scene.hasMouse() && !scene.hasKeyboard()){
+492:             if(input.ctrl()){
+493:                 ui.showTextInput("", "@ping.text", Vars.maxPingTextLength, "", result -> Call.pingLocation(Vars.player, input.mouseWorldX(), input.mouseWorldY(), UI.formatIcons(result)));
+494:             }else{
+495:                 Call.pingLocation(Vars.player, input.mouseWorldX(), input.mouseWorldY(), null);
+496:             }
+497:         }
+498: 
+499:         if(Core.input.keyRelease(Binding.select) && commandRect){
+500:             selectUnitsRect();
+501:         }
+502: 
+503:         if(player.dead() || locked){
+504:             cursorType = SystemCursor.arrow;
+505:             if(!locked){
+506:                 pollInputNoPlayer();
+507:             }
+508:         }else{
+509:             pollInputPlayer();
+510:         }
+511: 
+512:         if(Core.input.keyRelease(Binding.select)){
+513:             player.shooting = false;
+514:         }
+515: 
+516:         if(!Core.scene.hasMouse() && !ui.minimapfrag.shown()){
+517:             Core.graphics.cursor(cursorType);
+518:             changedCursor = cursorType != SystemCursor.arrow;
+519:         }else{
+520:             cursorType = SystemCursor.arrow;
+521:             if(changedCursor){
+522:                 graphics.cursor(SystemCursor.arrow);
+523:                 changedCursor = false;
+524:             }
+525:         }
+526:     }
+527: 
+528:     @Override
+529:     public void useSchematic(Schematic schem, boolean checkHidden){
+530:         block = null;
+531:         schematicX = tileX(getMouseX());
+532:         schematicY = tileY(getMouseY());
+533: 
+534:         selectPlans.clear();
+535:         selectPlans.addAll(schematics.toPlans(schem, schematicX, schematicY, checkHidden));
+536:         mode = none;
+537:     }
+538: 
+539:     @Override
+540:     public boolean isBreaking(){
+541:         return mode == breaking;
+542:     }
+543: 
+544:     @Override
+545:     public void buildPlacementUI(Table table){
+546:         table.left().margin(0f).defaults().size(48f).left();
+547: 
+548:         table.button(Icon.paste, Styles.clearNonei, () -> {
+549:             ui.schematics.show();
+550:         }).tooltip("@schematics");
+551: 
+552:         table.button(Icon.book, Styles.clearNonei, () -> {
+553:             ui.database.show();
+554:         }).tooltip("@database");
+555: 
+556:         table.button(Icon.tree, Styles.clearNonei, () -> {
+557:             ui.research.show();
+558:         }).visible(() -> state.isCampaign()).tooltip("@research");
+559: 
+560:         table.button(Icon.map, Styles.clearNonei, () -> {
+561:             ui.planet.show();
+562:         }).visible(() -> state.isCampaign()).tooltip("@planetmap");
+563:     }
+564: 
+565:     void pollInputNoPlayer(){
+566:         if(Core.input.keyTap(Binding.select) && !Core.scene.hasMouse()){
+567:             tappedOne = false;
+568: 
+569:             Tile selected = tileAt(Core.input.mouseX(), Core.input.mouseY());
+570: 
+571:             if(commandMode){
+572:                 commandRect = true;
+573:                 commandRectX = input.mouseWorldX();
+574:                 commandRectY = input.mouseWorldY();
+575:             }else if(selected != null){
+576:                 tileTapped(selected.build);
+577:             }
+578:         }
+579:     }
+580: 
+581:     //player input: for controlling the player unit (will crash if the unit is not present)
+582:     void pollInputPlayer(){
+583:         if(scene.hasField()) return;
+584: 
+585:         Tile selected = tileAt(Core.input.mouseX(), Core.input.mouseY());
+586:         int cursorX = tileX(Core.input.mouseX());
+587:         int cursorY = tileY(Core.input.mouseY());
+588:         int rawCursorX = World.toTile(Core.input.mouseWorld().x), rawCursorY = World.toTile(Core.input.mouseWorld().y);
+589: 
+590:         //automatically pause building if the current build queue is empty
+591:         if(Core.settings.getBool("buildautopause") && isBuilding && !player.unit().isBuilding()){
+592:             isBuilding = false;
+593:             buildWasAutoPaused = true;
+594:         }
+595: 
+596:         if(!selectPlans.isEmpty()){
+597:             int shiftX = rawCursorX - schematicX, shiftY = rawCursorY - schematicY;
+598: 
+599:             selectPlans.each(s -> {
+600:                 s.x += shiftX;
+601:                 s.y += shiftY;
+602:             });
+603: 
+604:             schematicX += shiftX;
+605:             schematicY += shiftY;
+606:         }
+607: 
+608:         if(Core.input.keyTap(Binding.deselect) && !ui.minimapfrag.shown() && !isPlacing() && player.unit().plans.isEmpty() && !commandMode){
+609:             player.unit().mineTile = null;
+610:         }
+611: 
+612:         if(Core.input.keyTap(Binding.clearBuilding) && !player.dead()){
+613:             player.unit().clearBuilding();
+614:         }
+615: 
+616:         if((Core.input.keyTap(Binding.schematicSelect) || Core.input.keyTap(Binding.rebuildSelect)) && !Core.scene.hasKeyboard() && mode != breaking){
+617:             schemX = rawCursorX;
+618:             schemY = rawCursorY;
+619:         }
+620: 
+621:         if(Core.input.keyTap(Binding.clearBuilding) || isPlacing()){
+622:             lastSchematic = null;
+623:             selectPlans.clear();
+624:         }
+625: 
+626:         if(!Core.scene.hasKeyboard() && selectX == -1 && selectY == -1 && schemX != -1 && schemY != -1){
+627:             if(Core.input.keyRelease(Binding.schematicSelect)){
+628:                 lastSchematic = schematics.create(schemX, schemY, rawCursorX, rawCursorY);
+629:                 useSchematic(lastSchematic);
+630:                 if(selectPlans.isEmpty()){
+631:                     lastSchematic = null;
+632:                 }
+633:                 if(!input.keyDown(Binding.rebuildSelect)){
+634:                     schemX = -1;
+635:                     schemY = -1;
+636:                 }
+637:             }else if(input.keyRelease(Binding.rebuildSelect)){
+638: 
+639:                 rebuildArea(schemX, schemY, rawCursorX, rawCursorY);
+640:                 if(!input.keyDown(Binding.schematicSelect)){
+641:                     schemX = -1;
+642:                     schemY = -1;
+643:                 }
+644:             }
+645:         }
+646: 
+647:         if(!selectPlans.isEmpty()){
+648:             if(Core.input.keyTap(Binding.schematicFlipX)){
+649:                 flipPlans(selectPlans, true);
+650:             }
+651: 
+652:             if(Core.input.keyTap(Binding.schematicFlipY)){
+653:                 flipPlans(selectPlans, false);
+654:             }

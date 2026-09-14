@@ -1,0 +1,150 @@
+560:                                         }
+561: 
+562:                                         for(var command : type.commands){
+563:                                             if(!usedCommands.get(command.id)){
+564:                                                 commands.add(command);
+565:                                                 usedCommands.set(command.id);
+566:                                             }
+567:                                         }
+568:                                     }
+569:                                 }
+570: 
+571:                                 //list commands
+572:                                 if(commands.size > 1){
+573:                                     u.row();
+574: 
+575:                                     u.table(coms -> {
+576:                                         coms.left();
+577:                                         int scol = 0;
+578:                                         for(var command : commands){
+579:                                             coms.button(Icon.icons.get(command.icon, Icon.cancel), Styles.clearNoneTogglei, () -> {
+580:                                                 Call.setUnitCommand(player, units.mapInt(un -> un.id, un -> un.type.allowCommand(un, command)).toArray(), command);
+581:                                             }).checked(i -> activeCommands.get(command.id)).size(50f).tooltip(command.localized(), true);
+582: 
+583:                                             if(++scol % 6 == 0) coms.row();
+584:                                         }
+585: 
+586:                                     }).fillX().padTop(4f).left();
+587:                                 }
+588: 
+589:                                 //list stances
+590:                                 if(stances.size > 1){
+591:                                     u.row();
+592: 
+593:                                     if(commands.size > 1){
+594:                                         u.add(new Image(Tex.whiteui)).height(3f).color(Pal.gray).pad(7f).growX().row();
+595:                                     }
+596: 
+597:                                     u.table(coms -> {
+598:                                         coms.left();
+599:                                         int scol = 0;
+600:                                         for(var stance : stances){
+601: 
+602:                                             coms.button(stance.getIcon(), Styles.clearNoneTogglei, () -> {
+603:                                                 Call.setUnitStance(player, units.mapInt(un -> un.id, un -> un.type.allowStance(un, stance)).toArray(), stance, !activeStances.get(stance.id));
+604:                                             }).checked(i -> activeStances.get(stance.id)).size(50f).tooltip(stance.localized(), true);
+605: 
+606:                                             if(++scol % 6 == 0) coms.row();
+607:                                         }
+608:                                     }).fillX().padTop(4f).left();
+609:                                 }
+610:                             }else{
+611:                                 u.add(Core.bundle.get("commandmode.nounits")).color(Color.lightGray).growX().center().labelAlign(Align.center).pad(6);
+612:                             }
+613:                         };
+614: 
+615:                         u.update(() -> {
+616:                             {
+617:                                 if(countBox[0].length != content.units().size) countBox[0] = new int[content.units().size];
+618:                                 int[] counts = countBox[0];
+619:                                 activeCommands.clear();
+620:                                 activeStances.clear();
+621:                                 availableCommands.clear();
+622:                                 availableStances.clear();
+623:                                 activeTypes.clear();
+624: 
+625:                                 Arrays.fill(counts, 0);
+626: 
+627:                                 //find the command that all units have, or null if they do not share one
+628:                                 for(var unit : control.input.selectedUnits){
+629:                                     if(unit.controller() instanceof CommandAI cmd){
+630:                                         activeCommands.set(cmd.command.id);
+631:                                         activeStances.set(cmd.stances);
+632:                                     }
+633: 
+634:                                     counts[unit.type.id] ++;
+635: 
+636:                                     activeTypes.set(unit.type.id);
+637: 
+638:                                     stancesOut.clear();
+639:                                     unit.type.getUnitStances(unit, stancesOut);
+640: 
+641:                                     for(var stance : stancesOut){
+642:                                         availableStances.set(stance.id);
+643:                                     }
+644: 
+645:                                     for(var command : unit.type.commands){
+646:                                         availableCommands.set(command.id);
+647:                                     }
+648:                                 }
+649: 
+650:                                 if(!usedCommands.equals(availableCommands) || !usedStances.equals(availableStances) || !prevActiveTypes.equals(activeTypes)){
+651:                                     rebuildCommand.run();
+652:                                     prevActiveTypes.set(activeTypes);
+653:                                 }
+654: 
+655:                                 //not a huge fan of running input logic here, but it's convenient as the stance arrays are all here...
+656:                                 for(UnitStance stance : stances){
+657:                                     //first stance must always be the stop stance
+658:                                     if(stance.keybind != null && Core.input.keyTap(stance.keybind)){
+659:                                         Call.setUnitStance(player, control.input.selectedUnits.mapInt(un -> un.id, un -> un.type.allowStance(un, stance)).toArray(), stance, !activeStances.get(stance.id));
+660:                                     }
+661:                                 }
+662: 
+663:                                 for(UnitCommand command : commands){
+664:                                     //first stance must always be the stop stance
+665:                                     if(command.keybind != null && Core.input.keyTap(command.keybind)){
+666:                                         Call.setUnitCommand(player, control.input.selectedUnits.mapInt(un -> un.id, un -> un.type.allowCommand(un, command)).toArray(), command);
+667:                                     }
+668:                                 }
+669:                             }
+670:                         });
+671:                         rebuildCommand.run();
+672:                     }).grow();
+673:                 }
+674: 
+675:                 //blockCatTable: all blocks | all categories
+676:                 {
+677:                     blockCatTable.table(Tex.pane2, blocksSelect -> {
+678:                         blocksSelect.margin(4).marginTop(0);
+679:                         blockPane = blocksSelect.pane(blocks -> blockTable = blocks).height(194f).update(pane -> {
+680:                             if(pane.hasScroll()){
+681:                                 Element result = Core.scene.getHoverElement();
+682:                                 if(result == null || !result.isDescendantOf(pane)){
+683:                                     Core.scene.setScrollFocus(null);
+684:                                 }
+685:                             }
+686:                         }).grow().get();
+687:                         blockPane.setStyle(Styles.smallPane);
+688:                         blocksSelect.row();
+689:                         blocksSelect.table(t -> {
+690:                             t.image().color(Pal.gray).height(4f).colspan(4).growX();
+691:                             t.row();
+692:                             control.input.buildPlacementUI(t);
+693:                         }).name("inputTable").growX();
+694:                     }).growX().fillY().bottom().touchable(Touchable.enabled);
+695:                     blockCatTable.table(categories -> {
+696:                         categories.bottom();
+697:                         categories.add(new Image(Styles.black6){
+698:                             @Override
+699:                             public void draw(){
+700:                                 if(height <= Scl.scl(3f)) return;
+701:                                 getDrawable().draw(x, y, width, height - Scl.scl(3f));
+702:                             }
+703:                         }).colspan(2).growX().growY().padTop(-3f).row();
+704:                         categories.defaults().size(50f);
+705: 
+706:                         ButtonGroup<ImageButton> group = new ButtonGroup<>();
+707: 
+708:                         //update category empty values
+709:                         for(Category cat : Category.all){

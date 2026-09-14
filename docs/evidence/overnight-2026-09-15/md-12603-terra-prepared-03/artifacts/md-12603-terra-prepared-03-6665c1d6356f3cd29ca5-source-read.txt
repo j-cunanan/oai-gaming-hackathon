@@ -1,0 +1,62 @@
+1: package mindustry.world.consumers;
+2: 
+3: import arc.*;
+4: import arc.math.*;
+5: import arc.scene.ui.layout.*;
+6: import mindustry.*;
+7: import mindustry.content.*;
+8: import mindustry.entities.*;
+9: import mindustry.game.EventType.*;
+10: import mindustry.gen.*;
+11: import mindustry.world.*;
+12: import mindustry.world.meta.*;
+13: 
+14: import static mindustry.Vars.*;
+15: 
+16: /** Causes a block to explode when explosive items are moved into it. */
+17: public class ConsumeItemExplode extends ConsumeItemFilter{
+18:     public float damage = 4f;
+19:     public float threshold, baseChance = 0.06f;
+20:     public Effect explodeEffect = Fx.generatespark;
+21: 
+22:     public ConsumeItemExplode(float threshold){
+23:         this.filter = item -> item.explosiveness >= this.threshold;
+24:         this.threshold = threshold;
+25:     }
+26: 
+27:     public ConsumeItemExplode(){
+28:         this(0.5f);
+29:     }
+30: 
+31:     @Override
+32:     public void update(Building build){
+33:         var item = getConsumed(build);
+34: 
+35:         if(item != null){
+36:             if(Vars.state.rules.reactorExplosions && Mathf.chance(build.delta() * baseChance * Mathf.clamp(item.explosiveness - threshold))){
+37:                 build.damage(damage);
+38:                 explodeEffect.at(build.x + Mathf.range(build.block.size * tilesize / 2f), build.y + Mathf.range(build.block.size * tilesize / 2f));
+39:                 Events.fire(Trigger.blastGenerator);
+40:             }
+41:         }
+42:     }
+43: 
+44:     //as this consumer doesn't actually consume anything, all methods below are empty
+45: 
+46:     @Override
+47:     public void build(Building build, Table table){}
+48: 
+49:     @Override
+50:     public void trigger(Building build){}
+51: 
+52:     @Override
+53:     public void display(Stats stats){}
+54: 
+55:     @Override
+56:     public void apply(Block block){}
+57: 
+58:     @Override
+59:     public float efficiency(Building build){
+60:         return 1f;
+61:     }
+62: }

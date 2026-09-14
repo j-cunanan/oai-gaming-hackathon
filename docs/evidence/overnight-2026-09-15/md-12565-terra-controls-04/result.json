@@ -1,0 +1,126 @@
+{
+  "id": "md-12565-terra-controls-04",
+  "report": {
+    "title": "[Prepared setup + learned controls] Unit disappears when entering payload conveyor",
+    "body": "### Platforms\n\nWindows\n\n### Build\n\n27713\n\n### Issue\n\nUnit disappears when entering payload conveyor\n\n### Steps to reproduce\n\nUsing RTS or manually control a unit entering a payload conveyor.\n\n### Mods used\n\nnone\n\n### Save file\n\nAny save\n\n### (Crash) logs\n\n_No response_\n\n### REPRO setup assistance (not part of the upstream report)\n\nA prior local attempt did not obtain a ground unit, so the entry transition was never tested. These notes concern setup and controls only; the original reported symptom above is unchanged.\n\n- In this pre-fix source, core/src/mindustry/world/blocks/payloads/PayloadSource.java supports both Block and UnitType configuration. The vanilla sandbox Payload Source can supply a test unit without building a factory supply chain. Verify its actual unit output before trying the reported trigger, and keep the test scene small.\n- core/src/mindustry/game/Gamemode.java distinguishes sandbox (infinite resources) from editor (also instant construction). The editor menu's Edit in Game action is implemented by MapEditorDialog.editInGame. This can help create a setup, but record the mode/rules and perform the actual report test in normal play; setup shortcuts must not manufacture the symptom.\n- core/src/mindustry/input/Binding.java defines Ctrl for direct unit control, Shift for command mode, and E for pausing/resuming construction. Inspect the source or Controls screen if unsure. A placement outline is not proof that construction completed.\n- The updated input worker supports keys on pointer actions (for example Ctrl-click), plus hold_seconds on keypress for sustained movement. seconds alone is a wait after releasing the keys.\n- A unit entering a payload can legitimately stop being drawn as a walking unit. Check the connected transport/output and the same unit's continued existence; do not count normal payload transport as disappearance.\n\n\n### REPRO operator-prepared saved scene (explicit additional assistance)\n\nThis variant begins from a small prepared SAVE GAME supplied at /workspace/fixtures/operator-unit-setup.msav. It is not an original player attachment. Import it using Play > Load Game > Import Save (follow the actual UI labels), then load the saved game. Importing it only as an editor map may omit the saved unit entities, so verify that the units are present in gameplay.\n\nThe scene was constructed with the unchanged historical game's normal objects and native SaveIO serializer. It uses a flat 160x120 stone map, a friendly Sharded core and normal Sandbox rules (editor=false, infinite resources=true, reactor explosions=true, no automatic wave timer). The construction audit saved and reloaded the file and checked healthy initial objects and empty conveyors. This is a precondition audit, not a bug reproduction, candidate test or an AI result. There is no damaged, dead or ghost object embedded in the file.\n\nThe scene has three healthy Dagger ground units near tiles (84,56), (84,60) and (84,64), and three connected, empty, right-facing Payload Conveyors at (90,60), (93,60) and (96,60), with clear space beyond the output. Camera metadata is near tile (86,60), but choose coordinates from the actual screenshot. The three units allow the AI to inspect the setup and select one specific subject; they are not three independent bug trials.\n\nFirst identify a ground unit and the empty transport route. Then use direct control or an actual unit command to test the report's entry transition. Preserve evidence of the same subject before entry, on the transport route, and after it should exit. Becoming a payload and temporarily disappearing from the walking-unit view is normal; determine whether the unit actually gets lost. No transport step or bug state is embedded in the initial file, and no root-cause diagnosis or future patch was supplied.\n\n\n### Additional control guidance from a prior local attempt\n\nThis is a separate assisted variant. The earlier investigator loaded this same healthy scene and discovered the following UI controls. Its independent verification timed out; it supplied no verified bug result or source patch. These notes concern navigation and issuing a transport command, not a diagnosis or expected verdict.\n\n- Settings > Game contains Hold For Command Mode. Turning it off allows Shift to toggle command mode instead of requiring a continuously held key. Move the pointer away to distinguish a hover outline from the actual checkbox state. Confirm the resulting mode on screen.\n- Select one identifiable Dagger. The Command Mode panel offers an arrow for movement and a down-chevron whose tooltip reads Enter Payload Block. Select Enter Payload Block, then right-click the intended conveyor target. Merely moving a unit across a conveyor does not by itself establish a payload-entry request.\n- Keep the two unused Daggers as visible controls and keep the connected route and clear output in view. Record the chosen subject before the command, its actual entry/transport, and the state after enough time to exit. If one reported control path can be tested conclusively, it is not necessary to append an unqualified alternative control path to the same replay.\n- Determine the actual result independently. No output or disappearance is encoded in the healthy starting save, and the prior timed-out attempt is not verification.\n",
+    "game": "mindustry",
+    "target_commit": "7e80948b58138a569e119857e0add95762d7e0bb",
+    "platform": "Windows (reported); Linux (planned evaluation)",
+    "build_version": null,
+    "fixtures": [
+      {
+        "filename": "operator-unit-setup.msav",
+        "sha256": "0b7fc800e29fbe0df8818a92eaa811249395f7219929095f96ab88b2c09c91b8"
+      }
+    ]
+  },
+  "state": "INSUFFICIENT_EVIDENCE",
+  "created_at": "2026-09-14T20:01:23.807793+00:00",
+  "updated_at": "2026-09-14T20:17:31.884274+00:00",
+  "summary": "game investigation reached its 90-turn budget; partial evidence is preserved",
+  "spec": {
+    "summary": "Unverified player report: on Windows build 27713, a unit allegedly \"disappears\" after being directed into a payload conveyor.",
+    "bug_class": "Gameplay behavior \u2014 unit/payload-conveyor interaction (unverified)",
+    "observed_behavior": "The only player-reported symptom is: \"Unit disappears when entering payload conveyor.\" The stated action is directing a unit to enter a payload conveyor using RTS or manual control. No attached evidence establishes the state of the same unit before, during, or after entry. The included setup and control notes explicitly provide no verified reproduction result, and the referenced save is described as operator-created rather than player-provided.",
+    "expected_behavior": null,
+    "known_preconditions": [
+      "Reported platform: Windows.",
+      "The report body lists build 27713.",
+      "The player reports using no mods.",
+      "The alleged trigger is a unit entering a payload conveyor through either RTS control or manual control.",
+      "The save field says \"Any save\"; no specific player save, map, or payload layout is identified."
+    ],
+    "uncertain_conditions": [
+      "Whether the reported symptom occurred, persists, or can be reproduced is unknown; no successful independent reproduction is supplied.",
+      "The meaning of \"disappears\" is undefined. The report does not establish whether it concerns visual state, unit availability, later location, output behavior, destruction, or another condition.",
+      "The unit type, team, position, health/state, and identity of the affected subject are unspecified.",
+      "It is unclear whether RTS control, manual control, or both are claimed to trigger the issue. The exact input sequence and relevant control settings are absent.",
+      "The payload-conveyor arrangement is unknown, including orientation, connected blocks, output path, block states, and elapsed time observed after entry.",
+      "Map, game mode, rules, custom map/content status, and multiplayer or host/client status are not reported.",
+      "Build 27713 is not accompanied by a full version string, branch/distribution information, or a demonstrated mapping to target commit 7e80948b58138a569e119857e0add95762d7e0bb. The structured build_version field is null.",
+      "Linux is identified only as a planned evaluation platform, not as a platform on which the issue was observed.",
+      "\"No response\" for crash logs does not establish that no crash, error, or relevant log output occurred.",
+      "The claim that the issue applies to \"Any save\" is not supported by multiple documented cases.",
+      "The supplemental fixture, operator-unit-setup.msav, has a claimed SHA-256 of 0b7fc800e29fbe0df8818a92eaa811249395f7219929095f96ab88b2c09c91b8, but its contents, successful gameplay load, and equivalence to the player scenario are unverified. It is explicitly not an original player save.",
+      "Claims in the supplemental source/setup/control notes are not reproduction evidence and do not establish a defect or expected outcome."
+    ],
+    "reproduction_hints": [
+      "Record the exact game version, platform, mode/rules, map, unit type/team, and complete payload-conveyor arrangement before attempting the reported action.",
+      "Define a measurable observation criterion before testing, such as being able to account for the same identified unit and its observable state after a stated interval.",
+      "Test the two claimed control paths separately rather than treating them as one confirmed path; capture the precise inputs and relevant control-mode settings.",
+      "Capture continuous video or timestamped screenshots showing the selected subject before entry, the entry action, the transport layout, and its state afterward.",
+      "Preserve saves immediately before and after the attempt, together with the game log and any displayed errors.",
+      "If the operator-created fixture is used, verify its claimed checksum, confirm that it loads as a gameplay save, document its initial state, and treat it only as a candidate setup rather than confirmation of the player report."
+    ],
+    "required_artifacts": [
+      "Missing: an original player save immediately before the alleged trigger. \"Any save\" is not a reproducible artifact.",
+      "Missing: a post-trigger save from the same session, sufficient to compare the identified unit and relevant transport state before and after the observation.",
+      "Missing: continuous video or timestamped screenshots covering unit selection, entry command, conveyor layout, and the unit's observable state after the attempt.",
+      "Missing: complete game logs/console output and any crash or error report associated with the session; the report supplies no logs.",
+      "Missing: full client version information, distribution/branch, platform and OS details, and confirmation of the executable actually tested.",
+      "Missing: exact steps and inputs, including whether RTS or manual control was used, control-mode settings, selected unit details, and timing.",
+      "Missing: map/rules information and a screenshot or schematic of the payload-conveyor route, orientation, connected blocks, and output conditions.",
+      "Missing: reproducibility data, including number of attempts, timing, and whether either control path differs.",
+      "Missing if applicable: multiplayer role, host/client status, and network/session details.",
+      "Available but unverified supplemental artifact: operator-unit-setup.msav with the claimed SHA-256 0b7fc800e29fbe0df8818a92eaa811249395f7219929095f96ab88b2c09c91b8. Its provenance and successful in-game load should be documented; it does not replace the missing original player evidence."
+    ],
+    "severity": "unknown",
+    "confidence": 0.25
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "A selected Dagger commanded to enter the prepared connected payload-conveyor route will be transported through it and emerge rather than be lost.",
+      "prediction": "Before the command, three Daggers and an empty three-conveyor route will be visible; afterward, the two controls remain near their start and the selected Dagger appears beyond the route output.",
+      "status": "inconclusive",
+      "observation": "The supplied save was imported and loaded in gameplay. Three vertically separated Daggers and a connected right-facing three-block payload-conveyor route were visibly identified after zooming out; the UI tooltip confirmed the Enter Payload Block command. A command-mode trial did not yield a clearly attributable entry or exit: pointer movement caused an unintended multi-unit selection and the subsequently targeted units remained visibly at their starting positions in the captured state. No successful same-unit transport or loss was observed."
+    }
+  ],
+  "reproduction": null,
+  "findings": null,
+  "checks": [],
+  "baseline_tests": {
+    "7e80948b58138a569e119857e0add95762d7e0bb": {
+      "commit_sha": "7e80948b58138a569e119857e0add95762d7e0bb",
+      "timestamp": "2026-09-14T19:30:05.730635+00:00",
+      "status": "completed",
+      "exit_code": 1,
+      "failing_tests": [
+        ":tests:test::ModTestAllure.begin()"
+      ],
+      "parse_error": null,
+      "artifact": "md-12565-terra-controls-04-5ca534d84e2e78371d1e-reused-baseline-tests.log",
+      "log_sha256": "5ca534d84e2e78371d1e44627e4cb72b5c29b617d08cad780f0ea156c3201eb2",
+      "command": [
+        "bash",
+        "./gradlew",
+        "tests:test",
+        "--offline",
+        "--no-daemon",
+        "--rerun-tasks",
+        "--no-build-cache",
+        "--console=plain"
+      ],
+      "worker_image": "sha256:d3c91fca2fc42c5f8d48433d0ce2cb4cb565f5f48dcf2ab6facdb924d597ba3d",
+      "worker_platform": "linux/amd64",
+      "network": "none",
+      "parser_version": 1,
+      "detail": "Offline baseline test exit code 1."
+    }
+  },
+  "usage": {
+    "model_calls": 91,
+    "input_tokens": 4395162,
+    "output_tokens": 35735
+  },
+  "patch_artifact": null,
+  "patch_rationale": null,
+  "candidate_verification": null,
+  "latest_screenshot": "md-12565-terra-controls-04-e251b77923739044c093-investigation.png",
+  "first_reproduced_seconds": null,
+  "elapsed_seconds": 966.2355659170425,
+  "owner_evidence": [],
+  "benchmark_id": "MD-candidate-12565-controls-guided",
+  "imported_from": null,
+  "case_id": "md-12565-terra-controls-04"
+}

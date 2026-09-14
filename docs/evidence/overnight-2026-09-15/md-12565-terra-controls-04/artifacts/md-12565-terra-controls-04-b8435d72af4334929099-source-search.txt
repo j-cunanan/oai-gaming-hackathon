@@ -1,0 +1,9 @@
+./core/src/mindustry/entities/comp/BuildingComp.java:683:    public boolean canControlSelect(Unit player){
+./core/src/mindustry/world/blocks/storage/CoreBlock.java:619:        public boolean canControlSelect(Unit player){
+./core/src/mindustry/world/blocks/payloads/PayloadBlock.java:103:        public boolean canControlSelect(Unit unit){
+./core/src/mindustry/world/blocks/payloads/PayloadConveyor.java:85:        public boolean canControlSelect(Unit unit){
+./core/src/mindustry/logic/LExecutor.java:441:                        if(build != null && unit.team() == build.team && build.canControlSelect(unit)){
+./core/src/mindustry/ai/types/CommandAI.java:233:            if(build.canControlSelect(unit)){
+./core/src/mindustry/input/InputHandler.java:753:        if(player.team() == build.team && build.canControlSelect(player.unit())){
+./core/src/mindustry/input/InputHandler.java:769:        if(unit.team() == build.team && (net.client() || build.canControlSelect(unit))){
+./core/src/mindustry/input/InputHandler.java:2169:        if(build != null && !player.dead() && build.canControlSelect(player.unit()) && build.team == player.team()){

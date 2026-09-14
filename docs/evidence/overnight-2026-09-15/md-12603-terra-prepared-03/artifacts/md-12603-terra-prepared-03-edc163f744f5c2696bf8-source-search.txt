@@ -1,0 +1,4 @@
+regex parse error:
+    damage(float
+          ^
+error: unclosed group

@@ -1,0 +1,110 @@
+245:             if(input.keyTap(Binding.teleportCursor) && (state.rules.editor || state.rules.infiniteResources) && !net.client()){
+246:                 if(player.dead()){
+247:                     camera.position.set(input.mouseWorld());
+248:                 }else{
+249:                     player.unit().set(input.mouseWorld());
+250:                 }
+251:             }
+252: 
+253:             if(input.keyTap(Binding.detachCamera)){
+254:                 settings.put("detach-camera", detached = !detached);
+255:                 if(!detached){
+256:                     panning = false;
+257:                 }
+258:                 spectating = null;
+259:             }
+260: 
+261:             if(input.keyDown(Binding.pan)){
+262:                 panCam = true;
+263:                 panning = true;
+264:                 spectating = null;
+265:             }
+266: 
+267:             if((Math.abs(Core.input.axis(Binding.moveX)) > 0 || Math.abs(Core.input.axis(Binding.moveY)) > 0 || input.keyDown(Binding.mouseMove))){
+268:                 panning = false;
+269:                 spectating = null;
+270:             }
+271:         }
+272: 
+273:         panning |= detached;
+274: 
+275: 
+276:         if(!locked){
+277:             if(((player.dead() || state.isPaused() || detached) && !ui.chatfrag.shown()) && !scene.hasField() && !scene.hasDialog()){
+278:                 if(input.keyDown(Binding.mouseMove)){
+279:                     panCam = true;
+280:                 }
+281: 
+282:                 Core.camera.position.add(Tmp.v1.setZero().add(Core.input.axis(Binding.moveX), Core.input.axis(Binding.moveY)).nor().scl(camSpeed));
+283:             }else if((!player.dead() || spectating != null) && !panning){
+284:                 //TODO do not pan
+285:                 Team corePanTeam = state.won ? state.rules.waveTeam : player.team();
+286:                 Position coreTarget = state.gameOver && !state.rules.pvp && corePanTeam.data().lastCore != null ? corePanTeam.data().lastCore : null;
+287:                 Position panTarget = coreTarget != null ? coreTarget : spectating != null ? spectating : player;
+288: 
+289:                 Core.camera.position.lerpDelta(panTarget, Core.settings.getBool("smoothcamera") ? 0.08f : 1f);
+290:             }
+291: 
+292:             if(panCam){
+293:                 Core.camera.position.x += Mathf.clamp((Core.input.mouseX() - Core.graphics.getWidth() / 2f) * panScale, -1, 1) * camSpeed;
+294:                 Core.camera.position.y += Mathf.clamp((Core.input.mouseY() - Core.graphics.getHeight() / 2f) * panScale, -1, 1) * camSpeed;
+295:             }
+296:         }
+297: 
+298:         shouldShoot = !scene.hasMouse() && !locked && !state.isEditor();
+299: 
+300:         if(!locked && block == null && !scene.hasField() && !scene.hasDialog() &&
+301:                 //disable command mode when player unit can boost and command mode binding is the same
+302:                 !(!player.dead() && player.unit().type.canBoost && Binding.commandMode.value.key == Binding.boost.value.key)){
+303:             if(settings.getBool("commandmodehold")){
+304:                 commandMode = input.keyDown(Binding.commandMode);
+305:             }else if(input.keyTap(Binding.commandMode)){
+306:                 commandMode = !commandMode;
+307:             }
+308:         }else{
+309:             commandMode = false;
+310:         }
+311: 
+312:         //validate commanding units
+313:         selectedUnits.removeAll(u -> !u.allowCommand() || !u.isValid() || u.team != player.team());
+314: 
+315:         if(commandMode && !scene.hasField() && !scene.hasDialog()){
+316:             if(input.keyTap(Binding.selectAllUnits)){
+317:                 selectedUnits.clear();
+318:                 commandBuildings.clear();
+319:                 if(input.keyDown(Binding.selectAcrossScreen)){
+320:                     camera.bounds(Tmp.r1);
+321:                     selectedUnits.set(selectedCommandUnits(Tmp.r1.x, Tmp.r1.y, Tmp.r1.width, Tmp.r1.height).removeAll(u -> !u.type.controlSelectGlobal));
+322:                 }else {
+323:                     for(var unit : player.team().data().units){
+324:                         if(unit.isCommandable() && unit.type.controlSelectGlobal){
+325:                             selectedUnits.add(unit);
+326:                         }
+327:                     }
+328:                 }
+329:             }
+330: 
+331:             if(input.keyTap(Binding.selectAllUnitTransport)){
+332:                 selectedUnits.clear();
+333:                 commandBuildings.clear();
+334:                 if(input.keyDown(Binding.selectAcrossScreen)){
+335:                     camera.bounds(Tmp.r1);
+336:                     selectedUnits.set(selectedCommandUnits(Tmp.r1.x, Tmp.r1.y, Tmp.r1.width, Tmp.r1.height, u -> u instanceof Payloadc));
+337:                 }else {
+338:                     for(var unit : player.team().data().units){
+339:                         if(unit.isCommandable() && unit instanceof Payloadc){
+340:                             selectedUnits.add(unit);
+341:                         }
+342:                     }
+343:                 }
+344:             }
+345: 
+346:             if(input.keyTap(Binding.selectAllUnitFactories)){
+347:                 selectedUnits.clear();
+348:                 commandBuildings.clear();
+349:                 for(var build : player.team().data().buildings){
+350:                     if(build.isCommandable()){
+351:                         commandBuildings.add(build);
+352:                     }
+353:                 }
+354:                 if(input.keyDown(Binding.selectAcrossScreen)){

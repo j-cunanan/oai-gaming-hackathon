@@ -2,4 +2,6 @@
 docs/evidence/**/*.txt -whitespace
 docs/evidence/**/*.patch -whitespace
 docs/evidence/**/*.log -whitespace
+# Generated report artifacts are retained verbatim and bound by artifact hashes.
+docs/evidence/**/artifacts/*-report.md -whitespace
 *.pdf binary

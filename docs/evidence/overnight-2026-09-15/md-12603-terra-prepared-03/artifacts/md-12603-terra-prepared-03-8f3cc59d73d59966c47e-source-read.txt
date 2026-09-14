@@ -1,0 +1,93 @@
+850:         tile.setBlock(block, team, rotation);
+851:     }
+852: 
+853:     @Remote(called = Loc.server)
+854:     public static void setTeam(Building build, Team team){
+855:         if(build != null){
+856:             build.changeTeam(team);
+857:         }
+858:     }
+859: 
+860:     @Remote(called = Loc.server)
+861:     public static void setTeams(int[] positions, Team team){
+862:         if(positions == null) return;
+863: 
+864:         staleGraphs.clear();
+865:         tileSet.clear();
+866: 
+867:         for(int pos : positions){
+868:             var build = world.build(pos);
+869:             if(build != null){
+870:                 var power = build.power;
+871:                 if(build.power != null){
+872:                     staleGraphs.add(build.power.graph.getID());
+873: 
+874:                     for(int i = 0; i < power.links.size; i++){
+875:                         var other = world.build(power.links.items[i]);
+876:                         if(other != null && other.power != null){
+877:                             tileSet.add(other);
+878:                             staleGraphs.add(other.power.graph.getID());
+879:                         }
+880:                     }
+881:                 }
+882:                 build.changeTeam(team, false);
+883:             }
+884:         }
+885: 
+886:         for(var external : tileSet){
+887:             reflowPower(team, external);
+888:         }
+889: 
+890:         //update power graphs in a second pass
+891:         for(int pos : positions){
+892:             var build = world.build(pos);
+893:             reflowPower(team, build);
+894:         }
+895:     }
+896: 
+897:     private static void reflowPower(Team team, Building build){
+898:         if(build != null && build.power != null && staleGraphs.contains(build.power.graph.getID())){
+899:             for(int i = 0; i < build.power.links.size; i++){
+900:                 var other = world.build(build.power.links.items[i]);
+901: 
+902:                 //only reflow links that were connected to the old power graph; ones that have a new one were already covered.
+903:                 if(other != null && other.team != team && other.power != null && staleGraphs.contains(other.power.graph.getID())){
+904:                     build.power.links.removeIndex(i);
+905:                     other.power.links.removeValue(build.pos());
+906: 
+907:                     new PowerGraph().reflow(other);
+908: 
+909:                     i --;
+910:                 }
+911:             }
+912:             new PowerGraph().reflow(build);
+913: 
+914:             build.updatePowerGraph();
+915:         }
+916:     }
+917: 
+918:     @Remote(called = Loc.server)
+919:     public static void buildDestroyed(Building build){
+920:         if(build == null) return;
+921:         build.killed();
+922:     }
+923: 
+924:     @Remote
+925:     public static void buildHealthUpdate(IntSeq buildings){
+926:         for(int i = 0; i < buildings.size; i += 2){
+927:             int pos = buildings.items[i];
+928:             float health = Float.intBitsToFloat(buildings.items[i + 1]);
+929:             var build = world.build(pos);
+930:             if(build != null && build.health != health){
+931:                 build.health = health;
+932:                 indexer.notifyHealthChanged(build);
+933:             }
+934:         }
+935:     }
+936: 
+937:     @Struct
+938:     class PackedTileDataStruct{
+939:         int extraData;
+940:         byte data, floorData, overlayData;
+941:     }
+942: }

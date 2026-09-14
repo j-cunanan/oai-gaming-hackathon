@@ -1,0 +1,110 @@
+2510:             requirements(Category.power, with(Items.copper, 5, Items.lead, 20));
+2511:             consumePowerBuffered(4000f);
+2512:             baseExplosiveness = 1f;
+2513:         }};
+2514: 
+2515:         batteryLarge = new Battery("battery-large"){{
+2516:             requirements(Category.power, with(Items.titanium, 20, Items.lead, 50, Items.silicon, 30));
+2517:             size = 3;
+2518:             consumePowerBuffered(50000f);
+2519:             baseExplosiveness = 5f;
+2520:         }};
+2521: 
+2522:         combustionGenerator = new ConsumeGenerator("combustion-generator"){{
+2523:             requirements(Category.power, with(Items.copper, 25, Items.lead, 15));
+2524:             powerProduction = 1f;
+2525:             itemDuration = 120f;
+2526: 
+2527:             ambientSound = Sounds.loopSmelter;
+2528:             ambientSoundVolume = 0.03f;
+2529:             generateEffect = Fx.generatespark;
+2530: 
+2531:             explosionShake = 1f;
+2532:             explosionScorchSize = 1;
+2533:             explosionFireballs = 3;
+2534: 
+2535:             consume(new ConsumeItemFlammable());
+2536:             consume(new ConsumeItemExplode());
+2537:             itemDurationMultipliers.put(Items.pyratite, 3f);
+2538: 
+2539:             drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
+2540:         }};
+2541: 
+2542:         thermalGenerator = new ThermalGenerator("thermal-generator"){{
+2543:             requirements(Category.power, with(Items.copper, 40, Items.graphite, 35, Items.lead, 50, Items.silicon, 35, Items.metaglass, 40));
+2544:             powerProduction = 1.8f;
+2545:             generateEffect = Fx.redgeneratespark;
+2546:             effectChance = 0.011f;
+2547:             size = 2;
+2548:             floating = true;
+2549:             ambientSound = Sounds.loopHum;
+2550:             ambientSoundVolume = 0.06f;
+2551:         }};
+2552: 
+2553:         steamGenerator = new ConsumeGenerator("steam-generator"){{
+2554:             requirements(Category.power, with(Items.copper, 35, Items.graphite, 25, Items.lead, 40, Items.silicon, 30));
+2555:             powerProduction = 5.5f;
+2556:             itemDuration = 90f;
+2557:             consumeLiquid(Liquids.water, 0.1f);
+2558:             hasLiquids = true;
+2559:             size = 2;
+2560:             generateEffect = Fx.generatespark;
+2561: 
+2562:             ambientSound = Sounds.loopSmelter;
+2563:             ambientSoundVolume = 0.06f;
+2564: 
+2565:             explosionShake = 1f;
+2566:             explosionScorchSize = 2;
+2567:             explosionFireballs = 6;
+2568: 
+2569:             consume(new ConsumeItemFlammable());
+2570:             consume(new ConsumeItemExplode());
+2571:             itemDurationMultipliers.put(Items.pyratite, 3f);
+2572: 
+2573:             drawer = new DrawMulti(
+2574:             new DrawDefault(),
+2575:             new DrawWarmupRegion(),
+2576:             new DrawRegion("-turbine"){{
+2577:                 rotateSpeed = 2f;
+2578:             }},
+2579:             new DrawRegion("-turbine"){{
+2580:                 rotateSpeed = -2f;
+2581:                 rotation = 45f;
+2582:             }},
+2583:             new DrawRegion("-cap"),
+2584:             new DrawLiquidRegion()
+2585:             );
+2586:         }};
+2587: 
+2588:         differentialGenerator = new ConsumeGenerator("differential-generator"){{
+2589:             requirements(Category.power, with(Items.copper, 70, Items.titanium, 50, Items.lead, 100, Items.silicon, 65, Items.metaglass, 50));
+2590:             powerProduction = 18f;
+2591:             itemDuration = 220f;
+2592:             hasLiquids = true;
+2593:             hasItems = true;
+2594:             size = 3;
+2595:             ambientSound = Sounds.loopDifferential;
+2596:             generateEffect = Fx.generatespark;
+2597:             ambientSoundVolume = 0.12f;
+2598: 
+2599:             drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion(), new DrawLiquidRegion());
+2600: 
+2601:             consumeItem(Items.pyratite);
+2602:             consumeLiquid(Liquids.cryofluid, 0.1f);
+2603:         }};
+2604: 
+2605:         rtgGenerator = new ConsumeGenerator("rtg-generator"){{
+2606:             requirements(Category.power, with(Items.lead, 100, Items.silicon, 75, Items.phaseFabric, 25, Items.plastanium, 75, Items.thorium, 50));
+2607:             size = 2;
+2608:             powerProduction = 4.5f;
+2609:             itemDuration = 60 * 14f;
+2610:             envEnabled = Env.any;
+2611:             generateEffect = Fx.generatespark;
+2612: 
+2613:             itemDurationMultipliers.put(Items.phaseFabric, 210f / 14f);
+2614:             drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
+2615:             consume(new ConsumeItemRadioactive());
+2616:         }};
+2617: 
+2618:         solarPanel = new SolarGenerator("solar-panel"){{
+2619:             requirements(Category.power, with(Items.lead, 10, Items.silicon, 8));

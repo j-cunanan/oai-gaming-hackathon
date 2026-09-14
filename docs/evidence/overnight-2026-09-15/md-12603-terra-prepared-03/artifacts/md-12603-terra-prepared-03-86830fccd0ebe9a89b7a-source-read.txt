@@ -1,0 +1,185 @@
+2120:             case powerCapacity -> block.consPower != null ? block.consPower.capacity : 0f;
+2121:             case powerNetIn -> power == null ? 0 : power.graph.getLastScaledPowerIn() * 60;
+2122:             case powerNetOut -> power == null ? 0 : power.graph.getLastScaledPowerOut() * 60;
+2123:             case powerNetStored -> power == null ? 0 : power.graph.getLastPowerStored();
+2124:             case powerNetCapacity -> power == null ? 0 : power.graph.getLastCapacity();
+2125:             case armor -> block.armor;
+2126:             case enabled -> enabled ? 1 : 0;
+2127:             case controlled -> this instanceof ControlBlock c && c.isControlled() ? GlobalVars.ctrlPlayer : 0;
+2128:             case payloadCount -> (getPayloads() != null ? getPayloads().total() : 0) + (getPayload() != null ? 1 : 0);
+2129:             case size -> block.size;
+2130:             case cameraX, cameraY, cameraWidth, cameraHeight -> this instanceof ControlBlock c ? c.unit().sense(sensor) : 0;
+2131:             default -> Float.NaN; //gets converted to null in logic
+2132:         };
+2133:     }
+2134: 
+2135:     @Override
+2136:     public Object senseObject(LAccess sensor){
+2137:         return switch(sensor){
+2138:             case type -> block;
+2139:             case firstItem -> items == null ? null : items.first();
+2140:             case config -> block.configSenseable() ? config() : null;
+2141:             case payloadType -> getPayload() instanceof UnitPayload p1 ? p1.unit.type : getPayload() instanceof BuildPayload p2 ? p2.block() : null;
+2142:             default -> noSensed;
+2143:         };
+2144:     }
+2145: 
+2146:     @Override
+2147:     public double sense(Content content){
+2148:         if(content instanceof Item i && items != null) return items.get(i);
+2149:         if(content instanceof Liquid l && liquids != null) return liquids.get(l);
+2150:         if(getPayloads() != null){
+2151:             if(content instanceof UnitType u) return getPayloads().get(u);
+2152:             if(content instanceof Block b) return getPayloads().get(b);
+2153:         }
+2154:         return Float.NaN; //invalid sense
+2155:     }
+2156: 
+2157:     @Override
+2158:     public void control(LAccess type, double p1, double p2, double p3, double p4){
+2159:         if(type == LAccess.enabled){
+2160:             enabled = !Mathf.zero((float)p1);
+2161:         }
+2162:     }
+2163: 
+2164:     @Override
+2165:     public void control(LAccess type, Object p1, double p2, double p3, double p4){
+2166:         //don't execute configure instructions that copy logic building configures; this can cause extreme lag
+2167:         if(type == LAccess.config && block.logicConfigurable && !(p1 instanceof LogicBuild)){
+2168:             //change config only if it's new
+2169:             configured(null, p1);
+2170:         }
+2171:     }
+2172: 
+2173:     @Override
+2174:     public void setProp(LAccess prop, double value){
+2175:         switch(prop){
+2176:             case health -> {
+2177:                 health = (float)Mathf.clamp(value, 0, maxHealth);
+2178:                 if(health <= 0f){
+2179:                     if(!dead) Call.buildDestroyed(self());
+2180:                 }else{
+2181:                     healthChanged();
+2182:                 }
+2183:             }
+2184:             case team -> {
+2185:                 Team team = Team.get((int)value);
+2186:                 if(this.team != team){
+2187:                     changeTeam(team);
+2188:                 }
+2189:             }
+2190:             case totalPower -> {
+2191:                 if(power != null && block.consPower != null && block.consPower.buffered){
+2192:                     power.status = Mathf.clamp((float)(value / block.consPower.capacity));
+2193:                 }
+2194:             }
+2195:         }
+2196:     }
+2197: 
+2198:     @Override
+2199:     public void setProp(LAccess prop, Object value){
+2200:         switch(prop){
+2201:             case team -> {
+2202:                 if(value instanceof Team team && this.team != team){
+2203:                     changeTeam(team);
+2204:                 }
+2205:             }
+2206:         }
+2207:     }
+2208: 
+2209:     @Override
+2210:     public void setProp(UnlockableContent content, double value){
+2211:         if(content instanceof Item item && items != null){
+2212:             int amount = (int)value;
+2213:             if(items.get(item) != amount){
+2214:                 if(items.get(item) < amount){
+2215:                     handleStack(item, acceptStack(item, amount - items.get(item), null), null);
+2216:                 }else if(amount >= 0){
+2217:                     removeStack(item, items.get(item) - amount);
+2218:                 }
+2219:             }
+2220:         }else if(content instanceof Liquid liquid && liquids != null){
+2221:             float amount = Mathf.clamp((float)value, 0f, block.liquidCapacity);
+2222:             //decreasing amount is always allowed
+2223:             if(amount < liquids.get(liquid) || (acceptLiquid(self(), liquid) && (liquids.current() == liquid || liquids.currentAmount() <= 0.1f || block.consumesLiquid(liquid)))){
+2224:                 liquids.set(liquid, amount);
+2225:             }
+2226:         }
+2227:     }
+2228: 
+2229:     @Replace
+2230:     @Override
+2231:     public boolean inFogTo(Team viewer){
+2232:         if(team == viewer || !state.rules.fog) return false;
+2233: 
+2234:         int size = block.size, of = block.sizeOffset, tx = tile.x, ty = tile.y;
+2235: 
+2236:         if(!isDiscovered(viewer)) return true;
+2237: 
+2238:         for(int x = 0; x < size; x++){
+2239:             for(int y = 0; y < size; y++){
+2240:                 if(fogControl.isVisibleTile(viewer, tx + x + of, ty + y + of)){
+2241:                     return false;
+2242:                 }
+2243:             }
+2244:         }
+2245: 
+2246:         return true;
+2247:     }
+2248: 
+2249:     @Override
+2250:     public void killed(){
+2251:         dead = true;
+2252:         Events.fire(new BlockDestroyEvent(tile));
+2253:         onDestroyed();
+2254:         if(tile != emptyTile){
+2255:             tile.remove();
+2256:         }
+2257:         remove();
+2258:         afterDestroyed();
+2259:     }
+2260: 
+2261:     public void checkAllowUpdate(){
+2262:         if(!allowUpdate()){
+2263:             enabled = false;
+2264:         }
+2265:     }
+2266: 
+2267:     @Final
+2268:     @Replace
+2269:     @Override
+2270:     public void update(){
+2271: 
+2272:         //TODO refactor to separate loop?
+2273:         if((timeScaleDuration -= Time.delta) <= 0f){
+2274:             timeScale = 1f;
+2275:         }
+2276: 
+2277:         updateConsumption();
+2278: 
+2279:         if(enabled || !block.noUpdateDisabled){
+2280:             updateTile();
+2281:         }
+2282:     }
+2283: 
+2284:     /** When a block is newly revealed outside of camera view range, it is updated on the minimap. */
+2285:     public void updateFogVisibility(){
+2286:         if(!wasVisible && !inFogTo(player.team())){
+2287:             visibleFlags |= (1L << player.team().id);
+2288:             wasVisible = true;
+2289:             renderer.blocks.updateShadow(self());
+2290:             renderer.minimap.update(tile);
+2291:             if(block.drawCached) recache();
+2292:         }
+2293:     }
+2294: 
+2295:     @Override
+2296:     public float getAmbientVolume(){
+2297:         return block.ambientSoundVolume * ambientVolume();
+2298:     }
+2299: 
+2300:     @Override
+2301:     public Sound getAmbientSound(){
+2302:         return block.ambientSound;
+2303:     }
+2304: 

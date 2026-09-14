@@ -1,0 +1,35 @@
+1010:         unit.aim(input.mouseWorldX(), input.mouseWorldY(), true);
+1011:         unit.controlWeapons(true, player.shooting && !boosted);
+1012: 
+1013:         player.boosting = Core.input.keyDown(Binding.boost);
+1014:         player.mouseX = unit.aimX();
+1015:         player.mouseY = unit.aimY();
+1016: 
+1017:         //update payload input
+1018:         if(unit instanceof Payloadc){
+1019:             if(Core.input.keyTap(Binding.pickupCargo)){
+1020:                 tryPickupPayload();
+1021:                 lastPayloadKeyTapMillis = Time.millis();
+1022:             }
+1023: 
+1024:             if(Core.input.keyDown(Binding.pickupCargo)
+1025:             && Time.timeSinceMillis(lastPayloadKeyHoldMillis) > 20
+1026:             && Time.timeSinceMillis(lastPayloadKeyTapMillis) > 200){
+1027:                 tryPickupPayload();
+1028:                 lastPayloadKeyHoldMillis = Time.millis();
+1029:             }
+1030: 
+1031:             if(Core.input.keyTap(Binding.dropCargo)){
+1032:                 tryDropPayload();
+1033:                 lastPayloadKeyTapMillis = Time.millis();
+1034:             }
+1035: 
+1036:             if(Core.input.keyDown(Binding.dropCargo)
+1037:             && Time.timeSinceMillis(lastPayloadKeyHoldMillis) > 20
+1038:             && Time.timeSinceMillis(lastPayloadKeyTapMillis) > 200){
+1039:                 tryDropPayload();
+1040:                 lastPayloadKeyHoldMillis = Time.millis();
+1041:             }
+1042:         }
+1043:     }
+1044: }

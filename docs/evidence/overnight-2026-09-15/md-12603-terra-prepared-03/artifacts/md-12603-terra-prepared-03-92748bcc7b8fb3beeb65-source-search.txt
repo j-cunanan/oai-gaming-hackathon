@@ -1,0 +1,4 @@
+./core/src/mindustry/entities/comp/BuildingComp.java:749:    public void dropped(){
+./core/src/mindustry/world/blocks/logic/CanvasBlock.java:225:        public void dropped(){
+./core/src/mindustry/world/blocks/distribution/StackConveyor.java:194:        public void dropped(){
+./core/src/mindustry/world/blocks/power/PowerNode.java:413:        public void dropped(){

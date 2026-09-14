@@ -1,0 +1,180 @@
+150:             lastCommand = curCommand;
+151:             commandController = (curCommand == null ? null : curCommand.controller.get(unit));
+152:         }
+153: 
+154:         //use the command controller if it is provided, and bail out.
+155:         if(commandController != null){
+156:             if(commandController.unit() != unit) commandController.unit(unit);
+157:             commandController.updateUnit();
+158:         }else{
+159:             defaultBehavior();
+160:             if(shouldBoost() && unit.type.canBoost){
+161:                 //auto land when near target
+162:                 if((attackTarget != null && unit.within(attackTarget, unit.range())) || (hasStance(UnitStance.patrol) && target != null && unit.within(target, unit.range()))){
+163:                     unit.updateBoosting(false);
+164:                 }else{
+165:                     unit.updateBoosting(true, true);
+166:                 }
+167:             }else{
+168:                 //boosting control is not supported, so just don't.
+169:                 unit.updateBoosting(false);
+170:             }
+171:         }
+172:     }
+173: 
+174:     protected boolean shouldBoost(){
+175:         return hasStance(UnitStance.boost) || command == UnitCommand.enterPayloadCommand;
+176:     }
+177: 
+178:     public void clearCommands(){
+179:         commandQueue.clear();
+180:         targetPos = null;
+181:         attackTarget = null;
+182:     }
+183: 
+184:     void tryPickupUnit(Payloadc pay){
+185:         Unit target = Units.closest(unit.team, unit.x, unit.y, unit.type.hitSize * 2f, u -> u.isAI() && u != unit && u.isGrounded() && pay.canPickup(u) && u.within(unit, u.hitSize + unit.hitSize));
+186:         if(target != null){
+187:             Call.pickedUnitPayload(unit, target);
+188:         }
+189:     }
+190: 
+191:     @Override
+192:     public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
+193:         if(!unit.type.autoFindTarget && !hasStance(UnitStance.patrol) && !(targetPos == null || nearAttackTarget(unit.x, unit.y, unit.range()))){
+194:             return null;
+195:         }
+196:         return super.findMainTarget(x, y, range, air, ground);
+197:     }
+198: 
+199:     public void defaultBehavior(){
+200: 
+201:         if(!net.client() && unit instanceof Payloadc pay){
+202:             payloadPickupCooldown -= Time.delta;
+203: 
+204:             //auto-drop everything
+205:             if(command == UnitCommand.unloadPayloadCommand && pay.hasPayload()){
+206:                 Call.payloadDropped(unit, unit.x, unit.y);
+207:             }
+208: 
+209:             //try to pick up what's under it
+210:             if(command == UnitCommand.loadUnitsCommand){
+211:                 tryPickupUnit(pay);
+212:             }
+213: 
+214:             //try to pick up a block
+215:             if(command == UnitCommand.loadBlocksCommand && (targetPos == null || unit.within(targetPos, 1f))){
+216:                 Building build = world.buildWorld(unit.x, unit.y);
+217: 
+218:                 if(build != null && state.teams.canInteract(unit.team, build.team)){
+219:                     //pick up block's payload
+220:                     Payload current = build.getPayload();
+221:                     if(current != null && pay.canPickupPayload(current)){
+222:                         Call.pickedBuildPayload(unit, build, false);
+223:                         //pick up whole building directly
+224:                     }else if(build.block.buildVisibility != BuildVisibility.hidden && build.canPickup() && pay.canPickup(build)){
+225:                         Call.pickedBuildPayload(unit, build, true);
+226:                     }
+227:                 }
+228:             }
+229:         }
+230: 
+231:         if(!net.client() && command == UnitCommand.enterPayloadCommand && unit.type.allowedInPayloads && (targetPos == null ? unit.buildOn() != null : targetBuild != null)){
+232:             var build = targetPos == null ? unit.buildOn() : targetBuild;
+233:             if(build.canControlSelect(unit)){
+234:                 tmpPayload.unit = unit;
+235:                 if(build.team == unit.team && build.acceptPayload(build, tmpPayload)){
+236:                     Call.unitEnteredPayload(unit, build);
+237:                     return; //no use updating after this, the unit is gone!
+238:                 }
+239:             }
+240:         }
+241: 
+242:         updateVisuals();
+243:         updateTargeting();
+244: 
+245:         if(attackTarget != null && invalid(attackTarget)){
+246:             attackTarget = null;
+247:             targetPos = null;
+248:         }
+249: 
+250:         //move on to the next target
+251:         if(attackTarget == null && targetPos == null){
+252:             finishPath();
+253:         }
+254: 
+255:         boolean ramming = hasStance(UnitStance.ram);
+256: 
+257:         if(attackTarget != null){
+258:             if(targetPos == null){
+259:                 targetPos = new Vec2();
+260:                 lastTargetPos = targetPos;
+261:             }
+262:             targetPos.set(attackTarget);
+263: 
+264:             if(unit.isGrounded() && attackTarget instanceof Building build && build.tile.solid() && unit.type.pathCostId != ControlPathfinder.costIdLegs && !ramming){
+265:                 Tile best = build.findClosestEdge(unit, Tile::solid);
+266:                 if(best != null){
+267:                     targetPos.set(best);
+268:                 }
+269:             }
+270:         }
+271: 
+272:         boolean alwaysArrive = false;
+273: 
+274:         float engageRange = unit.type.range - 10f;
+275:         boolean withinAttackRange = attackTarget != null && unit.within(attackTarget, engageRange) && !ramming;
+276: 
+277:         if(targetPos != null){
+278:             boolean move = true, isFinalPoint = commandQueue.size == 0;
+279:             //workaround to let ground units pathfind into targeted solid payenter blocks
+280:             boolean isSolidPayload = false;
+281:             movePos.set(targetPos);
+282:             targetBuild = world.buildWorld(targetPos.x, targetPos.y);
+283:             if(unit.isGrounded() && targetBuild != null && targetBuild.tile.solid() && targetBuild.block.acceptsUnitPayloads && unit.type.pathCostId != ControlPathfinder.costIdLegs && !ramming){
+284:                 Tile best = targetBuild.findClosestEdge(unit, Tile::solid);
+285:                 if(best != null){
+286:                     movePos.set(best);
+287:                     isSolidPayload = true;
+288:                 }
+289:             }
+290:             vecOut.set(movePos);
+291:             vecMovePos.set(movePos);
+292: 
+293:             //the enter payload command requires an exact position
+294:             if(group != null && group.valid && groupIndex < group.units.size && command != UnitCommand.enterPayloadCommand){
+295:                 vecMovePos.add(group.positions[groupIndex * 2], group.positions[groupIndex * 2 + 1]);
+296:             }
+297: 
+298:             Building targetBuild = world.buildWorld(targetPos.x, targetPos.y);
+299: 
+300:             if(
+301:                 (hasStance(UnitStance.patrol) && !hasStance(UnitStance.pursueTarget) && target != null && unit.within(target, unit.type.range - 2f) && !unit.type.circleTarget) ||
+302:                 (command == UnitCommand.enterPayloadCommand && unit.within(movePos, 4f) || (targetBuild != null && !unit.type.circleTarget && unit.within(targetBuild, targetBuild.block.size * tilesize/2f * 0.9f))) ||
+303:                 (command == UnitCommand.loopPayloadCommand && unit.within(vecMovePos, 10f))
+304:             ){
+305:                 move = false;
+306:             }
+307: 
+308:             if(unit.isGrounded() && !ramming){
+309:                 if(timer.get(timerTarget3, avoidInterval)){
+310:                     Vec2 dstPos = Tmp.v1.trns(unit.rotation, unit.hitSize/2f);
+311:                     float max = unit.hitSize/2f;
+312:                     float radius = Math.max(7f, max);
+313:                     float margin = 4f;
+314:                     blockingUnit = Units.nearbyCheck(unit.x + dstPos.x - radius/2f, unit.y + dstPos.y - radius/2f, radius, radius,
+315:                         u -> u != unit && u.within(unit, u.hitSize/2f + unit.hitSize/2f + margin) && u.controller() instanceof CommandAI ai && ai.targetPos != null &&
+316:                         //stop for other unit only if it's closer to the target
+317:                         (ai.targetPos.equals(targetPos) && u.dst2(targetPos) < unit.dst2(targetPos)) &&
+318:                         //don't stop if they're facing the same way
+319:                         !Angles.within(unit.rotation, u.rotation, 15f) &&
+320:                         //must be near an obstacle, stopping in open ground is pointless
+321:                         ControlPathfinder.isNearObstacle(unit, unit.tileX(), unit.tileY(), u.tileX(), u.tileY()));
+322:                 }
+323: 
+324:                 float maxBlockTime = 60f * 5f;
+325: 
+326:                 if(blockingUnit){
+327:                     timeSpentBlocked += Time.delta;
+328: 
+329:                     if(timeSpentBlocked >= maxBlockTime*2f){

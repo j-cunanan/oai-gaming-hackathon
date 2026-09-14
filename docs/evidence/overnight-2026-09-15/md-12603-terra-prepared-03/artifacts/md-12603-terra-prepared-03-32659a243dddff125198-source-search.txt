@@ -1,0 +1,4 @@
+./core/src/mindustry/entities/comp/BuildingComp.java:2061:        Call.buildDestroyed(self());
+./core/src/mindustry/entities/comp/BuildingComp.java:2086:            Call.buildDestroyed(self());
+./core/src/mindustry/entities/comp/BuildingComp.java:2179:                    if(!dead) Call.buildDestroyed(self());
+./core/src/mindustry/world/Tile.java:919:    public static void buildDestroyed(Building build){

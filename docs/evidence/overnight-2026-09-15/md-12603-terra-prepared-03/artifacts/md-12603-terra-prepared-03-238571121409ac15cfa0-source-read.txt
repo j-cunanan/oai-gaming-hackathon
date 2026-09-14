@@ -1,0 +1,114 @@
+1: package mindustry.input;
+2: 
+3: import arc.input.*;
+4: import arc.input.KeyBind.*;
+5: import mindustry.*;
+6: 
+7: public class Binding{
+8:     public static final KeyBind
+9: 
+10:     moveX = KeyBind.add("move_x", new Axis(KeyCode.a, KeyCode.d), "general"),
+11:     moveY = KeyBind.add("move_y", new Axis(KeyCode.s, KeyCode.w)),
+12:     mouseMove = KeyBind.add("mouse_move", KeyCode.mouseBack),
+13:     pan = KeyBind.add("pan", KeyCode.mouseForward),
+14: 
+15:     boost = KeyBind.add("boost", KeyCode.shiftLeft),
+16:     respawn = KeyBind.add("respawn", KeyCode.v),
+17:     control = KeyBind.add("control", KeyCode.controlLeft),
+18:     select = KeyBind.add("select", KeyCode.mouseLeft),
+19:     deselect = KeyBind.add("deselect", KeyCode.mouseRight),
+20:     breakBlock = KeyBind.add("break_block", KeyCode.mouseRight),
+21: 
+22:     pickupCargo = KeyBind.add("pickupCargo", KeyCode.leftBracket),
+23:     dropCargo = KeyBind.add("dropCargo", KeyCode.rightBracket),
+24: 
+25:     clearBuilding = KeyBind.add("clear_building", KeyCode.q),
+26:     pauseBuilding = KeyBind.add("pause_building", KeyCode.e),
+27:     rotate = KeyBind.add("rotate", new Axis(KeyCode.scroll)),
+28:     rotatePlaced = KeyBind.add("rotateplaced", KeyCode.r),
+29:     diagonalPlacement = KeyBind.add("diagonal_placement", KeyCode.controlLeft),
+30:     pick = KeyBind.add("pick", KeyCode.mouseMiddle),
+31:     ping = KeyBind.add("ping", KeyCode.p),
+32: 
+33:     rebuildSelect = KeyBind.add("rebuild_select", KeyCode.b),
+34:     schematicSelect = KeyBind.add("schematic_select", KeyCode.f),
+35:     schematicFlipX = KeyBind.add("schematic_flip_x", KeyCode.z),
+36:     schematicFlipY = KeyBind.add("schematic_flip_y", KeyCode.x),
+37:     schematicMenu = KeyBind.add("schematic_menu", KeyCode.t),
+38: 
+39:     commandMode = KeyBind.add("command_mode", KeyCode.shiftLeft, "command"),
+40:     commandQueue = KeyBind.add("command_queue", KeyCode.mouseMiddle),
+41:     createControlGroup = KeyBind.add("create_control_group", KeyCode.controlLeft),
+42: 
+43:     selectAllUnits = KeyBind.add("select_all_units", KeyCode.g),
+44:     selectAllUnitFactories = KeyBind.add("select_all_unit_factories", KeyCode.h),
+45:     selectAllUnitTransport = KeyBind.add("select_all_unit_transport", KeyCode.unset),
+46:     selectAcrossScreen = KeyBind.add("select_across_screen", KeyCode.altLeft),
+47: 
+48:     cancelOrders = KeyBind.add("cancel_orders", KeyCode.unset),
+49: 
+50:     unitStanceHoldFire = KeyBind.add("unit_stance_hold_fire", KeyCode.unset),
+51:     unitStancePursueTarget = KeyBind.add("unit_stance_pursue_target", KeyCode.unset),
+52:     unitStancePatrol = KeyBind.add("unit_stance_patrol", KeyCode.unset),
+53:     unitStanceRam = KeyBind.add("unit_stance_ram", KeyCode.unset),
+54:     unitStanceBoost = KeyBind.add("unit_stance_boost", KeyCode.unset),
+55:     unitStanceHoldPosition = KeyBind.add("unit_stance_hold_position", KeyCode.unset),
+56: 
+57:     unitCommandMove = KeyBind.add("unit_command_move", KeyCode.unset),
+58:     unitCommandRepair = KeyBind.add("unit_command_repair", KeyCode.unset),
+59:     unitCommandRebuild = KeyBind.add("unit_command_rebuild", KeyCode.unset),
+60:     unitCommandAssist = KeyBind.add("unit_command_assist", KeyCode.unset),
+61:     unitCommandMine = KeyBind.add("unit_command_mine", KeyCode.unset),
+62:     unitCommandEnterPayload = KeyBind.add("unit_command_enter_payload", KeyCode.unset),
+63:     unitCommandLoadUnits = KeyBind.add("unit_command_load_units", KeyCode.unset),
+64:     unitCommandLoadBlocks = KeyBind.add("unit_command_load_blocks", KeyCode.unset),
+65:     unitCommandUnloadPayload = KeyBind.add("unit_command_unload_payload", KeyCode.unset),
+66:     unitCommandLoopPayload = KeyBind.add("unit_command_loop_payload", KeyCode.unset),
+67: 
+68:     categoryPrev = KeyBind.add("category_prev", KeyCode.comma, "blocks"),
+69:     categoryNext = KeyBind.add("category_next", KeyCode.period),
+70: 
+71:     blockSelectLeft = KeyBind.add("block_select_left", KeyCode.left),
+72:     blockSelectRight = KeyBind.add("block_select_right", KeyCode.right),
+73:     blockSelectUp = KeyBind.add("block_select_up", KeyCode.up),
+74:     blockSelectDown = KeyBind.add("block_select_down", KeyCode.down),
+75:     blockSelect01 = KeyBind.add("block_select_01", KeyCode.num1),
+76:     blockSelect02 = KeyBind.add("block_select_02", KeyCode.num2),
+77:     blockSelect03 = KeyBind.add("block_select_03", KeyCode.num3),
+78:     blockSelect04 = KeyBind.add("block_select_04", KeyCode.num4),
+79:     blockSelect05 = KeyBind.add("block_select_05", KeyCode.num5),
+80:     blockSelect06 = KeyBind.add("block_select_06", KeyCode.num6),
+81:     blockSelect07 = KeyBind.add("block_select_07", KeyCode.num7),
+82:     blockSelect08 = KeyBind.add("block_select_08", KeyCode.num8),
+83:     blockSelect09 = KeyBind.add("block_select_09", KeyCode.num9),
+84:     blockSelect10 = KeyBind.add("block_select_10", KeyCode.num0),
+85: 
+86:     zoom = KeyBind.add("zoom", new Axis(KeyCode.scroll), "view"),
+87:     detachCamera = KeyBind.add("detach_camera", KeyCode.unset),
+88:     teleportCursor = KeyBind.add("teleport_cursor", KeyCode.unset),
+89:     menu = KeyBind.add("menu", Vars.android ? KeyCode.back : KeyCode.escape),
+90:     fullscreen = KeyBind.add("fullscreen", KeyCode.f11),
+91:     pause = KeyBind.add("pause", KeyCode.space),
+92:     skipWave = KeyBind.add("skip_wave", KeyCode.unset),
+93:     minimap = KeyBind.add("minimap", KeyCode.m),
+94:     research = KeyBind.add("research", KeyCode.j),
+95:     planetMap = KeyBind.add("planet_map", KeyCode.n),
+96:     blockInfo = KeyBind.add("block_info", KeyCode.f1),
+97:     toggleMenus = KeyBind.add("toggle_menus", KeyCode.c),
+98:     screenshot = KeyBind.add("screenshot", KeyCode.f12),
+99:     togglePowerLines = KeyBind.add("toggle_power_lines", KeyCode.f5),
+100:     toggleBlockStatus = KeyBind.add("toggle_block_status", KeyCode.f6),
+101:     playerList = KeyBind.add("player_list", KeyCode.tab, "multiplayer"),
+102:     chat = KeyBind.add("chat", KeyCode.enter),
+103:     chatHistoryPrev = KeyBind.add("chat_history_prev", KeyCode.up),
+104:     chatHistoryNext = KeyBind.add("chat_history_next", KeyCode.down),
+105:     chatScroll = KeyBind.add("chat_scroll", new Axis(KeyCode.scroll)),
+106:     chatMode = KeyBind.add("chat_mode", KeyCode.tab),
+107:     console = KeyBind.add("console", KeyCode.f8),
+108:     debugHitboxes = KeyBind.add("debug_hitboxes", KeyCode.unset),
+109:     performanceMetrics = KeyBind.add("performance_metrics", KeyCode.unset)
+110:     ;
+111: 
+112:     //dummy static class initializer
+113:     public static void init(){}
+114: }

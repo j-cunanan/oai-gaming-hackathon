@@ -1,0 +1,75 @@
+870: 
+871:             if(commandMode && selectedUnits.any()){
+872:                 boolean canAttack = (cursor.build != null && !cursor.build.inFogTo(player.team()) && cursor.build.team != player.team());
+873: 
+874:                 if(!canAttack){
+875:                     var unit = selectedEnemyUnit(input.mouseWorldX(), input.mouseWorldY());
+876:                     if(unit != null){
+877:                         canAttack = selectedUnits.contains(u -> u.canTarget(unit));
+878:                     }
+879:                 }
+880: 
+881:                 if(canAttack){
+882:                     cursorType = ui.targetCursor;
+883:                 }
+884: 
+885:                 if(input.keyTap(Binding.commandQueue) && Binding.commandQueue.value.key.type != KeyType.mouse){
+886:                     commandTap(input.mouseX(), input.mouseY(), true);
+887:                 }
+888:             }
+889: 
+890:             if(getPlan(cursor.x, cursor.y) != null && mode == none){
+891:                 cursorType = SystemCursor.hand;
+892:             }
+893: 
+894:             if(canTapPlayer(Core.input.mouseWorld().x, Core.input.mouseWorld().y)){
+895:                 cursorType = ui.unloadCursor;
+896:             }
+897: 
+898:             if(cursor.build != null && cursor.interactable(player.team()) && !isPlacing() && Math.abs(Core.input.axisTap(Binding.rotate)) > 0 && Core.input.keyDown(Binding.rotatePlaced) && cursor.block().rotate && cursor.block().quickRotate){
+899:                 Call.rotateBlock(player, cursor.build, Core.input.axisTap(Binding.rotate) > 0);
+900:             }
+901:         }
+902:     }
+903: 
+904:     @Override
+905:     public boolean tap(float x, float y, int count, KeyCode button){
+906:         if(scene.hasMouse() || !commandMode) return false;
+907: 
+908:         tappedOne = true;
+909: 
+910:         //click: select a single unit
+911:         if(button == KeyCode.mouseLeft){
+912:             if(count >= 2){
+913:                 selectTypedUnits();
+914:             }else{
+915:                 tapCommandUnit();
+916:             }
+917: 
+918:         }
+919: 
+920:         return super.tap(x, y, count, button);
+921:     }
+922: 
+923:     @Override
+924:     public boolean touchDown(float x, float y, int pointer, KeyCode button){
+925:         if(scene.hasMouse() || !commandMode) return false;
+926: 
+927:         if(button == KeyCode.mouseRight){
+928:             commandTap(x, y);
+929:         }
+930: 
+931:         if(button == Binding.commandQueue.value.key){
+932:             commandTap(x, y, true);
+933:         }
+934: 
+935:         return super.touchDown(x, y, pointer, button);
+936:     }
+937: 
+938:     @Override
+939:     public boolean selectedBlock(){
+940:         return isPlacing() && mode != breaking;
+941:     }
+942: 
+943:     @Override
+944:     public float getMouseX(){

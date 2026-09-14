@@ -1,0 +1,4 @@
+regex parse error:
+    stack(Content
+         ^
+error: unclosed group

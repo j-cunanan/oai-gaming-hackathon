@@ -1,0 +1,180 @@
+400:                                 req.top().left();
+401: 
+402:                                 for(ItemStack stack : displayBlock.requirements){
+403:                                     req.table(line -> {
+404:                                         line.left();
+405:                                         line.image(stack.item.uiIcon).size(8 * 2);
+406:                                         line.add(stack.item.localizedName).maxWidth(140f).fillX().color(Color.lightGray).padLeft(2).left().get().setEllipsis(true);
+407:                                         line.labelWrap(() -> {
+408:                                             Building core = player.core();
+409:                                             int stackamount = Math.round(stack.amount * state.rules.buildCostMultiplier);
+410:                                             if(core == null || state.rules.infiniteResources) return "*/" + stackamount;
+411: 
+412:                                             int amount = core.items.get(stack.item);
+413:                                             String color = (amount < stackamount / 2f ? "[scarlet]" : amount < stackamount ? "[accent]" : "[white]");
+414: 
+415:                                             return color + UI.formatAmount(amount) + "[white]/" + stackamount;
+416:                                         }).padLeft(5);
+417:                                     }).left();
+418:                                     req.row();
+419:                                 }
+420:                             }).growX().left().margin(3);
+421: 
+422:                             topTable.row();
+423:                             topTable.collapser(b -> {
+424:                                 b.left();
+425:                                 b.marginTop(2f);
+426:                                 b.image(Icon.cancel).padRight(2).color(Color.scarlet);
+427:                                 b.label(() -> {
+428:                                     var reason = getUnplaceableReason(displayBlock);
+429:                                     return reason == null ? "" : reason;
+430:                                 }).width(190f).wrap();
+431:                             }, () -> getUnplaceableReason(displayBlock) != null).left();
+432: 
+433:                         }else if(hovered != null){
+434:                             //show hovered item, whatever that may be
+435:                             hovered.display(topTable);
+436:                         }
+437:                     });
+438:                 }).colspan(3).fillX().visible(this::hasInfoBox).touchable(Touchable.enabled).row();
+439: 
+440:                 frame.image().color(Pal.gray).colspan(3).height(4).growX().row();
+441: 
+442:                 blockCatTable = new Table();
+443:                 commandTable = new Table(Tex.pane2);
+444:                 mainStack = new Stack();
+445: 
+446:                 mainStack.update(() -> {
+447:                     if(control.input.commandMode != wasCommandMode){
+448:                         mainStack.clearChildren();
+449:                         mainStack.addChild(control.input.commandMode ? commandTable : blockCatTable);
+450: 
+451:                         //hacky, but forces command table to be same width as blocks
+452:                         if(control.input.commandMode){
+453:                             commandTable.getCells().peek().width(blockCatTable.getWidth() / Scl.scl(1f));
+454:                         }
+455: 
+456:                         wasCommandMode = control.input.commandMode;
+457:                     }
+458:                 });
+459: 
+460:                 frame.add(mainStack).colspan(3).fill();
+461: 
+462:                 frame.row();
+463: 
+464:                 //for better inset visuals at the bottom
+465:                 frame.rect((x, y, w, h) -> {
+466:                     if(Core.scene.marginBottom > 0){
+467:                         Tex.paneLeft.draw(x, 0, w, y);
+468:                     }
+469:                 }).colspan(3).fillX().row();
+470: 
+471:                 //commandTable: commanded units
+472:                 {
+473:                     commandTable.touchable = Touchable.enabled;
+474:                     commandTable.add(Core.bundle.get("commandmode.name")).fill().center().labelAlign(Align.center).row();
+475:                     commandTable.image().color(Pal.accent).growX().pad(20f).padTop(0f).padBottom(4f).row();
+476:                     commandTable.table(u -> {
+477: 
+478:                         Bits activeCommands = new Bits(content.unitCommands().size);
+479:                         Bits activeStances = new Bits(content.unitStances().size);
+480: 
+481:                         Bits availableCommands = new Bits(content.unitCommands().size);
+482:                         Bits availableStances = new Bits(content.unitStances().size);
+483:                         Bits activeTypes = new Bits(content.units().size), prevActiveTypes = new Bits(content.units().size);
+484: 
+485:                         u.left();
+486:                         Bits usedCommands = new Bits(content.unitCommands().size);
+487:                         var commands = new Seq<UnitCommand>();
+488: 
+489:                         Bits usedStances = new Bits(content.unitStances().size);
+490:                         var stances = new Seq<UnitStance>();
+491:                         var stancesOut = new Seq<UnitStance>();
+492: 
+493:                         int[][] countBox = new int[1][0];
+494: 
+495:                         rebuildCommand = () -> {
+496:                             if(countBox[0].length != content.units().size) countBox[0] = new int[content.units().size];
+497:                             int[] counts = countBox[0];
+498: 
+499:                             u.clearChildren();
+500:                             var units = control.input.selectedUnits;
+501:                             if(units.size > 0){
+502:                                 usedCommands.clear();
+503:                                 usedStances.clear();
+504:                                 commands.clear();
+505:                                 stances.clear();
+506:                                 Arrays.fill(counts, 0);
+507: 
+508:                                 for(var unit : units){
+509:                                     counts[unit.type.id] ++;
+510: 
+511:                                     stancesOut.clear();
+512:                                     unit.type.getUnitStances(unit, stancesOut);
+513: 
+514:                                     for(var stance : stancesOut){
+515:                                         if(!usedStances.get(stance.id)){
+516:                                             stances.add(stance);
+517:                                             usedStances.set(stance.id);
+518:                                         }
+519:                                     }
+520:                                 }
+521: 
+522:                                 Table unitlist = u.table().growX().left().get();
+523:                                 unitlist.left();
+524: 
+525:                                 int col = 0;
+526:                                 for(int i = 0; i < counts.length; i++){
+527:                                     int fi = i;
+528:                                     if(counts[i] > 0){
+529:                                         var type = content.unit(i);
+530:                                         unitlist.add(StatValues.stack(type, counts[i])).pad(4).with(b -> {
+531:                                             b.clearListeners();
+532:                                             b.addListener(Tooltips.getInstance().create(type.localizedName, false));
+533: 
+534:                                             Label amountLabel = b.find("stack amount");
+535:                                             if(amountLabel != null){
+536:                                                 amountLabel.setText(() -> counts[fi] + "");
+537:                                             }
+538: 
+539:                                             var listener = new ClickListener();
+540: 
+541:                                             //left click -> select
+542:                                             b.clicked(KeyCode.mouseLeft, () -> {
+543:                                                 control.input.selectedUnits.removeAll(unit -> unit.type != type);
+544:                                                 Events.fire(Trigger.unitCommandChange);
+545:                                             });
+546:                                             //right click -> remove
+547:                                             b.clicked(KeyCode.mouseRight, () -> {
+548:                                                 control.input.selectedUnits.removeAll(unit -> unit.type == type);
+549:                                                 Events.fire(Trigger.unitCommandChange);
+550:                                             });
+551: 
+552:                                             b.addListener(listener);
+553:                                             b.addListener(new HandCursorListener());
+554:                                             //gray on hover
+555:                                             b.update(() -> ((Group)b.getChildren().first()).getChildren().first().setColor(listener.isOver() ? Color.lightGray : Color.white));
+556:                                         });
+557: 
+558:                                         if(++col % 7 == 0){
+559:                                             unitlist.row();
+560:                                         }
+561: 
+562:                                         for(var command : type.commands){
+563:                                             if(!usedCommands.get(command.id)){
+564:                                                 commands.add(command);
+565:                                                 usedCommands.set(command.id);
+566:                                             }
+567:                                         }
+568:                                     }
+569:                                 }
+570: 
+571:                                 //list commands
+572:                                 if(commands.size > 1){
+573:                                     u.row();
+574: 
+575:                                     u.table(coms -> {
+576:                                         coms.left();
+577:                                         int scol = 0;
+578:                                         for(var command : commands){
+579:                                             coms.button(Icon.icons.get(command.icon, Icon.cancel), Styles.clearNoneTogglei, () -> {

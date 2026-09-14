@@ -1,0 +1,75 @@
+1960:         //disabled -> nothing works
+1961:         if(!enabled){
+1962:             potentialEfficiency = efficiency = optionalEfficiency = 0f;
+1963:             shouldConsumePower = false;
+1964:             return;
+1965:         }
+1966: 
+1967:         boolean update = shouldConsume() && productionValid();
+1968: 
+1969:         float minEfficiency = 1f;
+1970: 
+1971:         //assume efficiency is 1 for the calculations below
+1972:         efficiency = optionalEfficiency = 1f;
+1973:         shouldConsumePower = true;
+1974: 
+1975:         //first pass: get the minimum efficiency of any consumer
+1976:         for(var cons : block.nonOptionalConsumers){
+1977:             float result = cons.efficiency(self());
+1978: 
+1979:             if(cons != block.consPower && result <= 0.0000001f){
+1980:                 shouldConsumePower = false;
+1981:             }
+1982: 
+1983:             minEfficiency = Math.min(minEfficiency, result);
+1984:         }
+1985: 
+1986:         //same for optionals
+1987:         for(var cons : block.optionalConsumers){
+1988:             optionalEfficiency = Math.min(optionalEfficiency, cons.efficiency(self()));
+1989:         }
+1990: 
+1991:         //efficiency is now this minimum value
+1992:         efficiency = minEfficiency;
+1993:         optionalEfficiency = Math.min(optionalEfficiency, minEfficiency);
+1994: 
+1995:         //assign "potential"
+1996:         potentialEfficiency = efficiency;
+1997: 
+1998:         //no updating means zero efficiency
+1999:         if(!update){
+2000:             efficiency = optionalEfficiency = 0f;
+2001:         }
+2002: 
+2003:         updateEfficiencyMultiplier();
+2004: 
+2005:         //second pass: update every consumer based on efficiency
+2006:         if(update && efficiency > 0){
+2007:             for(var cons : block.updateConsumers){
+2008:                 cons.update(self());
+2009:             }
+2010:         }
+2011:     }
+2012: 
+2013:     public void updatePayload(@Nullable Unit unitHolder, @Nullable Building buildingHolder){
+2014:         update();
+2015:     }
+2016: 
+2017:     public void updateTile(){
+2018: 
+2019:     }
+2020: 
+2021:     /** @return ambient sound volume scale. */
+2022:     public float ambientVolume(){
+2023:         return efficiency;
+2024:     }
+2025: 
+2026:     //endregion
+2027:     //region overrides
+2028: 
+2029:     /** Tile configuration. Defaults to null. Used for block rebuilding. */
+2030:     @Nullable
+2031:     public Object config(){
+2032:         return null;
+2033:     }
+2034: 

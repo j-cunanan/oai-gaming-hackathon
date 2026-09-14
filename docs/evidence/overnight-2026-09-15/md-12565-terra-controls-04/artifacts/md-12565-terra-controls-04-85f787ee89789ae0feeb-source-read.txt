@@ -1,0 +1,70 @@
+2209: 
+2210:     public Seq<Unit> selectedCommandUnits(float x, float y, float w, float h, Boolf<Unit> predicate){
+2211:         var tree = player.team().data().tree();
+2212:         tmpUnits.clear();
+2213:         float rad = 4f;
+2214:         tree.intersect(Tmp.r1.set(x - rad/2f, y - rad/2f, rad*2f + w, rad*2f + h).normalize(), tmpUnits);
+2215:         tmpUnits.removeAll(u -> !u.isCommandable() || !predicate.get(u));
+2216:         return tmpUnits;
+2217:     }
+2218: 
+2219:     public Seq<Unit> selectedCommandUnits(float x, float y, float w, float h){
+2220:         return selectedCommandUnits(x, y, w, h, u -> true);
+2221:     }
+2222: 
+2223:     public void remove(){
+2224:         Core.input.removeProcessor(this);
+2225:         group.remove();
+2226:         if(Core.scene != null){
+2227:             Table table = (Table)Core.scene.find("inputTable");
+2228:             if(table != null){
+2229:                 table.clear();
+2230:             }
+2231:         }
+2232:         if(detector != null){
+2233:             Core.input.removeProcessor(detector);
+2234:         }
+2235:         if(uiGroup != null){
+2236:             uiGroup.remove();
+2237:             uiGroup = null;
+2238:         }
+2239:     }
+2240: 
+2241:     public void add(){
+2242:         Core.input.getInputProcessors().remove(i -> i instanceof InputHandler || (i instanceof GestureDetector && ((GestureDetector)i).getListener() instanceof InputHandler));
+2243:         Core.input.addProcessor(detector = new GestureDetector(20, 0.5f, 0.3f, 0.15f, this));
+2244:         Core.input.addProcessor(this);
+2245:         if(Core.scene != null){
+2246:             Table table = (Table)Core.scene.find("inputTable");
+2247:             if(table != null){
+2248:                 table.clear();
+2249:                 buildPlacementUI(table);
+2250:             }
+2251: 
+2252:             uiGroup = new WidgetGroup();
+2253:             uiGroup.touchable = Touchable.childrenOnly;
+2254:             uiGroup.setFillParent(true);
+2255:             ui.hudGroup.addChild(uiGroup);
+2256:             uiGroup.toBack();
+2257:             buildUI(uiGroup);
+2258: 
+2259:             group.setFillParent(true);
+2260:             Vars.ui.hudGroup.addChildBefore(Core.scene.find("overlaymarker"), group);
+2261: 
+2262:             inv.build(group);
+2263:             config.build(group);
+2264:             planConfig.build(group);
+2265:         }
+2266: 
+2267:         initQuadtrees();
+2268:     }
+2269: 
+2270:     public boolean canShoot(){
+2271:         return block == null && !onConfigurable() && !isDroppingItem() && !player.unit().activelyBuilding() &&
+2272:         !(player.unit() instanceof Mechc && player.unit().isFlying()) && !player.unit().mining() && !commandMode;
+2273:     }
+2274: 
+2275:     public boolean onConfigurable(){
+2276:         return false;
+2277:     }
+2278: 
