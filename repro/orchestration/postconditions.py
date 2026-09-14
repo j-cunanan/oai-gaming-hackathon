@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from repro.agents.openai import BudgetExceeded, Tool
 from repro.agents.oracle import verify
 from repro.models import Action, CandidateVerification, OracleSpec
+from repro.orchestration.computer_tools import sequence_tool
 
 
 class Empty(BaseModel):
@@ -135,6 +136,12 @@ async def plan_postconditions(settings, store, case, sandbox, model, recorder, s
                 "Perform a candidate fix-check action and optionally capture a named checkpoint. seconds is settling time; hold_seconds holds keys or a button; keys on pointer actions are modifiers.",
                 Action,
                 computer,
+            ),
+            sequence_tool(
+                recorder,
+                computer,
+                lambda: min(40, settings.max_actions) - len(followups),
+                phase="fix-check-exploration",
             ),
             Tool("observe", "Capture the current game screen and process state.", Empty, observe),
             Tool(

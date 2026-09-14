@@ -1,0 +1,128 @@
+[
+  {
+    "type": 2,
+    "detail": 37,
+    "state": 0,
+    "time": 10885811,
+    "keysym": 65507
+  },
+  {
+    "type": 4,
+    "detail": 1,
+    "state": 4,
+    "time": 10885945,
+    "keysym": 0
+  },
+  {
+    "type": 5,
+    "detail": 1,
+    "state": 260,
+    "time": 10885949,
+    "keysym": 0
+  },
+  {
+    "type": 3,
+    "detail": 37,
+    "state": 4,
+    "time": 10886072,
+    "keysym": 65507
+  },
+  {
+    "type": 2,
+    "detail": 25,
+    "state": 0,
+    "time": 10886219,
+    "keysym": 119
+  },
+  {
+    "type": 3,
+    "detail": 25,
+    "state": 0,
+    "time": 10886643,
+    "keysym": 119
+  },
+  {
+    "type": 2,
+    "detail": 27,
+    "state": 0,
+    "time": 10886783,
+    "keysym": 114
+  },
+  {
+    "type": 3,
+    "detail": 27,
+    "state": 0,
+    "time": 10886784,
+    "keysym": 114
+  },
+  {
+    "type": 2,
+    "detail": 26,
+    "state": 0,
+    "time": 10886795,
+    "keysym": 101
+  },
+  {
+    "type": 3,
+    "detail": 26,
+    "state": 0,
+    "time": 10886795,
+    "keysym": 101
+  },
+  {
+    "type": 2,
+    "detail": 33,
+    "state": 0,
+    "time": 10886806,
+    "keysym": 112
+  },
+  {
+    "type": 3,
+    "detail": 33,
+    "state": 0,
+    "time": 10886806,
+    "keysym": 112
+  },
+  {
+    "type": 2,
+    "detail": 27,
+    "state": 0,
+    "time": 10886817,
+    "keysym": 114
+  },
+  {
+    "type": 3,
+    "detail": 27,
+    "state": 0,
+    "time": 10886818,
+    "keysym": 114
+  },
+  {
+    "type": 2,
+    "detail": 32,
+    "state": 0,
+    "time": 10886829,
+    "keysym": 111
+  },
+  {
+    "type": 3,
+    "detail": 32,
+    "state": 0,
+    "time": 10886830,
+    "keysym": 111
+  },
+  {
+    "type": 2,
+    "detail": 36,
+    "state": 0,
+    "time": 10886982,
+    "keysym": 65293
+  },
+  {
+    "type": 3,
+    "detail": 36,
+    "state": 0,
+    "time": 10886982,
+    "keysym": 65293
+  }
+]
