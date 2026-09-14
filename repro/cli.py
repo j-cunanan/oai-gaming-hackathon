@@ -99,6 +99,15 @@ def report(case_id: str, output: Path | None = None):
         typer.echo(text)
 
 
+@app.command("continue")
+def continue_analysis(case_id: str):
+    """Recheck a confirmed replay, then continue source diagnosis and patch validation."""
+    cfg, store = context()
+    asyncio.run(Manager(cfg, store).continue_case(local_case(store, case_id)))
+    result = local_case(store, case_id)
+    typer.echo(f"{result.state}: {result.summary}")
+
+
 @app.command()
 def cases():
     """List persisted cases."""

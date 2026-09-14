@@ -889,25 +889,46 @@ function App() {
                           <Pause size={14} />
                           Stop
                         </button>
-                      ) : (
-                        !current.reproduction && (
-                          <button
-                            className="button primary small"
-                            disabled={busy || Boolean(current.imported_from) || !health?.ai_configured}
-                            onClick={() => act("investigate")}
-                          >
-                            <Play size={14} />
-                            Investigate
-                          </button>
-                        )
-                      )}
+                      ) : !current.reproduction ? (
+                        <button
+                          className="button primary small"
+                          disabled={
+                            busy ||
+                            Boolean(current.imported_from) ||
+                            !health?.ai_configured
+                          }
+                          onClick={() => act("investigate")}
+                        >
+                          <Play size={14} />
+                          Investigate
+                        </button>
+                      ) : current.reproduction.deterministic &&
+                        current.spec &&
+                        !current.patch_artifact ? (
+                        <button
+                          className="button primary small"
+                          disabled={
+                            busy ||
+                            Boolean(current.imported_from) ||
+                            !health?.ai_configured
+                          }
+                          onClick={() => act("continue")}
+                        >
+                          <Play size={14} />
+                          Continue to patch
+                        </button>
+                      ) : null}
                       <HelpTip
                         topic={
                           running
                             ? "Stop"
                             : !current.reproduction
                               ? "Investigate"
-                              : ""
+                              : current.reproduction.deterministic &&
+                                  current.spec &&
+                                  !current.patch_artifact
+                                ? "Continue to patch"
+                                : ""
                         }
                       />
                     </div>

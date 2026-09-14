@@ -163,12 +163,32 @@ class Manager:
 
     def source_tools(self, sandbox):
         async def read(args):
-            return {
-                "source": await sandbox.read_source(args.path, args.start_line, args.line_count)
-            }
+            source = await sandbox.read_source(args.path, args.start_line, args.line_count)
+            artifact = self.store.artifact(sandbox.case.id, "source-read.txt", source)
+            self.store.save(
+                sandbox.case,
+                "source_read",
+                {
+                    **args.model_dump(),
+                    "artifact": artifact,
+                    "summary": f"Read {args.path} from line {args.start_line}.",
+                },
+            )
+            return {"source": source}
 
         async def search(args):
-            return {"matches": await sandbox.search(args.query)}
+            matches = await sandbox.search(args.query)
+            artifact = self.store.artifact(sandbox.case.id, "source-search.txt", matches)
+            self.store.save(
+                sandbox.case,
+                "source_search",
+                {
+                    "query": args.query,
+                    "artifact": artifact,
+                    "summary": f"Search pre-fix source for {args.query!r}.",
+                },
+            )
+            return {"matches": matches}
 
         return [
             Tool(
@@ -374,6 +394,94 @@ class Manager:
             self.store.save(case)
             self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
 
+    async def continue_case(self, case: Case):
+        """Resume diagnosis/patching only after the frozen baseline replay still passes."""
+        if (
+            case.imported_from
+            or not case.spec
+            or not case.reproduction
+            or not case.reproduction.deterministic
+        ):
+            raise ValueError("A local confirmed reproduction and report triage are required")
+        if case.patch_artifact:
+            raise ValueError("A candidate already exists; rerun its validation instead")
+        started = time.monotonic()
+        sandbox = DockerSandbox(self.settings, self.store, case)
+        model = None
+        try:
+            model = Model(self.settings, self.store, case)
+            self.store.artifact(
+                case.id,
+                "analysis-before-resume.json",
+                case.model_dump_json(indent=2),
+                "application/json",
+            )
+            async with asyncio.timeout(self.settings.max_seconds):
+                await sandbox.baseline_source_is_clean()
+                recorder = Recorder(self.store, case, sandbox)
+                self.store.transition(
+                    case,
+                    State.REPRODUCED,
+                    "Rechecking the saved trigger before continuing source analysis.",
+                )
+                await self.record_baseline_tests(case, sandbox)
+                self.store.save(
+                    case,
+                    "continuation_environment",
+                    {
+                        "phase": "baseline before analysis continuation",
+                        "network": "none",
+                        "worker_image": self.settings.worker_image,
+                    },
+                )
+                rep = case.reproduction
+                rep.successful_runs = rep.total_runs = 0
+                rep.evidence = []
+                rep.deterministic = False
+                case.checks = []
+                sandbox.use_baseline = True
+                for _ in range(self.settings.repetitions):
+                    verdict, _ = await replay(
+                        sandbox, recorder, model, rep.steps, rep.oracle, phase="resume-baseline"
+                    )
+                    rep.total_runs += 1
+                    rep.successful_runs += int(verdict.observed)
+                    rep.evidence.extend(verdict.evidence)
+                    self.store.save(case)
+                rep.deterministic = rep.successful_runs == rep.total_runs
+                self.save_replay(case)
+                if not rep.deterministic:
+                    self.store.transition(
+                        case,
+                        State.INSUFFICIENT_EVIDENCE,
+                        f"Saved trigger confirmed in {rep.successful_runs}/{rep.total_runs} fresh runs. Analysis continuation stopped; prior evidence is retained.",
+                    )
+                    return
+                sandbox.use_baseline = False
+                await self.finish_confirmed_case(case, sandbox, model, recorder)
+        except asyncio.CancelledError:
+            self.store.transition(
+                case,
+                State.CANCELLED,
+                "Analysis continuation cancelled; prior evidence and partial results retained.",
+            )
+            raise
+        except (BudgetExceeded, TimeoutError) as exc:
+            self.store.transition(
+                case,
+                State.INSUFFICIENT_EVIDENCE,
+                str(exc) or "Analysis continuation time budget exhausted; evidence retained.",
+            )
+        except Exception as exc:
+            self.record_failure(case, exc)
+        finally:
+            await sandbox.stop()
+            if model:
+                await model.close()
+            case.elapsed_seconds += time.monotonic() - started
+            self.store.save(case)
+            self.store.artifact(case.id, "report.md", self.report(case), "text/markdown")
+
     async def _investigate(self, case: Case, sandbox: DockerSandbox, model: Model, started):
         self.store.save(
             case, "stage_started", {"stage": "triage", "summary": "Starting report triage."}
@@ -555,7 +663,12 @@ class Manager:
             State.REPRO_CONFIRMED,
             f"Verified in {rep.successful_runs}/{rep.total_runs} replays; {rep.original_actions} → {len(rep.steps)} actions.",
         )
-        await self.localize(case, sandbox, model)
+        await self.finish_confirmed_case(case, sandbox, model, recorder)
+
+    async def finish_confirmed_case(self, case, sandbox, model, recorder):
+        rep = case.reproduction
+        if not case.findings:
+            await self.localize(case, sandbox, model)
         self.store.transition(
             case,
             State.TEST_GENERATING,
@@ -674,7 +787,7 @@ class Manager:
             ],
             purpose="source localization",
             done=lambda: findings is not None,
-            max_turns=12,
+            max_turns=min(24, self.settings.max_model_calls),
         )
         case.findings = findings
         for path in (".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"):
@@ -757,7 +870,7 @@ class Manager:
             ],
             purpose="candidate patch",
             done=lambda: proposed is not None,
-            max_turns=10,
+            max_turns=min(20, self.settings.max_model_calls),
         )
 
     async def validate(self, case, sandbox, model, recorder):

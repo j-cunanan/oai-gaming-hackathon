@@ -174,8 +174,15 @@ class Model:
             },
             {"role": "user", "content": content},
         ]
-        for _ in range(max_turns):
+        for turn in range(max_turns):
             self.budget()
+            if min(max_turns - turn, self.remaining_calls) <= 2:
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": "At most two tool turns remain in this stage. Use the available completion tool with a grounded result or an honest limitation when ready; do not claim unperformed checks.",
+                    }
+                )
             try:
                 response = await self.client.responses.create(
                     model=self.settings.model,
@@ -211,6 +218,16 @@ class Model:
                     result = await tool.handler(arguments)
                 except (ValueError, KeyError) as exc:
                     result = {"error": str(exc)[:1000]}
+                    self.store.save(
+                        self.case,
+                        "tool_error",
+                        {
+                            "purpose": purpose,
+                            "tool": call.name,
+                            "arguments": call.arguments[:2000],
+                            "summary": f"{call.name}: {str(exc)[:1000]}",
+                        },
+                    )
                 screenshot = result.pop("screenshot", None)
                 if "logs" in result:
                     result["logs"] = result.pop("log_delta", result["logs"])[-2000:]
