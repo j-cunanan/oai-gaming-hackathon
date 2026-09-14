@@ -751,18 +751,18 @@ class Manager:
             State.VALIDATING,
             "Building the candidate and running existing tests, then replaying the original trigger.",
         )
-        await sandbox.start(network=False, fresh_profile=True)
+        await sandbox.start(network=self.settings.validation_network, fresh_profile=True)
         self.store.save(
             case,
             "validation_environment",
             {
-                "network": "none",
+                "network": "bridge" if self.settings.validation_network else "none",
                 "phase": "build and existing tests",
                 "worker_image": self.settings.worker_image,
             },
         )
         build = list(sandbox.adapter.build)
-        if case.report.game == "mindustry":
+        if case.report.game == "mindustry" and not self.settings.validation_network:
             build.append("--offline")
         code, output = await sandbox.exec(build, timeout=900, check=False)
         artifact = self.store.artifact(case.id, "candidate-build.log", output)
@@ -848,7 +848,7 @@ class Manager:
         self.store.save(case)
 
     async def check_existing_tests(self, case, sandbox):
-        command = test_command(sandbox.adapter)
+        command = test_command(sandbox.adapter, network=self.settings.validation_network)
         progress = self.store.workspace(case.id) / "candidate-test-progress.log"
         progress.write_text("")
         try:
@@ -866,6 +866,7 @@ class Manager:
                 command,
                 image,
                 self.settings.worker_platform,
+                network=self.settings.validation_network,
             )
         except (Exception, asyncio.CancelledError) as exc:
             artifact = self.store.artifact(case.id, "candidate-tests.log", progress.read_bytes())

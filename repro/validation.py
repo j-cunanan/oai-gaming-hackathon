@@ -18,8 +18,8 @@ FAILURE = re.compile(r"(?P<class>[\w.$]+) > (?P<test>\S.*?) FAILED")
 SUMMARY = re.compile(r"(\d+) tests? completed, (\d+) failed(?:, (\d+) skipped)?")
 
 
-def test_command(adapter: GameAdapter) -> list[str]:
-    command = list(adapter.tests)
+def test_command(adapter: GameAdapter, *, network: bool = False) -> list[str]:
+    command = [arg for arg in adapter.tests if not (network and arg == "--offline")]
     if adapter.id == "mindustry":
         # Execute assertions afresh, even after dependency preparation or a rerun.
         command += ["--rerun-tasks", "--no-build-cache", "--console=plain"]
@@ -108,6 +108,8 @@ def existing_tests_check(
     command: list[str],
     worker_image: str,
     worker_platform: str,
+    *,
+    network: bool = False,
 ) -> Check:
     record, baseline_error = baseline_evidence(store, case, command, worker_image, worker_platform)
     check = Check(
@@ -125,6 +127,9 @@ def existing_tests_check(
         check.detail += f" Candidate test identifiers are unparseable: {exc}."
         return check
     check.detail += " Failing tests: " + ", ".join(check.failing_tests) + "."
+    if network:
+        check.detail += " Network-enabled candidate failures cannot be waived by an offline baseline."
+        return check
     if baseline_error:
         check.detail += f" {baseline_error}; differential acceptance is blocked."
         return check

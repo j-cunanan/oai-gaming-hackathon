@@ -95,7 +95,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "repetitions": settings.repetitions,
             "max_model_calls": settings.max_model_calls,
             "worker_image": settings.worker_image,
-            "validation_network": False,
+            "validation_network": settings.validation_network,
             "active_jobs": [k for k, v in jobs.items() if not v.done()],
         }
 

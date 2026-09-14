@@ -2,6 +2,8 @@
 
 Preparation and evaluation may access GitHub. Investigation, baseline tests, candidate build/tests and gameplay replays cannot. Model-visible data is limited to the player report, supplied evidence, pre-fix source, prepared dependencies and game runtime. Record the validation network policy with each result; historical network-enabled reruns do not overwrite the original offline outcomes or qualify as offline baseline evidence.
 
+The application also supports explicitly opted-in network-enabled candidate validation (`REPRO_VALIDATION_NETWORK=true`) for operational use. Those results are outside this offline protocol, must pass all candidate tests without a baseline-failure waiver, and must be labeled with their network mode. The default remains offline; baseline suites and game replays always remain offline.
+
 The default checkout is **depth one at the exact pre-fix SHA**. This intentionally trades ownership/history analysis for small, auditable preparation. There is no future history, remote, shared object database or evaluator mount. A separate ancestor-only bundle exporter is available and tested.
 
 Manifests live in `benchmarks/manifests/`. Only their `input` fields become `CaseInput`. Source URLs, fix commits and changed files belong to evaluator metadata. Never include the full manifest in a model prompt or game-container mount. Public report bodies may have been edited after submission; a fetched body is a snapshot, not proof that every word existed at initial reporting. Disclose that limitation until issue revision history is captured.
