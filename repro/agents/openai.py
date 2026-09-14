@@ -77,6 +77,7 @@ class Model:
                 "purpose": purpose,
                 "model": response.model,
                 "reasoning_effort": self.settings.reasoning_effort,
+                "max_output_tokens": self.settings.max_output_tokens,
                 "input_tokens": usage.input_tokens if usage else 0,
                 "output_tokens": usage.output_tokens if usage else 0,
             },
@@ -133,7 +134,7 @@ class Model:
                 ],
                 text_format=schema,
                 reasoning={"effort": self.settings.reasoning_effort},
-                max_output_tokens=4000,
+                max_output_tokens=self.settings.max_output_tokens,
             )
         except APIError as exc:
             raise RuntimeError(
@@ -192,7 +193,7 @@ class Model:
                     tools=[t.definition() for t in tools],
                     parallel_tool_calls=False,
                     reasoning={"effort": self.settings.reasoning_effort},
-                    max_output_tokens=4000,
+                    max_output_tokens=self.settings.max_output_tokens,
                 )
             except APIError as exc:
                 raise RuntimeError(

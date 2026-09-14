@@ -707,6 +707,22 @@ class Manager:
         rep = case.reproduction
 
         async def reproduces(steps):
+            if rep.oracle.kind == "sequence":
+                selected = [
+                    action.checkpoint
+                    for action in steps
+                    if action.checkpoint in rep.oracle.checkpoints
+                ]
+                if selected != rep.oracle.checkpoints:
+                    self.store.save(
+                        case,
+                        "reduction_trial_skipped",
+                        {
+                            "summary": "Skipped an action-deletion proposal that removes or reorders required checkpoints; no game replay was executed.",
+                            "actions": len(steps),
+                        },
+                    )
+                    return False
             check, _ = await replay(
                 sandbox, recorder, model, steps, rep.oracle, phase="minimization"
             )
