@@ -1,0 +1,219 @@
+.case-nav {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.case-nav-item {
+  align-items: flex-start;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  margin-bottom: 6px;
+}
+.case-nav-item > .tiny-dot {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.case-nav-item > .case-nav-copy:last-child {
+  min-width: 0;
+  white-space: normal;
+}
+.case-nav-copy strong {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #c8c2d3;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.case-nav-copy code {
+  display: block;
+  margin-top: 5px;
+  color: #a9a0b9;
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+.case-nav-copy small {
+  display: block;
+  margin-top: 5px;
+  font-size: 9px;
+  color: #8f869f;
+}
+.case-nav-item.chosen {
+  background: #2e263d;
+  border-color: #56436d;
+  box-shadow: inset 3px 0 var(--accent);
+}
+.case-nav-item.chosen .case-nav-copy strong {
+  color: #f0e9ff;
+}
+.case-nav-item.chosen .case-nav-copy code {
+  color: #c7b6ff;
+}
+.case-nav-item.chosen .case-nav-copy small {
+  color: #c2b4d4;
+}
+.case-nav-item:hover {
+  background: #282230;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: auto;
+  min-height: 57px;
+  padding-block: 10px;
+  gap: 15px;
+}
+.breadcrumb {
+  min-width: 0;
+  flex-wrap: wrap;
+  row-gap: 5px;
+  column-gap: 8px;
+}
+.breadcrumb > svg {
+  flex-shrink: 0;
+}
+.case-breadcrumb {
+  color: #c8b7fb;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.topbar-right {
+  flex-shrink: 0;
+}
+.selected-case-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 19px;
+  margin: -6px 0 23px;
+  background: linear-gradient(105deg, #30263f, #211c2c);
+  border: 1px solid #55416f;
+  border-left: 3px solid var(--accent);
+  border-radius: 7px;
+}
+.selected-case-banner > div {
+  min-width: 0;
+}
+.selected-case-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #b8a4d4;
+  font-size: 9px;
+  letter-spacing: 1.1px;
+}
+.selected-case-banner code {
+  display: block;
+  color: #d2c1ff;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 3px 0 7px;
+  overflow-wrap: anywhere;
+}
+.selected-case-banner strong {
+  display: block;
+  font-size: 13px;
+  color: #eae3f5;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.selected-case-banner > .badge {
+  flex-shrink: 0;
+}
+.case-heading-copy {
+  min-width: 0;
+}
+.case-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.case-identity > span {
+  color: #b6a3ce;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.case-identity code {
+  color: #d2bfff;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.case-identity button {
+  flex-shrink: 0;
+  color: #bdacd5;
+}
+.case-meta {
+  flex-wrap: wrap;
+}
+.benchmark-reference {
+  font-size: 9px;
+  border: 1px solid #3a3347;
+  border-radius: 3px;
+  padding: 2px 5px;
+  color: #a99ab8;
+}
+.select-wrap {
+  min-width: 0;
+}
+.case-switcher .select-wrap select {
+  max-width: 390px;
+  width: 100%;
+  color: #d3c4ec;
+  font-size: 11px;
+}
+.case-workspace .stage-group-toggle {
+  scroll-margin-top: 115px;
+}
+@media (max-width: 780px) {
+  .selected-case-banner {
+    padding: 13px 14px;
+    gap: 10px;
+  }
+  .selected-case-banner code {
+    font-size: 13px;
+  }
+  .selected-case-banner strong {
+    font-size: 11px;
+  }
+  .selected-case-banner > .badge {
+    font-size: 8px;
+  }
+  .case-switcher {
+    flex-wrap: wrap;
+  }
+  .case-switcher .select-wrap {
+    width: 100%;
+  }
+  .case-switcher .select-wrap select {
+    max-width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .topbar {
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .breadcrumb {
+    font-size: 9px;
+  }
+  .case-breadcrumb {
+    font-size: 10px;
+  }
+  .selected-case-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .case-identity {
+    gap: 5px;
+  }
+  .case-identity code {
+    font-size: 10px;
+  }
+}
