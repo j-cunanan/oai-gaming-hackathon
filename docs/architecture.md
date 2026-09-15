@@ -2,6 +2,8 @@
 
 The application is a Python package plus a web dashboard. `repro/api.py` exposes the same manager used by `repro/cli.py`. `Store` persists JSON case snapshots and ordered events in SQLite, and stores content-hashed evidence outside the game sandbox.
 
+The [reproduction-method figure](figures/reproduction-method/README.md) explains adaptive exploration, fresh replay verification and the retained regression, with PNG, SVG and editable slide versions.
+
 ## Trust and execution boundaries
 
 1. Preparation downloads an exact game revision into a disposable directory. The default is a depth-one snapshot retaining the genuine upstream SHA; there are no future objects, refs or remotes. `isolate_history` also supports an ancestor-only bundle when full historical ownership analysis is needed. Tests check that an actual future commit cannot be read.
