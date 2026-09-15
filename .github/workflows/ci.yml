@@ -31,3 +31,5 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - name: Build hosted report demo
+        run: VITE_REPRO_MODE=demo npm run build -- --outDir /tmp/repro-hosted-demo --emptyOutDir

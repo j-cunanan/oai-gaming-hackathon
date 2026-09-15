@@ -27,6 +27,8 @@ Action reduction rejects proposals that remove or reorder the sequence oracle's 
 
 The dashboard is served at `http://127.0.0.1:8000/`. For frontend development, run `npm run dev` in `apps/web` while the API runs on port 8000; Vite proxies API and event-stream requests. Its case viewport, activity, evidence, source, diff, validation and benchmark views read real backend records. New installations start empty.
 
+**Report demo** is part of the app at `/?view=demo`: paste a report, review a related recorded case, and follow reproduction, reduction, diagnosis, patch and validation through to the PDF/replay handoff. Three actual recordings include a validated candidate, an upstream-test blocker and a rejected patch. The [hosted-demo guide](docs/hosted-report-demo.md) explains matching, provenance and the included Vercel/static build. The hosted demo works without a game worker or API key; recorded playback is clearly separate from a fresh investigation.
+
 To inspect the exported MD-001 recording without running Docker or making model calls:
 
 ```bash
