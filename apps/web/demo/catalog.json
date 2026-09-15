@@ -1,0 +1,101 @@
+[
+  {
+    "id": "datapatch",
+    "title": "Deleted data patch returns",
+    "issue": 12620,
+    "summary": "Delete an entry, save the map and reopen it. The deleted patch is back.",
+    "sampleReport": "In Mindustry's map editor, I delete a data patch and save the map. When I close and reopen the same map, the deleted patch comes back. I expected the deletion to stay saved.",
+    "package": "docs/evidence/overnight-2026-09-15/md-12620-terra-overnight-02",
+    "pdf": "docs/demos/datapatch-2026-09-15/repro-report.pdf",
+    "pdfProvenance": "docs/demos/datapatch-2026-09-15/report-provenance.json",
+    "suiteAudit": "docs/evidence/overnight-2026-09-15/datapatch-suite-audit/result.json",
+    "baselinePhase": "reduced-confirmation",
+    "modelNote": "GPT-5.6 Terra · medium reasoning",
+    "assistance": "This run received guidance to include both save confirmations in its selected evidence. The earlier report-only attempt confirmed 3/5. No source diagnosis or historical fix was supplied.",
+    "scope": "Persistence of an editor-accepted data-patch entry. Gameplay effects of that entry and other save scenarios were not measured.",
+    "reductionNote": "Bounded reduction removed one action. The resulting 30-action trigger was independently confirmed on five fresh profiles; it is not a proof of the shortest possible replay.",
+    "matching": [
+      {
+        "label": "Data-patch entry",
+        "pattern": "\\b(?:data[ -]?patch(?:es)?|patch assets?)\\b"
+      },
+      {
+        "label": "Deletion or removal",
+        "pattern": "\\b(?:delet\\w*|remov\\w*|clear\\w*)\\b"
+      },
+      {
+        "label": "Entry returns",
+        "pattern": "\\b(?:back|return\\w*|reappear\\w*|persist\\w*|undo\\w*|revert\\w*)\\b"
+      },
+      {
+        "label": "Saving or reopening",
+        "pattern": "\\b(?:sav\\w*|reopen\\w*|reload\\w*|load\\w*|close\\w*)\\b"
+      }
+    ],
+    "negativePatterns": [
+      "(?:does not|doesn't|did not|didn't|no longer|never) (?:come back|return|reappear)"
+    ]
+  },
+  {
+    "id": "target-dummy",
+    "title": "Saving a Target Dummy crashes the game",
+    "issue": 12579,
+    "summary": "Place a Target Dummy in the editor and save. The game crashes.",
+    "sampleReport": "Mindustry crashes when I save a map after placing a Target Dummy in the editor. Loading the saved map also gives an error. The dummy and map should survive saving and reopening.",
+    "package": "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02",
+    "pdf": "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02/repro-report.pdf",
+    "pdfProvenance": "docs/evidence/overnight-2026-09-15/md-12579-terra-postconditions-02/report-provenance.json",
+    "baselinePhase": "baseline-revalidation",
+    "modelNote": "GPT-5.6 Terra · medium proposal, later MAX validation",
+    "assistance": "The AI proposed the patch from the pre-fix source and recorded crash. Later validation used a separately planned and frozen save/reopen check. Earlier incomplete validation attempts remain in the evidence package.",
+    "scope": "The unchanged 12-action crash trigger plus 12 additional candidate checks establish saving, reopening and the retained dummy. An unavailable upstream test archive still blocks full validation.",
+    "reductionNote": "The trigger was reduced from 15 actions to 12. Candidate validation executes those same 12 actions, followed by 12 separately frozen save/reopen checks. Additional checks are not counted as trigger reduction.",
+    "matching": [
+      { "label": "Target Dummy", "pattern": "\\btarget dumm(?:y|ies)\\b" },
+      {
+        "label": "Crash or error",
+        "pattern": "\\b(?:crash\\w*|error\\w*|clos\\w*|exit\\w*)\\b"
+      },
+      {
+        "label": "Saving or loading a map",
+        "pattern": "\\b(?:sav\\w*|reopen\\w*|load\\w*)\\b"
+      }
+    ],
+    "negativePatterns": [
+      "(?:does not|doesn't|did not|didn't|no longer|never) crash"
+    ]
+  },
+  {
+    "id": "color",
+    "title": "Entered color changes on readback",
+    "issue": 12623,
+    "summary": "Enter ff0300 for a colored tile, confirm and reopen the picker. It reads ff0200ff.",
+    "sampleReport": "In the Mindustry editor, entering ff0300 in the Colored Wall or Colored Floor picker gives me ff0200ff when I confirm and reopen it. The hex color changes instead of keeping the value I entered.",
+    "package": "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final",
+    "pdf": "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final/repro-report.pdf",
+    "pdfProvenance": "docs/evidence/overnight-2026-09-15/md-12623-terra-replay-02-final/report-provenance.json",
+    "suiteAudit": "docs/evidence/overnight-2026-09-15/color-candidate-audit/result.json",
+    "baselinePhase": "complete-color-confirmation",
+    "modelNote": "GPT-5.6 Terra · MAX reasoning",
+    "assistance": "An operator supplied the prior investigator's final 29 actions and selected checkpoints. The first selection omitted wall placement and picking; adding those existing images enabled five fresh confirmations. No historical fix or source diagnosis was supplied.",
+    "scope": "ff0300 input/readback in both pickers and a placed-and-picked Colored Wall. Other reported values and adjacent floor placement are outside this replay. The AI candidate did not fix the defect.",
+    "reductionNote": "No reduction was attempted. The supplied 29-action trace stayed unchanged through fresh confirmation and candidate validation.",
+    "matching": [
+      {
+        "label": "Color picker or colored tile",
+        "pattern": "\\b(?:colou?red (?:wall|floor)|colou?r picker|hex colou?r|ff0300)\\b"
+      },
+      {
+        "label": "Changed or incorrect value",
+        "pattern": "\\b(?:chang\\w*|wrong|differ\\w*|incorrect|ff0200(?:ff)?|round\\w*|skip\\w*)\\b"
+      },
+      {
+        "label": "Input, confirmation or readback",
+        "pattern": "\\b(?:enter\\w*|input\\w*|confirm\\w*|reopen\\w*|readback|hex|picker)\\b"
+      }
+    ],
+    "negativePatterns": [
+      "(?:does not|doesn't|did not|didn't|no longer|never) change"
+    ]
+  }
+]

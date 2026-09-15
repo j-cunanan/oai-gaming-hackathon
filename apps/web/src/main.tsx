@@ -46,6 +46,7 @@ import { preferredCase } from "./case-selection";
 import { StageActivity, useStageActivity } from "./stage-activity";
 import { clockTime, dateTime } from "./activity-model";
 import "./case-identity.css";
+import { ReportDemo } from "./report-demo";
 
 type CheckResult = {
   name: string;
@@ -173,6 +174,7 @@ const terminal = [
   "FAILED",
   "CANCELLED",
 ];
+const staticDemo = import.meta.env.VITE_REPRO_MODE === "demo";
 const phases = [
   { label: "Triage", states: ["RECEIVED", "TRIAGED"], icon: Search },
   {
@@ -273,7 +275,22 @@ function App() {
   );
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [benchmark, setBenchmark] = useState<Benchmark | null>(null);
-  const [page, setPage] = useState("investigations");
+  const [page, setPage] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("view") === "demo" || staticDemo
+      ? "demo"
+      : params.get("view") === "benchmarks"
+        ? "benchmarks"
+        : "investigations";
+  });
+  const [demoSeed, setDemoSeed] = useState({
+    body: "",
+    game: "mindustry",
+    key: 0,
+  });
+  const [newCaseDraft, setNewCaseDraft] = useState<
+    { body: string; game: string; commit?: string } | undefined
+  >();
   const [tab, setTab] = useState("activity");
   const [showNew, setShowNew] = useState(false);
   const [error, setError] = useState("");
@@ -297,6 +314,7 @@ function App() {
   );
 
   const refreshList = useCallback(async () => {
+    if (staticDemo) return;
     try {
       const [list, status, metrics] = await Promise.all([
         api<Case[]>("/cases"),
@@ -348,9 +366,10 @@ function App() {
   }, [selected]);
   useEffect(() => {
     void refreshList();
+    if (page === "demo") return;
     const timer = setInterval(refreshList, 5000);
     return () => clearInterval(timer);
-  }, [refreshList]);
+  }, [refreshList, page]);
   useEffect(() => {
     setCurrent(null);
     setCopiedCase(null);
@@ -361,7 +380,7 @@ function App() {
     setFilter("");
     setArtifactLimit(50);
     eventRevision.current = 0;
-    if (!selected) return;
+    if (!selected || page !== "investigations") return;
     let disposed = false;
     let source: EventSource | undefined;
     let retry: ReturnType<typeof setTimeout> | undefined;
@@ -419,13 +438,13 @@ function App() {
       if (refreshTimer.current) clearTimeout(refreshTimer.current);
       refreshTimer.current = null;
     };
-  }, [selected, refreshCase, refreshList]);
+  }, [selected, refreshCase, refreshList, page]);
   useEffect(() => {
-    if (tab !== "evidence" || !selected) return;
+    if (tab !== "evidence" || !selected || page !== "investigations") return;
     void refreshArtifacts();
     const timer = setInterval(refreshArtifacts, 5000);
     return () => clearInterval(timer);
-  }, [selected, tab, refreshArtifacts]);
+  }, [selected, tab, refreshArtifacts, page]);
   useEffect(() => {
     let disposed = false;
     setPatch("");
@@ -468,19 +487,46 @@ function App() {
   const viewingCase =
     current?.id === selected ? current : cases.find((c) => c.id === selected);
   useEffect(() => {
+    if (page === "demo") return;
     document.title =
       page === "benchmarks"
         ? "REPRO · Benchmark"
         : viewingCase
           ? `${viewingCase.id} · ${viewingCase.report.title} | REPRO`
           : "REPRO · Investigation workspace";
-    if (page !== "investigations" || !viewingCase) return;
     const url = new URL(window.location.href);
-    if (url.searchParams.get("case") !== viewingCase.id) {
+    url.searchParams.delete("demo");
+    url.searchParams.delete("stage");
+    if (page === "benchmarks") url.searchParams.set("view", "benchmarks");
+    else url.searchParams.delete("view");
+    if (page === "investigations" && viewingCase) {
       url.searchParams.set("case", viewingCase.id);
-      window.history.replaceState(null, "", url);
     }
+    window.history.replaceState(null, "", url);
   }, [page, viewingCase?.id, viewingCase?.report.title]);
+  useEffect(() => {
+    const pop = () => {
+      const params = new URLSearchParams(window.location.search);
+      setPage(
+        staticDemo || params.get("view") === "demo"
+          ? "demo"
+          : params.get("view") === "benchmarks"
+            ? "benchmarks"
+            : "investigations",
+      );
+      if (params.get("case")) setSelected(params.get("case")!);
+    };
+    window.addEventListener("popstate", pop);
+    return () => window.removeEventListener("popstate", pop);
+  }, []);
+  function openReportDemo(body = "", game = "mindustry") {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", "demo");
+    for (const key of ["case", "demo", "stage"]) url.searchParams.delete(key);
+    window.history.replaceState(null, "", url);
+    setDemoSeed((previous) => ({ body, game, key: previous.key + 1 }));
+    setPage("demo");
+  }
   const confirmed = cases.filter((c) => c.reproduction?.deterministic).length;
   const activePhase = current
     ? phases.findIndex((p) => p.states.includes(current.state))
@@ -489,7 +535,11 @@ function App() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <a className="brand" href="#" onClick={() => setPage("investigations")}>
+        <a
+          className="brand"
+          href="#"
+          onClick={() => setPage(staticDemo ? "demo" : "investigations")}
+        >
           <span className="brand-mark">
             <Crosshair size={23} strokeWidth={2.6} />
           </span>
@@ -498,7 +548,10 @@ function App() {
         <div className="workspace-label">
           <span className="workspace-avatar">G</span>
           <div>
-            Game engineering<small>Local workspace</small>
+            Game engineering
+            <small>
+              {page === "demo" ? "Recorded investigations" : "Local workspace"}
+            </small>
           </div>
           <ChevronRight size={14} />
         </div>
@@ -506,10 +559,21 @@ function App() {
         <nav>
           <div className="nav-with-help">
             <button
+              className={page === "demo" ? "nav-item selected" : "nav-item"}
+              onClick={() => setPage("demo")}
+            >
+              <Play size={17} />
+              Report demo
+            </button>
+            <HelpTip topic="Report demo" />
+          </div>
+          <div className="nav-with-help">
+            <button
               className={
                 page === "investigations" ? "nav-item selected" : "nav-item"
               }
-              onClick={() => setPage("investigations")}
+              onClick={() => setPage(staticDemo ? "demo" : "investigations")}
+              disabled={staticDemo}
             >
               <Crosshair size={17} />
               Investigations<span className="nav-count">{cases.length}</span>
@@ -522,6 +586,7 @@ function App() {
                 page === "benchmarks" ? "nav-item selected" : "nav-item"
               }
               onClick={() => setPage("benchmarks")}
+              disabled={staticDemo}
             >
               <FlaskConical size={17} />
               Benchmark
@@ -535,6 +600,7 @@ function App() {
             title="New case"
             className="icon-button"
             onClick={() => setShowNew(true)}
+            disabled={staticDemo}
           >
             <Plus size={14} />
           </button>
@@ -572,7 +638,11 @@ function App() {
             </button>
           ))}
           {cases.length === 0 && (
-            <p className="muted empty-nav">Your first case starts here.</p>
+            <p className="muted empty-nav">
+              {staticDemo
+                ? "Recorded cases are available in Report demo. Live investigations use a connected workspace."
+                : "Your first case starts here."}
+            </p>
           )}
         </div>
         <div className="sidebar-bottom">
@@ -594,7 +664,11 @@ function App() {
             <span>Workspace</span>
             <ChevronRight size={13} />
             <strong>
-              {page === "benchmarks" ? "Benchmark" : "Investigations"}
+              {page === "demo"
+                ? "Report demo"
+                : page === "benchmarks"
+                  ? "Benchmark"
+                  : "Investigations"}
             </strong>
             {page === "investigations" && viewingCase && (
               <>
@@ -610,22 +684,30 @@ function App() {
           </div>
           <div className="topbar-right">
             <span className="connection">
-              <span className={`tiny-dot ${connected ? "green" : "red"}`} />
-              {connected ? "Backend connected" : "Backend offline"}
+              <span
+                className={`tiny-dot ${connected ? "green" : page === "demo" ? "purple" : "red"}`}
+              />
+              {connected
+                ? "Backend connected"
+                : page === "demo"
+                  ? "Recorded mode"
+                  : "Backend offline"}
             </span>
-            <a
-              className="docs-link"
-              href="/docs"
-              target="_blank"
-              rel="noreferrer"
-            >
-              API docs
-              <ArrowUpRight size={13} />
-            </a>
+            {connected && (
+              <a
+                className="docs-link"
+                href="/docs"
+                target="_blank"
+                rel="noreferrer"
+              >
+                API docs
+                <ArrowUpRight size={13} />
+              </a>
+            )}
           </div>
         </header>
         <main>
-          {error && (
+          {error && page !== "demo" && (
             <div role="alert" className="error-banner">
               <span>{error}</span>
               <button
@@ -643,25 +725,41 @@ function App() {
                 <span /> AUTONOMOUS BUG OPERATIONS
               </div>
               <h1>
-                {page === "benchmarks"
-                  ? "Proof, measured."
-                  : "From report to reproduction."}
+                {page === "demo"
+                  ? "Every report has a story."
+                  : page === "benchmarks"
+                    ? "Proof, measured."
+                    : "From report to reproduction."}
               </h1>
               <p>
-                {page === "benchmarks"
-                  ? "Historical game bugs. Isolated revisions. Inspectable outcomes."
-                  : "Each investigation follows one bug report: reproduce it, diagnose the cause, and review a proposed fix."}
+                {page === "demo"
+                  ? "Start with a player report. Follow the evidence all the way to a candidate ready for review."
+                  : page === "benchmarks"
+                    ? "Historical game bugs. Isolated revisions. Inspectable outcomes."
+                    : "Each investigation follows one bug report: reproduce it, diagnose the cause, and review a proposed fix."}
               </p>
             </div>
-            <div className="action-with-help">
-              <button
-                className="button primary"
-                onClick={() => setShowNew(true)}
-              >
-                <Plus size={16} />
-                New investigation
-              </button>
-              <HelpTip topic="New investigation" />
+            <div className="demo-entry-actions">
+              {page !== "demo" && (
+                <button
+                  className="button secondary"
+                  onClick={() => openReportDemo()}
+                >
+                  <Play size={15} />
+                  Try report demo
+                </button>
+              )}
+              <div className="action-with-help">
+                <button
+                  className="button primary"
+                  disabled={staticDemo || (page === "demo" && !connected)}
+                  onClick={() => setShowNew(true)}
+                >
+                  <Plus size={16} />
+                  New investigation
+                </button>
+                <HelpTip topic="New investigation" />
+              </div>
             </div>
           </div>
           {page === "investigations" && viewingCase && (
@@ -680,31 +778,50 @@ function App() {
               <Badge state={viewingCase.state} />
             </div>
           )}
-          <div className="metrics-row">
-            <Metric
-              label="Total investigations"
-              value={String(cases.length).padStart(2, "0")}
-              caption="Every attempt retained"
-              icon={<FolderOpen size={18} />}
+          {page !== "demo" && (
+            <div className="metrics-row">
+              <Metric
+                label="Total investigations"
+                value={String(cases.length).padStart(2, "0")}
+                caption="Every attempt retained"
+                icon={<FolderOpen size={18} />}
+              />
+              <Metric
+                label="Verified reproductions"
+                value={String(confirmed).padStart(2, "0")}
+                caption="Includes recorded reproductions"
+                icon={<CheckCheck size={18} />}
+              />
+              <Metric
+                label="Worker activity"
+                value={health?.active_jobs.length ? "Running" : "Idle"}
+                caption={
+                  health
+                    ? `${health.model}${health.reasoning_effort ? ` · ${health.reasoning_effort} reasoning` : ""} · ${health.max_model_calls} calls per job`
+                    : "Connecting to backend"
+                }
+                icon={<Activity size={18} />}
+              />
+            </div>
+          )}
+          {page === "demo" ? (
+            <ReportDemo
+              key={demoSeed.key}
+              initialReport={demoSeed.body}
+              initialGame={demoSeed.game}
+              connected={connected}
+              availableCases={cases.map((c) => c.id)}
+              onFreshReport={(body, game, commit) => {
+                setNewCaseDraft({ body, game, commit });
+                setShowNew(true);
+              }}
+              onOpenCase={(id) => {
+                setSelected(id);
+                setPage("investigations");
+                setTab("activity");
+              }}
             />
-            <Metric
-              label="Verified reproductions"
-              value={String(confirmed).padStart(2, "0")}
-              caption="Includes recorded reproductions"
-              icon={<CheckCheck size={18} />}
-            />
-            <Metric
-              label="Worker activity"
-              value={health?.active_jobs.length ? "Running" : "Idle"}
-              caption={
-                health
-                  ? `${health.model}${health.reasoning_effort ? ` · ${health.reasoning_effort} reasoning` : ""} · ${health.max_model_calls} calls per job`
-                  : "Connecting to backend"
-              }
-              icon={<Activity size={18} />}
-            />
-          </div>
-          {page === "benchmarks" ? (
+          ) : page === "benchmarks" ? (
             <section className="panel benchmark-panel">
               <div className="panel-title">
                 <FlaskConical size={18} />
@@ -1694,11 +1811,21 @@ function App() {
       </div>
       {showNew && (
         <NewCase
-          onClose={() => setShowNew(false)}
+          initial={newCaseDraft}
+          onDemo={(body, game) => {
+            setShowNew(false);
+            setNewCaseDraft(undefined);
+            openReportDemo(body, game);
+          }}
+          onClose={() => {
+            setShowNew(false);
+            setNewCaseDraft(undefined);
+          }}
           onCreated={(c) => {
             setSelected(c.id);
             setPage("investigations");
             setShowNew(false);
+            setNewCaseDraft(undefined);
             void refreshList();
           }}
         />
@@ -1741,14 +1868,20 @@ function EmptyPanel({ icon, text }: { icon: React.ReactNode; text: string }) {
 function NewCase({
   onClose,
   onCreated,
+  onDemo,
+  initial,
 }: {
   onClose: () => void;
   onCreated: (c: Case) => void;
+  onDemo: (body: string, game: string) => void;
+  initial?: { body: string; game: string; commit?: string };
 }) {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [commit, setCommit] = useState("");
-  const [game, setGame] = useState("mindustry");
+  const [title, setTitle] = useState(
+    initial?.body.split("\n")[0].slice(0, 250) ?? "",
+  );
+  const [body, setBody] = useState(initial?.body ?? "");
+  const [commit, setCommit] = useState(initial?.commit ?? "");
+  const [game, setGame] = useState(initial?.game ?? "mindustry");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -1848,6 +1981,20 @@ function NewCase({
                 placeholder="40-character SHA"
               />
             </label>
+          </div>
+          <div className="demo-new-shortcut">
+            <p>
+              Check whether this behavior matches a recorded investigation
+              before starting a fresh run.
+            </p>
+            <button
+              className="button secondary small"
+              type="button"
+              onClick={() => onDemo(body, game)}
+            >
+              <Search size={14} />
+              Find a recorded case
+            </button>
           </div>
           <div className="form-note">
             <GitBranch size={14} />
