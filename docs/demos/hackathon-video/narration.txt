@@ -1,0 +1,6 @@
+You delete a data patch, save your map, reopen it, and it comes back. REPRO turns player reports into reproducible evidence and tested patches.
+Using OpenAI's Responses API, it controls the real game through screenshots. This recorded run included guidance to capture both save confirmations.
+It reproduced the bug on five fresh profiles, then reduced the sequence to thirty actions.
+The cause: deletion updated the editor, but left the save-facing list stale. The agent proposed a one-line fix.
+After the patch, deletion stayed saved in all five replays. All two hundred seventy-six upstream tests passed. All five validation gates passed.
+The replay, patch, logs, and failed attempts remain inspectable. A human reviews the result. REPRO: from a player report to a patch you can check.
