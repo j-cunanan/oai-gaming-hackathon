@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc"><title id="title">How REPRO makes a bug repeatable</title><desc id="desc">A player report defines the symptom and game revision. An AI investigator experiments in an isolated game while recording inputs and evidence. A fixed replay runs on five fresh profiles by default. A separate model call verifies the original symptom using ordered checkpoint images. Action reduction preserves those checkpoints and reconfirms any shorter trace. The resulting YAML replay becomes a regression for a candidate patch. The Mindustry data-patch example requires visible saves, deletion and reopening of the same map.</desc><g font-family="Arial, Liberation Sans, sans-serif"><text x="56" y="59" font-size="25" font-weight="700" fill="#CBB8FF" text-anchor="start">REPRO</text>
+<text x="56" y="134" font-size="50" font-weight="700" fill="#F4F1FC" text-anchor="start">How REPRO makes a bug repeatable</text>
+<text x="56" y="180.08" font-size="24" font-weight="400" fill="#B4AFC1" text-anchor="start">AI discovers the trigger. A frozen replay must reproduce it on fresh game profiles.</text>
+<rect x="318" y="228" width="444" height="430" rx="10" fill="#1C1827" stroke="#786497" stroke-width="1.5"/>
+<rect x="810" y="228" width="424" height="430" rx="10" fill="#17231D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="56" y="260.56" font-size="18" font-weight="700" fill="#90899E" text-anchor="start">01  DEFINE</text>
+<text x="56" y="304.76" font-size="28" font-weight="700" fill="#F4F1FC" text-anchor="start">Player report</text>
+<text x="56" y="365.16" font-size="23" font-weight="400" fill="#CBB8FF" text-anchor="start">“The deleted patch</text>
+<text x="56" y="393.68" font-size="23" font-weight="400" fill="#CBB8FF" text-anchor="start">comes back after</text>
+<text x="56" y="422.20000000000005" font-size="23" font-weight="400" fill="#CBB8FF" text-anchor="start">I reopen my map.”</text>
+<text x="56" y="493.32" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">Pin the game revision</text>
+<text x="56" y="519.36" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">and expected behavior.</text>
+<text x="56" y="582.32" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">The report defines</text>
+<text x="56" y="608.36" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">what counts as the bug.</text>
+<path d="M 272 418 L 308 418" fill="none" stroke="#CBB8FF" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M 308 418 L 299 422.68 L 299 413.32 Z" fill="#CBB8FF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="344" y="260.56" font-size="18" font-weight="700" fill="#CBB8FF" text-anchor="start">02  DISCOVER</text>
+<text x="344" y="304.76" font-size="28" font-weight="700" fill="#F4F1FC" text-anchor="start">AI explores the game</text>
+<rect x="340" y="370" width="154" height="88" rx="5" fill="#282032" stroke="#786497" stroke-width="1.5"/>
+<rect x="592" y="370" width="154" height="88" rx="5" fill="#282032" stroke="#786497" stroke-width="1.5"/>
+<text x="417" y="406.16" font-size="23" font-weight="700" fill="#F4F1FC" text-anchor="middle">AI</text>
+<text x="417" y="434.68" font-size="23" font-weight="700" fill="#F4F1FC" text-anchor="middle">investigator</text>
+<text x="669" y="406.16" font-size="23" font-weight="700" fill="#F4F1FC" text-anchor="middle">Game</text>
+<text x="669" y="434.68" font-size="23" font-weight="700" fill="#F4F1FC" text-anchor="middle">sandbox</text>
+<text x="543" y="374.64" font-size="17" font-weight="400" fill="#CBB8FF" text-anchor="middle">inputs</text>
+<path d="M 501 393 L 584 393" fill="none" stroke="#CBB8FF" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M 584 393 L 576 397.16 L 576 388.84 Z" fill="#CBB8FF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<path d="M 584 432 L 501 432" fill="none" stroke="#CBB8FF" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M 501 432 L 509 427.84 L 509 436.16 Z" fill="#CBB8FF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="543" y="453.8" font-size="15" font-weight="400" fill="#B4AFC1" text-anchor="middle">screenshots</text>
+<text x="340" y="499.32" font-size="21" font-weight="700" fill="#F4F1FC" text-anchor="start">Hypothesize</text>
+<text x="340" y="530.48" font-size="19" font-weight="400" fill="#B4AFC1" text-anchor="start">Choose next input</text>
+<text x="592" y="498.4" font-size="20" font-weight="700" fill="#F4F1FC" text-anchor="start">Linux desktop</text>
+<text x="592" y="529.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Isolated in Docker</text>
+<path d="M 344 550 L 736 550" fill="none" stroke="#786497" stroke-width="1" stroke-linejoin="round"/>
+<text x="344" y="587.32" font-size="21" font-weight="700" fill="#F4F1FC" text-anchor="start">Record inputs + resulting evidence</text>
+<text x="344" y="621.4" font-size="20" font-weight="400" fill="#B4AFC1" text-anchor="start">Check the first attempt before replay.</text>
+<text x="788" y="372.72" font-size="16" font-weight="700" fill="#CBB8FF" text-anchor="middle">Freeze</text>
+<text x="788" y="392.56" font-size="16" font-weight="700" fill="#CBB8FF" text-anchor="middle">trace</text>
+<path d="M 770 418 L 801 418" fill="none" stroke="#CBB8FF" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M 801 418 L 792 422.68 L 792 413.32 Z" fill="#CBB8FF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="836" y="260.56" font-size="18" font-weight="700" fill="#9DE0BF" text-anchor="start">03  VERIFY</text>
+<text x="836" y="302.92" font-size="26" font-weight="700" fill="#F4F1FC" text-anchor="start">Replay from a clean state</text>
+<text x="836" y="358.24" font-size="22" font-weight="400" fill="#F4F1FC" text-anchor="start">5 fresh profiles by default</text>
+<rect x="836" y="388" width="58" height="60" rx="4" fill="#22392D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="865" y="423.92" font-size="26" font-weight="700" fill="#9DE0BF" text-anchor="middle">1</text>
+<path d="M 898 418 L 906 418" fill="none" stroke="#9DE0BF" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M 906 418 L 902 420.08 L 902 415.92 Z" fill="#9DE0BF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<rect x="910" y="388" width="58" height="60" rx="4" fill="#22392D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="939" y="423.92" font-size="26" font-weight="700" fill="#9DE0BF" text-anchor="middle">2</text>
+<path d="M 972 418 L 980 418" fill="none" stroke="#9DE0BF" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M 980 418 L 976 420.08 L 976 415.92 Z" fill="#9DE0BF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<rect x="984" y="388" width="58" height="60" rx="4" fill="#22392D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="1013" y="423.92" font-size="26" font-weight="700" fill="#9DE0BF" text-anchor="middle">3</text>
+<path d="M 1046 418 L 1054 418" fill="none" stroke="#9DE0BF" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M 1054 418 L 1050 420.08 L 1050 415.92 Z" fill="#9DE0BF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<rect x="1058" y="388" width="58" height="60" rx="4" fill="#22392D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="1087" y="423.92" font-size="26" font-weight="700" fill="#9DE0BF" text-anchor="middle">4</text>
+<path d="M 1120 418 L 1128 418" fill="none" stroke="#9DE0BF" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M 1128 418 L 1124 420.08 L 1124 415.92 Z" fill="#9DE0BF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<rect x="1132" y="388" width="58" height="60" rx="4" fill="#22392D" stroke="#527F6A" stroke-width="1.5"/>
+<text x="1161" y="423.92" font-size="26" font-weight="700" fill="#9DE0BF" text-anchor="middle">5</text>
+<text x="836" y="484.4" font-size="20" font-weight="700" fill="#9DE0BF" text-anchor="start">All 5 must show the defect</text>
+<path d="M 836 504 L 1208 504" fill="none" stroke="#527F6A" stroke-width="1" stroke-linejoin="round"/>
+<text x="836" y="544.16" font-size="23" font-weight="700" fill="#F4F1FC" text-anchor="start">Judge each run's checkpoints</text>
+<text x="836" y="582.32" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">Original symptom + 2–8 images</text>
+<text x="836" y="618.32" font-size="21" font-weight="700" fill="#9DE0BF" text-anchor="start">Separate verification call</text>
+<text x="836" y="647.64" font-size="17" font-weight="400" fill="#B4AFC1" text-anchor="start">Incomplete evidence stays inconclusive.</text>
+<path d="M 1242 418 L 1278 418" fill="none" stroke="#9DE0BF" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M 1278 418 L 1269 422.68 L 1269 413.32 Z" fill="#9DE0BF" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="1292" y="260.56" font-size="18" font-weight="700" fill="#90899E" text-anchor="start">04  RETAIN</text>
+<text x="1292" y="303.84" font-size="27" font-weight="700" fill="#F4F1FC" text-anchor="start">A regression test</text>
+<text x="1292" y="358.24" font-size="22" font-weight="700" fill="#F4F1FC" text-anchor="start">Reduce, then reconfirm</text>
+<text x="1292" y="390.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Preserve required checkpoints.</text>
+<rect x="1292" y="427" width="252" height="137" rx="4" fill="#201D28" stroke="#37323F" stroke-width="1.5"/>
+<text x="1310" y="465" font-size="25" font-weight="700" fill="#CBB8FF" text-anchor="start">repro.yaml</text>
+<text x="1310" y="499.48" font-size="19" font-weight="400" fill="#B4AFC1" text-anchor="start">Revision + inputs</text>
+<text x="1310" y="523.04" font-size="19" font-weight="400" fill="#B4AFC1" text-anchor="start">Checkpoints + bug check</text>
+<text x="1292" y="612.32" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">Replay the same trigger</text>
+<text x="1292" y="638.36" font-size="21" font-weight="400" fill="#B4AFC1" text-anchor="start">on a candidate patch.</text>
+<path d="M 56 671 L 1544 671" fill="none" stroke="#37323F" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="56" y="717.76" font-size="28" font-weight="700" fill="#F4F1FC" text-anchor="start">The key check: did the deletion survive saving and reopening?</text>
+<text x="56" y="772" font-size="25" font-weight="700" fill="#CBB8FF" text-anchor="start">Saved patch</text>
+<text x="56" y="801.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Initial save is visible</text>
+<path d="M 316 767 L 342 767" fill="none" stroke="#90899E" stroke-width="2" stroke-linejoin="round"/>
+<path d="M 342 767 L 335 770.64 L 335 763.36 Z" fill="#90899E" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="362" y="772" font-size="25" font-weight="700" fill="#F4F1FC" text-anchor="start">Delete</text>
+<text x="362" y="801.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Empty list is visible</text>
+<path d="M 593 767 L 645 767" fill="none" stroke="#90899E" stroke-width="2" stroke-linejoin="round"/>
+<path d="M 645 767 L 638 770.64 L 638 763.36 Z" fill="#90899E" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="665" y="772" font-size="25" font-weight="700" fill="#F4F1FC" text-anchor="start">Confirm save</text>
+<text x="665" y="801.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Save success is visible</text>
+<path d="M 911 767 L 951 767" fill="none" stroke="#90899E" stroke-width="2" stroke-linejoin="round"/>
+<path d="M 951 767 L 944 770.64 L 944 763.36 Z" fill="#90899E" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="971" y="772" font-size="25" font-weight="700" fill="#F4F1FC" text-anchor="start">Reopen map</text>
+<text x="971" y="801.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Same map is verified</text>
+<path d="M 1229 767 L 1257 767" fill="none" stroke="#90899E" stroke-width="2" stroke-linejoin="round"/>
+<path d="M 1257 767 L 1250 770.64 L 1250 763.36 Z" fill="#90899E" stroke="none" stroke-width="0" stroke-linejoin="round"/>
+<text x="1277" y="772" font-size="25" font-weight="700" fill="#F4A4AE" text-anchor="start">Patch returns</text>
+<text x="1277" y="801.56" font-size="18" font-weight="400" fill="#B4AFC1" text-anchor="start">Reported defect is visible</text>
+<text x="56" y="842.4" font-size="20" font-weight="400" fill="#B4AFC1" text-anchor="start">Recorded Mindustry #12620: 5/5 baseline runs, 31 actions reduced to 30, and 5/5 correct candidate outcomes.</text>
+<text x="56" y="866.72" font-size="16" font-weight="400" fill="#90899E" text-anchor="start">This run received save-checkpoint guidance. Visual verification uses model judgments.</text></g></svg>
