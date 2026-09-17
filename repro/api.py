@@ -20,7 +20,7 @@ from repro.adapters import ADAPTERS
 from repro.config import Settings
 from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
 from repro.orchestration.manager import Manager
-from repro.report_planning import PlanRequest, PlanResult, generate_report_plan
+from repro.report_planning import PlanRequest, PlanResult, generate_report_plan, planning_failure
 from repro.reporting import render_report
 from repro.storage.store import Store
 
@@ -122,16 +122,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         planning_busy = True
         try:
             return await generate_report_plan(settings, request)
-        except (TimeoutError, APIError):
-            raise HTTPException(
-                503,
-                "The OpenAI planning request did not complete. No game actions were executed. "
-                "Retry explicitly or browse the recorded cases.",
-            ) from None
-        except ValueError:
-            raise HTTPException(
-                502, "No complete valid plan was returned. No game actions were executed."
-            ) from None
+        except (TimeoutError, APIError, ValueError) as error:
+            status, message = planning_failure(error)
+            raise HTTPException(status, message) from None
         finally:
             planning_busy = False
 
