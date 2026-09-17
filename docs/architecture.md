@@ -1,5 +1,7 @@
 # Architecture and handoff
 
+![REPRO current architecture: dashboard and CLI, workflow manager, model controller, restricted tools, Docker desktop, verification, and evidence storage.](assets/architecture.svg)
+
 The application is a Python package plus a web dashboard. `repro/api.py` exposes the same manager used by `repro/cli.py`. `Store` persists JSON case snapshots and ordered events in SQLite, and stores content-hashed evidence outside the game sandbox.
 
 The [reproduction-method figure](figures/reproduction-method/README.md) explains adaptive exploration, fresh replay verification and the retained regression, with PNG, SVG and editable slide versions.
@@ -51,8 +53,40 @@ Patch proposals persist a concise explanation and risks alongside the selected p
 
 `repro/reporting.py` builds a plain, paginated PDF from saved case data and case-scoped artifacts using ReportLab. `/api/cases/{id}/report` returns it by default; `?format=markdown` preserves the text report, and the CLI selects PDF for a `.pdf` output path. PDF rendering runs in FastAPI's thread pool so it does not block the event loop. Report generation makes no model calls, escapes user/model text, preserves failed or missing checks, and labels unavailable evidence without inventing replacements.
 
+## Proposed skills layer (not implemented)
+
+REPRO does not currently load skills. Its agent follows hardcoded stage prompts,
+typed tool descriptions, and the evidence collected during a case. Skills available
+to a developer's coding assistant are not automatically available to the REPRO
+runtime. The diagram above shows the current architecture, without this proposed
+layer.
+
+We plan to introduce a versioned library of reusable investigation procedures. Each
+skill would describe when it applies, the steps to follow, required evidence, and
+known failure conditions. Initial candidates are:
+
+| Proposed skill | Guidance |
+| --- | --- |
+| `mindustry-navigation` | Reach relevant menus and gameplay states, recognize readiness, and handle known startup pitfalls. |
+| `reproduction-investigation` | Form testable hypotheses, run controlled experiments, and capture evidence for clean-profile confirmation. |
+| `source-localization` | Trace confirmed behavior into inspected source and rank candidate causes with supporting evidence. |
+| `patch-validation` | Interpret build, test, replay, and smoke results without treating missing evidence as success. |
+
+The workflow manager would select relevant skills for the game and investigation
+stage, then supply their instructions to the model alongside the stage inputs.
+Each attempt would record the selected skill versions or content hashes so results
+can be compared and reproduced. Skills should contain general procedures, not
+future fixes or evaluator-only answers for historical benchmark cases.
+
+Skills would guide the agent; application code would continue to enforce tool
+permissions, budgets, sandbox boundaries, and validation gates. Loading a skill
+would not grant additional tools or allow the agent to redefine success. Start
+with a small reviewed library and evaluate its effect on held-out cases before
+adding automatic selection or broader game coverage.
+
 ## Next engineering work
 
+- Implement the proposed skill library, stage-specific loading, and per-attempt version recording.
 - Add reproducible offline fixture preparation for environments that cannot permit network access during tests.
 - Expand the benchmark only after the first historical run has inspectable artifacts.
 - Add save/profile installation and video extraction without modifying original uploads.
