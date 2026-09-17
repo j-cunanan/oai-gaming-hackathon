@@ -1,0 +1,188 @@
+{
+  "model": "gpt-6-astra",
+  "prompt": "You are investigating a player report in a deliberately simple synthetic 3D test scene.\nReport: I collected the blue crystal in storage, saved the room, then reloaded.\nThe crystal was back in the room while my inventory still kept the first one.\n\nUse only the supplied screenshots and tools. Navigate from the current first-person\nview, get around the partition, find and collect the blue crystal, then test the\nreported save/reload sequence. Observe the relevant before/after states. You have\nnot been given coordinates, scene state, source code, or a solution path.\n\nControls: W/S move forward/back relative to the camera, A/D strafe left/right.\nLeft/right arrows turn the camera, up/down arrows look up/down. E collects a nearby\ncrystal when facing it. F5 saves and F9 reloads the room. Movement uses hold_seconds\n(0.1 to 2 seconds per call); seconds is ignored in this step-driven simulation.\nThe scene pauses between commands. Use one interaction/save/load key at a time.\nEach action returns the new screenshot. 'semantic' is a short visible-action label,\nnot private reasoning. Use checkpoints to label evidence states if useful.\n\nReturn finish only after checking the evidence, or with an honest limitation.\nDo not infer that an input succeeded without checking its screenshot.\n",
+  "tools": [
+    {
+      "type": "function",
+      "name": "computer",
+      "description": "Perform a bounded keypress or wait in the synthetic scene and return a screenshot. The Action schema is shared with REPRO. Maximum hold_seconds=2.",
+      "parameters": {
+        "properties": {
+          "action": {
+            "enum": [
+              "click",
+              "double_click",
+              "keypress",
+              "type",
+              "scroll",
+              "move",
+              "wait"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1280,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          },
+          "y": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 720,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y"
+          },
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "title": "Keys",
+            "type": "array"
+          },
+          "text": {
+            "maxLength": 2000,
+            "title": "Text",
+            "type": "string"
+          },
+          "seconds": {
+            "maximum": 10,
+            "minimum": 0,
+            "title": "Seconds",
+            "type": "number"
+          },
+          "hold_seconds": {
+            "maximum": 10,
+            "minimum": 0,
+            "title": "Hold Seconds",
+            "type": "number"
+          },
+          "scroll_y": {
+            "maximum": 20,
+            "minimum": -20,
+            "title": "Scroll Y",
+            "type": "integer"
+          },
+          "button": {
+            "enum": [
+              "left",
+              "right",
+              "middle"
+            ],
+            "title": "Button",
+            "type": "string"
+          },
+          "semantic": {
+            "maxLength": 500,
+            "title": "Semantic",
+            "type": "string"
+          },
+          "checkpoint": {
+            "maxLength": 80,
+            "title": "Checkpoint",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "x",
+          "y",
+          "keys",
+          "text",
+          "seconds",
+          "hold_seconds",
+          "scroll_y",
+          "button",
+          "semantic",
+          "checkpoint"
+        ],
+        "title": "Action",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "observe",
+      "description": "Get the current screenshot without changing the scene.",
+      "parameters": {
+        "properties": {},
+        "title": "Empty",
+        "type": "object",
+        "additionalProperties": false,
+        "required": []
+      },
+      "strict": true
+    },
+    {
+      "type": "function",
+      "name": "finish",
+      "description": "Submit your observed outcome and evidence frame numbers, or an honest limitation.",
+      "parameters": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "reproduced",
+              "not_reproduced",
+              "inconclusive"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "observation": {
+            "title": "Observation",
+            "type": "string"
+          },
+          "evidence_steps": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Evidence Steps",
+            "type": "array"
+          }
+        },
+        "required": [
+          "outcome",
+          "observation",
+          "evidence_steps"
+        ],
+        "title": "Conclusion",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "max_calls": 24,
+  "max_seconds": 600,
+  "initial_evaluator_state_not_sent_to_model": {
+    "x": 0,
+    "y": 1.5,
+    "heading": 0,
+    "pitch": 0,
+    "collected": false,
+    "inventory": 0,
+    "saved": null,
+    "collected_before_save": false,
+    "reloaded_after_collection": false,
+    "feedback": "Find the blue crystal beyond the partition.",
+    "collisions": 0
+  },
+  "scope": "Synthetic first-person 3D control + seeded save/load reproduction. No production game adapter or AI patch generation."
+}

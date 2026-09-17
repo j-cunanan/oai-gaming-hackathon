@@ -12,6 +12,7 @@ htmlcov/
 node_modules/
 apps/web/dist/
 apps/web/public/demo/
+apps/web/public/probes/
 *.egg-info/
 .DS_Store
 *.log

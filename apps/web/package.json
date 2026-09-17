@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-demo.mjs",
+    "predev": "node scripts/build-demo.mjs && node scripts/build-probe.mjs",
     "dev": "vite --host 127.0.0.1",
-    "build": "node scripts/build-demo.mjs && tsc -b && vite build",
+    "build": "node scripts/build-demo.mjs && node scripts/build-probe.mjs && tsc -b && vite build",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "preview": "vite preview --host 127.0.0.1"
   },

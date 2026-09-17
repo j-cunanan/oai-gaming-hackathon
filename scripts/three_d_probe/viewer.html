@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D feasibility test | REPRO</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eee6f8;background:#17161d;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}a{color:#cab1f5}button,select{font:inherit}header,main,footer{max-width:1320px;margin:auto;padding:22px 30px}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #39313f;gap:16px}.brand{font-weight:800;font-size:24px;letter-spacing:-1px}.tag{font-size:11px;color:#b9a7ca;margin-left:16px;letter-spacing:1px}.back{font-size:12px;text-decoration:none;border:1px solid #51425d;border-radius:7px;padding:10px 14px}h1{font-size:38px;letter-spacing:-1.1px;margin:0 0 12px}h2{font-size:20px;letter-spacing:-.3px;margin:0 0 15px}p{line-height:1.6}.lead{max-width:920px;color:#bcb0c9;font-size:15px;margin:0 0 22px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #493b57;border-bottom:1px solid #493b57;padding:18px 0;margin-bottom:24px;gap:20px}.metric strong{display:block;color:#c6a6f5;font-size:36px;letter-spacing:-1px}.metric span{font-size:13px;color:#d6c9e1}.metric small{display:block;font-size:11px;color:#a99bb7;margin-top:6px}.watch{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:25px;align-items:start}figure{margin:0}video{display:block;width:100%;aspect-ratio:16/9;background:#111;border:1px solid #54405d;border-radius:10px}figcaption{font-size:11px;line-height:1.6;color:#ad9cbe;margin-top:9px}.scope{background:#211c2b;border-left:3px solid #baa2ec;padding:17px 20px}.scope h2{font-size:17px}.scope p{font-size:13px;margin:0 0 14px;color:#c1b3cf}.scope p:last-child{margin:0}.scope strong{color:#e0c8ff}.controls{margin:24px 0 14px;display:flex;align-items:center;justify-content:space-between;gap:15px}.controls h2{margin:0}.controls select{border:1px solid #705187;border-radius:6px;padding:9px;background:#2c2237;color:#ece1f9}.evidence{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.evidence img{width:100%;display:block;border:1px solid #544261;border-radius:6px}.evidence figcaption strong{display:block;color:#d8c7e8;font-size:12px}.evidence figcaption span{font-size:10px}.runs{margin:26px 0 20px;overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;border-bottom:1px solid #3a3044;padding:11px 12px;vertical-align:top}th{color:#ad9cc0;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:500}th:first-child,td:first-child{padding-left:0}td{color:#d3c2e0}details{border-top:1px solid #42334e;padding-top:15px;color:#bcaec9;font-size:12px;line-height:1.7}summary{cursor:pointer;color:#d5bdf2}code{font-size:11px;color:#d5bdf2}.source-links{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px}footer{color:#9784a9;font-size:11px;padding-top:0}.error{color:#ffb6c2}#status{font-size:12px;color:#b9a3cd}.hint{font-size:11px;color:#a798b5}
+    @media(max-width:1000px){.watch{grid-template-columns:1fr}.scope{display:grid;grid-template-columns:1fr 1fr;gap:16px}.scope h2{grid-column:1/-1;margin:0}.metrics{gap:12px}.metric strong{font-size:30px}.evidence{grid-template-columns:1fr 1fr}}
+    @media(max-width:620px){header,main,footer{padding-left:18px;padding-right:18px}.tag{display:block;margin:5px 0 0;font-size:9px}h1{font-size:29px}.metrics{grid-template-columns:1fr 1fr}.scope{display:block}.scope h2{margin-bottom:14px}.controls{align-items:flex-start;flex-direction:column}.evidence{grid-template-columns:1fr 1fr}.runs table{min-width:620px}}
+  </style>
+</head>
+<body>
+<header><div><span class="brand">REPRO</span><span class="tag">SYNTHETIC 3D FEASIBILITY TEST</span></div><a class="back" href="../../?view=demo&amp;present=1&amp;section=architecture">Back to architecture</a></header>
+<main>
+  <h1>Astra in a 3D test scene</h1>
+  <button id="play-replay" class="back" style="float:right;background:#bba3f0;color:#21172f;font-weight:600;cursor:pointer;margin-left:18px" type="button">Play 3D replay</button>
+  <p class="lead">A first-person room, an obstacle, and a player report: “I collected a crystal, saved and reloaded. The crystal came back while I still had it in my inventory.” The defect was deliberately seeded for this experiment.</p>
+  <p id="status" role="status">Loading the recorded experiment…</p>
+  <div class="metrics" aria-label="Recorded results">
+    <div class="metric"><strong id="trials">—</strong><span>Starting views completed</span><small>Same scene and seeded defect</small></div>
+    <div class="metric"><strong id="timing">—</strong><span>Seconds per investigation</span><small>Includes the model's API wait time</small></div>
+    <div class="metric"><strong id="baseline">—</strong><span>Fresh-state buggy replays</span><small>Five per frozen action sequence</small></div>
+    <div class="metric"><strong id="reference">—</strong><span>Correct reference replays</span><small>Hand-corrected scene, same inputs</small></div>
+  </div>
+  <div class="watch">
+    <figure><video controls playsinline preload="metadata" poster="runs/run-02/frame-000.png" src="astra-3d-replay.mp4" aria-label="Animated replay of Astra's recorded 3D inputs"></video><figcaption><strong>Recorded input replay, Trial 2.</strong> Rendered from Astra's saved commands. Movement and camera turns run in the 3D engine; API waiting time is omitted. No new AI request runs on this page.</figcaption></figure>
+    <aside class="scope"><h2>What this demonstrates</h2><p><strong>Screenshot-driven control.</strong> Astra received rendered views and the control instructions. It chose movement, camera turns, collection, save and reload inputs. No map coordinates, route or scene state were supplied.</p><p><strong>Checks beyond the model's claim.</strong> Hidden scene state scored the replay. REPRO's existing ordered-image verifier separately checked buggy and corrected sequences. <span id="verdicts"></span></p><p><strong>Still untested.</strong> This room pauses between inputs. It does not establish real-time combat, native mouse-look, large-world navigation, production 3D game integration or AI-generated 3D fixes.</p></aside>
+  </div>
+  <div class="controls"><h2>Compare the evidence</h2><label>Trial <select id="trial" aria-label="Select recorded 3D trial"></select></label></div>
+  <p class="hint">Open any image for full resolution. The corrected sequence is a separate fresh replay using a human-authored reference correction.</p>
+  <div class="evidence" id="evidence"></div>
+  <div class="runs"><table><thead><tr><th>Trial / initial view</th><th>Actions</th><th>API calls</th><th>Elapsed</th><th>Buggy replay</th><th>Reference replay</th></tr></thead><tbody id="runs"></tbody></table></div>
+  <details><summary>Method, limits and source records</summary>
+    <p>Three deliberately selected camera starts in one small Panda3D room. Each trial began with a fresh model conversation and no supplied solution. Controls use REPRO's existing <code>Action</code> schema, with a separate synthetic adapter and a maximum two-second key hold. The API uses GPT-6 Astra through Responses, image input, function calling and Structured Outputs. The scorer's coordinates and world state never enter the model input.</p>
+    <p>After the adaptive run, the exact executed action sequence runs five times on fresh buggy state and five times on the hand-corrected reference. A separate verification pass uses <code>repro.agents.oracle.verify_sequence</code> on four ordered screenshots from each variant. Those model judgments are separate calls, not independent ground truth.</p>
+    <p>The 3/3 result is a small curated feasibility test, not a 3D-game success-rate estimate. This is one intentionally seeded bug, not three newly discovered bugs. These trials are excluded from the Mindustry Impact page. No complete REPRO game-adapter, source-localization or AI-patch workflow was tested here.</p>
+    <div class="source-links"><a href="manifest.json">Artifact hashes and summary</a><a href="README.md">Method and reproduction instructions</a><a href="https://github.com/j-cunanan/oai-gaming-hackathon/tree/main/scripts/three_d_probe" target="_blank" rel="noreferrer">Experiment source</a><a href="https://developers.openai.com/api/docs/guides/tools-computer-use" target="_blank" rel="noreferrer">OpenAI computer-use documentation</a></div>
+  </details>
+</main>
+<footer>REPRO / RECORDED SEPTEMBER 17, 2026 / SYNTHETIC CONTROL AND VERIFICATION EXPERIMENT</footer>
+<script>
+  const el = id => document.getElementById(id);
+  el('play-replay').addEventListener('click',()=>{const video=document.querySelector('video');video.scrollIntoView({behavior:'smooth',block:'start'});video.play().catch(()=>{el('status').textContent='Use the video play control to start the recording.';});});
+  fetch('manifest.json').then(r => { if(!r.ok) throw new Error('The experiment records could not be loaded.'); return r.json(); }).then(data => {
+    const runs = data.runs;
+    const total = runs.reduce((n,r) => n+r.summary.replay_total_per_variant,0);
+    el('trials').textContent = `${runs.filter(r=>r.summary.observed_by_private_evaluator).length}/${runs.length}`;
+    el('timing').textContent = `${Math.round(Math.min(...runs.map(r=>r.summary.investigation_seconds)))}–${Math.round(Math.max(...runs.map(r=>r.summary.investigation_seconds)))}`;
+    el('baseline').textContent = `${runs.reduce((n,r)=>n+r.summary.baseline_replays,0)}/${total}`;
+    el('reference').textContent = `${runs.reduce((n,r)=>n+r.summary.reference_correct_replays,0)}/${total}`;
+    const checks = runs.flatMap(r=>r.verification);
+    const matching = checks.filter(c=>c.verdict.expected_state_reached && (c.variant==='seeded bug' ? c.verdict.observed && !c.verdict.symptom_absent : !c.verdict.observed && c.verdict.symptom_absent)).length;
+    el('verdicts').textContent = `${matching}/${checks.length} visual checks agreed with the scene-state result.`;
+    el('status').textContent = `${data.model} · ${data.control_calls} control/planning responses + ${checks.length} separate verification responses · Recorded evidence`;
+    runs.forEach((r,i)=>{
+      const option=document.createElement('option'); option.value=r.id;option.textContent=`${i+1}: ${r.label}`;el('trial').append(option);
+      const row=document.createElement('tr');
+      [`${i+1} / ${r.label}`,r.summary.actions,r.summary.calls,`${r.summary.investigation_seconds.toFixed(1)} s`,`${r.summary.baseline_replays}/5`,`${r.summary.reference_correct_replays}/5`].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);}); el('runs').append(row);
+    });
+    function show(id){
+      const run=runs.find(r=>r.id===id); const buggy=run.verification.find(v=>v.variant==='seeded bug');const corrected=run.verification.find(v=>v.variant!=='seeded bug');el('evidence').replaceChildren();
+      [['Before pickup',buggy.checkpoints[0],'Buggy scene'],['After pickup',buggy.checkpoints[1],'Buggy scene'],['Returns after reload',buggy.checkpoints[3],'Buggy scene'],['Stays absent after reload',corrected.checkpoints[3],'Human-authored correction']].forEach(([title,frame,variant])=>{
+        const figure=document.createElement('figure'),link=document.createElement('a'),img=document.createElement('img'),caption=document.createElement('figcaption'),strong=document.createElement('strong'),label=document.createElement('span');
+        link.href=`runs/${run.id}/${frame.image}`;link.target='_blank';link.rel='noreferrer';img.src=link.href;img.alt=`${title}: ${variant}`;img.loading='lazy';link.append(img);strong.textContent=title;label.textContent=`${variant} · action ${frame.action_index}`;caption.append(strong,label);figure.append(link,caption);el('evidence').append(figure);
+      });
+    }
+    el('trial').value='run-02';el('trial').addEventListener('change',e=>show(e.target.value));show('run-02');
+  }).catch(error=>{el('status').className='error';el('status').textContent=error.message;});
+</script>
+</body>
+</html>

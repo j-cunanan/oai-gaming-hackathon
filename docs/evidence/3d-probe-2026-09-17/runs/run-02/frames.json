@@ -1,0 +1,447 @@
+[
+  {
+    "index": 0,
+    "image": "frame-000.png",
+    "sha256": "40ddf17b849ae776c385cd01f709130a1c4c9247bef4173073ee2dd9582306be",
+    "action": null,
+    "elapsed_seconds": 0.307,
+    "timestamp": "2026-09-17T06:10:21.733179+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 0,
+      "y": 1.5,
+      "heading": 90.0,
+      "pitch": 0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Find the blue crystal beyond the partition.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 1,
+    "image": "frame-001.png",
+    "sha256": "8f6e9b5f0a709cd49c4587972a51ba261583c95df89c496bffc436ae94c4b7bc",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "right"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Turn right",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 12.601,
+    "timestamp": "2026-09-17T06:10:34.026912+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 0.0,
+      "y": 1.5,
+      "heading": 15.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 2,
+    "image": "frame-002.png",
+    "sha256": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move toward partition opening",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 15.716,
+    "timestamp": "2026-09-17T06:10:37.141713+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -0.9317485623690747,
+      "y": 4.977332974640654,
+      "heading": 15.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 3,
+    "image": "frame-003.png",
+    "sha256": "221439bf27fe97f0bcabb48fa39d3586963f3be5b877f8eb1280ccf29398b446",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Strafe left around partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 18.654,
+    "timestamp": "2026-09-17T06:10:40.080261+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -4.409081537009725,
+      "y": 4.045584412271579,
+      "heading": 15.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 4,
+    "image": "frame-004.png",
+    "sha256": "54989a285c5a6a707b362ee832b8b2134386dc3f23edbd6be1642ce1d1b9031f",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.3,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move past partition edge",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 22.877,
+    "timestamp": "2026-09-17T06:10:44.302726+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -5.21659695772959,
+      "y": 7.059272990293482,
+      "heading": 15.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 5,
+    "image": "frame-005.png",
+    "sha256": "edc6fc2126f84c3ba6e3e63620f1cb0962b782739f45da0d931237be546117d6",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "right"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Look into storage",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 25.653,
+    "timestamp": "2026-09-17T06:10:47.078803+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -5.21659695772959,
+      "y": 7.059272990293482,
+      "heading": -60.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 6,
+    "image": "frame-006.png",
+    "sha256": "547dbe06c1c2240ff1749fe2ea4eaa430094f94814df6a97e209c206d7f478a0",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "right"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.18,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Face blue crystal",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 30.325,
+    "timestamp": "2026-09-17T06:10:51.750287+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -5.21659695772959,
+      "y": 7.059272990293482,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 7,
+    "image": "frame-007.png",
+    "sha256": "139fb9aac6b95c3f5c550a095f9074ae3e5a933c1770759881a69ea073fa42ee",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Approach blue crystal",
+      "checkpoint": "before_collection"
+    },
+    "elapsed_seconds": 34.103,
+    "timestamp": "2026-09-17T06:10:55.528580+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -2.9124773072033565,
+      "y": 7.730862623967847,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 8,
+    "image": "frame-008.png",
+    "sha256": "2b4843f1ba77f5fa92252a17b80485e576948b1d23c47b867e34270a5bcb9f7c",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "e"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Collect blue crystal",
+      "checkpoint": "after_collection"
+    },
+    "elapsed_seconds": 37.06,
+    "timestamp": "2026-09-17T06:10:58.485572+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -2.9124773072033565,
+      "y": 7.730862623967847,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "No collectible in reach. Move closer and face it.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 9,
+    "image": "frame-009.png",
+    "sha256": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move closer to crystal",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 40.803,
+    "timestamp": "2026-09-17T06:11:02.229159+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 10,
+    "image": "frame-010.png",
+    "sha256": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "e"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Collect nearby crystal",
+      "checkpoint": "collected"
+    },
+    "elapsed_seconds": 45.682,
+    "timestamp": "2026-09-17T06:11:07.107396+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Crystal collected.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 11,
+    "image": "frame-011.png",
+    "sha256": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f5"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Save after collection",
+      "checkpoint": "saved"
+    },
+    "elapsed_seconds": 49.62,
+    "timestamp": "2026-09-17T06:11:11.045649+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": false,
+      "feedback": "Room saved.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 12,
+    "image": "frame-012.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f9"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reload saved room",
+      "checkpoint": "reloaded"
+    },
+    "elapsed_seconds": 53.167,
+    "timestamp": "2026-09-17T06:11:14.592260+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    }
+  }
+]

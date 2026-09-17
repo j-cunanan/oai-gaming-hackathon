@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-09-17T06:11:19.731473+00:00",
+  "model": "gpt-6-astra",
+  "model_response_names": [
+    "gpt-6-astra"
+  ],
+  "calls": 15,
+  "actions": 12,
+  "investigation_seconds": 57.266,
+  "input_tokens": 123087,
+  "output_tokens": 993,
+  "model_conclusion": {
+    "outcome": "reproduced",
+    "observation": "Frame 9 shows the blue crystal with inventory 0. After collection, frame 10 shows the crystal absent and inventory 1. Frame 11 confirms 'Room saved' with inventory 1 and crystal absent. After F9, frame 12 confirms 'Room reloaded': the blue crystal is visible again with an 'E: collect' prompt while inventory remains 1.",
+    "evidence_steps": [
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "error": null,
+  "observed_by_private_evaluator": true,
+  "baseline_replays": 5,
+  "reference_correct_replays": 5,
+  "replay_total_per_variant": 5,
+  "initial_state": {
+    "x": 0,
+    "y": 1.5,
+    "heading": 90.0,
+    "pitch": 0,
+    "collected": false,
+    "inventory": 0,
+    "saved": null,
+    "collected_before_save": false,
+    "reloaded_after_collection": false,
+    "feedback": "Find the blue crystal beyond the partition.",
+    "collisions": 0
+  },
+  "scope": "Synthetic scene and seeded defect. Paused between bounded key inputs. Reference correction is human-authored; no AI patch milestone or real-game support claim."
+}

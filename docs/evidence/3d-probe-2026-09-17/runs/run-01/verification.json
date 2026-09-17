@@ -1,0 +1,128 @@
+[
+  {
+    "variant": "seeded bug",
+    "verdict": {
+      "observed": true,
+      "confidence": 1.0,
+      "explanation": "The screenshots demonstrate the reported defect: collecting the blue crystal removes it and raises inventory to 1, but saving and reloading restores the crystal in the same location while inventory remains 1.",
+      "evidence": [
+        "buggy-proof-007.png",
+        "buggy-proof-008.png",
+        "buggy-proof-009.png",
+        "buggy-proof-010.png"
+      ],
+      "expected_state_reached": true,
+      "symptom_absent": false
+    },
+    "checkpoints": [
+      {
+        "label": "A",
+        "action_index": 7,
+        "image": "buggy-proof-007.png",
+        "sha256": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec"
+      },
+      {
+        "label": "B",
+        "action_index": 8,
+        "image": "buggy-proof-008.png",
+        "sha256": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a"
+      },
+      {
+        "label": "C",
+        "action_index": 9,
+        "image": "buggy-proof-009.png",
+        "sha256": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9"
+      },
+      {
+        "label": "D",
+        "action_index": 10,
+        "image": "buggy-proof-010.png",
+        "sha256": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e"
+      }
+    ],
+    "request": {
+      "response_id": "resp_020018d3ca7cf627016aab8506191887d09b2e5e1fd39808be",
+      "model": "gpt-6-astra",
+      "purpose": "independent sequence verification",
+      "elapsed_seconds": 6.811,
+      "usage": {
+        "input_tokens": 5555,
+        "input_tokens_details": {
+          "cache_write_tokens": 5552,
+          "cached_tokens": 0
+        },
+        "output_tokens": 207,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5762
+      }
+    },
+    "source": "repro.agents.oracle.verify_sequence",
+    "evaluator_state_supplied": false,
+    "investigator_conclusion_supplied": false
+  },
+  {
+    "variant": "human-authored reference correction",
+    "verdict": {
+      "observed": false,
+      "confidence": 0.99,
+      "explanation": "The sequence demonstrates correct behavior: collecting the blue crystal removes it and raises inventory to 1; after a confirmed save and reload, the crystal remains absent and inventory remains 1.",
+      "evidence": [
+        "reference-proof-007.png",
+        "reference-proof-008.png",
+        "reference-proof-009.png",
+        "reference-proof-010.png"
+      ],
+      "expected_state_reached": true,
+      "symptom_absent": true
+    },
+    "checkpoints": [
+      {
+        "label": "A",
+        "action_index": 7,
+        "image": "reference-proof-007.png",
+        "sha256": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec"
+      },
+      {
+        "label": "B",
+        "action_index": 8,
+        "image": "reference-proof-008.png",
+        "sha256": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a"
+      },
+      {
+        "label": "C",
+        "action_index": 9,
+        "image": "reference-proof-009.png",
+        "sha256": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9"
+      },
+      {
+        "label": "D",
+        "action_index": 10,
+        "image": "reference-proof-010.png",
+        "sha256": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45"
+      }
+    ],
+    "request": {
+      "response_id": "resp_0d4d9339b0e87ddf016aab850e79ec87d0b6c7377d7435117d",
+      "model": "gpt-6-astra",
+      "purpose": "independent sequence verification",
+      "elapsed_seconds": 5.671,
+      "usage": {
+        "input_tokens": 5555,
+        "input_tokens_details": {
+          "cache_write_tokens": 5552,
+          "cached_tokens": 0
+        },
+        "output_tokens": 202,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5757
+      }
+    },
+    "source": "repro.agents.oracle.verify_sequence",
+    "evaluator_state_supplied": false,
+    "investigator_conclusion_supplied": false
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "outcome": "reproduced",
+  "observation": "Frame 7 shows the blue crystal with an E: collect prompt and inventory 0. After collection, frame 8 shows the crystal absent and inventory 1. Frame 9 confirms 'Room saved' with the crystal absent and inventory 1. After reload, frame 10 confirms 'Room reloaded' and shows the blue crystal back with its collect prompt while inventory remains 1.",
+  "evidence_steps": [
+    7,
+    8,
+    9,
+    10
+  ]
+}

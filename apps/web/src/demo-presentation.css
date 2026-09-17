@@ -455,6 +455,11 @@
   color: #e0c8fc;
   background: #30233f;
 }
+.architecture-view-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .architecture-detail-toggle:hover {
   background: #403052;
 }

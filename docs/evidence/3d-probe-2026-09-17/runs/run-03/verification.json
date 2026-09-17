@@ -1,0 +1,128 @@
+[
+  {
+    "variant": "seeded bug",
+    "verdict": {
+      "observed": true,
+      "confidence": 1.0,
+      "explanation": "The screenshots demonstrate the reported defect: collecting the blue crystal removes it and raises inventory to 1; after a confirmed save and reload, the crystal returns while inventory remains 1.",
+      "evidence": [
+        "buggy-proof-006.png",
+        "buggy-proof-007.png",
+        "buggy-proof-008.png",
+        "buggy-proof-009.png"
+      ],
+      "expected_state_reached": true,
+      "symptom_absent": false
+    },
+    "checkpoints": [
+      {
+        "label": "A",
+        "action_index": 6,
+        "image": "buggy-proof-006.png",
+        "sha256": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b"
+      },
+      {
+        "label": "B",
+        "action_index": 7,
+        "image": "buggy-proof-007.png",
+        "sha256": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7"
+      },
+      {
+        "label": "C",
+        "action_index": 8,
+        "image": "buggy-proof-008.png",
+        "sha256": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72"
+      },
+      {
+        "label": "D",
+        "action_index": 9,
+        "image": "buggy-proof-009.png",
+        "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+      }
+    ],
+    "request": {
+      "response_id": "resp_0ff513ce39065017016aab85245c6887d09ce9aba705dec016",
+      "model": "gpt-6-astra",
+      "purpose": "independent sequence verification",
+      "elapsed_seconds": 6.152,
+      "usage": {
+        "input_tokens": 5519,
+        "input_tokens_details": {
+          "cache_write_tokens": 5516,
+          "cached_tokens": 0
+        },
+        "output_tokens": 214,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5733
+      }
+    },
+    "source": "repro.agents.oracle.verify_sequence",
+    "evaluator_state_supplied": false,
+    "investigator_conclusion_supplied": false
+  },
+  {
+    "variant": "human-authored reference correction",
+    "verdict": {
+      "observed": false,
+      "confidence": 0.99,
+      "explanation": "The checkpoints demonstrate correct behavior: the blue crystal disappears when collected, inventory becomes 1, and the crystal remains absent after a visibly confirmed save and reload.",
+      "evidence": [
+        "reference-proof-006.png",
+        "reference-proof-007.png",
+        "reference-proof-008.png",
+        "reference-proof-009.png"
+      ],
+      "expected_state_reached": true,
+      "symptom_absent": true
+    },
+    "checkpoints": [
+      {
+        "label": "A",
+        "action_index": 6,
+        "image": "reference-proof-006.png",
+        "sha256": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b"
+      },
+      {
+        "label": "B",
+        "action_index": 7,
+        "image": "reference-proof-007.png",
+        "sha256": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7"
+      },
+      {
+        "label": "C",
+        "action_index": 8,
+        "image": "reference-proof-008.png",
+        "sha256": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72"
+      },
+      {
+        "label": "D",
+        "action_index": 9,
+        "image": "reference-proof-009.png",
+        "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+      }
+    ],
+    "request": {
+      "response_id": "resp_015a4fab4752ce65016aab852b5bf887d0aabcd14072d5fec0",
+      "model": "gpt-6-astra",
+      "purpose": "independent sequence verification",
+      "elapsed_seconds": 7.215,
+      "usage": {
+        "input_tokens": 5519,
+        "input_tokens_details": {
+          "cache_write_tokens": 5516,
+          "cached_tokens": 0
+        },
+        "output_tokens": 199,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5718
+      }
+    },
+    "source": "repro.agents.oracle.verify_sequence",
+    "evaluator_state_supplied": false,
+    "investigator_conclusion_supplied": false
+  }
+]

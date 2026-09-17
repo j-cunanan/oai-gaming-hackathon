@@ -282,14 +282,24 @@ export function ArchitecturePage({ onDemo }: { onDemo: () => void }) {
           <span className="pitch-provenance">
             System diagram · no execution
           </span>
-          <button
-            className="button secondary small architecture-detail-toggle"
-            aria-pressed={showOpenAI}
-            onClick={() => setShowOpenAI(!showOpenAI)}
-          >
-            {showOpenAI ? <Layers3 size={15} /> : <Sparkles size={15} />}
-            {showOpenAI ? "System overview" : "OpenAI details"}
-          </button>
+          <div className="architecture-view-links">
+            <button
+              className="button secondary small architecture-detail-toggle"
+              aria-pressed={showOpenAI}
+              onClick={() => setShowOpenAI(!showOpenAI)}
+            >
+              {showOpenAI ? <Layers3 size={15} /> : <Sparkles size={15} />}
+              {showOpenAI ? "System overview" : "OpenAI details"}
+            </button>
+            <a
+              className="button secondary small"
+              href={`${import.meta.env.BASE_URL}probes/3d/index.html`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              3D test <ExternalLink size={14} />
+            </a>
+          </div>
         </div>
       </header>
       {showOpenAI ? <ArchitectureOpenAIRoles /> : <ArchitectureOverview />}
