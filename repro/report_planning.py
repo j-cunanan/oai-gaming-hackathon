@@ -3,12 +3,14 @@
 import asyncio
 import hashlib
 import json
+import logging
+import socket
 import time
 from pathlib import Path
 from typing import Annotated, Literal
 from uuid import uuid4
 
-from openai import AsyncOpenAI
+from openai import APIConnectionError, APIStatusError, APITimeoutError, AsyncOpenAI
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from repro.config import Settings
@@ -16,6 +18,75 @@ from repro.models import now
 
 ShortText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=350)]
 CaseId = Literal["datapatch", "target-dummy", "color"]
+logger = logging.getLogger(__name__)
+
+
+def planning_failure(error: Exception) -> tuple[int, str]:
+    """Describe the failure without exposing provider bodies, reports or credentials."""
+    status = 503
+    if isinstance(error, (TimeoutError, APITimeoutError)):
+        code = "timeout"
+        message = "OpenAI planning timed out. Retry once the connection is stable."
+    elif isinstance(error, APIConnectionError):
+        causes = []
+        cause: BaseException | None = error
+        while cause is not None and len(causes) < 8:
+            causes.append(cause)
+            cause = cause.__cause__ or cause.__context__
+        dns_failure = any(
+            isinstance(item, socket.gaierror)
+            or any(
+                marker in str(item).lower()
+                for marker in (
+                    "nodename nor servname",
+                    "name or service not known",
+                    "temporary failure in name resolution",
+                    "getaddrinfo failed",
+                )
+            )
+            for item in causes
+        )
+        code = "dns" if dns_failure else "connection"
+        message = (
+            "The backend could not resolve OpenAI's API hostname (DNS lookup failed). "
+            "Check the internet connection and retry."
+            if dns_failure
+            else "The backend could not connect to OpenAI. Check its internet connection and retry."
+        )
+    elif isinstance(error, APIStatusError):
+        if error.status_code == 401:
+            code = "authentication"
+            message = "OpenAI rejected the configured API key. Check the key in the backend."
+        elif error.status_code == 403:
+            code = "permission"
+            message = "OpenAI denied access. Check the API project's permissions and model access."
+        elif error.status_code == 429:
+            if error.code in {"insufficient_quota", "billing_hard_limit_reached"}:
+                code = "quota"
+                message = "The OpenAI API project has no available quota. Check its billing and limits."
+            else:
+                status = 429
+                code = "rate_limit"
+                message = "OpenAI rate-limited the planning request. Wait before retrying."
+        elif error.status_code >= 500:
+            code = "upstream"
+            message = "OpenAI returned a service error. Try again shortly or browse the recorded cases."
+        else:
+            status = 502
+            code = "request_rejected"
+            message = "OpenAI rejected the planning request. Check the backend's model and request configuration."
+    else:
+        status = 502
+        code = "invalid_response"
+        message = "OpenAI did not return a complete valid plan. Retry or browse the recorded cases."
+    # Raw SDK exception text can include credentials, report text or response bodies.
+    logger.warning(
+        "report_plan_failed code=%s error_type=%s upstream_status=%s",
+        code,
+        type(error).__name__,
+        getattr(error, "status_code", None),
+    )
+    return status, message + " No game actions were executed."
 
 
 class PlanRequest(BaseModel):
