@@ -1,6 +1,6 @@
 # Architecture and handoff
 
-![REPRO current architecture: dashboard and CLI, workflow manager, model controller, restricted tools, Docker desktop, verification, and evidence storage.](assets/architecture.svg)
+![REPRO architecture: current components and a proposed, not implemented skills layer connected to the workflow manager and model controller.](assets/architecture.svg)
 
 The application is a Python package plus a web dashboard. `repro/api.py` exposes the same manager used by `repro/cli.py`. `Store` persists JSON case snapshots and ordered events in SQLite, and stores content-hashed evidence outside the game sandbox.
 
@@ -58,8 +58,8 @@ Patch proposals persist a concise explanation and risks alongside the selected p
 REPRO does not currently load skills. Its agent follows hardcoded stage prompts,
 typed tool descriptions, and the evidence collected during a case. Skills available
 to a developer's coding assistant are not automatically available to the REPRO
-runtime. The diagram above shows the current architecture, without this proposed
-layer.
+runtime. The diagram above includes this proposed layer with dashed amber borders
+and connections, explicitly labeled as not implemented.
 
 We plan to introduce a versioned library of reusable investigation procedures. Each
 skill would describe when it applies, the steps to follow, required evidence, and
