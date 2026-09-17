@@ -444,6 +444,131 @@
   color: #9f90ae;
   margin: 0;
 }
+.architecture-heading-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.architecture-detail-toggle {
+  border-color: #82639f;
+  color: #e0c8fc;
+  background: #30233f;
+}
+.architecture-detail-toggle:hover {
+  background: #403052;
+}
+.architecture-ai-capabilities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: #2b2237;
+  border-left: 3px solid #bba3f0;
+  padding: 10px 16px;
+  gap: 18px;
+}
+.architecture-ai-capabilities > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.architecture-ai-capabilities strong {
+  color: #d8b9fb;
+  font-size: 13px;
+}
+.architecture-ai-capabilities span {
+  color: #b8a8c9;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.architecture-ai-model {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #b6a3c7;
+  margin: 9px 0;
+}
+.architecture-ai-model > span {
+  color: #9e91ad;
+}
+.architecture-ai-table {
+  overflow-x: auto;
+}
+.architecture-ai-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.architecture-ai-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.architecture-ai-table th,
+.architecture-ai-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid #3b3246;
+  text-align: left;
+  vertical-align: top;
+}
+.architecture-ai-table thead th {
+  color: #a89bb7;
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.65px;
+  padding-top: 6px;
+  padding-bottom: 7px;
+}
+.architecture-ai-table th:first-child {
+  padding-left: 0;
+  width: 23%;
+}
+.architecture-ai-table th:nth-child(2) {
+  width: 29%;
+}
+.architecture-ai-table td:last-child,
+.architecture-ai-table th:last-child {
+  padding-right: 0;
+}
+.architecture-ai-table tbody th {
+  color: #e0d3ee;
+  font-weight: 500;
+}
+.architecture-ai-table tbody th > span {
+  display: inline-block;
+  margin-right: 10px;
+  color: #a082c3;
+  font-size: 10px;
+}
+.architecture-ai-table td {
+  color: #bdb0ca;
+}
+.architecture-ai-table td:last-child {
+  color: #d2bddf;
+}
+.architecture-ai-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #a8bdb2;
+  background: #202925;
+  padding: 10px 12px;
+  margin: 12px 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.architecture-ai-controls > svg {
+  flex-shrink: 0;
+}
+.architecture-ai-controls strong {
+  color: #c7dfcf;
+}
 .impact-outcomes .sr-only {
   position: absolute;
   width: 1px;
@@ -521,6 +646,11 @@
   }
   .architecture-footer {
     padding-top: 12px;
+  }
+  .architecture-ai-table th,
+  .architecture-ai-table td {
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 }
 @media (max-width: 1100px) {
@@ -628,5 +758,31 @@
   .architecture-evidence {
     justify-content: flex-start;
     gap: 12px;
+  }
+  .architecture-heading-actions {
+    align-items: flex-start;
+  }
+  .architecture-ai-capabilities {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .architecture-ai-model {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .architecture-ai-table table {
+    table-layout: fixed;
+  }
+  .architecture-ai-table th,
+  .architecture-ai-table td {
+    padding: 9px 6px;
+    overflow-wrap: anywhere;
+  }
+  .architecture-ai-table th:first-child {
+    width: 25%;
+  }
+  .architecture-ai-table tbody th > span {
+    display: block;
+    margin-bottom: 3px;
   }
 }
