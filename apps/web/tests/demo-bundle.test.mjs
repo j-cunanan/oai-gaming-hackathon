@@ -26,6 +26,32 @@ test("hosted bundle preserves current positive, blocked and rejected outcomes wi
     const datapatch = read("datapatch"),
       dummy = read("target-dummy"),
       color = read("color");
+    const impact = read("impact");
+    assert.equal(impact.reportsInvestigated, 7);
+    assert.equal(impact.attempts, 17);
+    assert.equal(impact.reproduced, 3);
+    assert.equal(impact.notQualified, 4);
+    assert.equal(impact.validated, 1);
+    assert.equal(impact.blocked, 1);
+    assert.equal(impact.rejected, 1);
+    assert.deepEqual(
+      impact.cases.map((c) => [
+        c.baselineConfirmed,
+        c.baselineTotal,
+        c.candidateCorrect,
+      ]),
+      [
+        [5, 5, 5],
+        [5, 5, 5],
+        [5, 5, 0],
+      ],
+    );
+    for (const c of impact.cases) {
+      const source = read(c.id);
+      assert.equal(c.resultSha256, source.provenance.resultSha256);
+      assert.equal(c.candidateCorrect, source.candidate.successfulRuns);
+      assert.equal(c.evidence, source.files.evidence);
+    }
     assert.equal(datapatch.reproduction.steps.length, 30);
     assert.equal(datapatch.candidate.successfulRuns, 5);
     assert.equal(datapatch.testCounts.tests, 276);
@@ -81,8 +107,9 @@ test("hosted bundle preserves current positive, blocked and rejected outcomes wi
         .readdirSync(dir)
         .every(
           (name) =>
-            /^(?:catalog|datapatch|target-dummy|color)\.json$/.test(name) ||
-            /^[a-f0-9]{64}\.[a-z]+$/.test(name),
+            /^(?:catalog|impact|datapatch|target-dummy|color)\.json$/.test(
+              name,
+            ) || /^[a-f0-9]{64}\.[a-z]+$/.test(name),
         ),
     );
   } finally {

@@ -148,6 +148,41 @@ export const demoStages = [
 ] as const;
 export type DemoStage = (typeof demoStages)[number]["id"];
 
+export type DemoSection = "demo" | "impact" | "architecture";
+export function demoSection(search: string): DemoSection {
+  const section = new URLSearchParams(search).get("section");
+  return section === "impact" || section === "architecture" ? section : "demo";
+}
+
+export type DemoImpact = {
+  capturedAt: string;
+  scope: string;
+  reportsInvestigated: number;
+  attempts: number;
+  reproduced: number;
+  notQualified: number;
+  validated: number;
+  blocked: number;
+  rejected: number;
+  cases: {
+    id: string;
+    issue: number;
+    title: string;
+    caseId: string;
+    status: string;
+    allPassed: boolean;
+    baselineConfirmed: number;
+    baselineTotal: number;
+    candidateCorrect: number;
+    candidateTotal: number;
+    testCounts: DemoDetail["testCounts"];
+    assistance: string;
+    evidence: string;
+    resultSha256: string;
+  }[];
+  ledger: { url: string; sha256: string };
+};
+
 export function matchReport(
   report: string,
   game: string,

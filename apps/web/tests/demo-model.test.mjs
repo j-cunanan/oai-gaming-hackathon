@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { matchReport, demoLocation } from "../src/demo-model.ts";
+import { matchReport, demoLocation, demoSection } from "../src/demo-model.ts";
 
 const catalog = JSON.parse(
   fs.readFileSync(new URL("../demo/catalog.json", import.meta.url), "utf8"),
@@ -78,4 +78,14 @@ test("share links preserve a supported stage; invalid stages return to report", 
     id: "unknown",
     stage: "report",
   });
+});
+
+test("presentation links retain the selected case independently of impact and architecture", () => {
+  for (const section of ["impact", "architecture"]) {
+    const url = `?view=demo&demo=color&stage=validate&section=${section}&present=1`;
+    assert.equal(demoSection(url), section);
+    assert.deepEqual(demoLocation(url), { id: "color", stage: "validate" });
+  }
+  assert.equal(demoSection("?section=unknown"), "demo");
+  assert.equal(demoSection("?view=demo"), "demo");
 });

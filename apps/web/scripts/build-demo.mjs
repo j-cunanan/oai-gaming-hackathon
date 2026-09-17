@@ -26,6 +26,8 @@ export function buildDemo(
   fs.rmSync(output, { recursive: true, force: true });
   fs.mkdirSync(output, { recursive: true });
   const catalog = [];
+  const impactCases = [];
+  assert.equal(new Set(config.map((entry) => entry.issue)).size, config.length);
   for (const entry of config) {
     const source = path.join(repoRoot, entry.package);
     const c = json(path.join(source, "result.json"));
@@ -67,14 +69,22 @@ export function buildDemo(
       return found;
     };
     const steps = c.reproduction.steps;
-    const baseline = groups(entry.baselinePhase)
+    const baselineRuns = groups(entry.baselinePhase)
       .filter((g) =>
         same(
           g.actions.map((a) => a.data.action),
           steps,
         ),
       )
-      .at(-1);
+      .slice(-c.reproduction.total_runs);
+    assert.equal(baselineRuns.length, c.reproduction.total_runs);
+    assert.equal(
+      baselineRuns.filter((g) => g.verdict.data.verdict.observed === true)
+        .length,
+      c.reproduction.successful_runs,
+      `Baseline counts do not match retained replays: ${entry.id}`,
+    );
+    const baseline = baselineRuns.at(-1);
     assert(baseline, `No matching baseline for ${entry.id}`);
     assert.equal(baseline.verdict.data.verdict.observed, true);
     const followups = c.candidate_verification?.followup_steps ?? [];
@@ -254,10 +264,82 @@ export function buildDemo(
       matching: entry.matching,
       negativePatterns: entry.negativePatterns,
     });
+    impactCases.push({
+      id: entry.id,
+      issue: entry.issue,
+      title: entry.title,
+      caseId: c.id,
+      status,
+      allPassed,
+      baselineConfirmed: c.reproduction.successful_runs,
+      baselineTotal: c.reproduction.total_runs,
+      candidateCorrect: successful,
+      candidateTotal: outcomes.length,
+      testCounts,
+      assistance: entry.assistance,
+      evidence: evidenceUrl,
+      resultSha256: detail.provenance.resultSha256,
+    });
   }
   fs.writeFileSync(
     path.join(output, "catalog.json"),
     JSON.stringify(catalog, null, 2) + "\n",
+  );
+  const ledgerFile = "docs/evidence/overnight-2026-09-15/attempts.json";
+  const ledger = json(path.join(repoRoot, ledgerFile));
+  const reportIds = new Set(ledger.cases.map((c) => c.report_number));
+  assert.equal(reportIds.size, ledger.distinct_reports);
+  assert.equal(
+    new Set(ledger.cases.map((c) => c.case_id)).size,
+    ledger.new_case_ids,
+  );
+  assert.equal(ledger.cases.length, ledger.new_case_ids);
+  for (const c of ledger.cases)
+    assert.equal(
+      digest(
+        fs.readFileSync(
+          path.join(
+            repoRoot,
+            path.dirname(ledgerFile),
+            c.snapshot,
+            "result.json",
+          ),
+        ),
+      ),
+      c.snapshot_result_sha256,
+      `Attempt ledger snapshot changed: ${c.case_id}`,
+    );
+  assert(impactCases.every((c) => reportIds.has(c.issue)));
+  const reproduced = impactCases.filter(
+    (c) => c.baselineTotal >= 5 && c.baselineConfirmed === c.baselineTotal,
+  ).length;
+  fs.writeFileSync(
+    path.join(output, "impact.json"),
+    JSON.stringify(
+      {
+        capturedAt: ledger.captured_at,
+        scope:
+          "September 15 retained Mindustry investigations. Known player reports, including assisted attempts. The earlier Weather reference is excluded.",
+        reportsInvestigated: reportIds.size,
+        attempts: ledger.cases.length,
+        reproduced,
+        notQualified: reportIds.size - reproduced,
+        validated: impactCases.filter((c) => c.allPassed).length,
+        blocked: impactCases.filter(
+          (c) => !c.allPassed && c.candidateCorrect === c.candidateTotal,
+        ).length,
+        rejected: impactCases.filter(
+          (c) => c.candidateCorrect < c.candidateTotal,
+        ).length,
+        cases: impactCases,
+        ledger: {
+          url: `https://github.com/j-cunanan/oai-gaming-hackathon/blob/main/${ledgerFile}`,
+          sha256: digest(fs.readFileSync(path.join(repoRoot, ledgerFile))),
+        },
+      },
+      null,
+      2,
+    ) + "\n",
   );
   return catalog;
 }
