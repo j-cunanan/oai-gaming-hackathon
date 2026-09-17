@@ -1,0 +1,272 @@
+[
+  {
+    "response_id": "resp_0145419238aaba46016aab844fb8d887d0a4cae9d05a74ab87",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 5.225,
+    "usage": {
+      "input_tokens": 1857,
+      "input_tokens_details": {
+        "cache_write_tokens": 1854,
+        "cached_tokens": 0
+      },
+      "output_tokens": 61,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1918
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab84531ebc87d087997daf6f1c0002",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 2.768,
+    "usage": {
+      "input_tokens": 1938,
+      "input_tokens_details": {
+        "cache_write_tokens": 81,
+        "cached_tokens": 1854
+      },
+      "output_tokens": 60,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1998
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab8455e9f887d0bccc24f1141f1f50",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 4.097,
+    "usage": {
+      "input_tokens": 2018,
+      "input_tokens_details": {
+        "cache_write_tokens": 80,
+        "cached_tokens": 1935
+      },
+      "output_tokens": 60,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2078
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab845a3fc887d08e96c56b0fa40e0d",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 2.985,
+    "usage": {
+      "input_tokens": 3208,
+      "input_tokens_details": {
+        "cache_write_tokens": 1190,
+        "cached_tokens": 2015
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 3272
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab845d4ba887d0a509e306445be295",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 2.817,
+    "usage": {
+      "input_tokens": 4402,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 3205
+      },
+      "output_tokens": 65,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 4467
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab84603bdc87d0821f4a3540393dec",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 4.087,
+    "usage": {
+      "input_tokens": 5597,
+      "input_tokens_details": {
+        "cache_write_tokens": 1195,
+        "cached_tokens": 4399
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 5661
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab8464717c87d085fccf08381b76cc",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 2.648,
+    "usage": {
+      "input_tokens": 6791,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 5594
+      },
+      "output_tokens": 61,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 6852
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab84673e7887d0b28dd7f343e949da",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 4.551,
+    "usage": {
+      "input_tokens": 7982,
+      "input_tokens_details": {
+        "cache_write_tokens": 1191,
+        "cached_tokens": 6788
+      },
+      "output_tokens": 63,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 8045
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab846be7d887d0867447cf320e0b33",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 3.671,
+    "usage": {
+      "input_tokens": 9175,
+      "input_tokens_details": {
+        "cache_write_tokens": 1193,
+        "cached_tokens": 7979
+      },
+      "output_tokens": 63,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 9238
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab846fbe2487d08a61738a65d4c510",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 2.82,
+    "usage": {
+      "input_tokens": 10368,
+      "input_tokens_details": {
+        "cache_write_tokens": 1193,
+        "cached_tokens": 9172
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 10432
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab8472ab5087d0947c3ddf3609dc04",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 3.627,
+    "usage": {
+      "input_tokens": 11562,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 10365
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 11626
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab847667d487d08712a027562b8957",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 4.703,
+    "usage": {
+      "input_tokens": 12756,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 11559
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 12820
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab847b53e487d08f5d287343f7f426",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 3.829,
+    "usage": {
+      "input_tokens": 13950,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 12753
+      },
+      "output_tokens": 64,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 14014
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab847f551487d0909402b86d545aef",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 3.439,
+    "usage": {
+      "input_tokens": 15144,
+      "input_tokens_details": {
+        "cache_write_tokens": 1194,
+        "cached_tokens": 13947
+      },
+      "output_tokens": 65,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 15209
+    }
+  },
+  {
+    "response_id": "resp_0145419238aaba46016aab8482c1c487d090ee074925f98395",
+    "model": "gpt-6-astra",
+    "status": "completed",
+    "elapsed_seconds": 4.094,
+    "usage": {
+      "input_tokens": 16339,
+      "input_tokens_details": {
+        "cache_write_tokens": 1195,
+        "cached_tokens": 15141
+      },
+      "output_tokens": 111,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 16450
+    }
+  }
+]

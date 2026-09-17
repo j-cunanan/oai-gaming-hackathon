@@ -1,0 +1,237 @@
+[
+  {
+    "variant": "seeded bug",
+    "repeat": 1,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-1.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 2,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-2.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 3,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-3.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 4,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-4.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 5,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-5.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 1,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-1.png",
+    "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 2,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-2.png",
+    "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 3,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-3.png",
+    "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 4,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-4.png",
+    "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 5,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-5.png",
+    "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+  }
+]

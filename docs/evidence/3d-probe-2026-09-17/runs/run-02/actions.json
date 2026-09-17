@@ -1,0 +1,182 @@
+[
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "right"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.0,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Turn right",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.5,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Move toward partition opening",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "a"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.5,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Strafe left around partition",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.3,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Move past partition edge",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "right"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.0,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Look into storage",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "right"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.18,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Face blue crystal",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.0,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Approach blue crystal",
+    "checkpoint": "before_collection"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "e"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Collect blue crystal",
+    "checkpoint": "after_collection"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.5,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Move closer to crystal",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "e"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Collect nearby crystal",
+    "checkpoint": "collected"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "f5"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Save after collection",
+    "checkpoint": "saved"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "f9"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Reload saved room",
+    "checkpoint": "reloaded"
+  }
+]

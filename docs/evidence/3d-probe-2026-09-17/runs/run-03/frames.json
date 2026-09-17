@@ -1,0 +1,342 @@
+[
+  {
+    "index": 0,
+    "image": "frame-000.png",
+    "sha256": "e534bc44eb2e06566bf1a297836d0e8f6ffc2e88ac918af5e96e34fabee04c07",
+    "action": null,
+    "elapsed_seconds": 0.158,
+    "timestamp": "2026-09-17T06:10:21.583570+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 1.0,
+      "y": 1.5,
+      "heading": -35.0,
+      "pitch": 0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Find the blue crystal beyond the partition.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 1,
+    "image": "frame-001.png",
+    "sha256": "2667de48fb27ef9aca8b94f072fb8d6a160a0a25beb54eb76d48844e7f2c2e05",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move forward beside partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 5.158,
+    "timestamp": "2026-09-17T06:10:26.584176+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 3.7531668944850116,
+      "y": 5.431929812587175,
+      "heading": -35.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 2,
+    "image": "frame-002.png",
+    "sha256": "e67c300ff5d18978a0b87832f2d3fc03eb628efafd9f2d39b95859814eb01950",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "left"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Turn left to inspect beyond partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 15.716,
+    "timestamp": "2026-09-17T06:10:37.141492+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 3.7531668944850116,
+      "y": 5.431929812587175,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 3,
+    "image": "frame-003.png",
+    "sha256": "6f5ad8e6b8fd7f281b67b18b4cb59ea752d0616214b4c3ca6be7e2dd563a4bfb",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "d"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Strafe around partition edge",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 18.907,
+    "timestamp": "2026-09-17T06:10:40.333157+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 4.2726219679364705,
+      "y": 7.775040229674996,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 4,
+    "image": "frame-004.png",
+    "sha256": "9e0e2315eda159aaa1db47c7f85f40624855808f70b8a0f7a495e2433bb62d9a",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.7,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Approach blue crystal",
+      "checkpoint": "before_collection"
+    },
+    "elapsed_seconds": 21.825,
+    "timestamp": "2026-09-17T06:10:43.250416+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 2.6324446759749796,
+      "y": 8.138658781091012,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 5,
+    "image": "frame-005.png",
+    "sha256": "4cf30db7d5876b834de7a135ace65c08d4099c475de6a74a5048128765b0a1c9",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "e"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Collect blue crystal",
+      "checkpoint": "after_collection"
+    },
+    "elapsed_seconds": 24.987,
+    "timestamp": "2026-09-17T06:10:46.412419+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 2.6324446759749796,
+      "y": 8.138658781091012,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "No collectible in reach. Move closer and face it.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 6,
+    "image": "frame-006.png",
+    "sha256": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.4,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move closer to crystal",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 28.105,
+    "timestamp": "2026-09-17T06:10:49.531187+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 7,
+    "image": "frame-007.png",
+    "sha256": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "e"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Collect nearby crystal",
+      "checkpoint": "collected"
+    },
+    "elapsed_seconds": 32.272,
+    "timestamp": "2026-09-17T06:10:53.697849+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Crystal collected.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 8,
+    "image": "frame-008.png",
+    "sha256": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f5"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Save after collecting",
+      "checkpoint": "saved"
+    },
+    "elapsed_seconds": 36.43,
+    "timestamp": "2026-09-17T06:10:57.856018+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": false,
+      "feedback": "Room saved.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 9,
+    "image": "frame-009.png",
+    "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f9"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reload saved room",
+      "checkpoint": "reloaded"
+    },
+    "elapsed_seconds": 39.573,
+    "timestamp": "2026-09-17T06:11:00.999232+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 1.695200509139842,
+      "y": 8.346440810471579,
+      "heading": 77.5,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    }
+  }
+]

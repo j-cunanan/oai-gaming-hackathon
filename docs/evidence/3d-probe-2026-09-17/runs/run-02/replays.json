@@ -1,0 +1,237 @@
+[
+  {
+    "variant": "seeded bug",
+    "repeat": 1,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-1.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 2,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-2.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 3,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-3.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 4,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-4.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+  },
+  {
+    "variant": "seeded bug",
+    "repeat": 5,
+    "bug_observed_by_state": true,
+    "correct_after_reload_by_state": false,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "buggy-replay-5.png",
+    "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 1,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-1.png",
+    "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 2,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-2.png",
+    "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 3,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-3.png",
+    "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 4,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-4.png",
+    "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+  },
+  {
+    "variant": "human-authored reference correction",
+    "repeat": 5,
+    "bug_observed_by_state": false,
+    "correct_after_reload_by_state": true,
+    "final_state": {
+      "x": -1.7604174819402452,
+      "y": 8.06665744080503,
+      "heading": -73.75,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1,
+        "collected": true
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 0
+    },
+    "image": "reference-replay-5.png",
+    "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+  }
+]

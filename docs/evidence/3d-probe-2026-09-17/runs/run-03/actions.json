@@ -1,0 +1,137 @@
+[
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 2.0,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Move forward beside partition",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "left"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.5,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Turn left to inspect beyond partition",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "d"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 1.0,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Strafe around partition edge",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.7,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Approach blue crystal",
+    "checkpoint": "before_collection"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "e"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Collect blue crystal",
+    "checkpoint": "after_collection"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "w"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.4,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Move closer to crystal",
+    "checkpoint": ""
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "e"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Collect nearby crystal",
+    "checkpoint": "collected"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "f5"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Save after collecting",
+    "checkpoint": "saved"
+  },
+  {
+    "action": "keypress",
+    "x": null,
+    "y": null,
+    "keys": [
+      "f9"
+    ],
+    "text": "",
+    "seconds": 0.0,
+    "hold_seconds": 0.1,
+    "scroll_y": 0,
+    "button": "left",
+    "semantic": "Reload saved room",
+    "checkpoint": "reloaded"
+  }
+]

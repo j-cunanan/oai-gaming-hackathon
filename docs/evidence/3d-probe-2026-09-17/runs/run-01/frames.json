@@ -1,0 +1,377 @@
+[
+  {
+    "index": 0,
+    "image": "frame-000.png",
+    "sha256": "42db8c1b1caf9949f867b5a338859fdc8c17a1b9151c60f7870b0d43c98fed43",
+    "action": null,
+    "elapsed_seconds": 0.168,
+    "timestamp": "2026-09-17T06:08:31.113851+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 0,
+      "y": 1.5,
+      "heading": 0,
+      "pitch": 0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Find the blue crystal beyond the partition.",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 1,
+    "image": "frame-001.png",
+    "sha256": "efa6a6cb6a44a3ae8ba48dc9336323e0cca5305b56e94181cc44ef38a3834134",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "d"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Strafe right around partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 5.797,
+    "timestamp": "2026-09-17T06:08:36.742519+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 4.800000000000003,
+      "y": 1.5,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 2,
+    "image": "frame-002.png",
+    "sha256": "b3dc50f2757ff1cafbcab3258609f44aeff52dd1bb40c7dd8bce1fa333164bb0",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move past partition on right",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 12.152,
+    "timestamp": "2026-09-17T06:08:43.098294+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 4.800000000000003,
+      "y": 5.100000000000003,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 3,
+    "image": "frame-003.png",
+    "sha256": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Strafe left toward blue crystal area",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 15.835,
+    "timestamp": "2026-09-17T06:08:46.781468+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 5.100000000000003,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 0
+    }
+  },
+  {
+    "index": 4,
+    "image": "frame-004.png",
+    "sha256": "09d9eb0bc71d5050261a4ea8b8c62e26dea8a9d198bed867f6f0048753261e36",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.5,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Advance beyond partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 18.521,
+    "timestamp": "2026-09-17T06:08:49.466830+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 5.140000000000003,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Movement blocked by a wall.",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 5,
+    "image": "frame-005.png",
+    "sha256": "e0b1bdf38afd387e8a09436147086a8a5061f2224063aa3d32d1e23e30546496",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "d"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Return to right passage",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 22.479,
+    "timestamp": "2026-09-17T06:08:53.425361+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 4.800000000000003,
+      "y": 5.140000000000003,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 6,
+    "image": "frame-006.png",
+    "sha256": "40f7d25167d94756ab0da81eeaec6c11e3bfb21ce73e92559c12a536fe437a31",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "w"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 1.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Walk farther through right passage",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 25.689,
+    "timestamp": "2026-09-17T06:08:56.635490+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": 4.800000000000003,
+      "y": 7.540000000000005,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 7,
+    "image": "frame-007.png",
+    "sha256": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "a"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 2.0,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Move left behind partition",
+      "checkpoint": ""
+    },
+    "elapsed_seconds": 28.68,
+    "timestamp": "2026-09-17T06:08:59.626031+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 7.540000000000005,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 0,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 8,
+    "image": "frame-008.png",
+    "sha256": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "e"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Collect blue crystal",
+      "checkpoint": "collected"
+    },
+    "elapsed_seconds": 33.966,
+    "timestamp": "2026-09-17T06:09:04.912121+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 7.540000000000005,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": null,
+      "collected_before_save": false,
+      "reloaded_after_collection": false,
+      "feedback": "Crystal collected.",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 9,
+    "image": "frame-009.png",
+    "sha256": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f5"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Save room after collection",
+      "checkpoint": "saved"
+    },
+    "elapsed_seconds": 45.461,
+    "timestamp": "2026-09-17T06:09:16.406774+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 7.540000000000005,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": true,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": false,
+      "feedback": "Room saved.",
+      "collisions": 1
+    }
+  },
+  {
+    "index": 10,
+    "image": "frame-010.png",
+    "sha256": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "action": {
+      "action": "keypress",
+      "x": null,
+      "y": null,
+      "keys": [
+        "f9"
+      ],
+      "text": "",
+      "seconds": 0.0,
+      "hold_seconds": 0.1,
+      "scroll_y": 0,
+      "button": "left",
+      "semantic": "Reload saved room",
+      "checkpoint": "reloaded"
+    },
+    "elapsed_seconds": 48.864,
+    "timestamp": "2026-09-17T06:09:19.810386+00:00",
+    "evaluator_state_not_sent_to_model": {
+      "x": -3.469446951953614e-16,
+      "y": 7.540000000000005,
+      "heading": 0.0,
+      "pitch": 0.0,
+      "collected": false,
+      "inventory": 1,
+      "saved": {
+        "inventory": 1
+      },
+      "collected_before_save": true,
+      "reloaded_after_collection": true,
+      "feedback": "Room reloaded.",
+      "collisions": 1
+    }
+  }
+]

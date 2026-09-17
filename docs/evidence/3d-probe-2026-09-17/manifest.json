@@ -1,0 +1,689 @@
+{
+  "version": 1,
+  "recorded_at": "2026-09-17T06:19:34.354828+00:00",
+  "scope": "Synthetic 3D feasibility only. One seeded defect, three selected starts. Not included in real bug Impact totals.",
+  "model": "gpt-6-astra",
+  "control_calls": 39,
+  "verification_calls": 6,
+  "runs": [
+    {
+      "id": "run-01",
+      "label": "Facing the partition",
+      "summary": {
+        "created_at": "2026-09-17T06:09:27.649599+00:00",
+        "model": "gpt-6-astra",
+        "model_response_names": [
+          "gpt-6-astra"
+        ],
+        "calls": 12,
+        "actions": 10,
+        "investigation_seconds": 54.848,
+        "input_tokens": 97734,
+        "output_tokens": 815,
+        "model_conclusion": {
+          "outcome": "reproduced",
+          "observation": "Frame 7 shows the blue crystal with an E: collect prompt and inventory 0. After collection, frame 8 shows the crystal absent and inventory 1. Frame 9 confirms 'Room saved' with the crystal absent and inventory 1. After reload, frame 10 confirms 'Room reloaded' and shows the blue crystal back with its collect prompt while inventory remains 1.",
+          "evidence_steps": [
+            7,
+            8,
+            9,
+            10
+          ]
+        },
+        "error": null,
+        "observed_by_private_evaluator": true,
+        "baseline_replays": 5,
+        "reference_correct_replays": 5,
+        "replay_total_per_variant": 5,
+        "initial_state": {
+          "x": 0,
+          "y": 1.5,
+          "heading": 0,
+          "pitch": 0,
+          "collected": false,
+          "inventory": 0,
+          "saved": null,
+          "collected_before_save": false,
+          "reloaded_after_collection": false,
+          "feedback": "Find the blue crystal beyond the partition.",
+          "collisions": 0
+        },
+        "scope": "Synthetic scene and seeded defect. Paused between bounded key inputs. Reference correction is human-authored; no AI patch milestone or real-game support claim."
+      },
+      "verification": [
+        {
+          "variant": "seeded bug",
+          "verdict": {
+            "observed": true,
+            "confidence": 1.0,
+            "explanation": "The screenshots demonstrate the reported defect: collecting the blue crystal removes it and raises inventory to 1, but saving and reloading restores the crystal in the same location while inventory remains 1.",
+            "evidence": [
+              "buggy-proof-007.png",
+              "buggy-proof-008.png",
+              "buggy-proof-009.png",
+              "buggy-proof-010.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": false
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 7,
+              "image": "buggy-proof-007.png",
+              "sha256": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec"
+            },
+            {
+              "label": "B",
+              "action_index": 8,
+              "image": "buggy-proof-008.png",
+              "sha256": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a"
+            },
+            {
+              "label": "C",
+              "action_index": 9,
+              "image": "buggy-proof-009.png",
+              "sha256": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9"
+            },
+            {
+              "label": "D",
+              "action_index": 10,
+              "image": "buggy-proof-010.png",
+              "sha256": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e"
+            }
+          ],
+          "request": {
+            "response_id": "resp_020018d3ca7cf627016aab8506191887d09b2e5e1fd39808be",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 6.811,
+            "usage": {
+              "input_tokens": 5555,
+              "input_tokens_details": {
+                "cache_write_tokens": 5552,
+                "cached_tokens": 0
+              },
+              "output_tokens": 207,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5762
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        },
+        {
+          "variant": "human-authored reference correction",
+          "verdict": {
+            "observed": false,
+            "confidence": 0.99,
+            "explanation": "The sequence demonstrates correct behavior: collecting the blue crystal removes it and raises inventory to 1; after a confirmed save and reload, the crystal remains absent and inventory remains 1.",
+            "evidence": [
+              "reference-proof-007.png",
+              "reference-proof-008.png",
+              "reference-proof-009.png",
+              "reference-proof-010.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": true
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 7,
+              "image": "reference-proof-007.png",
+              "sha256": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec"
+            },
+            {
+              "label": "B",
+              "action_index": 8,
+              "image": "reference-proof-008.png",
+              "sha256": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a"
+            },
+            {
+              "label": "C",
+              "action_index": 9,
+              "image": "reference-proof-009.png",
+              "sha256": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9"
+            },
+            {
+              "label": "D",
+              "action_index": 10,
+              "image": "reference-proof-010.png",
+              "sha256": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45"
+            }
+          ],
+          "request": {
+            "response_id": "resp_0d4d9339b0e87ddf016aab850e79ec87d0b6c7377d7435117d",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 5.671,
+            "usage": {
+              "input_tokens": 5555,
+              "input_tokens_details": {
+                "cache_write_tokens": 5552,
+                "cached_tokens": 0
+              },
+              "output_tokens": 202,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5757
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        }
+      ]
+    },
+    {
+      "id": "run-02",
+      "label": "Facing 90\u00b0 away",
+      "summary": {
+        "created_at": "2026-09-17T06:11:19.731473+00:00",
+        "model": "gpt-6-astra",
+        "model_response_names": [
+          "gpt-6-astra"
+        ],
+        "calls": 15,
+        "actions": 12,
+        "investigation_seconds": 57.266,
+        "input_tokens": 123087,
+        "output_tokens": 993,
+        "model_conclusion": {
+          "outcome": "reproduced",
+          "observation": "Frame 9 shows the blue crystal with inventory 0. After collection, frame 10 shows the crystal absent and inventory 1. Frame 11 confirms 'Room saved' with inventory 1 and crystal absent. After F9, frame 12 confirms 'Room reloaded': the blue crystal is visible again with an 'E: collect' prompt while inventory remains 1.",
+          "evidence_steps": [
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        "error": null,
+        "observed_by_private_evaluator": true,
+        "baseline_replays": 5,
+        "reference_correct_replays": 5,
+        "replay_total_per_variant": 5,
+        "initial_state": {
+          "x": 0,
+          "y": 1.5,
+          "heading": 90.0,
+          "pitch": 0,
+          "collected": false,
+          "inventory": 0,
+          "saved": null,
+          "collected_before_save": false,
+          "reloaded_after_collection": false,
+          "feedback": "Find the blue crystal beyond the partition.",
+          "collisions": 0
+        },
+        "scope": "Synthetic scene and seeded defect. Paused between bounded key inputs. Reference correction is human-authored; no AI patch milestone or real-game support claim."
+      },
+      "verification": [
+        {
+          "variant": "seeded bug",
+          "verdict": {
+            "observed": true,
+            "confidence": 0.99,
+            "explanation": "The screenshots demonstrate the reported defect: the blue crystal disappears when collected and inventory becomes 1, but returns after the confirmed save/reload while inventory remains 1.",
+            "evidence": [
+              "buggy-proof-009.png",
+              "buggy-proof-010.png",
+              "buggy-proof-011.png",
+              "buggy-proof-012.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": false
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 9,
+              "image": "buggy-proof-009.png",
+              "sha256": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931"
+            },
+            {
+              "label": "B",
+              "action_index": 10,
+              "image": "buggy-proof-010.png",
+              "sha256": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143"
+            },
+            {
+              "label": "C",
+              "action_index": 11,
+              "image": "buggy-proof-011.png",
+              "sha256": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb"
+            },
+            {
+              "label": "D",
+              "action_index": 12,
+              "image": "buggy-proof-012.png",
+              "sha256": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd"
+            }
+          ],
+          "request": {
+            "response_id": "resp_0ca44e11cbd64851016aab8515a06887d0bb33d1b15c88b2dc",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 6.299,
+            "usage": {
+              "input_tokens": 5624,
+              "input_tokens_details": {
+                "cache_write_tokens": 5621,
+                "cached_tokens": 0
+              },
+              "output_tokens": 201,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5825
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        },
+        {
+          "variant": "human-authored reference correction",
+          "verdict": {
+            "observed": false,
+            "confidence": 0.99,
+            "explanation": "The sequence demonstrates correct behavior: the blue crystal disappears upon collection, inventory increases to 1, and the crystal remains absent after a visibly confirmed save and reload.",
+            "evidence": [
+              "reference-proof-009.png",
+              "reference-proof-010.png",
+              "reference-proof-011.png",
+              "reference-proof-012.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": true
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 9,
+              "image": "reference-proof-009.png",
+              "sha256": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931"
+            },
+            {
+              "label": "B",
+              "action_index": 10,
+              "image": "reference-proof-010.png",
+              "sha256": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143"
+            },
+            {
+              "label": "C",
+              "action_index": 11,
+              "image": "reference-proof-011.png",
+              "sha256": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb"
+            },
+            {
+              "label": "D",
+              "action_index": 12,
+              "image": "reference-proof-012.png",
+              "sha256": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18"
+            }
+          ],
+          "request": {
+            "response_id": "resp_0dd30737558bdeaf016aab851d0ac087d08eaccef0ec519baf",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 6.414,
+            "usage": {
+              "input_tokens": 5624,
+              "input_tokens_details": {
+                "cache_write_tokens": 5621,
+                "cached_tokens": 0
+              },
+              "output_tokens": 195,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5819
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        }
+      ]
+    },
+    {
+      "id": "run-03",
+      "label": "Offset position, \u221235\u00b0 camera",
+      "summary": {
+        "created_at": "2026-09-17T06:11:06.845665+00:00",
+        "model": "gpt-6-astra",
+        "model_response_names": [
+          "gpt-6-astra"
+        ],
+        "calls": 12,
+        "actions": 9,
+        "investigation_seconds": 44.215,
+        "input_tokens": 80040,
+        "output_tokens": 830,
+        "model_conclusion": {
+          "outcome": "reproduced",
+          "observation": "Frame 6 shows the blue crystal with an E: collect prompt and inventory 0. After collection, frame 7 shows the crystal absent, inventory 1, and 'Crystal collected.' Frame 8 confirms 'Room saved' with inventory 1 and crystal absent. After F9, frame 9 confirms 'Room reloaded': the blue crystal is visible again with an E: collect prompt while inventory remains 1.",
+          "evidence_steps": [
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "error": null,
+        "observed_by_private_evaluator": true,
+        "baseline_replays": 5,
+        "reference_correct_replays": 5,
+        "replay_total_per_variant": 5,
+        "initial_state": {
+          "x": 1.0,
+          "y": 1.5,
+          "heading": -35.0,
+          "pitch": 0,
+          "collected": false,
+          "inventory": 0,
+          "saved": null,
+          "collected_before_save": false,
+          "reloaded_after_collection": false,
+          "feedback": "Find the blue crystal beyond the partition.",
+          "collisions": 0
+        },
+        "scope": "Synthetic scene and seeded defect. Paused between bounded key inputs. Reference correction is human-authored; no AI patch milestone or real-game support claim."
+      },
+      "verification": [
+        {
+          "variant": "seeded bug",
+          "verdict": {
+            "observed": true,
+            "confidence": 1.0,
+            "explanation": "The screenshots demonstrate the reported defect: collecting the blue crystal removes it and raises inventory to 1; after a confirmed save and reload, the crystal returns while inventory remains 1.",
+            "evidence": [
+              "buggy-proof-006.png",
+              "buggy-proof-007.png",
+              "buggy-proof-008.png",
+              "buggy-proof-009.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": false
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 6,
+              "image": "buggy-proof-006.png",
+              "sha256": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b"
+            },
+            {
+              "label": "B",
+              "action_index": 7,
+              "image": "buggy-proof-007.png",
+              "sha256": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7"
+            },
+            {
+              "label": "C",
+              "action_index": 8,
+              "image": "buggy-proof-008.png",
+              "sha256": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72"
+            },
+            {
+              "label": "D",
+              "action_index": 9,
+              "image": "buggy-proof-009.png",
+              "sha256": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1"
+            }
+          ],
+          "request": {
+            "response_id": "resp_0ff513ce39065017016aab85245c6887d09ce9aba705dec016",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 6.152,
+            "usage": {
+              "input_tokens": 5519,
+              "input_tokens_details": {
+                "cache_write_tokens": 5516,
+                "cached_tokens": 0
+              },
+              "output_tokens": 214,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5733
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        },
+        {
+          "variant": "human-authored reference correction",
+          "verdict": {
+            "observed": false,
+            "confidence": 0.99,
+            "explanation": "The checkpoints demonstrate correct behavior: the blue crystal disappears when collected, inventory becomes 1, and the crystal remains absent after a visibly confirmed save and reload.",
+            "evidence": [
+              "reference-proof-006.png",
+              "reference-proof-007.png",
+              "reference-proof-008.png",
+              "reference-proof-009.png"
+            ],
+            "expected_state_reached": true,
+            "symptom_absent": true
+          },
+          "checkpoints": [
+            {
+              "label": "A",
+              "action_index": 6,
+              "image": "reference-proof-006.png",
+              "sha256": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b"
+            },
+            {
+              "label": "B",
+              "action_index": 7,
+              "image": "reference-proof-007.png",
+              "sha256": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7"
+            },
+            {
+              "label": "C",
+              "action_index": 8,
+              "image": "reference-proof-008.png",
+              "sha256": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72"
+            },
+            {
+              "label": "D",
+              "action_index": 9,
+              "image": "reference-proof-009.png",
+              "sha256": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1"
+            }
+          ],
+          "request": {
+            "response_id": "resp_015a4fab4752ce65016aab852b5bf887d0aabcd14072d5fec0",
+            "model": "gpt-6-astra",
+            "purpose": "independent sequence verification",
+            "elapsed_seconds": 7.215,
+            "usage": {
+              "input_tokens": 5519,
+              "input_tokens_details": {
+                "cache_write_tokens": 5516,
+                "cached_tokens": 0
+              },
+              "output_tokens": 199,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 5718
+            }
+          },
+          "source": "repro.agents.oracle.verify_sequence",
+          "evaluator_state_supplied": false,
+          "investigator_conclusion_supplied": false
+        }
+      ]
+    }
+  ],
+  "files": {
+    "README.md": "cb6ade8307f5b3cb0e178e4f9ce3a54893c0cc21f2fa13bbe4b18270cb687948",
+    "astra-3d-replay.mp4": "f28663bdae7a5d874bcefc2b68417533ecec052de8784a0faa520f09834525a2",
+    "index.html": "b818d8ab18ce1e779a321d03f7f153edb2b0bf1adad4bac7ac185e40244455d1",
+    "runs/run-01/actions.json": "abed6096312b7397523c3724c0a0edd2a6e9f363713296ce41cb86dd970f9893",
+    "runs/run-01/buggy-proof-001.png": "efa6a6cb6a44a3ae8ba48dc9336323e0cca5305b56e94181cc44ef38a3834134",
+    "runs/run-01/buggy-proof-002.png": "b3dc50f2757ff1cafbcab3258609f44aeff52dd1bb40c7dd8bce1fa333164bb0",
+    "runs/run-01/buggy-proof-003.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-01/buggy-proof-004.png": "09d9eb0bc71d5050261a4ea8b8c62e26dea8a9d198bed867f6f0048753261e36",
+    "runs/run-01/buggy-proof-005.png": "e0b1bdf38afd387e8a09436147086a8a5061f2224063aa3d32d1e23e30546496",
+    "runs/run-01/buggy-proof-006.png": "40f7d25167d94756ab0da81eeaec6c11e3bfb21ce73e92559c12a536fe437a31",
+    "runs/run-01/buggy-proof-007.png": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec",
+    "runs/run-01/buggy-proof-008.png": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a",
+    "runs/run-01/buggy-proof-009.png": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9",
+    "runs/run-01/buggy-proof-010.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/buggy-replay-1.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/buggy-replay-2.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/buggy-replay-3.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/buggy-replay-4.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/buggy-replay-5.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/frame-000.png": "42db8c1b1caf9949f867b5a338859fdc8c17a1b9151c60f7870b0d43c98fed43",
+    "runs/run-01/frame-001.png": "efa6a6cb6a44a3ae8ba48dc9336323e0cca5305b56e94181cc44ef38a3834134",
+    "runs/run-01/frame-002.png": "b3dc50f2757ff1cafbcab3258609f44aeff52dd1bb40c7dd8bce1fa333164bb0",
+    "runs/run-01/frame-003.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-01/frame-004.png": "09d9eb0bc71d5050261a4ea8b8c62e26dea8a9d198bed867f6f0048753261e36",
+    "runs/run-01/frame-005.png": "e0b1bdf38afd387e8a09436147086a8a5061f2224063aa3d32d1e23e30546496",
+    "runs/run-01/frame-006.png": "40f7d25167d94756ab0da81eeaec6c11e3bfb21ce73e92559c12a536fe437a31",
+    "runs/run-01/frame-007.png": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec",
+    "runs/run-01/frame-008.png": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a",
+    "runs/run-01/frame-009.png": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9",
+    "runs/run-01/frame-010.png": "dc48c43f2beb59fb2eaf65c826f98a51257a38db3c25267e895626da40c2d49e",
+    "runs/run-01/frames.json": "0d7f92976d557ba59a8878c02177f0ac9589a96bdd6f9cb0099307c35aad6925",
+    "runs/run-01/input.json": "208e3499a77c5a09628c2c5a1991f77547212e2612d5f75720247a6dba0f34d7",
+    "runs/run-01/model-conclusion.json": "64c13812ee5ccb38b298a5b4e90f5f01157376d4401d265fda8bdf7a1cf1ab59",
+    "runs/run-01/reference-proof-001.png": "efa6a6cb6a44a3ae8ba48dc9336323e0cca5305b56e94181cc44ef38a3834134",
+    "runs/run-01/reference-proof-002.png": "b3dc50f2757ff1cafbcab3258609f44aeff52dd1bb40c7dd8bce1fa333164bb0",
+    "runs/run-01/reference-proof-003.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-01/reference-proof-004.png": "09d9eb0bc71d5050261a4ea8b8c62e26dea8a9d198bed867f6f0048753261e36",
+    "runs/run-01/reference-proof-005.png": "e0b1bdf38afd387e8a09436147086a8a5061f2224063aa3d32d1e23e30546496",
+    "runs/run-01/reference-proof-006.png": "40f7d25167d94756ab0da81eeaec6c11e3bfb21ce73e92559c12a536fe437a31",
+    "runs/run-01/reference-proof-007.png": "45a8ea2b607105142a59b14196d79685a3672bd73bfba32d8157c9d4cf8e97ec",
+    "runs/run-01/reference-proof-008.png": "36d278b85767633771c65e848bed014dd6789160a39038ee19c90b5c95f1300a",
+    "runs/run-01/reference-proof-009.png": "7763794a4038740676674519681ccf8c405dad77cf52b917515c88b71e58e7d9",
+    "runs/run-01/reference-proof-010.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/reference-replay-1.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/reference-replay-2.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/reference-replay-3.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/reference-replay-4.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/reference-replay-5.png": "df709b2bcbf3387b8b973360e7fff61d60950ede5ab00e2e991aa9a071847a45",
+    "runs/run-01/replays.json": "6317ea3bdcc7d381f3b21200514f89fe076bf725eb9a0720bf9189338d3a46ee",
+    "runs/run-01/requests.json": "1a032c6c354af95da81d70dffd383cfc5d0d5d5a8193a2d751016d83f3be44fe",
+    "runs/run-01/summary.json": "b71c0769abdb2520dbbc15f19c0ef15f9fde3d451d826d0c046a73acea8ba642",
+    "runs/run-01/verification.json": "04ce0f5f0532715fdea635ffc7a3ad885e3f17f0143e7218e0e870f3511ed3d4",
+    "runs/run-02/actions.json": "cdfaf37d8a19872bbe41c734f4289d65f3cedd9b40f492c4e86000e591f53a33",
+    "runs/run-02/buggy-proof-001.png": "8f6e9b5f0a709cd49c4587972a51ba261583c95df89c496bffc436ae94c4b7bc",
+    "runs/run-02/buggy-proof-002.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-02/buggy-proof-003.png": "221439bf27fe97f0bcabb48fa39d3586963f3be5b877f8eb1280ccf29398b446",
+    "runs/run-02/buggy-proof-004.png": "54989a285c5a6a707b362ee832b8b2134386dc3f23edbd6be1642ce1d1b9031f",
+    "runs/run-02/buggy-proof-005.png": "edc6fc2126f84c3ba6e3e63620f1cb0962b782739f45da0d931237be546117d6",
+    "runs/run-02/buggy-proof-006.png": "547dbe06c1c2240ff1749fe2ea4eaa430094f94814df6a97e209c206d7f478a0",
+    "runs/run-02/buggy-proof-007.png": "139fb9aac6b95c3f5c550a095f9074ae3e5a933c1770759881a69ea073fa42ee",
+    "runs/run-02/buggy-proof-008.png": "2b4843f1ba77f5fa92252a17b80485e576948b1d23c47b867e34270a5bcb9f7c",
+    "runs/run-02/buggy-proof-009.png": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931",
+    "runs/run-02/buggy-proof-010.png": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143",
+    "runs/run-02/buggy-proof-011.png": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb",
+    "runs/run-02/buggy-proof-012.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/buggy-replay-1.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/buggy-replay-2.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/buggy-replay-3.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/buggy-replay-4.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/buggy-replay-5.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/frame-000.png": "40ddf17b849ae776c385cd01f709130a1c4c9247bef4173073ee2dd9582306be",
+    "runs/run-02/frame-001.png": "8f6e9b5f0a709cd49c4587972a51ba261583c95df89c496bffc436ae94c4b7bc",
+    "runs/run-02/frame-002.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-02/frame-003.png": "221439bf27fe97f0bcabb48fa39d3586963f3be5b877f8eb1280ccf29398b446",
+    "runs/run-02/frame-004.png": "54989a285c5a6a707b362ee832b8b2134386dc3f23edbd6be1642ce1d1b9031f",
+    "runs/run-02/frame-005.png": "edc6fc2126f84c3ba6e3e63620f1cb0962b782739f45da0d931237be546117d6",
+    "runs/run-02/frame-006.png": "547dbe06c1c2240ff1749fe2ea4eaa430094f94814df6a97e209c206d7f478a0",
+    "runs/run-02/frame-007.png": "139fb9aac6b95c3f5c550a095f9074ae3e5a933c1770759881a69ea073fa42ee",
+    "runs/run-02/frame-008.png": "2b4843f1ba77f5fa92252a17b80485e576948b1d23c47b867e34270a5bcb9f7c",
+    "runs/run-02/frame-009.png": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931",
+    "runs/run-02/frame-010.png": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143",
+    "runs/run-02/frame-011.png": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb",
+    "runs/run-02/frame-012.png": "8fcb52304fa31778e8e4a339ab2e8ad6facb3fbcd031801336d576fad9da41fd",
+    "runs/run-02/frames.json": "7c3ac36728205dbf8d6999c9defc78a9ab57bd197c637a94cd222397abe12225",
+    "runs/run-02/input.json": "11a1ec42039581d59423a188ffe0aa9c4e18292dd0988c5ae3fb55946ecde535",
+    "runs/run-02/model-conclusion.json": "fa5df2a3284c321462149d903f295f37400ca3b7860710164a585723218ceaca",
+    "runs/run-02/reference-proof-001.png": "8f6e9b5f0a709cd49c4587972a51ba261583c95df89c496bffc436ae94c4b7bc",
+    "runs/run-02/reference-proof-002.png": "4bf189562544f158a2ae3a18376c9702874f5faa3b87cacba115de091c153a69",
+    "runs/run-02/reference-proof-003.png": "221439bf27fe97f0bcabb48fa39d3586963f3be5b877f8eb1280ccf29398b446",
+    "runs/run-02/reference-proof-004.png": "54989a285c5a6a707b362ee832b8b2134386dc3f23edbd6be1642ce1d1b9031f",
+    "runs/run-02/reference-proof-005.png": "edc6fc2126f84c3ba6e3e63620f1cb0962b782739f45da0d931237be546117d6",
+    "runs/run-02/reference-proof-006.png": "547dbe06c1c2240ff1749fe2ea4eaa430094f94814df6a97e209c206d7f478a0",
+    "runs/run-02/reference-proof-007.png": "139fb9aac6b95c3f5c550a095f9074ae3e5a933c1770759881a69ea073fa42ee",
+    "runs/run-02/reference-proof-008.png": "2b4843f1ba77f5fa92252a17b80485e576948b1d23c47b867e34270a5bcb9f7c",
+    "runs/run-02/reference-proof-009.png": "32afcc1ebbcba8708efa9dcc5364274b952ac33bca6b7c1034bf088db9786931",
+    "runs/run-02/reference-proof-010.png": "aaba63ade6fec760bb60f862560b83b660796ff01795812b809726af7e42a143",
+    "runs/run-02/reference-proof-011.png": "45e834b10dd24e574ed290dff1a4253fff9cfb260cc54a1e86c06e2bcb6253cb",
+    "runs/run-02/reference-proof-012.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/reference-replay-1.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/reference-replay-2.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/reference-replay-3.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/reference-replay-4.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/reference-replay-5.png": "32dcc1fa0f3916ea644ea95ae2f0d46dbb1a92109b091d469107079210961e18",
+    "runs/run-02/replays.json": "d1df60f9869837b1e3a2cb3b156f095b119848eb4dbbd3fc2b5248c7cee7746b",
+    "runs/run-02/requests.json": "358365135ca10403686b5f26386f11b65612f78f87eab08162f11c9bcf8713af",
+    "runs/run-02/summary.json": "e9bf0138cab05c75c3be6719740c97520a8698699dbd54623315866c91400aa9",
+    "runs/run-02/verification.json": "5f1e69d2a715c99de65e56b4398e837bd701637c9e00be63ea31279bcda416d7",
+    "runs/run-03/actions.json": "98e12cc8c86c0716d3e993e1f4ecbad5ab55cd622e6c27bf0ca1c3ba6351f932",
+    "runs/run-03/buggy-proof-001.png": "2667de48fb27ef9aca8b94f072fb8d6a160a0a25beb54eb76d48844e7f2c2e05",
+    "runs/run-03/buggy-proof-002.png": "e67c300ff5d18978a0b87832f2d3fc03eb628efafd9f2d39b95859814eb01950",
+    "runs/run-03/buggy-proof-003.png": "6f5ad8e6b8fd7f281b67b18b4cb59ea752d0616214b4c3ca6be7e2dd563a4bfb",
+    "runs/run-03/buggy-proof-004.png": "9e0e2315eda159aaa1db47c7f85f40624855808f70b8a0f7a495e2433bb62d9a",
+    "runs/run-03/buggy-proof-005.png": "4cf30db7d5876b834de7a135ace65c08d4099c475de6a74a5048128765b0a1c9",
+    "runs/run-03/buggy-proof-006.png": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b",
+    "runs/run-03/buggy-proof-007.png": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7",
+    "runs/run-03/buggy-proof-008.png": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72",
+    "runs/run-03/buggy-proof-009.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/buggy-replay-1.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/buggy-replay-2.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/buggy-replay-3.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/buggy-replay-4.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/buggy-replay-5.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/frame-000.png": "e534bc44eb2e06566bf1a297836d0e8f6ffc2e88ac918af5e96e34fabee04c07",
+    "runs/run-03/frame-001.png": "2667de48fb27ef9aca8b94f072fb8d6a160a0a25beb54eb76d48844e7f2c2e05",
+    "runs/run-03/frame-002.png": "e67c300ff5d18978a0b87832f2d3fc03eb628efafd9f2d39b95859814eb01950",
+    "runs/run-03/frame-003.png": "6f5ad8e6b8fd7f281b67b18b4cb59ea752d0616214b4c3ca6be7e2dd563a4bfb",
+    "runs/run-03/frame-004.png": "9e0e2315eda159aaa1db47c7f85f40624855808f70b8a0f7a495e2433bb62d9a",
+    "runs/run-03/frame-005.png": "4cf30db7d5876b834de7a135ace65c08d4099c475de6a74a5048128765b0a1c9",
+    "runs/run-03/frame-006.png": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b",
+    "runs/run-03/frame-007.png": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7",
+    "runs/run-03/frame-008.png": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72",
+    "runs/run-03/frame-009.png": "42b0f164321a7cebf472232d498ccee0579777cf00b40c57fc05eef1b17503d1",
+    "runs/run-03/frames.json": "4aae5b7a56e782f2812837f8cfe1bcd99544506979fbe52c4fd18aadc691b185",
+    "runs/run-03/input.json": "4a6d49c9e16566e523f73af383463e1a9d7a3c2664fb977f0cb6756399d11c38",
+    "runs/run-03/model-conclusion.json": "b253bd1eb14c1b054f744fc9ed7bd43ef28056b3fe8c31a526d8ba4c5501ecf8",
+    "runs/run-03/reference-proof-001.png": "2667de48fb27ef9aca8b94f072fb8d6a160a0a25beb54eb76d48844e7f2c2e05",
+    "runs/run-03/reference-proof-002.png": "e67c300ff5d18978a0b87832f2d3fc03eb628efafd9f2d39b95859814eb01950",
+    "runs/run-03/reference-proof-003.png": "6f5ad8e6b8fd7f281b67b18b4cb59ea752d0616214b4c3ca6be7e2dd563a4bfb",
+    "runs/run-03/reference-proof-004.png": "9e0e2315eda159aaa1db47c7f85f40624855808f70b8a0f7a495e2433bb62d9a",
+    "runs/run-03/reference-proof-005.png": "4cf30db7d5876b834de7a135ace65c08d4099c475de6a74a5048128765b0a1c9",
+    "runs/run-03/reference-proof-006.png": "76a0d395ce6448f6e9511e7ac35ee373aa8ead2187d9262c74d39fe0bcb3966b",
+    "runs/run-03/reference-proof-007.png": "d3392badc92b478d150e58c73e2e5d36086f58b8b8d4901b68aa8509afaed5f7",
+    "runs/run-03/reference-proof-008.png": "a1a1958323d6a88742147fc601448436d7712f21d5b1e4d40c7b93fc4fb86d72",
+    "runs/run-03/reference-proof-009.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/reference-replay-1.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/reference-replay-2.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/reference-replay-3.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/reference-replay-4.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/reference-replay-5.png": "bf7ab5af572701bef64353e4e858634abaa21e04a9c3883ced540c28dcfddde1",
+    "runs/run-03/replays.json": "993cccbcd80d73cc5b583991c3e77f46a29cb3ddd878ed95ac373ad451415223",
+    "runs/run-03/requests.json": "031b5df0593bb204166fba4d0dbbf2f1f88cf0a5ce9192815e0e7de59922bee3",
+    "runs/run-03/summary.json": "bc3c305f33e15a55247677b22945c3babba4b2bb89665a182f500d7b02c0af2f",
+    "runs/run-03/verification.json": "bf9894bdecd9343e430ef310b38621d92275a6db96b270cc3bfa8314891bca9c",
+    "source/movie.py": "6f30a529f88c66f9544833af0d7b44eca45756206bf476c80643d823d151c4a6",
+    "source/repro-oracle.py": "36f1482461f18b25e1a344ded635bf4160b6f2fdc1330bca78f80ecb688bcff5",
+    "source/run.py": "fd6c7cb2c4292d418c0ea4eaebaffb8311d46d9701d7945125bba13cdc9d4088",
+    "source/scene.py": "e263f8f94fbf120a0747c600ff0b11b211b5b2bdcd882990e72589e000e8f941",
+    "source/verify.py": "098ceb153bda7d91d3045f347d3cc4808360ab8631ea67d18d6255a35542928e"
+  }
+}
