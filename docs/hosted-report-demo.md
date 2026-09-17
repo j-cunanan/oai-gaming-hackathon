@@ -1,6 +1,16 @@
 # Report-driven demo in the REPRO app
 
-Open **Report demo** in the app, or visit `/?view=demo`. Paste a player report or an exact Mindustry issue URL, inspect the suggested match and choose **Review recorded case**. Example reports are available for data-patch persistence, the Target Dummy save crash and color readback.
+Open **Report demo** in the app, or visit `/?view=demo`. A connected backend offers **Live AI plan** and **Recorded cases**. Static hosting offers the recorded flow only. In Recorded cases, paste a player report or an exact Mindustry issue URL, inspect the suggested match and choose **Review recorded case**. Example reports are available for data-patch persistence, the Target Dummy save crash and color readback.
+
+## Live report planning
+
+**Map the test with AI** makes one new OpenAI Responses API request for a Mindustry report. It proposes a visual sequence of setup, action and evidence checkpoints, the expected behavior, missing details and assumptions. The model receives the report and a small catalog of report descriptions. It does not receive screenshots, source, patches or saved validation results. Optional pointers to prior recordings are AI suggestions, not evidence that this new report is the same bug.
+
+The plan is explicitly **not executed**. It does not start Docker, create a case, reproduce a bug or modify existing evidence. A fresh investigation is a separate, explicit action. Every successful plan records its input hash, timestamp, actual model, elapsed request time, usage and result under `.repro/report-plans/` (or the configured data directory). Those local files are not bundled into the website. The UI shows the actual generated plan, with no simulated progress or cached response presented as live.
+
+`POST /api/report-plan` accepts a 10–8,000-character report, allows one in-flight planning request, uses the configured model with low reasoning and a 2,600-token output ceiling, disables automatic retries and has a 50-second overall timeout. Incomplete/refused/malformed responses cannot become plans. The standard same-origin mutation guard applies. Report text is sent to OpenAI only when the user requests live planning. Static recording matching continues to keep report text in the browser.
+
+**Presentation view**, or `/?view=demo&present=1`, hides workspace navigation and retains the live/recorded provenance labels. All recorded stage links accept `present=1`. If the API is unavailable, use Recorded cases without implying a new model or game run. A URL alone is enough for the existing rule matcher, but live planning needs the report text and does not fetch arbitrary links.
 
 The walkthrough follows **Report → Reproduce → Reduce → Diagnose → Patch → Validate → Handoff**. Each stage presents actual saved evidence: screenshots and event timestamps, the frozen input sequence, source findings, patch rationale and diff, all five validation gates, and downloadable PDF, YAML and patch files. The data-patch candidate passes; Target Dummy has an upstream-test blocker; the color candidate fails its replay checks. Browsing never changes those outcomes or creates a new case.
 
