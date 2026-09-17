@@ -14,6 +14,14 @@ Failed requests distinguish DNS/connection errors, timeouts, rejected credential
 
 **Presentation view**, or `/?view=demo&present=1`, hides workspace navigation and retains the live/recorded provenance labels. All recorded stage links accept `present=1`. If the API is unavailable, use Recorded cases without implying a new model or game run. A URL alone is enough for the existing rule matcher, but live planning needs the report text and does not fetch arbitrary links.
 
+## Demo, Impact and Architecture
+
+The persistent presentation navigation has three pages. **Demo** retains the selected case, report and generated plan while browsing **Impact** (`&section=impact`) or **Architecture** (`&section=architecture`). Each demo stage explains OpenAI's specific contribution and the runner's checks, including stages that make no new model call. The color replay remains labeled as supplied and unreduced; the Target Dummy baseline crash uses process/log checks rather than an AI visual verdict.
+
+Impact is generated from the retained September 15 attempt ledger and the three bundled cases. It shows seven distinct player reports investigated across 17 attempts, three reproduced bugs, one fully validated candidate, one blocked candidate and one rejected candidate. Four reports remain unqualified. These are known reported bugs, with human guidance disclosed, not new discoveries or a general accuracy estimate. The earlier Weather reference is excluded. Build-time checks verify ledger snapshot hashes, compare baseline counts with the latest matching replay batch, and retain source links for each outcome.
+
+Architecture is an in-app presentation diagram covering the Responses API, custom function calls, the FastAPI controller, isolated game worker, replay/reduction, patch generation, validation and human review. Both pages work from the static bundle without an API key, game worker or model call.
+
 The walkthrough follows **Report → Reproduce → Reduce → Diagnose → Patch → Validate → Handoff**. Each stage presents actual saved evidence: screenshots and event timestamps, the frozen input sequence, source findings, patch rationale and diff, all five validation gates, and downloadable PDF, YAML and patch files. The data-patch candidate passes; Target Dummy has an upstream-test blocker; the color candidate fails its replay checks. Browsing never changes those outcomes or creates a new case.
 
 Report matching is a small, explicit browser-side matcher over this three-case catalog. It recognizes affected features, symptoms, workflow terms and exact upstream issue links. It supports the tested paraphrases, exposes missing details, and keeps multiple suggestions when a report describes multiple behaviors. It is not an AI classifier, fresh triage, or evidence that an incoming report is the same bug. Unrelated reports have no match. Text entered for matching stays in the browser. A visitor explicitly chooses the recorded case before viewing it.

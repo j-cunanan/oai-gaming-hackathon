@@ -47,7 +47,7 @@
   padding: 23px;
 }
 .repro-presenting .demo-player {
-  scroll-margin-top: 16px;
+  scroll-margin-top: 86px;
 }
 .repro-presenting .demo-player img {
   max-height: min(52vh, 470px);
