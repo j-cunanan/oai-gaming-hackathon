@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowLeftRight,
   ArrowRight,
@@ -260,6 +261,7 @@ export function ImpactPage({
 }
 
 export function ArchitecturePage({ onDemo }: { onDemo: () => void }) {
+  const [showOpenAI, setShowOpenAI] = useState(false);
   return (
     <section
       className="pitch-page architecture-page"
@@ -268,12 +270,49 @@ export function ArchitecturePage({ onDemo }: { onDemo: () => void }) {
       <header className="pitch-heading">
         <div>
           <span className="eyebrow">
-            ARCHITECTURE / REPORT TO REVIEWED CANDIDATE
+            {showOpenAI
+              ? "ARCHITECTURE / OPENAI INTEGRATION"
+              : "ARCHITECTURE / REPORT TO REVIEWED CANDIDATE"}
           </span>
-          <h2>The investigation engine</h2>
+          <h2>
+            {showOpenAI ? "Where OpenAI is used" : "The investigation engine"}
+          </h2>
         </div>
-        <span className="pitch-provenance">System diagram · no execution</span>
+        <div className="architecture-heading-actions">
+          <span className="pitch-provenance">
+            System diagram · no execution
+          </span>
+          <button
+            className="button secondary small architecture-detail-toggle"
+            aria-pressed={showOpenAI}
+            onClick={() => setShowOpenAI(!showOpenAI)}
+          >
+            {showOpenAI ? <Layers3 size={15} /> : <Sparkles size={15} />}
+            {showOpenAI ? "System overview" : "OpenAI details"}
+          </button>
+        </div>
       </header>
+      {showOpenAI ? <ArchitectureOpenAIRoles /> : <ArchitectureOverview />}
+      <footer className="pitch-footer architecture-footer">
+        <p>
+          {showOpenAI
+            ? "These are roles across separate API calls. Crash/log checks are deterministic, and PDF export makes no new model call."
+            : "Custom function tools connect the model to the game. Visual verdicts are model judgments, retained for human review."}
+          <br />
+          Live report planning is a separate, non-executing entry point; the
+          demo's game runs are recordings.
+        </p>
+        <button className="button secondary" onClick={onDemo}>
+          Back to demo <ArrowRight size={16} />
+        </button>
+      </footer>
+    </section>
+  );
+}
+
+function ArchitectureOverview() {
+  return (
+    <>
       <div className="architecture-intake">
         <span>Player report</span>
         <ArrowRight size={17} />
@@ -292,9 +331,9 @@ export function ArchitecturePage({ onDemo }: { onDemo: () => void }) {
           <h3>Responses API</h3>
           <p className="architecture-tech">GPT-5.6 Terra · Luna configurable</p>
           <ul>
-            <li>Reads screenshots and source</li>
-            <li>Chooses the next function call</li>
-            <li>Returns structured findings</li>
+            <li>Sees screenshots and action history</li>
+            <li>Calls game and source-search tools</li>
+            <li>Returns typed plans and verdicts</li>
           </ul>
         </article>
         <div className="architecture-exchange">
@@ -378,18 +417,112 @@ export function ArchitecturePage({ onDemo }: { onDemo: () => void }) {
         <span>Live dashboard updates via SSE</span>
         <span>PDF and replay export</span>
       </div>
-      <footer className="pitch-footer architecture-footer">
-        <p>
-          Custom function tools connect the model to the game. Visual verdicts
-          are model judgments, retained for human review.
-          <br />
-          Live report planning is a separate, non-executing entry point; the
-          demo's game runs are recordings.
-        </p>
-        <button className="button secondary" onClick={onDemo}>
-          Back to demo <ArrowRight size={16} />
-        </button>
-      </footer>
-    </section>
+    </>
+  );
+}
+
+function ArchitectureOpenAIRoles() {
+  const roles = [
+    {
+      stage: "Report planning & triage",
+      input: "Player report and available context",
+      output:
+        "Proposed test steps, evidence checkpoints and missing details; investigation triage normalizes the bug specification.",
+    },
+    {
+      stage: "Game investigation",
+      input: "Current screenshot, action history and tool results",
+      output:
+        "The next custom tool call: click, type, observe or reset. New screenshots guide the next decision.",
+    },
+    {
+      stage: "Reproduction verdict",
+      input:
+        "Ordered checkpoint images, recorded inputs and the reported symptom",
+      output:
+        "A separate verification call judges whether the bug is visible, absent or inconclusive, citing image evidence.",
+    },
+    {
+      stage: "Sequence reduction",
+      input: "Frozen actions and the failure condition",
+      output:
+        "A shorter subsequence to try. REPRO preserves action order and confirms accepted reductions on fresh profiles.",
+    },
+    {
+      stage: "Source analysis",
+      input:
+        "Confirmed reproduction and historical source through search/read tools",
+      output:
+        "Ranked files and symbols, a likely cause, supporting evidence and limitations.",
+    },
+    {
+      stage: "Patch proposal",
+      input: "Inspected source, bug specification and source findings",
+      output:
+        "A unified diff, explanation of why it should work, and risks for the developer to review.",
+    },
+    {
+      stage: "Fix validation",
+      input: "Original trigger, expected behavior and candidate screenshots",
+      output:
+        "Follow-up checks when needed, then separate visual judgments of whether the expected behavior actually occurs.",
+    },
+  ];
+  return (
+    <div className="architecture-ai-details">
+      <div
+        className="architecture-ai-capabilities"
+        aria-label="OpenAI capabilities"
+      >
+        <div>
+          <strong>Vision</strong>
+          <span>Reads game state from screenshots</span>
+        </div>
+        <div>
+          <strong>Function calling</strong>
+          <span>Chooses tools that REPRO executes</span>
+        </div>
+        <div>
+          <strong>Structured Outputs</strong>
+          <span>Produces typed plans and verdicts</span>
+        </div>
+      </div>
+      <p className="architecture-ai-model">
+        OpenAI Python SDK + Responses API{" "}
+        <span>GPT-5.6 Terra in the recorded cases · Luna configurable</span>
+      </p>
+      <div className="architecture-ai-table">
+        <table>
+          <caption>OpenAI roles throughout an investigation</caption>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>What OpenAI receives</th>
+              <th>What OpenAI contributes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {roles.map((role, index) => (
+              <tr key={role.stage}>
+                <th>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {role.stage}
+                </th>
+                <td>{role.input}</td>
+                <td>{role.output}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="architecture-ai-controls">
+        <Check size={16} />
+        <span>
+          <strong>REPRO controls execution and acceptance.</strong> It validates
+          tool arguments, enforces budgets, runs builds and replays, and
+          requires all five gates plus human review before handoff.
+        </span>
+      </p>
+    </div>
   );
 }
