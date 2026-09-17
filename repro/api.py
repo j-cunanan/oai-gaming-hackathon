@@ -13,12 +13,14 @@ from fastapi.responses import (
     StreamingResponse,
 )
 from fastapi.staticfiles import StaticFiles
+from openai import APIError
 
 from repro.activity import activity_snapshot
 from repro.adapters import ADAPTERS
 from repro.config import Settings
 from repro.models import ACTIVE_STATES, Case, CaseInput, State, patch_validated
 from repro.orchestration.manager import Manager
+from repro.report_planning import PlanRequest, PlanResult, generate_report_plan
 from repro.reporting import render_report
 from repro.storage.store import Store
 
@@ -29,6 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     manager = Manager(settings, store)
     jobs: dict[str, asyncio.Task] = {}
     slot = asyncio.Semaphore(1)
+    planning_busy = False
 
     @asynccontextmanager
     async def lifespan(app):
@@ -108,6 +111,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/api/adapters")
     async def adapters():
         return [{"id": a.id, "upstream": a.upstream, "status": a.status} for a in ADAPTERS.values()]
+
+    @app.post("/api/report-plan", response_model=PlanResult)
+    async def report_plan(request: PlanRequest):
+        nonlocal planning_busy
+        if not settings.openai_api_key or not settings.openai_api_key.get_secret_value():
+            raise HTTPException(503, "Connect an OpenAI API key in the backend to generate a plan.")
+        if planning_busy:
+            raise HTTPException(409, "A report plan is already being generated. Try again shortly.")
+        planning_busy = True
+        try:
+            return await generate_report_plan(settings, request)
+        except (TimeoutError, APIError):
+            raise HTTPException(
+                503,
+                "The OpenAI planning request did not complete. No game actions were executed. "
+                "Retry explicitly or browse the recorded cases.",
+            ) from None
+        except ValueError:
+            raise HTTPException(
+                502, "No complete valid plan was returned. No game actions were executed."
+            ) from None
+        finally:
+            planning_busy = False
 
     @app.get("/api/cases")
     async def list_cases():

@@ -18,6 +18,8 @@ import {
 import { PatchReview } from "./patch-review";
 import { dateTime } from "./activity-model";
 import { HelpTip } from "./help";
+import { ReportPlanner } from "./report-planner";
+import type { PlanResult } from "./report-planner";
 import { demoLocation, demoStages, matchReport } from "./demo-model";
 import type {
   DemoAction,
@@ -61,8 +63,22 @@ export function ReportDemo({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [intakeMode, setIntakeMode] = useState<"live" | "recorded">("live");
+  const [plan, setPlan] = useState<PlanResult | null>(null);
+  const [presenting, setPresenting] = useState(
+    () => new URLSearchParams(window.location.search).get("present") === "1",
+  );
   const heading = useRef<HTMLHeadingElement>(null);
   const index = demoStages.findIndex((s) => s.id === stage);
+
+  useEffect(() => {
+    document.body.classList.toggle("repro-presenting", presenting);
+    const url = new URL(window.location.href);
+    if (presenting) url.searchParams.set("present", "1");
+    else url.searchParams.delete("present");
+    window.history.replaceState(null, "", url);
+    return () => document.body.classList.remove("repro-presenting");
+  }, [presenting]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -145,6 +161,7 @@ export function ReportDemo({
   }, [selected, stage, detail, index]);
 
   function edit(value: string) {
+    setPlan(null);
     setReport(value);
     setMatches(null);
     setSelected(null);
@@ -164,14 +181,30 @@ export function ReportDemo({
 
   return (
     <section className="report-demo" aria-label="Report-driven demo">
+      <div className="demo-presentation-bar">
+        <strong>
+          REPRO <span>Game bug investigations</span>
+        </strong>
+        <button
+          className="button secondary small"
+          aria-pressed={presenting}
+          onClick={() => setPresenting(!presenting)}
+        >
+          {presenting ? "Exit presentation view" : "Presentation view"}
+        </button>
+      </div>
       <div className="demo-mode-bar">
         <span>
-          <span className="tiny-dot purple" /> Recorded investigation{" "}
+          <span className="tiny-dot purple" />{" "}
+          {stage === "report" && connected
+            ? "Report workspace"
+            : "Recorded investigation"}{" "}
           <HelpTip topic="Report demo" />
         </span>
         <p>
-          Match a report, then explore an actual run. Steps show saved evidence;
-          they do not start a new AI investigation.
+          {stage === "report" && connected
+            ? "Generate a live test plan or browse prior investigations. Game evidence comes from saved runs."
+            : "Explore an actual saved run. These steps show recorded evidence and do not start a new investigation."}
         </p>
         {(detail || matches) && (
           <button className="button secondary small" onClick={() => edit("")}>
@@ -198,7 +231,37 @@ export function ReportDemo({
         ))}
       </nav>
 
-      {stage === "report" ? (
+      {stage === "report" && connected && (
+        <div className="planner-mode" aria-label="Report intake mode">
+          <button
+            className={`button ${intakeMode === "live" ? "primary" : "secondary"}`}
+            aria-pressed={intakeMode === "live"}
+            onClick={() => setIntakeMode("live")}
+          >
+            Live AI plan
+          </button>
+          <button
+            className={`button ${intakeMode === "recorded" ? "primary" : "secondary"}`}
+            aria-pressed={intakeMode === "recorded"}
+            onClick={() => setIntakeMode("recorded")}
+          >
+            Recorded cases
+          </button>
+          <p>Live planning uses OpenAI. Recorded cases work offline.</p>
+        </div>
+      )}
+
+      {stage === "report" && connected && intakeMode === "live" ? (
+        <ReportPlanner
+          report={report}
+          onEdit={edit}
+          catalog={catalog}
+          result={plan}
+          onResult={setPlan}
+          onChoose={choose}
+          onFresh={() => onFreshReport(report, "mindustry")}
+        />
+      ) : stage === "report" ? (
         <div className="demo-intake-grid">
           <section className="panel demo-intake">
             <div className="eyebrow">01 / REPORT INTAKE</div>
@@ -525,6 +588,7 @@ function FramePlayer({
 }) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const player = useRef<HTMLElement>(null);
   const frame = frames[index];
   useEffect(() => {
     if (!playing) return;
@@ -536,7 +600,7 @@ function FramePlayer({
     return () => clearInterval(timer);
   }, [playing, index, frames.length]);
   return (
-    <section className="demo-player" aria-label={title}>
+    <section ref={player} className="demo-player" aria-label={title}>
       <div className="demo-player-heading">
         <strong>{title}</strong>
         <span>
@@ -585,6 +649,11 @@ function FramePlayer({
           className="button secondary small"
           onClick={() => {
             if (index === frames.length - 1) setIndex(0);
+            if (!playing)
+              player.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
             setPlaying(!playing);
           }}
         >

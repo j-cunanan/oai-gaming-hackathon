@@ -3,6 +3,55 @@
   gap: 20px;
   min-width: 0;
 }
+.demo-presentation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.demo-presentation-bar > strong {
+  font:
+    700 23px "Space Grotesk",
+    sans-serif;
+  color: #d7c7f6;
+}
+.demo-presentation-bar > strong > span {
+  margin-left: 12px;
+  color: var(--muted);
+  font:
+    12px "DM Sans",
+    sans-serif;
+}
+.repro-presenting .sidebar,
+.repro-presenting .topbar,
+.repro-presenting .page-heading {
+  display: none;
+}
+.repro-presenting .main-shell {
+  margin-left: 0;
+}
+.repro-presenting .main-shell main {
+  padding: 22px 30px;
+  max-width: 1540px;
+}
+.repro-presenting .report-demo {
+  gap: 14px;
+}
+.repro-presenting .demo-mode-bar {
+  padding: 9px 14px;
+}
+.repro-presenting .demo-stages button {
+  min-height: 40px;
+}
+.repro-presenting .report-planner {
+  padding: 23px;
+}
+.repro-presenting .demo-player {
+  scroll-margin-top: 16px;
+}
+.repro-presenting .demo-player img {
+  max-height: min(52vh, 470px);
+}
 .demo-mode-bar {
   display: flex;
   align-items: center;

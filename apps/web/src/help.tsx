@@ -4,7 +4,7 @@ import { Info } from "lucide-react";
 
 const explanations: Record<string, string> = {
   "Report demo":
-    "Match a pasted report to a bundled historical case, then browse its recorded reproduction, source findings, patch and checks. Matching uses report terms or an exact issue link in your browser; it is not AI triage or proof that a new report reproduces. Playback makes no model calls and does not change the original case.",
+    "With a connected backend, Live AI plan sends your report to OpenAI to propose actions, required evidence and missing details. Planning never runs the game or confirms a bug. Recorded cases uses browser-side report matching and plays saved investigations without model calls. Suggested prior cases remain separate from your new report.",
   "Case ID":
     "The unique ID for this investigation. Reports can have the same title and benchmark label, but each case has its own ID, history, and results. The selected ID appears in the header, browser tab, and URL; reloading keeps that case selected.",
   Investigations:
