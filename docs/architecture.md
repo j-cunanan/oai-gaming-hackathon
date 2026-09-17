@@ -1,6 +1,6 @@
 # Architecture and handoff
 
-![REPRO architecture with a skills layer for each game and investigation stage.](assets/architecture.svg)
+![REPRO architecture with a skills layer for each game and investigation stage.](assets/architecture-with-skills.svg)
 
 The application is a Python package plus a web dashboard. `repro/api.py` exposes the same manager used by `repro/cli.py`. `Store` persists JSON case snapshots and ordered events in SQLite, and stores content-hashed evidence outside the game sandbox.
 
