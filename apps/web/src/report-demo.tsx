@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BarChart3,
+  Box,
   Check,
   ChevronRight,
   Copy,
@@ -261,6 +262,15 @@ export function ReportDemo({
               )}
             </button>
           ))}
+          <a
+            href={`${import.meta.env.BASE_URL}probes/3d/index.html`}
+            target="_blank"
+            rel="noreferrer"
+            title="Open the 3D feasibility demo in a new tab"
+          >
+            <Box size={15} />
+            3D demo
+          </a>
         </nav>
         <button
           className="button secondary small"

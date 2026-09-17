@@ -15,7 +15,8 @@
   background: #211d29;
   border-radius: 10px;
 }
-.demo-pitch-nav button {
+.demo-pitch-nav button,
+.demo-pitch-nav a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,6 +28,8 @@
   color: #b6a9c6;
   font: inherit;
   font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
 }
 .demo-pitch-nav button[aria-current="page"] {
@@ -40,7 +43,8 @@
   border: 1px solid #bba3f033;
   border-radius: 4px;
 }
-.demo-pitch-nav button:hover:not([aria-current]) {
+.demo-pitch-nav button:hover:not([aria-current]),
+.demo-pitch-nav a:hover {
   background: #342c40;
   color: #e0d2f1;
 }
@@ -694,8 +698,10 @@
   .demo-pitch-nav {
     order: 3;
     width: 100%;
+    flex-wrap: wrap;
   }
-  .demo-pitch-nav button {
+  .demo-pitch-nav button,
+  .demo-pitch-nav a {
     flex: 1;
     padding: 9px 7px;
   }
